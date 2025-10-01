@@ -5,7 +5,11 @@ import useNotificationsStore from "../stores/useNotificationsStore.jsx";
 import PlayNotSound from "../effects/PlayNotSound.jsx";
 
 // 🔌 Connect to backend socket
-const socket = io("https://wafi-backend-nlp6.onrender.com");
+const API_URL = import.meta.env.VITE_API_URL || "http://192.168.100.116:5000";
+
+const socket = io(API_URL, {
+  withCredentials: true, // needed if using cookies for auth
+});
 
 const SocketListener = () => {
   const addNotification = useNotificationsStore((state) => state.addNotification);

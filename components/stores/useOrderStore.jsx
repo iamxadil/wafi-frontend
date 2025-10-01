@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_BASE = "https://wafi-backend-nlp6.onrender.com/api/orders";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 
 const useOrderStore = create((set, get) => ({
@@ -43,7 +43,7 @@ const useOrderStore = create((set, get) => ({
   sendOrderOTP: async (email) => {
     set({ otpLoading: true, otpError: null });
     try {
-      await axios.post(`${API_BASE}/send-otp`, { email });
+      await axios.post(`${API_URL}/orders/send-otp`, { email });
       set({ otpSent: true, otpLoading: false });
     } catch (err) {
       set({ otpError: err.response?.data?.message || err.message, otpLoading: false });
@@ -53,7 +53,7 @@ const useOrderStore = create((set, get) => ({
   verifyOrderOTP: async (email, otp) => {
     set({ otpLoading: true, otpError: null });
     try {
-      await axios.post(`${API_BASE}/verify-otp`, { email, otp });
+      await axios.post(`${API_URL}/orders/verify-otp`, { email, otp });
       set({ otpVerified: true, otpLoading: false });
       return true;
     } catch (err) {
@@ -71,7 +71,7 @@ const useOrderStore = create((set, get) => ({
     set({ attachLoading: true, attachError: null });
     try {
       const { data } = await axios.post(
-        `${API_BASE}/attach`,
+        `${API_URL}/orders/attach`,
         { orderId },
         { withCredentials: true }
       );
@@ -96,7 +96,7 @@ const useOrderStore = create((set, get) => ({
   // ✅ Orders
   createOrder: async (orderData) => {
     try {
-      const { data } = await axios.post(API_BASE, orderData, { withCredentials: true });
+      const { data } = await axios.post(`${API_URL}`, orderData, { withCredentials: true });
       set({ lastOrder: data });
       return data;
     } catch (error) {
@@ -134,7 +134,7 @@ const useOrderStore = create((set, get) => ({
   fetchArchivedOrders: async () => {
     set({ loading: true });
     try {
-      const { data } = await axios.get(`${API_BASE}/archived`, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/orders/archived`, { withCredentials: true });
       set({ archivedOrders: data, loading: false });
     } catch (error) {
       console.error("Failed to fetch archived orders:", error.response?.data || error.message);
@@ -143,7 +143,7 @@ const useOrderStore = create((set, get) => ({
   },
   archiveOrder: async (orderId) => {
     try {
-      await axios.patch(`${API_BASE}/${orderId}/archive`, {}, { withCredentials: true });
+      await axios.patch(`${API_URL}/orders/${orderId}/archive`, {}, { withCredentials: true });
       await Promise.all([get().fetchAllOrders(get().currentPage), get().fetchArchivedOrders()]);
     } catch (error) {
       console.error("Failed to archive order:", error.response?.data || error.message);
@@ -152,7 +152,7 @@ const useOrderStore = create((set, get) => ({
   },
   unarchiveOrder: async (orderId) => {
     try {
-      await axios.patch(`${API_BASE}/${orderId}/unarchive`, {}, { withCredentials: true });
+      await axios.patch(`${API_URL}/orders/${orderId}/unarchive`, {}, { withCredentials: true });
       await Promise.all([get().fetchAllOrders(get().currentPage), get().fetchArchivedOrders()]);
     } catch (error) {
       console.error("Failed to unarchive order:", error.response?.data || error.message);
@@ -182,7 +182,7 @@ const useOrderStore = create((set, get) => ({
   fetchMyOrders: async () => {
     set({ loadingMyOrders: true, myOrdersError: null });
     try {
-      const { data } = await axios.get(`${API_BASE}/my-orders`, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/orders/my-orders`, { withCredentials: true });
       set({ myOrders: data, loadingMyOrders: false });
     } catch (err) {
       set({
@@ -196,7 +196,7 @@ const useOrderStore = create((set, get) => ({
   fetchLastOrder: async () => {
     set({ loading: true });
     try {
-      const { data } = await axios.get(`${API_BASE}/last-order`, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/orders/last-order`, { withCredentials: true });
       set({ loading: false, lastOrder: data });
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -211,7 +211,7 @@ const useOrderStore = create((set, get) => ({
   fetchOrderById: async (orderId) => {
     set({ loading: true });
     try {
-      const { data } = await axios.get(`${API_BASE}/${orderId}`, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/orders/${orderId}`, { withCredentials: true });
       set({ selectedOrder: data, loading: false });
       return data;
     } catch (error) {
@@ -223,7 +223,7 @@ const useOrderStore = create((set, get) => ({
 
   countAllOrders: async () => {
     try {
-      const data = await axios.get(`${API_BASE}`, { withCredentials: true });
+      const data = await axios.get(`${API_URL}/orders`, { withCredentials: true });
       set({ totalOrders: data.data.totalOrders });
     } catch (error) {
       console.error("Failed to count all orders");
