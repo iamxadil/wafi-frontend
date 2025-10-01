@@ -71,7 +71,7 @@ const useOrderStore = create((set, get) => ({
     set({ attachLoading: true, attachError: null });
     try {
       const { data } = await axios.post(
-        `${API_URL}/orders/attach`,
+        `${API_URL}/api/orders/attach`,
         { orderId },
         { withCredentials: true }
       );
@@ -108,7 +108,7 @@ const useOrderStore = create((set, get) => ({
     set({ loading: true });
     try {
       const { orderTerm, status, currentPage, sort } = get();
-      const { data } = await axios.get(`${API_URL}/orders`, {
+      const { data } = await axios.get(`${API_URL}/api/orders`, {
         withCredentials: true,
         params: {
           page: page || currentPage,
@@ -134,7 +134,7 @@ const useOrderStore = create((set, get) => ({
   fetchArchivedOrders: async () => {
     set({ loading: true });
     try {
-      const { data } = await axios.get(`${API_URL}/orders/archived`, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/api/orders/archived`, { withCredentials: true });
       set({ archivedOrders: data, loading: false });
     } catch (error) {
       console.error("Failed to fetch archived orders:", error.response?.data || error.message);
@@ -143,7 +143,7 @@ const useOrderStore = create((set, get) => ({
   },
   archiveOrder: async (orderId) => {
     try {
-      await axios.patch(`${API_URL}/orders/${orderId}/archive`, {}, { withCredentials: true });
+      await axios.patch(`${API_URL}/api/orders/${orderId}/archive`, {}, { withCredentials: true });
       await Promise.all([get().fetchAllOrders(get().currentPage), get().fetchArchivedOrders()]);
     } catch (error) {
       console.error("Failed to archive order:", error.response?.data || error.message);
@@ -152,7 +152,7 @@ const useOrderStore = create((set, get) => ({
   },
   unarchiveOrder: async (orderId) => {
     try {
-      await axios.patch(`${API_URL}/orders/${orderId}/unarchive`, {}, { withCredentials: true });
+      await axios.patch(`${API_URL}/api/orders/${orderId}/unarchive`, {}, { withCredentials: true });
       await Promise.all([get().fetchAllOrders(get().currentPage), get().fetchArchivedOrders()]);
     } catch (error) {
       console.error("Failed to unarchive order:", error.response?.data || error.message);
@@ -161,7 +161,7 @@ const useOrderStore = create((set, get) => ({
   },
   updateOrderStatus: async (orderId, status) => {
     try {
-      const { data } = await axios.put(`${API_URL}/orders/${orderId}/status`, { status }, { withCredentials: true });
+      const { data } = await axios.put(`${API_URL}/api/orders/${orderId}/status`, { status }, { withCredentials: true });
       set((state) => ({
         allOrders: state.allOrders.map((order) =>
           order._id === orderId ? { ...order, status: data.status } : order
@@ -182,7 +182,7 @@ const useOrderStore = create((set, get) => ({
   fetchMyOrders: async () => {
     set({ loadingMyOrders: true, myOrdersError: null });
     try {
-      const { data } = await axios.get(`${API_URL}/orders/my-orders`, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/api/orders/my-orders`, { withCredentials: true });
       set({ myOrders: data, loadingMyOrders: false });
     } catch (err) {
       set({
@@ -196,7 +196,7 @@ const useOrderStore = create((set, get) => ({
   fetchLastOrder: async () => {
     set({ loading: true });
     try {
-      const { data } = await axios.get(`${API_URL}/orders/last-order`, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/api/orders/last-order`, { withCredentials: true });
       set({ loading: false, lastOrder: data });
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -211,7 +211,7 @@ const useOrderStore = create((set, get) => ({
   fetchOrderById: async (orderId) => {
     set({ loading: true });
     try {
-      const { data } = await axios.get(`${API_URL}/orders/${orderId}`, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/api/orders/${orderId}`, { withCredentials: true });
       set({ selectedOrder: data, loading: false });
       return data;
     } catch (error) {
@@ -223,7 +223,7 @@ const useOrderStore = create((set, get) => ({
 
   countAllOrders: async () => {
     try {
-      const data = await axios.get(`${API_URL}/orders`, { withCredentials: true });
+      const data = await axios.get(`${API_URL}/api/orders`, { withCredentials: true });
       set({ totalOrders: data.data.totalOrders });
     } catch (error) {
       console.error("Failed to count all orders");
