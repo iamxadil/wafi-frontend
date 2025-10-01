@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import useWindowWidth from "../../../hooks/useWindowWidth.jsx";
 import useOrderStore from "../../../stores/useOrderStore.jsx";
-import "../styles/orderfields.css";
+
 
 const ArchiveFields = () => {
   // Width Adjustment
