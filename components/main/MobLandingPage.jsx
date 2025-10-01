@@ -6,10 +6,15 @@ import {
   BiSearchAlt as Search,
   BiFilterAlt as Filter,
   BiRightArrowAlt as ArrowRight,
-  BiLeftArrowAlt as ArrowLeft
 } from "react-icons/bi";
-import { IoAdd as Add, IoHeartOutline as Heart } from "react-icons/io5";
 import useProductStore from "../stores/useProductStore"; 
+
+// Import images so Netlify/Vite can bundle them
+import LaptopImg from "../../assets/img/laptop.png";
+import HeadphoneImg from "../../assets/img/headphone.png";
+import MouseImg from "../../assets/img/mouse.png";
+import JoystickImg from "../../assets/img/joystick.png";
+import KeyboardImg from "../../assets/img/keyboard.png";
 
 const MobLandingPage = () => {
   const navigate = useNavigate();
@@ -20,14 +25,14 @@ const MobLandingPage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedBrands, setSelectedBrands] = useState([]);
 
-  // Images for slider
+  // Images for slider with categories
   const images = [
-    "../../assets/img/laptop.png",
-    "../../assets/img/headphone.png",
-    "../../assets/img/mouse.png",
-    "../../assets/img/joystick.png",
-    "../../assets/img/keyboard.png",
-    "../../assets/img/laptop.png",
+    { src: LaptopImg, category: "laptops" },
+    { src: HeadphoneImg, category: "headphones" },
+    { src: MouseImg, category: "mice" },
+    { src: JoystickImg, category: "joysticks" },
+    { src: KeyboardImg, category: "keyboards" },
+    { src: LaptopImg, category: "laptops" },
   ];
 
   // Search effect: only trigger if query has text
@@ -48,7 +53,6 @@ const MobLandingPage = () => {
     return () => clearTimeout(timer);
   }, [query, selectedBrands, searchProducts]);
 
-  // Toggle brand selection
   const toggleBrand = (brand) => {
     if (selectedBrands.includes(brand)) {
       setSelectedBrands(selectedBrands.filter((b) => b !== brand));
@@ -57,7 +61,6 @@ const MobLandingPage = () => {
     }
   };
 
-  // Clear all filters
   const clearFilters = () => setSelectedBrands([]);
 
   return (
@@ -125,32 +128,32 @@ const MobLandingPage = () => {
         )}
 
         {/* Dropdown search results */}
-            {query.trim().length > 0 && (
-              <div className="mob-search-results">
-                <div className="mob-search-results-inner">
-                  {results.length > 0 ? (
-                    results.map((item, index) => (
-                      <div
-                        className="mob-search-result-item"
-                        key={index}
-                        onClick={() => navigate(`/product/${item._id}`)}
-                      >
-                        <img
-                          src={item.images[0] || "/placeholder.png"}
-                          alt={item.name}
-                        />
-                        <div className="mob-result-info">
-                          <span>{item.name}</span>
-                          <span>{item.price.toLocaleString()} IQD</span>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="no-results">No results found</div>
-                  )}
-                </div>
-              </div>
-            )}
+        {query.trim().length > 0 && (
+          <div className="mob-search-results">
+            <div className="mob-search-results-inner">
+              {results.length > 0 ? (
+                results.map((item, index) => (
+                  <div
+                    className="mob-search-result-item"
+                    key={index}
+                    onClick={() => navigate(`/product/${item._id}`)}
+                  >
+                    <img
+                      src={item.images[0] || "/placeholder.png"}
+                      alt={item.name}
+                    />
+                    <div className="mob-result-info">
+                      <span>{item.name}</span>
+                      <span>{item.price.toLocaleString()} IQD</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="no-results">No results found</div>
+              )}
+            </div>
+          </div>
+        )}
 
       </div>
 
@@ -158,9 +161,14 @@ const MobLandingPage = () => {
       <section className="slider-container">
         <h1>Discover <ArrowRight /></h1>
         <div className="slider">
-          {images.map((src, index) => (
-            <div className="slider-card" key={index}>
-              <img src={src} alt={`Product ${index + 1}`} />
+          {images.map((item, index) => (
+            <div
+              className="slider-card"
+              key={index}
+              onClick={() => navigate(`/${item.category}`)}
+              style={{ cursor: "pointer" }}
+            >
+              <img src={item.src} alt={`Product ${index + 1}`} />
             </div>
           ))}
         </div>

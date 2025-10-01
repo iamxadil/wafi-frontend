@@ -8,10 +8,12 @@ import useProductStore from "../components/stores/useProductStore.jsx";
 import useCartStore from "../components/stores/useCartStore.jsx";
 import useAuthStore from "../components/stores/useAuthStore.jsx";
 import { toast } from "react-toastify";
+import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const width = useWindowWidth();
 
   const fetchProduct = useProductStore(state => state.fetchProduct);
   const addReview = useProductStore(state => state.addReview);
@@ -104,85 +106,111 @@ const ProductDetails = () => {
     ? selectedProduct.reviews.reduce((acc, r) => acc + r.rating, 0) / selectedProduct.reviews.length
     : 0;
 
+  // Mobile version layout
+  const isMobile = width <= 650;
+
   return (
     <>
-      {/* Product Card */}
-      <main id='product-card'>
-        <div className="dt-brand">{selectedProduct.brand && React.createElement(brandIcons[selectedProduct.brand] || SiAsus)}</div>
+      {isMobile ? (
+        <main id="product-card-mobile">
+          <div className="mobile-brand">{selectedProduct.brand && React.createElement(brandIcons[selectedProduct.brand] || SiAsus)}</div>
 
-        <section className='pr-img-container'>
-          <div className="image-wrapper">
-            <div className="image-overlay"><FiShare2 className="share-icon" onClick={handleShare} /></div>
-            <div className="main-pr-img">
+          <section className="mobile-img-container">
+            <div className="main-mobile-img">
               <img src={mainImage || null} alt={selectedProduct.name} className={fade ? "fade-out" : "fade-in"} />
+              <FiShare2 className="share-icon-mobile" onClick={handleShare} />
             </div>
-          </div>
-          <div className="thumbnail-row">
-            {selectedProduct.images.map((img, i) => (
-              <img key={i} src={img} alt={`thumb${i + 1}`} onClick={() => handleThumbnailClick(img)}
-                className={mainImage === img ? "active-thumb" : ""} />
-            ))}
-          </div>
-        </section>
-
-        <section className='pr-details-container'>
-          <div className="dt-name">
-            <h1>{selectedProduct.name}</h1>
-            <p>
-              SKU: {selectedProduct.sku || "N/A"} <span>-</span>
-              <span>{selectedProduct.countInStock > 0 ? "In Stock" : "Out of Stock"}</span>
-              {selectedProduct.reviews?.length > 0 && <span className="reviews">({selectedProduct.reviews.length} reviews)</span>}
-            </p>
-            {/* Average rating stars */}
-            <div className="dt-rating">
-              {[1,2,3,4,5].map(i => (
-                <span key={i} className="star-icon" style={{ color: i <= Math.round(avgRating) ? "#f5b50a" : "#d0d0d0" }}>★</span>
+            <div className="thumbnail-row-mobile">
+              {selectedProduct.images.map((img, i) => (
+                <img key={i} src={img} alt={`thumb${i + 1}`} onClick={() => handleThumbnailClick(img)}
+                  className={mainImage === img ? "active-thumb" : ""} />
               ))}
             </div>
-          </div>
+          </section>
 
-          <div className="dt-price">
-            {selectedProduct.discountPrice > 0 ? (
-              <>
-                <span className="original-price">{selectedProduct.price.toLocaleString()} IQD</span>
-                <span className="discounted-price">{getFinalPrice(selectedProduct).toLocaleString()} IQD</span>
-              </>
-            ) : <span className="regular-price">{selectedProduct.price.toLocaleString()} IQD</span>}
-          </div>
+          <section className="mobile-details-container">
+            <h1>{selectedProduct.name}</h1>
+            <div className="mobile-price">
+              {selectedProduct.discountPrice > 0 ? (
+                <>
+                  <span className="original-price">{selectedProduct.price.toLocaleString()} IQD</span>
+                  <span className="discounted-price">{getFinalPrice(selectedProduct).toLocaleString()} IQD</span>
+                </>
+              ) : <span className="regular-price">{selectedProduct.price.toLocaleString()} IQD</span>}
+            </div>
 
-          <div className="dt-quantity">
-  <button
-    className="dec-qty"
-    disabled={selectedProduct.countInStock === 0}
-    onClick={() => setQty(prev => Math.max(prev - 1, 1))}
-  >
-    <Minus />
-  </button>
+            <div className="mobile-quantity">
+              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.max(prev - 1, 1))}><Minus /></button>
+              <span>{selectedProduct.countInStock === 0 ? 0 : qty}</span>
+              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.min(prev + 1, selectedProduct.countInStock))}><Plus /></button>
+            </div>
 
-  <span className="qty-value">
-    {selectedProduct.countInStock === 0 ? 0 : qty}
-  </span>
+            <div className="mobile-buttons">
+              <button onClick={handleAddToCart}>Add to Cart</button>
+              <button onClick={handleBuyNow}>Buy Now</button>
+            </div>
 
-  <button
-    className="inc-qty"
-    disabled={selectedProduct.countInStock === 0}
-    onClick={() =>
-      setQty(prev => Math.min(prev + 1, selectedProduct.countInStock))
-    }
-  >
-    <Plus />
-  </button>
-</div>
+          </section>
+        </main>
+      ) : (
+        // Original PC layout
+        <main id='product-card'>
+          <div className="dt-brand">{selectedProduct.brand && React.createElement(brandIcons[selectedProduct.brand] || SiAsus)}</div>
 
+          <section className='pr-img-container'>
+            <div className="image-wrapper">
+              <div className="image-overlay"><FiShare2 className="share-icon" onClick={handleShare} /></div>
+              <div className="main-pr-img">
+                <img src={mainImage || null} alt={selectedProduct.name} className={fade ? "fade-out" : "fade-in"} />
+              </div>
+            </div>
+            <div className="thumbnail-row">
+              {selectedProduct.images.map((img, i) => (
+                <img key={i} src={img} alt={`thumb${i + 1}`} onClick={() => handleThumbnailClick(img)}
+                  className={mainImage === img ? "active-thumb" : ""} />
+              ))}
+            </div>
+          </section>
 
-          <div className="dt-buttons">
-            <button onClick={handleAddToCart}>Add to Cart</button>
-            <button onClick={handleBuyNow}>Buy Now</button>
-          </div>
-        </section>
-      </main>
+          <section className='pr-details-container'>
+            <div className="dt-name">
+              <h1>{selectedProduct.name}</h1>
+              <p>
+                SKU: {selectedProduct.sku || "N/A"} <span>-</span>
+                <span>{selectedProduct.countInStock > 0 ? "In Stock" : "Out of Stock"}</span>
+                {selectedProduct.reviews?.length > 0 && <span className="reviews">({selectedProduct.reviews.length} reviews)</span>}
+              </p>
+              <div className="dt-rating">
+                {[1,2,3,4,5].map(i => (
+                  <span key={i} className="star-icon" style={{ color: i <= Math.round(avgRating) ? "#f5b50a" : "#d0d0d0" }}>★</span>
+                ))}
+              </div>
+            </div>
 
-      {/* Collapsible Description */}
+            <div className="dt-price">
+              {selectedProduct.discountPrice > 0 ? (
+                <>
+                  <span className="original-price">{selectedProduct.price.toLocaleString()} IQD</span>
+                  <span className="discounted-price">{getFinalPrice(selectedProduct).toLocaleString()} IQD</span>
+                </>
+              ) : <span className="regular-price">{selectedProduct.price.toLocaleString()} IQD</span>}
+            </div>
+
+            <div className="dt-quantity">
+              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.max(prev - 1, 1))}><Minus /></button>
+              <span>{selectedProduct.countInStock === 0 ? 0 : qty}</span>
+              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.min(prev + 1, selectedProduct.countInStock))}><Plus /></button>
+            </div>
+
+            <div className="dt-buttons">
+              <button onClick={handleAddToCart}>Add to Cart</button>
+              <button onClick={handleBuyNow}>Buy Now</button>
+            </div>
+          </section>
+        </main>
+      )}
+
+      {/* Description & Reviews always rendered */}
       <div className="pr-description-container">
         <div className="description-header" onClick={() => setExpanded(!expanded)}>
           <h3>Description</h3>
@@ -195,11 +223,9 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* Reviews Section */}
       <main id='comments-main-container'>
         <div className="pr-comments-container">
           <h3>Customer Reviews </h3>
-          
           {selectedProduct.reviews?.length > 0 ? selectedProduct.reviews.map(review => (
             <div key={review._id} id={`review-${review._id}`} className="comment-box">
               <div className="comment-avatar">{review.name[0]}</div>
@@ -224,7 +250,6 @@ const ProductDetails = () => {
             </div>
           )) : <p>No reviews yet.</p>}
 
-          {/* Add New Review */}
           {user ? (
             <div className="add-comment-box">
               <div className="avatar-placeholder">{user.name[0]}</div>
