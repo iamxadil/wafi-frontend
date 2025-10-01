@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import useWindowWidth from "../../../hooks/useWindowWidth.jsx";
 import useOrderStore from "../../../stores/useOrderStore.jsx";
 import OrderDetailsModal from "../layouts/OrderDetailsModal.jsx";
-
 import "../styles/orderfields.css";
 
 const OrderFields = ({handlePageChange}) => {
