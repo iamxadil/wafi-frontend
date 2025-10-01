@@ -1,0 +1,298 @@
+/* payment.css */
+
+/* Reset some defaults */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#payment-page {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: var(--background);
+  margin-top: 4rem;
+
+}
+
+/* Left side: Form */
+.info-form {
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px;
+  background: var(--background);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid var(--text);
+  
+}
+
+.info-form form .form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  
+
+  
+}
+
+.info-form .form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+   width: 100%;
+}
+
+.info-form .form-group label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.info-form .form-group input {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--text);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background: none;
+  color: var(--text);
+  
+}
+
+.info-form .form-group input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.place-order-btn {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #007bff;
+  color: var(--text);
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.place-order-btn:hover {
+  background-color: #0056b3;
+}
+
+.policies {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+.policies a {
+  color: var(--line-clr);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.policies a:hover {
+  color: #007bff;
+}
+
+/* Right side: Cart Summary */
+.cart-summary {
+  flex: 1;
+  min-width: 280px;
+  max-width: 400px;
+  background: var(--background);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border: 1px solid var(--text);
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+
+}
+
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--text);
+  padding-bottom: 0.5rem;
+ 
+}
+
+.cart-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.cart-item-details h3 {
+  font-size: 1rem;
+}
+
+.cart-item-price {
+  font-weight: 600;
+}
+
+/* Cart totals */
+.cart-totals h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.totals-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+}
+
+.totals-row.total {
+  border-top: 1px solid #ccc;
+  padding-top: 0.8rem;
+  font-size: 1.1rem;
+
+}
+
+.totals-row.total strong {
+  font-size: 1.2rem;
+}
+
+/* Scrollbar styling for cart-items */
+.cart-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cart-items::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.cart-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  #payment-page {
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+  }
+
+  .cart-summary {
+    max-width: 100%;
+  }
+
+  .info-form {
+    max-width: 100%;
+  }
+}
+
+.info-form select {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  background: none;
+  color: var(--text);
+  background-color: var(--background);
+}
+
+.info-form select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+
+.phone-input {
+  border: 1px solid var(--text);
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.phone-input input {
+  border: none !important;
+  width: 100%;
+}
+
+.prefix {
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.error-text {
+  color: #f44336;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: block;
+}
+
+/* OTP Section */
+.otp-section {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.otp-section label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.otp-section input {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--text);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: none;
+  color: var(--text);
+}
+
+.otp-section input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  outline: none;
+}
+
+.otp-section input.invalid {
+  border-color: #f44336;
+  box-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
+}
+
+.otp-section small.error-text {
+  font-size: 0.8rem;
+  color: #f44336;
+}

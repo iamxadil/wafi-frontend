@@ -1,0 +1,93 @@
+/* src/styles/orderConfirmation.css */
+
+.order-confirmation-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
+  max-height: 80vh;
+  background-color: var(--background);
+  font-family: "poppins", Tahoma, Geneva, Verdana, sans-serif;
+  padding-top: 100px;
+}
+
+.confirmation-card {
+  border: 1px solid var(--text);
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.confirmation-card h1 {
+  color: var(--accent-clr);
+  margin-bottom: 10px;
+}
+
+.confirmation-card p {
+  margin: 5px 0;
+  color: var(--line-clr);
+}
+
+.order-items {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+  text-align: left;
+  
+}
+
+.order-items li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--text);
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.confirmation-card h2 {
+  margin-top: 20px;
+  color: var(--text);
+  
+}
+
+.confirmation-card h3 {
+  margin-top: 10px;
+  color: #111;
+}
+
+.confirmation-actions {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.confirmation-actions button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--text);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  background: none;
+ 
+}
+
+
+
+.confirmation-actions button:first-child:hover {
+  background-color: #535353;
+   color: #fff;
+}
+
+.confirmation-actions button:nth-child(2):hover {
+  background-color: #2565c1;
+}
+.confirmation-actions button:last-child:hover {
+  background-color: crimson;
+}
+
+

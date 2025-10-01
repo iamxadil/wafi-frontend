@@ -1,0 +1,264 @@
+/* Header container */
+
+.pc-version {
+  display: block;
+}
+
+.mob-version {
+  display: none;
+}
+
+.adm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 1rem 1.5rem;
+  background: var(--background);
+  border: 1px solid var(--line-clr);
+  border-radius: 12px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+/* Left: Search bar */
+.adm-left .adm-search {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--line-clr);
+  background:none;
+  transition: border-color 0.2s;
+  border-radius: 6px;
+  padding: 1px 8px;
+  gap: 2px;
+
+}
+
+.adm-left .adm-search input {
+  padding: 0.5rem 0.75rem;
+  outline: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  width: 100%;
+  
+}
+
+
+
+/* Center: Filter + Sort + Stats */
+.adm-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+
+.adm-center select {
+  padding: 0.45rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--line-clr);
+  background: none;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+ 
+}
+
+.adm-center select:focus {
+  border-color: var(--accent-clr);
+  background-color: var(--background);
+}
+
+/* Small stats */
+.adm-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adm-stats .stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+.adm-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  
+  >button {
+  padding: 0.5rem .5rem;
+  border-radius: 6px;
+  color: var(--text);
+  border: 1px solid var(--text);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  }
+
+  >button:last-child {
+    background-color: red;
+  }
+}
+
+
+.adm-action-btn:hover {
+  background: var(--hover-clr);
+  color: var(--text);
+}
+
+
+
+
+
+@media (max-width: 1250px) {
+ .pc-version {
+  display: none;
+ }
+
+ .mob-version {
+  display: block;
+  padding: 1rem;
+ }
+
+ .mob-adm-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+
+ }
+
+ .mob-adm-search {
+  border: 1px solid var(--text);
+  display: flex;
+  align-items: center;
+  padding: .5rem;
+  border-radius: .4em;
+  gap: .5rem;
+  width: clamp(150px, 80vw, 100%);
+
+  >input {
+    outline: none;
+    border: none;
+    background: none;
+    color: var(--text);
+    width: 100%;
+  }
+
+ }
+
+ .mob-adm-stats {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  font-size: 14px;
+  width: 100%;
+
+  >.stat {
+    border: 1px solid var(--line-clr);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    text-wrap: nowrap;
+    justify-content: center;
+    padding: .5rem;
+    gap: 10px;
+    
+    
+  }
+ }
+
+ .mob-adm-center {
+  width: 100%;
+  
+
+  >select {
+    width: 100%;
+    background: none;
+    color: var(--text);
+    padding: .5rem;
+    margin-top: 1rem;
+    outline: none;
+    border-radius: 6px;
+
+  }
+
+  option {
+      background: var(--background);
+
+   }
+
+ }
+ 
+ .mob-adm-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  >button {
+    background: none;
+    border-radius: 6px;
+    width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-wrap: nowrap;
+    gap: 10px;
+  }
+ }
+
+  
+ 
+}
+
+@media (max-width: 550px) {
+   .mob-adm-top {
+    flex-wrap: wrap;
+   }
+
+   .mob-adm-search {
+    width: 100%;
+   }
+
+   .mob-adm-stats {
+    justify-content: center;
+    width: 100%;
+
+    >.stat {
+      width: 100%;
+    }
+   }
+
+
+    
+ .mob-adm-bottom {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+
+  >button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+ }
+}

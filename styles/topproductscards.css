@@ -1,0 +1,129 @@
+#top-products-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 4rem;
+}
+
+#top-products {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#top-products-cards {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 4rem 6rem 2rem 6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+
+.pc-product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
+  border: 1px solid var(--text);
+  border-radius: 12px;
+  width: 300px;
+  height: 380px;
+  backdrop-filter: blur(10px);
+
+
+  h2 {
+    font-size: 1.25rem;
+  }
+}
+
+.pc-product-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 2rem;
+  gap: 0.8rem;
+  width: 100%;
+  height: 100%;
+  flex-grow: 1; /* takes remaining space */
+}
+
+
+.product-image-wrapper {
+    height: 115px;
+}
+
+.pc-product-image {
+  width: 200px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: translateY(-90px);
+
+
+}
+
+
+
+.add-to-cart {
+  width: 100%;
+  height: 40px; /* fixed height so it doesn’t stretch */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    background: none;
+    width: 100%;
+    height: 100%;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+}
+
+.add-to-cart button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.carousel-wrapper {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2rem;
+  margin-top: 2rem;
+
+}
+
+.carousel-track {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4rem;
+}
+
+.carousel-arrow {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.86rem;
+  padding: 2px;
+}
+
+.in-stock { color: green; }
+.out-of-stock { color: red; }

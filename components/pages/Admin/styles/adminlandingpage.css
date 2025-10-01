@@ -1,0 +1,226 @@
+#admin-landing-page {
+  padding: 2rem;
+  margin-left: 1rem;
+  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.overview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-bottom: 100px;
+}
+
+.overview-container > * {
+  flex: 1 1 auto;
+  /* min width 250px, grow to fill row */
+}
+
+.hello-user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-height: 200px;
+  width: inherit;
+  gap: 6px;
+}
+
+.hello-user h1 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent-clr);
+}
+
+.hello-user h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.dash-card {
+  height: 100%;
+  border: 2px solid var(--text);
+  border-radius: 1.5em;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.dash-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  svg {
+    font-size: 1.4rem;
+  }
+}
+
+.dash-card:hover {
+  background: linear-gradient(125deg, var(--accent-clr));
+  scale: 1.04;
+  color: #fff;
+
+  h3 {
+    color: #fff;
+  }
+
+  h5 {
+    color: #fff;
+  }
+}
+
+.dash-card-header {
+  display: flex;
+  align-items: center;
+
+  > span {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.last-notification {
+  width: 100%;
+  margin-top: 6px;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-weight: 400;
+    font-size: 0.95rem;
+  }
+
+  h5 {
+    margin-left: 2.1rem;
+    margin-top: 12px;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  p {
+    width: auto;
+    margin-left: 2.1rem;
+    margin-top: 12px;
+    font-weight: 800;
+    font-size: 0.95rem;
+  }
+
+  svg {
+    font-size: 1.4rem;
+  }
+}
+
+.last-pending {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.product-image {
+  width: 120px;
+  height: 120px;
+  border: 1px solid var(--text);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    max-width: 115px;
+    max-height: 125px;
+    object-fit: cover;
+  }
+}
+
+.pending-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-left: 2px;
+}
+
+.quick-counts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 1.15rem;
+
+  > p {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+  span {
+    display: flex;
+    align-items: center;
+  }
+
+  svg {
+    font-size: 1.15rem;
+  }
+}
+
+.view-more {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  svg {
+    font-size: 2rem;
+    position: absolute;
+    right: -8px;
+    bottom: -5px;
+  }
+}
+.card-data {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.adm-last-order {
+  width: 100%;
+}
+
+.adm-order-summary {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.adm-order-summary .status {
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.last-comment {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  width: 100%;
+}
+.comment-user {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.comment-product-img {
+  width: 200px;
+}
+
+.comment-product-img img {
+  max-width: 200px;
+}

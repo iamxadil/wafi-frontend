@@ -1,0 +1,170 @@
+@import '../styles/darkmode.css';
+
+#navbar {
+  display: flex !important;
+}
+
+#landing-page {
+  height: 90vh;
+  padding: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+.left-hero {
+  max-width: 620px;
+  min-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: .2em;
+  gap: 2rem;
+
+  >h1 {
+    font-size: clamp(1.8rem, 2vw + 2rem, 4rem);
+    line-height: 1.2;
+   
+  }
+
+  >p {
+    font-size: clamp(.5rem, 12vw + 0.5rem, 1.1rem);
+    line-height: 2rem;
+  }
+
+}
+
+#search-container {
+    display: flex;
+    align-items: center;
+    border: var(--button-border);
+    width: 95%;
+    padding: 1rem 1rem;
+
+    >input {
+    width: 100%;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: var(--color);
+  }
+}
+
+.right-hero {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: auto;
+  position: relative;
+}
+
+#laptop-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  >img {
+    width: 85%;
+  }
+
+  >h1 {
+    position: absolute;
+    right: 25%;
+    top: 35%;
+  }
+}
+
+#layer {
+  position: absolute;
+  backdrop-filter: blur(10px);
+  width: 63%;
+  height: 72%;
+  right: 11%;
+  top: 1%;
+  z-index: -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+#background {
+  position: fixed;
+  width: 1000px !important;
+  top: -15%;
+  right: -25%;
+  z-index: -2;
+}
+
+@media (max-width: 1350px) {
+
+  #laptop-container #background {
+    width: 900px !important;
+    right: -45%;
+  }
+
+  
+}
+
+
+
+
+@media (max-width: 350px) {
+  #navbar {
+    padding: 0;
+  }
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: none;
+  backdrop-filter: blur(10px);
+  border: 1px solid #ddd;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.search-result-item.active,
+.search-result-item:hover {
+  background-color: var(--accent-clr);
+  color: #fff;
+}
+
+.search-result-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+}
+
+.search-result-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-result-name {
+  font-weight: 500;
+}
+
+.search-result-brand {
+  font-size: 0.85rem;
+  color: #777;
+}
+

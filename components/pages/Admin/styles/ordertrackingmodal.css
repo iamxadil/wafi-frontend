@@ -1,0 +1,227 @@
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem; /* ensures small screens don't cut off content */
+  overflow-y: auto; /* scroll if content taller than viewport */
+}
+
+/* Modal Container */
+.tracking-modal {
+  background: #1e1e2f;
+  padding: 2rem 1.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.tracking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  position: relative;
+}
+
+/* Close button */
+.close-icon {
+  cursor: pointer;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #f44336;
+  border: 2px solid #f44336;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.close-icon:hover {
+  background: #f44336;
+  color: #fff;
+  transform: scale(1.2);
+}
+
+/* Status Bar */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+/* Individual Step */
+.status-step {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  min-width: 60px;
+}
+
+/* Circle */
+.status-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #555;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.status-circle.active {
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+}
+
+/* Labels */
+.status-label {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: #aaa;
+  text-align: center;
+  word-break: break-word;
+}
+
+.status-label.active {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Connecting line */
+.status-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 4px;
+  width: 100%;
+  background: #555;
+  transform: translateX(50%);
+  z-index: 0;
+}
+
+.status-line.active {
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+}
+
+/* Actions */
+.tracking-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Cancel & Close Buttons */
+.cancel-btn,
+.close-btn {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.cancel-btn {
+  background: #f44336;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  transform: scale(1.05);
+}
+
+.close-btn {
+  background: #555;
+  color: #fff;
+}
+
+.close-btn:hover {
+  background: #777;
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .tracking-modal {
+    padding: 1.5rem 1rem;
+    width: 95%;
+  }
+  .status-step {
+    min-width: 50px;
+  }
+  .status-label {
+    font-size: 0.65rem;
+  }
+  .close-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.4rem;
+  }
+}
+/* Vertical status bar for small screens */
+@media (max-width: 480px) {
+  .status-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .status-step {
+    flex-direction: row;
+    align-items: center;
+    min-width: auto;
+  }
+
+  .status-circle {
+    margin-right: 0.8rem;
+  }
+
+  .status-label {
+    margin-top: 0;
+    font-size: 0.75rem;
+    text-align: left;
+  }
+
+  .status-line {
+    position: absolute;
+    width: 4px;
+    height: calc(100% - 28px); /* height minus circle size */
+    top: 28px;
+    left: 14px; /* circle center */
+    transform: none;
+    background: #555;
+  }
+
+  .status-line.active {
+    background: linear-gradient(180deg, #4caf50, #8bc34a);
+  }
+}

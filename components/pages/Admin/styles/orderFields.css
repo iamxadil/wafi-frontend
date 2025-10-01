@@ -1,0 +1,271 @@
+.orders-table {
+  width: 100%;
+  border-collapse: separate;       /* allow spacing between cells */
+  border-spacing: 1.2rem;          /* horizontal 0px, vertical 12px */
+  font-family: 'poppins',sans-serif !important;
+  background-color: transparent;   /* so row gaps are visible */
+ 
+}
+
+/* ===== Table Head ===== */
+.orders-table thead {
+  background-color: #110c6a !important; 
+  color: var(--text);
+  text-align: left;
+  
+  font-weight: bold;
+}
+
+.orders-table thead th {
+  padding: 1rem;
+
+}
+
+/* ===== Table Rows ===== */
+.orders-table tbody tr {
+border: none;
+}
+
+.orders-table tbody tr:hover {
+  box-shadow: none;
+}
+
+/* ===== Table Cells ===== */
+.orders-table tbody td {
+  color: var(--text);
+  background: var(--background);   
+  
+
+}
+
+.td-total, .th-total {
+  text-align: center;
+}
+
+.th-status {
+  text-align: center;
+}
+
+
+/* Last column (More icon) */
+.orders-table tbody td:last-child {
+  text-align: left;
+}
+
+
+
+
+/* ===== Status Column ===== */
+.orders-table tbody td.status {
+  border-radius: 12px;
+  text-align: center;
+  color: #fff;                     /* force white text on color bg */
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 12px;
+  width: 20% !important;
+}
+
+/* Status Colors */
+.orders-table tbody td.waiting {
+  background-color: #ff9800;
+}
+
+.orders-table tbody td.delivered {
+  background-color: #4caf50;
+}
+
+.orders-table tbody td.packaging{
+  background-color: #3b4dd5;
+}
+
+.orders-table tbody td.on-the-way {
+  background-color: #00bcd4; /* Cyan */
+}
+
+.orders-table tbody td.canceled {
+  background-color: #f44336;
+}
+
+/* ===== More Icon ===== */
+.orders-table td.order-more {
+  text-align: center;
+}
+
+
+
+.order-options  {
+  display: flex;
+  gap: 12px;
+  width: 160% !important;
+  overflow: visible;
+
+  >button {
+    padding: 6px;
+    background: none;
+    border-radius: 4px;
+   
+  }
+}
+
+.order-options button:first-child:hover {
+  background: crimson;
+  color: #fff;
+
+}
+
+.order-options button:last-child:hover {
+  background-color: #110c6a;
+  color: #fff;
+}
+
+/* === Mobile Orders Cards === */
+.orders-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+
+}
+
+/* Card container */
+.order-card {
+  border: 1px solid var(--border, #ddd);
+  border-radius: 12px;
+  background: var(--background, #fff);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Header */
+.order-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.order-card-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text, #222);
+}
+
+/* Status badge */
+.order-card-header .status {
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Status colors */
+.status.waiting {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.status.on-the-way {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.status.completed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status.cancelled {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* Body */
+.order-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--text-muted, #555);
+}
+
+.order-card-body strong {
+  color: var(--text, #222);
+  font-weight: 600;
+}
+
+/* Footer actions */
+.order-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  border-top: 1px solid var(--border, #eee);
+  padding-top: 0.75rem;
+}
+
+.order-card-actions button {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border, #ccc);
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.order-card-actions button:hover {
+  background: var(--hover, #f5f5f5);
+}
+
+/* Empty states */
+.loading,
+.no-orders {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted, #666);
+  font-size: 0.95rem;
+}
+
+.status.on-the-way {
+  background: #e3f2fd;
+  color: #01070e;
+  animation: pulseBlue 2s infinite;
+}
+
+.status.waiting {
+  background: #fff3e0;
+  color: #e65100;
+  animation: pulseOrange 2s infinite;
+}
+
+.status.packaging {
+  color: #15c0c0;
+  background: azure;
+  animation: pulseOrange 2s infinite;
+}
+
+.status.canceled {
+  color: #c01545;
+  background: #fff3e0;
+}
+
+.status.delivered {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+@keyframes pulseBlue {
+  0% { box-shadow: 0 0 0 0 rgba(21,101,192,0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(21,101,192,0); }
+  100% { box-shadow: 0 0 0 0 rgba(21,101,192,0); }
+}
+
+@keyframes pulseOrange {
+  0% { box-shadow: 0 0 0 0 rgba(230,81,0,0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(230,81,0,0); }
+  100% { box-shadow: 0 0 0 0 rgba(230,81,0,0); }
+}
+

@@ -1,0 +1,89 @@
+#select-all {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: .5rem;
+
+
+}
+
+/* --- Mobile Version --- */
+.mobile-version {
+  padding: 0.5rem;
+  font-family: Arial, sans-serif;
+  padding-bottom: 50px;
+}
+
+/* Select All container */
+.mobile-version .select-all-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* User Cards Container */
+.mobile-version .user-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Individual User Card */
+.user-card {
+  background: var(--button-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Hover effect on card */
+.user-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Header (checkbox + name) */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Paragraphs inside card */
+.user-card p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+/* Pagination Controls */
+.mobile-version .pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.mobile-version .pagination-controls button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.mobile-version .pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.mobile-version .pagination-controls button:hover:not(:disabled) {
+  background-color: #0056b3;
+}

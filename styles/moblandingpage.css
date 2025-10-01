@@ -1,0 +1,433 @@
+#mob-landing-page {
+  padding: 0 2rem;
+  margin-top: 2rem;
+}
+
+.mob-title {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mob-title h1 {
+  font-size: 1.3rem;
+}
+
+.mob-title h3 {
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+/* container for row + dropdown */
+.mob-search-container {
+  position: relative;
+  width: 100%;
+  margin-top: 1rem;
+  overflow: visible; 
+}
+
+/* row for search + filter */
+.mob-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* search input */
+.mob-search {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.5rem;
+  border-radius: 10px;
+  width: 100%;
+  border: 1px solid var(--text);
+  background: var(--background, #fff);
+}
+
+.mob-search input {
+  background: none;
+  outline: none;
+  border: none;
+  color: var(--text);
+  width: 100%;
+  padding-left: 4px;
+}
+
+/* filter button */
+.mob-filter {
+  display: flex;
+  align-items: center;
+}
+
+.mob-filter button {
+  background: none;
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  border: 1px solid var(--text);
+  cursor: pointer;
+}
+
+
+/* dropdown results */
+.mob-search-results {
+position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  backdrop-filter: blur(16px);
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  z-index: 1000;
+  overflow: hidden; /* keep border clean */
+  margin-top: 1rem;
+}
+
+.mob-search-results-inner {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.mob-search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mob-search-result-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+
+.mob-search-result-item img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.mob-result-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.mob-result-info span:first-child {
+  font-weight: 500;
+  color: var(--text, #222);
+}
+
+.mob-result-info span:last-child {
+  font-size: 0.8rem;
+  color: var(--accent-clr);
+}
+
+.mob-search-results .no-results {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  color: #888; /* subtle text color */
+  font-size: 0.85rem;
+  width: 100%;
+  text-align: center;
+  background: #fafafa; /* optional: matches dropdown background */
+}
+
+
+
+.slider-container {
+  width: 100%;
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.slider {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+
+  /* offset parent's padding to allow peek */
+  margin-left: -2rem;
+  margin-right: -2rem;
+
+  /* remove padding-left/right */
+  padding-left: 2rem;
+  padding-right: 2rem;
+
+  /* ensures snapping respects visual offset */
+  scroll-padding-left: 2rem;
+  scroll-padding-right: 2rem;
+}
+
+.slider::-webkit-scrollbar {
+  display: none; /* hide scrollbar */
+}
+
+.slider-card {
+  border: 1px solid var(--text);
+  height: 185px;
+  width: 125px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 0.45rem;
+  scroll-snap-align: start;
+}
+
+.slider-card img {
+  width: 115px;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}
+
+/* ===========================
+   Filter Button & Dropdown
+=========================== */
+.mob-filter {
+  position: relative;
+}
+
+
+.mob-filter button:hover {
+  background: #f0f0f0;
+}
+
+/* Dropdown container */
+.filter-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  width: 160px;
+  backdrop-filter: blur(18px);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: dropdown-fade 0.25s forwards;
+  
+}
+
+/* Dropdown animation */
+@keyframes dropdown-fade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dropdown items */
+.filter-dropdown li {
+  padding: 0 1rem;
+}
+
+.filter-dropdown label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* Checkbox styling */
+.filter-dropdown input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Clear filters button */
+.clear-filters {
+  background: #ff4d4f;
+  color: var(--text);
+  border: none;
+  padding: 0.5rem 0.4rem !important;
+  width: 100% !important;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+
+.clear-filters:hover {
+  background: #e04344;
+}
+
+/* ===========================
+   Active Filter Chips
+=========================== */
+.mob-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* ===========================
+   Filter Button & Dropdown
+=========================== */
+.mob-filter {
+  position: relative;
+}
+
+
+
+.mob-filter button:hover {
+  background: #f0f0f0;
+}
+
+/* Dropdown container */
+.filter-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  width: 160px;
+  backdrop-filter: blur(16px);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 5000;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: dropdown-fade 0.25s forwards;
+}
+
+/* Dropdown animation */
+@keyframes dropdown-fade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dropdown items */
+.filter-dropdown li {
+  padding: 0 1rem;
+}
+
+.filter-dropdown label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* Checkbox styling */
+.filter-dropdown input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Clear filters button */
+.clear-filters {
+  background: #ff4d4f;
+  color: var(--text);
+  border: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin: 0.5rem auto;
+}
+
+.clear-filters:hover {
+  background: #e04344;
+}
+
+/* ===========================
+   Active Filter Chips
+=========================== */
+.mob-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Animate chip appearance */
+.filter-chip {
+  background: #e0f0ff;
+  color: #005bb5;
+  padding: 0.3rem 0.6rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+
+  /* Animation */
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: chip-appear 0.3s forwards;
+}
+
+/* Remove chip animation when deleted */
+.filter-chip.removed {
+  animation: chip-disappear 0.2s forwards;
+}
+
+/* Chip animations */
+@keyframes chip-appear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chip-disappear {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.filter-chip button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #005bb5;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.filter-chip button:hover {
+  color: #ff4d4f;
+}
+

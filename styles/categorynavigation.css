@@ -1,0 +1,156 @@
+/* --- GENERAL STYLES --- */
+.category-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.cat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  padding: 2rem 2rem;
+
+}
+
+.cat-header h1 {
+  font-size: 2rem;
+  margin: 0 0 10px 0;
+}
+
+.cat-header input {
+  padding: 6px 10px;
+  font-size: 16px;
+  border: 1px solid var(--text);
+  color: var(--text);
+  border-radius: 4px;
+  flex-grow: 1;
+  max-width: 300px;
+  background: none;
+  outline: none;
+}
+
+.search-cat {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-cat button {
+  background: none;
+  color: var(--accent-clr);
+  border-radius: 5px;
+  font-weight: 800;
+}
+
+/* --- PC GRID LAYOUT (>650px) --- */
+.pc-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  padding: 0 2rem;
+
+}
+
+#pc-cat-grid-offers {
+
+
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+#pc-cat-grid-offers header {
+  padding: 0 2rem;
+    margin-top: 4rem;
+}
+
+.pc-cat-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--text);
+  padding: 12px;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+  background: linear-gradient(120deg, rgba(0, 0, 0, 0.076), rgba(128, 128, 128, 0.099) );
+  position: relative;
+
+}
+
+.pc-cat-card:hover {
+  transform: translateY(-4px);
+  cursor: pointer;
+}
+
+.pc-cat-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.pc-cat-image img {
+  width: 250px;
+}
+
+.pc-cat-details h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+}
+
+.pc-cat-details p {
+  margin: 2px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.pc-cat-details p:last-child {
+  font-weight: 800;
+  color: var(--accent-clr);
+}
+
+/* --- MOBILE CAROUSEL (<650px) --- */
+.mob-carousel {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding: 10px;
+}
+
+.mob-cards {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 10px;
+}
+
+
+
+/* --- RESPONSIVE DYNAMIC SIZING --- */
+@media (max-width: 650px) {
+  .cat-header h1 {
+    font-size: 20px;
+  }
+
+  .cat-header input {
+    padding: 0.25rem;
+  }
+
+  .mob-card {
+    min-width: 120px;
+    padding: 6px;
+  }
+
+  .mob-details h3 {
+    font-size: 13px;
+  }
+
+  .mob-details p {
+    font-size: 11px;
+  }
+
+  .cat-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

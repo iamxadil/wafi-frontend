@@ -1,0 +1,255 @@
+.product-fields {
+  width: 100%;
+  overflow-x: hidden;
+  padding: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+
+thead th {
+  text-align: left;
+  padding: 12px;
+  background: var(--background);
+  color: var(--text);
+  font-weight: 600;
+}
+
+tbody tr {
+  background: var(--background);
+  border-radius: 8px;
+  display: table-row;
+}
+
+tbody tr:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+td {
+  padding: 6px 8px;
+  vertical-align: middle;
+  max-height: auto;
+  overflow: hidden;
+}
+
+.product-img-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: flex-start;
+}
+
+.product-img-cell img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  border: 1px solid var(--text);
+  padding: .5rem;
+}
+
+/* ✅ Styled checkboxes */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--text);
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--accent, #007bff);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--accent, #007bff);
+  border-color: var(--accent, #007bff);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Pagination styling */
+.pagination-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.pagination-controls button {
+  padding: 6px 12px;
+  border: 1px solid var(--text);
+  border-radius: 6px;
+  background: var(--background);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button.active {
+  background: var(--text);
+  color: var(--background);
+}
+
+/* Responsive table */
+@media (max-width: 1250px) {
+  .mob-header-actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+    gap: 1rem;
+  }
+
+  .mob-cards-container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .mob-card {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    width: 500px;
+  }
+
+  .image-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--line-clr);
+    border-radius: 12px;
+    position: relative;
+    width: 225px;
+    height: 225px;
+  }
+
+  .image-container > .select-product {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+  }
+
+  .image-container > img {
+    width: 225px;
+    border-radius: 12px;
+  }
+
+  .mob-card-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .4rem;
+  }
+
+  .mob-card-info > h1 {
+    font-size: 1.4rem;
+    width: 225px;
+  }
+
+  .mob-card-info > p {
+    font-size: 14px;
+  }
+
+  .pagination-controls {
+    padding-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 1170px) {
+  .mob-card {
+    width: 450px;
+  }
+}
+
+@media (max-width: 1074px) {
+  .mob-card {
+    width: 400px;
+  }
+
+  .mob-card p {
+    font-size: 12px;
+  }
+
+  .image-container {
+    width: 200px;
+  }
+
+  .image-container > img {
+    width: 200px;
+  }
+}
+
+@media (max-width: 980px) {
+  .mob-card {
+    width: 380px;
+  }
+
+  .image-container {
+    width: 180px;
+  }
+
+  .image-container > img {
+    width: 140px;
+  }
+}
+
+@media (max-width: 500px) {
+  .mob-cards-container {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mob-card {
+    width: 100%;
+    flex-direction: column;
+    border: 1px solid var(--line-clr);
+    padding-bottom: 1rem;
+    border-radius: 12px;
+    height: 420px;
+  }
+
+  .image-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 0;
+  }
+
+}
