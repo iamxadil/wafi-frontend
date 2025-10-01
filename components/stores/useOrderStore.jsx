@@ -108,7 +108,7 @@ const useOrderStore = create((set, get) => ({
     set({ loading: true });
     try {
       const { orderTerm, status, currentPage, sort } = get();
-      const { data } = await axios.get(API_BASE, {
+      const { data } = await axios.get(`${API_URL}/orders`, {
         withCredentials: true,
         params: {
           page: page || currentPage,
@@ -161,7 +161,7 @@ const useOrderStore = create((set, get) => ({
   },
   updateOrderStatus: async (orderId, status) => {
     try {
-      const { data } = await axios.put(`${API_BASE}/${orderId}/status`, { status }, { withCredentials: true });
+      const { data } = await axios.put(`${API_URL}/orders/${orderId}/status`, { status }, { withCredentials: true });
       set((state) => ({
         allOrders: state.allOrders.map((order) =>
           order._id === orderId ? { ...order, status: data.status } : order

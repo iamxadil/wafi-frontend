@@ -23,7 +23,7 @@ export const usePermissionStore = create((set, get) => ({
   updateMods: async (id, permissions) => {
     try {
       const { data } = await axios.put(
-        `${API_BASE}/${id}`,
+        `${API_URL}/api/permissions${id}`,
         { permissions },
         { withCredentials: true }
       );
