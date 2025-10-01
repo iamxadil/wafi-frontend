@@ -16,6 +16,7 @@ import ForgotPassword from '../components/pages/Auth/ForgotPassword.jsx';
 import VerifyEmail from '../components/pages/Auth/VerifyEmail.jsx';
 import ResetPassword from '../components/pages/Auth/ResetPassword.jsx';
 import MyOrdersPage from '../components/pages/User/MyOrders.jsx';
+import Static from '../pages/Static.jsx';
 
 import Home from '../pages/Home'; 
 import CategoryNavigation from '../pages/CategoryNavigation.jsx';
@@ -124,6 +125,7 @@ function App() {
         <Route path="/category/:categoryName" element={<CategoryNavigation />} />
         <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
         <Route path='/laptops' element={<CatLaptops />}/>
+        <Route path='/static' element={<Static />}/>
 
       </Routes>
     </>

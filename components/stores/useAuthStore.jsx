@@ -102,7 +102,7 @@ logout: async (navigate) => {
   forgotPassword: async (email) => {
     set({ loading: true });
     try {
-      await axios.post(`${API_URL}/api/users/forgot-password`, { email });
+      await axios.post(`${API_URL}/api/users/forgot-password`, { email }, {withCredentials: true});
       toast.info("Reset instructions have been sent to your email.");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong.");
@@ -115,7 +115,7 @@ logout: async (navigate) => {
   resetPassword: async (token, password) => {
     set({ loading: true, error: null, success: null });
     try {
-      const { data } = await axios.post(`${API_URL}/api/users/reset-password/${token}`, { password });
+      const { data } = await axios.post(`${API_URL}/api/users/reset-password/${token}`, { password }, {withCredentials: true});
       set({ loading: false, success: data.message });
       toast.success(data.message);
     } catch (err) {
