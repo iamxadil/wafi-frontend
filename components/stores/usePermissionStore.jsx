@@ -3,7 +3,8 @@ import axios from "axios";
 import useAuthStore from "./useAuthStore";  // import your auth store
 
 
-const API_BASE = "https://wafi-backend-nlp6.onrender.com/api/permissions";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export const usePermissionStore = create((set, get) => ({
   mods: [],
@@ -11,7 +12,7 @@ export const usePermissionStore = create((set, get) => ({
   // Fetch all moderators
   fetchMods: async () => {
     try {
-      const { data } = await axios.get(API_BASE, { withCredentials: true });
+      const { data } = await axios.get(`${API_URL}/api/permissions`, { withCredentials: true });
       set({ mods: data });
     } catch (error) {
       console.error("Failed to fetch moderators:", error.response?.data || error.message);

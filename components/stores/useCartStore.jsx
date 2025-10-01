@@ -3,7 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import useAuthStore from "./useAuthStore.jsx";
 
-const API_URL = "https://wafi-backend-nlp6.onrender.com";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 
 // --- Helpers ---

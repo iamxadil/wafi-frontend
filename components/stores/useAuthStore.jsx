@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import useCartStore from "./useCartStore";
 
-const API_URL = "https://wafi-backend-nlp6.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const useAuthStore = create((set, get) => ({
   // State
@@ -102,7 +102,7 @@ logout: async (navigate) => {
   forgotPassword: async (email) => {
     set({ loading: true });
     try {
-      await axios.post(`${API_URL}/api/users/forgot-password`, { email }, {withCredentials: true});
+      await axios.post(`${API_URL}/api/users/forgot-password`, { email });
       toast.info("Reset instructions have been sent to your email.");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong.");

@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_URL = "https://wafi-backend-nlp6.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 
 const useUserStore = create((set, get) => ({
