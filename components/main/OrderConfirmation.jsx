@@ -1,7 +1,7 @@
 // src/pages/OrderConfirmation.jsx
 import React, { useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import "../../styles/orderConfirmation.css";
+import "../../styles/orderconfirmation.css";
 import useOrderStore from "../stores/useOrderStore";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
