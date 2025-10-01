@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "apexcharts": "^5.3.2",
     "axios": "^1.12.2",
+    "dayjs": "^1.11.18",
     "flowbite": "^3.1.2",
     "framer-motion": "^12.23.22",
     "lodash.debounce": "^4.0.8",
