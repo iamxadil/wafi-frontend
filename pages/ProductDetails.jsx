@@ -106,54 +106,13 @@ const ProductDetails = () => {
     ? selectedProduct.reviews.reduce((acc, r) => acc + r.rating, 0) / selectedProduct.reviews.length
     : 0;
 
-  // Mobile version layout
-  const isMobile = width <= 650;
+
 
   return (
     <>
-      {isMobile ? (
-        <main id="product-card-mobile">
-          <div className="mobile-brand">{selectedProduct.brand && React.createElement(brandIcons[selectedProduct.brand] || SiAsus)}</div>
 
-          <section className="mobile-img-container">
-            <div className="main-mobile-img">
-              <img src={mainImage || null} alt={selectedProduct.name} className={fade ? "fade-out" : "fade-in"} />
-              <FiShare2 className="share-icon-mobile" onClick={handleShare} />
-            </div>
-            <div className="thumbnail-row-mobile">
-              {selectedProduct.images.map((img, i) => (
-                <img key={i} src={img} alt={`thumb${i + 1}`} onClick={() => handleThumbnailClick(img)}
-                  className={mainImage === img ? "active-thumb" : ""} />
-              ))}
-            </div>
-          </section>
-
-          <section className="mobile-details-container">
-            <h1>{selectedProduct.name}</h1>
-            <div className="mobile-price">
-              {selectedProduct.discountPrice > 0 ? (
-                <>
-                  <span className="original-price">{selectedProduct.price.toLocaleString()} IQD</span>
-                  <span className="discounted-price">{getFinalPrice(selectedProduct).toLocaleString()} IQD</span>
-                </>
-              ) : <span className="regular-price">{selectedProduct.price.toLocaleString()} IQD</span>}
-            </div>
-
-            <div className="mobile-quantity">
-              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.max(prev - 1, 1))}><Minus /></button>
-              <span>{selectedProduct.countInStock === 0 ? 0 : qty}</span>
-              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.min(prev + 1, selectedProduct.countInStock))}><Plus /></button>
-            </div>
-
-            <div className="mobile-buttons">
-              <button onClick={handleAddToCart}>Add to Cart</button>
-              <button onClick={handleBuyNow}>Buy Now</button>
-            </div>
-
-          </section>
-        </main>
-      ) : (
-        // Original PC layout
+    {width > 950 && (
+      <div className="dt-container">
         <main id='product-card'>
           <div className="dt-brand">{selectedProduct.brand && React.createElement(brandIcons[selectedProduct.brand] || SiAsus)}</div>
 
@@ -197,9 +156,9 @@ const ProductDetails = () => {
             </div>
 
             <div className="dt-quantity">
-              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.max(prev - 1, 1))}><Minus /></button>
+              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.max(prev - 1, 1))}><Minus/></button>
               <span>{selectedProduct.countInStock === 0 ? 0 : qty}</span>
-              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.min(prev + 1, selectedProduct.countInStock))}><Plus /></button>
+              <button disabled={selectedProduct.countInStock === 0} onClick={() => setQty(prev => Math.min(prev + 1, selectedProduct.countInStock))}><Plus/></button>
             </div>
 
             <div className="dt-buttons">
@@ -208,9 +167,14 @@ const ProductDetails = () => {
             </div>
           </section>
         </main>
+      </div>)}
+
+      {width < 950 && (
+        <h1>Product</h1>
       )}
 
       {/* Description & Reviews always rendered */}
+      <div className="dt-container">
       <div className="pr-description-container">
         <div className="description-header" onClick={() => setExpanded(!expanded)}>
           <h3>Description</h3>
@@ -222,7 +186,8 @@ const ProductDetails = () => {
           </ul>
         </div>
       </div>
-
+       </div>
+              
       <main id='comments-main-container'>
         <div className="pr-comments-container">
           <h3>Customer Reviews </h3>
@@ -252,13 +217,16 @@ const ProductDetails = () => {
 
           {user ? (
             <div className="add-comment-box">
-              <div className="avatar-placeholder">{user.name[0]}</div>
-              <div className="input-area">
-                <div className="rating-input">
+              <div className="avatar-container">
+                  <div className="avatar-placeholder">{user.name[0]}</div>
+                  <div className="rating-input">
                   {[1,2,3,4,5].map(star => (
                     <span key={star} className={`star ${star <= newRating ? "selected" : ""}`} onClick={() => setNewRating(star)}>★</span>
                   ))}
                 </div>
+              </div>
+            
+              <div className="input-area">
                 <textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="Write your comment..." rows="3" />
                 <button className="post-btn" onClick={handleSubmitReview} disabled={reviewLoading}>Post Review</button>
               </div>
