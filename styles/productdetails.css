@@ -2,7 +2,7 @@
 
 
 .dt-container {
-  padding: 0 2.5rem;
+  padding: 0 2rem;
 }
 
 #product-card {
@@ -211,9 +211,9 @@
 
 /* --- Collapsible Description --- */
 .pr-description-container {
-  max-width: 825px;
+  max-width: 1000px;
   margin: 20px auto 60px auto;
-  padding: 1.5rem 2.5rem;
+  padding: 1.5rem 2rem;
   border-radius: 12px;
   background: var(--background);
   border: 1px solid var(--text);
@@ -312,13 +312,14 @@
 
 #comments-main-container {
   padding: 0 2rem;
+  padding-bottom: 2rem;
 }
 
 /* --- Comment Section --- */
 .pr-comments-container {
   margin: 2.5rem auto;
   padding: 2rem 2.5rem;
-  max-width: 825px;
+  max-width: 1000px;
   border: 1px solid var(--text);
   border-radius: 16px;
   box-shadow: 0 4px 18px rgba(0,0,0,0.06);
@@ -360,7 +361,7 @@
   border-bottom: 1px solid var(--text);
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  
+
 }
 
 
@@ -378,6 +379,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
 }
 
 /* Comment Content */
@@ -385,7 +387,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-  
+
+
  
 }
 
@@ -394,6 +397,13 @@
   font-weight: 600;
   font-size: 0.95rem;
   color: var(--accent-clr);
+  display: flex;
+  flex-direction: column;
+
+}
+
+.comment-author span {
+  width: 100%;
 }
 
 /* Comment Text */
@@ -402,6 +412,8 @@
   font-size: 0.95rem;
   line-height: 1.5;
   color: var(--text);
+  
+
 }
 
 /* Date */
@@ -569,6 +581,7 @@
   display: flex;
   align-items: center;
   gap: 6px; /* space between name and stars */
+
 }
 
 /* Stars next to name */
@@ -586,4 +599,22 @@
   .post-btn {
     width: 100%;
   }
+}
+
+/* Make carousel dots visible with theme colors */
+.slick-dots li button {
+  background: var(--line-clr) !important; /* default dot */
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 1;
+}
+
+.slick-dots li.slick-active button {
+  background: var(--accent-clr) !important; /* active dot */
+}
+
+/* Adjust position if needed */
+.slick-dots {
+  bottom: 12px !important;
 }

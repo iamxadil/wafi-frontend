@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router } from "react-router-dom";
+import 'antd/dist/reset.css'; // AntD v5+ (new style reset)
 
 
 

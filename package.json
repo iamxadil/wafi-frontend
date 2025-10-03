@@ -12,9 +12,9 @@
     "frontend": "npm run dev --prefix frontend"
   },
   "dependencies": {
+    "antd": "^5.27.4",
     "axios": "^1.12.2",
     "dayjs": "^1.11.18",
-    "evergreen-ui": "^7.1.9",
     "framer-motion": "^6.5.1",
     "jspdf": "^3.0.3",
     "jspdf-autotable": "^5.0.2",

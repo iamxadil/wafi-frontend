@@ -9,6 +9,7 @@ import useCartStore from "../components/stores/useCartStore.jsx";
 import useAuthStore from "../components/stores/useAuthStore.jsx";
 import { toast } from "react-toastify";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
+import { Card, Button, Rate, Divider, Carousel } from "antd";
 
 
 
@@ -171,9 +172,179 @@ const ProductDetails = () => {
         </main>
       </div>)}
 
-      {width < 950 && (
-        <h1>Product</h1>
-      )}
+{width < 950 && (
+  <div className="dt-container" style={{ padding: "2rem" }}>
+    <Card
+      variant="outlined"
+      styles={{ body: { padding: 0 } }}
+      style={{
+        width: "100%",
+        borderRadius: 12,
+        background: "transparent",
+        boxShadow: "none",
+        padding: "0 2rem"
+      }}
+    >
+      {/* Image Carousel */}
+      <div style={{ position: "relative" }}>
+        <Carousel
+          dots={{ className: "carousel-dots" }}
+          autoplay={false}
+          style={{ borderRadius: 8, overflow: "hidden" }}
+        >
+          {selectedProduct.images.map((img, index) => (
+            <div key={index}>
+              <img
+                src={img}
+                alt={`${selectedProduct.name}-${index}`}
+                style={{
+                  width: "100%",
+                  height: 250,
+                  objectFit: "contain"
+                }}
+              />
+            </div>
+          ))}
+        </Carousel>
+        <Button
+          shape="circle"
+          icon={<FiShare2 />}
+          onClick={handleShare}
+          style={{
+            position: "absolute",
+            top: 10,
+            right: -20,
+            border: "1px solid var(--text)",
+            color: "var(--text)",
+            background: "transparent",
+            zIndex: 10
+          }}
+        />
+      </div>
+
+      {/* Product Info */}
+      <div style={{ marginTop: "1rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, }}>
+          {selectedProduct.brand &&
+            React.createElement(brandIcons[selectedProduct.brand] || SiAsus, {
+              size: 65,
+              color: "var(--text)"
+            })}
+          <span style={{ color: "var(--secondary-text-clr)", fontSize: 14 }}>
+            {selectedProduct.countInStock > 0 ? "In Stock" : "Out of Stock"}
+          </span>
+        </div>
+
+        <h2 style={{ marginBottom: 12, color: "var(--text)" }}>{selectedProduct.name}</h2>
+
+        <Rate
+          value={Math.round(avgRating)}
+          disabled
+          style={{ color: "var(--accent-clr)" }}
+          character={({ index }) => (
+            <span style={{ color: index < Math.round(avgRating) ? "var(--accent-clr)" : "var(--line-clr)" }}>★</span>
+          )}
+        />
+
+        {selectedProduct.reviews?.length > 0 && (
+          <span style={{ fontSize: 12, color: "var(--secondary-text-clr)" }}>
+            ({selectedProduct.reviews.length} reviews)
+          </span>
+        )}
+
+        <Divider style={{ borderColor: "var(--line-clr)" }} />
+
+        {/* Price */}
+        <div style={{ marginBottom: "1rem" }}>
+          {selectedProduct.discountPrice > 0 ? (
+            <>
+              <span style={{ textDecoration: "line-through", color: "var(--secondary-text-clr)", marginRight: 8 }}>
+                {selectedProduct.price.toLocaleString()} IQD
+              </span>
+              <span style={{ fontWeight: "bold", fontSize: "1.2rem", color: "var(--accent-clr)" }}>
+                {getFinalPrice(selectedProduct).toLocaleString()} IQD
+              </span>
+            </>
+          ) : (
+            <span style={{ fontWeight: "bold", fontSize: "1.2rem", color: "var(--text)" }}>
+              {selectedProduct.price.toLocaleString()} IQD
+            </span>
+          )}
+        </div>
+
+        {/* Quantity Selector */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "1rem" }}>
+          <Button
+            size="small"
+            type="text"
+            style={{
+              color: "var(--text)",
+              border: "1px solid var(--accent-clr)",
+              borderRadius: 6
+            }}
+            onClick={() => setQty(prev => Math.max(prev - 1, 1))}
+          >
+            <Minus />
+          </Button>
+          <span style={{ minWidth: 30, textAlign: "center", color: "var(--text)" }}>
+            {selectedProduct.countInStock === 0 ? 0 : qty}
+          </span>
+          <Button
+            size="small"
+            type="text"
+            style={{
+              color: "var(--text)",
+              border: "1px solid var(--accent-clr)",
+              borderRadius: 6
+            }}
+            onClick={() => setQty(prev => Math.min(prev + 1, selectedProduct.countInStock))}
+          >
+            <Plus />
+          </Button>
+        </div>
+
+        {/* Action Buttons */}
+        <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+          <Button
+            type="default"
+            style={{
+              flex: 1,
+              color: "var(--text)",
+              border: "1px solid var(--accent-clr)",
+              borderRadius: 8,
+              fontWeight: 600,
+              background: "transparent",
+              transition: "all 0.3s"
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "var(--accent-clr)22")}
+            onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </Button>
+          <Button
+            type="default"
+            style={{
+              flex: 1,
+              color: "var(--text)",
+              border: "1px solid #ff4d4f",
+              borderRadius: 8,
+              fontWeight: 600,
+              background: "transparent",
+              transition: "all 0.3s"
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "#ff4d4f33")}
+            onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+            onClick={handleBuyNow}
+          >
+            Buy Now
+          </Button>
+        </div>
+      </div>
+    </Card>
+  </div>
+)}
+
 
       {/* Description & Reviews always rendered */}
       <div className="dt-container">
@@ -198,7 +369,7 @@ const ProductDetails = () => {
               <div className="comment-avatar">{review.name[0]}</div>
               <div className="comment-content">
                 <p className="comment-author">
-                    {review.name}
+                    <span>{review.name}</span>
                     {review.role && (review.role === "admin" || review.role === "moderator") && (
                       <span className={`role-badge ${review.role}`}>{review.role}</span>
                     )}
