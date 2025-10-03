@@ -15,6 +15,10 @@
   display: none !important;
   
 }
+
+#user-interaction {
+  margin-top: 1rem;
+}
 .container {
   display: flex;
   justify-content: flex-start;
@@ -72,7 +76,7 @@ ul {
   gap: 1em;
   padding: 1em;
   width: 100%;
-  
+
 }
 
 ul li {
@@ -86,7 +90,7 @@ ul li {
   padding: 2px;
   color: var(--text);
   position: relative;
-  
+  margin-top: 1rem;
 }
 
 .submenu {

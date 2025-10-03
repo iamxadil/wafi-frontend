@@ -317,7 +317,7 @@
 
 /* --- Comment Section --- */
 .pr-comments-container {
-  margin: 2.5rem auto;
+  margin: 2rem auto;
   padding: 2rem 2.5rem;
   max-width: 1000px;
   border: 1px solid var(--text);
@@ -386,10 +386,6 @@
 .comment-content {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-
-
- 
 }
 
 /* Author Name */
@@ -399,6 +395,7 @@
   color: var(--accent-clr);
   display: flex;
   flex-direction: column;
+
 
 }
 
@@ -412,7 +409,10 @@
   font-size: 0.95rem;
   line-height: 1.5;
   color: var(--text);
-  
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
 
 }
 
@@ -580,7 +580,8 @@
   color: var(--accent-clr);
   display: flex;
   align-items: center;
-  gap: 6px; /* space between name and stars */
+  gap: 8px; /* space between name and stars */
+
 
 }
 
@@ -588,6 +589,7 @@
 .comment-rating {
   display: flex;
   gap: 2px;
+  margin-right: 6px;
 }
 
 .comment-rating .star-icon {
@@ -618,3 +620,5 @@
 .slick-dots {
   bottom: 12px !important;
 }
+
+

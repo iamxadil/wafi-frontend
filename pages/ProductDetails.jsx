@@ -227,7 +227,7 @@ const ProductDetails = () => {
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, }}>
           {selectedProduct.brand &&
             React.createElement(brandIcons[selectedProduct.brand] || SiAsus, {
-              size: 65,
+              size: 25,
               color: "var(--text)"
             })}
           <span style={{ color: "var(--secondary-text-clr)", fontSize: 14 }}>
@@ -247,7 +247,7 @@ const ProductDetails = () => {
         />
 
         {selectedProduct.reviews?.length > 0 && (
-          <span style={{ fontSize: 12, color: "var(--secondary-text-clr)" }}>
+          <span style={{ fontSize: 12, color: "var(--secondary-text-clr)", color: "var(--line-clr)" }}>
             ({selectedProduct.reviews.length} reviews)
           </span>
         )}
@@ -370,17 +370,18 @@ const ProductDetails = () => {
               <div className="comment-content">
                 <p className="comment-author">
                     <span>{review.name}</span>
-                    {review.role && (review.role === "admin" || review.role === "moderator") && (
-                      <span className={`role-badge ${review.role}`}>{review.role}</span>
-                    )}
                     <span className="comment-rating">
                       {[1,2,3,4,5].map(i => (
                         <span key={i} className="star-icon" style={{ color: i <= review.rating ? "#f5b50a" : "#d0d0d0" }}>★</span>
                       ))}
                     </span>
                   </p>
-                <p className="comment-text">{review.comment}</p>
-                <span className="comment-date">{new Date(review.updatedAt || review.createdAt).toLocaleDateString()}</span>
+
+                <p className="comment-text">
+                  {review.comment}
+                  <span className="comment-date">{new Date(review.updatedAt || review.createdAt).toLocaleDateString()}</span>
+                </p>
+                
               </div>
               {(user && (user._id === review.userId || user.role === "admin")) && (
                 <FiTrash2 className="delete-icon" onClick={() => handleDeleteReview(review._id)} />
