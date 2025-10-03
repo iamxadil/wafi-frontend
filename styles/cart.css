@@ -156,7 +156,7 @@
 }
 
 .action-product button:hover:last-child {
-background-color: crimson;
+background-color: #dc143c;
 color: #fff;
 }
 

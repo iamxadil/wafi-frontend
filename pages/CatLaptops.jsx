@@ -10,6 +10,9 @@ import useCartStore from "../components/stores/useCartStore.jsx";
 import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth";
 import WhyOurLaptops from "../components/main/WhyOurLaptops.jsx";
+import { SpinnerCircularSplit	 } from 'spinners-react';
+
+
 import "../styles/catlaptops.css";
 
 const CatLaptops = () => {
@@ -209,7 +212,10 @@ const CatLaptops = () => {
                       </div>
                     </div>
                   ))
-                : "Loading laptops..."}
+                : <div className="loading-container">
+                  <SpinnerCircularSplit	 enabled={true} size={30} thickness={200} color="dc143c" secondaryColor="#606060ff"/>
+                  <h2>Loading..</h2>
+                  </div>}
             </div>
           </section>
         )}

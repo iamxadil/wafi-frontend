@@ -10,6 +10,8 @@ import useAuthStore from "../components/stores/useAuthStore.jsx";
 import { toast } from "react-toastify";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 
+
+
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
