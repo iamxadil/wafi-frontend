@@ -43,7 +43,7 @@ const useOrderStore = create((set, get) => ({
   sendOrderOTP: async (email) => {
     set({ otpLoading: true, otpError: null });
     try {
-      await axios.post(`${API_URL}/orders/send-otp`, { email });
+      await axios.post(`${API_URL}/api/orders/send-otp`, { email });
       set({ otpSent: true, otpLoading: false });
     } catch (err) {
       set({ otpError: err.response?.data?.message || err.message, otpLoading: false });
@@ -53,7 +53,7 @@ const useOrderStore = create((set, get) => ({
   verifyOrderOTP: async (email, otp) => {
     set({ otpLoading: true, otpError: null });
     try {
-      await axios.post(`${API_URL}/orders/verify-otp`, { email, otp });
+      await axios.post(`${API_URL}/api/orders/verify-otp`, { email, otp });
       set({ otpVerified: true, otpLoading: false });
       return true;
     } catch (err) {
@@ -96,7 +96,7 @@ const useOrderStore = create((set, get) => ({
   // ✅ Orders
   createOrder: async (orderData) => {
     try {
-      const { data } = await axios.post(`${API_URL}`, orderData, { withCredentials: true });
+      const { data } = await axios.post(`${API_URL}/api/orders`, orderData, { withCredentials: true });
       set({ lastOrder: data });
       return data;
     } catch (error) {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const API_URL = "https://wafi-backend-nlp6.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const VerifyEmail = () => {
   const { token } = useParams();
