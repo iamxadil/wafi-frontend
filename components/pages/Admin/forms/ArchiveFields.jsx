@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import useWindowWidth from "../../../hooks/useWindowWidth.jsx";
 import useOrderStore from "../../../stores/useOrderStore.jsx";
-
+import OrderDetailsModal from "../layouts/OrderDetailsModal.jsx";
 
 const ArchiveFields = () => {
   // Width Adjustment
@@ -12,6 +12,7 @@ const ArchiveFields = () => {
   const unarchiveOrder = useOrderStore((state) => state.unarchiveOrder);
   const archivedOrders = useOrderStore((state) => state.archivedOrders);
   const loading = useOrderStore((state) => state.loading);
+  const setSelectedOrder = useOrderStore((state) => state.setSelectedOrder);
 
   // Fetch archived orders on mount
   useEffect(() => {
@@ -59,7 +60,7 @@ const ArchiveFields = () => {
                   <td className={`status ${order.status.toLowerCase()}`}>
                     {order.status}
                   </td>
-                  <td className="td-total">${order.totalPrice}</td>
+                  <td className="td-total">{order.totalPrice.toLocaleString()} IQD</td>
                   <td className="td-date">
                     {new Date(order.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
@@ -69,7 +70,7 @@ const ArchiveFields = () => {
                   </td>
                   <td className="order-options">
                     <button onClick={() => handleRestore(order._id)}>Restore Order</button>
-                    <button>View Details</button>
+                    <button onClick={() => setSelectedOrder(order)}>View Details</button>
                   </td>
                 </tr>
               ))
@@ -83,6 +84,8 @@ const ArchiveFields = () => {
           </tbody>
         </table>
       )}
+
+      <OrderDetailsModal />
     </>
   );
 };

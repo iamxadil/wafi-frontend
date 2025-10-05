@@ -42,7 +42,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
           dragConstraints={{ left: 0, right: 0 }}
           onDragEnd={(event, info) => {
             // Only close if dragged more than 100px to the right
-            if (info.offset.x > 500) {
+            if (info.offset.x > 350) {
               setIsOpen(false);
             }
           }}
@@ -66,7 +66,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                   <li onClick={() => handleNavigation("/category/laptops/Lenovo")}>Lenovo</li>
                   <li onClick={() => handleNavigation("/category/laptops/HP")}>HP</li>
                   <li onClick={() => handleNavigation("/category/laptops/MSI")}>MSI</li>
-                  <li onClick={() => handleNavigation("/category/laptops/MSI")}>Dell</li>
+                  <li onClick={() => handleNavigation("/category/laptops/Dell")}>Dell</li>
                 </ul>
               )}
             </li>

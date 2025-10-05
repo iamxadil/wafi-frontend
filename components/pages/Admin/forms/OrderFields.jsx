@@ -118,7 +118,7 @@ const OrderFields = ({handlePageChange}) => {
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             onDragEnd={(e, info) => {
-              if (info.offset.x < -100) {
+              if (info.offset.x < 350) {
                 // Swiped left far enough
                 handleArchive(order._id);
               }
