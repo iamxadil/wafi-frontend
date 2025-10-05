@@ -21,17 +21,20 @@ import Sidemenu from "./Sidemenu.jsx";
 import ProfileDropdown from "../pages/User/ProfileDropdown.jsx";
 import useAuthStore from "../stores/useAuthStore.jsx";
 import useCartStore from "../stores/useCartStore.jsx";
+import useWindowWidth from "../hooks/useWindowWidth.jsx";
 
 const Navbar = () => {
   const [isDropdown, setDropdown] = useState(false);
-  const [isSideMenu, setSideMenu] = useState(false);
   const profile = useAuthStore((state) => state.profile);
   const {user} = useAuthStore();
   const cartItems = useCartStore(state => state.cart);
 
   const toggleDropdown = () => setDropdown(!isDropdown);
-  const toggleSideMenu = () => setSideMenu(!isSideMenu);
+  const width = useWindowWidth();
 
+
+  const [isSideMenuOpen, setSideMenuOpen] = useState(false);
+  const toggleSideMenu = () => setSideMenuOpen(!isSideMenuOpen);
 
   useEffect(() => {
     profile();
@@ -72,10 +75,10 @@ const Navbar = () => {
             <span><JoystickIcon /></span>
             <a href="#">Accessories</a>
             <ul className="submenu">
-              <li><a href="#">Keyboards</a></li>
-              <li><a href="#">Mice</a></li>
-              <li><a href="#">Headphones</a></li>
-              <li><a href="#">Joysticks</a></li>
+              <li><Link to="/category/Keyboards">Keyboards</Link></li>
+              <li><Link to="/category/Mice">Mice</Link></li>
+              <li><Link to="/category/Headphones">Headphones</Link></li>
+              <li><Link to="/category/Joysticks">Joysticks</Link></li>
             </ul>
           </li>
 
@@ -83,9 +86,9 @@ const Navbar = () => {
             <span><OthersIcon /></span>
             <a href="#">Others</a>
             <ul className="submenu">
-              <li><a href="#">Routers</a></li>
-              <li><a href="#">Cables</a></li>
-              <li><a href="#">Adapters</a></li>
+              <li><Link to="/category/Routers">Routers</Link></li>
+              <li><Link to="/category/Cabels">Cabels</Link></li>
+              <li><Link to="/category/Adapters">Adapters</Link></li>
             </ul>
           </li>
         </ul>
@@ -125,13 +128,23 @@ const Navbar = () => {
               </Link>
             )}
           </li>
+          
 
-          <li className="sidemenu icon ">
-            <span><Hamburger onClick={toggleSideMenu}/></span>
-            {isSideMenu && <Sidemenu setSideMenu={setSideMenu} isSideMenu={isSideMenu} />}
-          </li>
+          {width < 1150 && 
+
+            <Hamburger 
+            size={25} 
+            onClick={() => toggleSideMenu()} 
+            style={{ cursor: "pointer" }}
+          />
+          }    
         </ul>
       </nav>
+      
+       {isSideMenuOpen && (
+        <Sidemenu isOpen={isSideMenuOpen} setIsOpen={setSideMenuOpen} />
+      )}
+      
       <div id="spacer" style={{height: "80px"}}></div>
     </>
   );

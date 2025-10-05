@@ -45,6 +45,12 @@ const useProductStore = create((set, get) => ({
   filters: { category: "", brand: "" },
   page: 1,
   limit: 5,
+
+  //Arrays for Categories
+  categoryProducts: [],
+  categoryPagination: { totalPages: 1, currentPage: 1 },
+  categoryOffers: [],
+  categoryOfferPagination: { totalPages: 1, currentPage: 1 },
   
   setPage: (newPage) => set({ page: newPage }),
 
@@ -399,6 +405,88 @@ deleteReview: async (productId, reviewId) => {
 },
 
 
+fetchCategoryProducts: async ({ brand, category, searchTerm = "", page = 1, limit = 6 } = {}) => {
+  try {
+    const query = new URLSearchParams();
+    if (brand) query.append("brand", brand);
+    if (category) query.append("category", category);
+    if (searchTerm) query.append("search", searchTerm);
+    query.append("page", page);
+    query.append("limit", limit);
+
+    const res = await axios.get(`${API_URL}/api/products?${query.toString()}`, { withCredentials: true });
+    const normalized = res.data.products.map(get().normalizeProduct);
+
+    set({
+      categoryProducts: normalized,
+      categoryPagination: {
+        totalPages: res.data.pages || 1,
+        currentPage: res.data.page || page,
+      },
+      categoryLimit: limit
+    });
+  } catch (err) {
+    console.error("❌ Failed to fetch category products:", err);
+    set({
+      categoryProducts: [],
+      categoryPagination: { totalPages: 1, currentPage: 1 },
+    });
+  }
+},
+
+fetchCategoryOffers: async ({ brand, category, page = 1, limit = 6 } = {}) => {
+  set({ offersLoading: true });
+  try {
+    const query = new URLSearchParams();
+    if (brand) query.append("brand", brand);
+    if (category) query.append("category", category);
+    query.append("page", page);
+    query.append("limit", limit);
+
+    const res = await axios.get(`${API_URL}/api/products/offers?${query.toString()}`, { withCredentials: true });
+
+    // Normalize and filter approved offers
+    const normalized = res.data.products
+      .map(get().normalizeProduct)
+      .filter((p) => p.approved === true);
+
+    // 🔹 Local filter as backup
+    const filtered = normalized.filter((p) => {
+      let matches = true;
+      if (brand) matches = matches && p.brand.toLowerCase() === brand.toLowerCase();
+      if (category) matches = matches && p.category.toLowerCase() === category.toLowerCase();
+      return matches;
+    });
+
+    set({
+      categoryOffers: filtered,
+      categoryOfferPagination: {
+        totalPages: res.data.pages || 1,
+        currentPage: res.data.page || page,
+      },
+      categoryOfferLimit: limit
+    });
+  } catch (err) {
+    console.error("❌ Failed to fetch category offers:", err);
+    set({
+      categoryOffers: [],
+      categoryOfferPagination: { totalPages: 1, currentPage: 1 },
+    });
+  } finally {
+    set({ offersLoading: false });
+  }
+},
+
+// Pagination setters
+setCategoryCurrentPage: (page) => 
+  set((state) => ({
+    categoryPagination: { ...state.categoryPagination, currentPage: page }
+  })),
+
+setCategoryOfferCurrentPage: (page) => 
+  set((state) => ({
+    categoryOfferPagination: { ...state.categoryOfferPagination, currentPage: page }
+  })),
 
 
 }));

@@ -159,15 +159,18 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.5rem 0;
+ 
 }
 
-.pr-order-card-item {
+.pr-order-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   font-size: 0.95rem;
   opacity: 0.85;
   gap: 0.5rem;
+  align-items: center;
 }
+
 
 .pr-item-name { flex: 2; }
 .pr-item-qty { flex: 0.6; text-align: center; }

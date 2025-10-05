@@ -136,7 +136,7 @@ const OrderConfirmation = () => {
 
         <div className="confirmation-actions">
           <button onClick={handleGoHome}>Go to Home</button>
-          <button onClick={handleViewOrders}>View My Orders</button>
+          {/**<button onClick={handleViewOrders}>View My Orders</button>**/}
           <button onClick={handleDownloadPDF}>Download PDF</button>
         </div>
       </section>

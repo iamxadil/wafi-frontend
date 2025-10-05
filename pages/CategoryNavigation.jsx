@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import "../styles/categorynavigation.css";
-import { useParams } from "react-router-dom";
 import { IoAdd as Add } from "react-icons/io5";
 import { BiHeart as Heart, BiLeftArrow as ArrowLeft, BiRightArrow as ArrowRight } from "react-icons/bi";
 import useProductStore from "../components/stores/useProductStore.jsx";
@@ -10,13 +10,17 @@ import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 
 const CategoryNavigation = () => {
   const { categoryName, brandName } = useParams();
+  const navigate = useNavigate();
 
-  const fetchProducts = useProductStore((state) => state.fetchProducts);
-  const products = useProductStore((state) => state.products);
-  const laptopPagination = useProductStore((state) => state.laptopPagination);
-  const fetchOffers = useProductStore((state) => state.fetchOffers);
-  const offerPagination = useProductStore((state) => state.offerPagination);
-  const offerProductsStore = useProductStore((state) => state.offerProducts);
+  const fetchCategoryProducts = useProductStore((state) => state.fetchCategoryProducts);
+  const categoryProducts = useProductStore((state) => state.categoryProducts);
+  const categoryPagination = useProductStore((state) => state.categoryPagination);
+  const setCategoryCurrentPage = useProductStore((state) => state.setCategoryCurrentPage);
+
+  const fetchCategoryOffers = useProductStore((state) => state.fetchCategoryOffers);
+  const categoryOffers = useProductStore((state) => state.categoryOffers);
+  const categoryOfferPagination = useProductStore((state) => state.categoryOfferPagination);
+  const setCategoryOfferCurrentPage = useProductStore((state) => state.setCategoryOfferCurrentPage);
 
   const addToCart = useCartStore((state) => state.addToCart);
   const token = useAuthStore.getState().token;
@@ -24,33 +28,57 @@ const CategoryNavigation = () => {
   const width = useWindowWidth();
   const isMobile = width < 650;
 
+  const productsPerPage =  5;
+  const offersPerPage = 5;
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [productPage, setProductPage] = useState(1);
-  const [offerPage, setOfferPage] = useState(1);
 
-  // Fetch products
+  // Fetch products when category/brand/page changes
   useEffect(() => {
-    fetchProducts({ category: categoryName, brand: brandName, page: productPage });
-  }, [categoryName, brandName, productPage, fetchProducts]);
+    setCategoryCurrentPage(1);
+    setCategoryOfferCurrentPage(1);
+    fetchCategoryProducts({
+      category: categoryName,
+      brand: brandName,
+      page: 1,
+      limit: productsPerPage
+    });
+    fetchCategoryOffers({
+      category: categoryName,
+      brand: brandName,
+      page: 1,
+      limit: offersPerPage
+    });
+  }, [categoryName, brandName, fetchCategoryProducts, fetchCategoryOffers, productsPerPage, offersPerPage]);
 
-  // Fetch offers
+  // Fetch products when page changes
   useEffect(() => {
-    fetchOffers(offerPage);
-  }, [offerPage, fetchOffers]);
+    fetchCategoryProducts({
+      category: categoryName,
+      brand: brandName,
+      page: categoryPagination.currentPage,
+      limit: productsPerPage
+    });
+  }, [categoryName, brandName, categoryPagination.currentPage, fetchCategoryProducts, productsPerPage]);
 
-  // Filter products locally by search term
-  const displayedProducts = products.filter((p) => {
-    let matches = true;
-    if (categoryName) matches = matches && p.category.toLowerCase() === categoryName.toLowerCase();
-    if (brandName) matches = matches && p.brand.toLowerCase().trim() === brandName.toLowerCase().trim();
-    if (searchTerm) matches = matches && p.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matches;
-  });
+  // Fetch offers when offer page changes
+  useEffect(() => {
+    fetchCategoryOffers({
+      category: categoryName,
+      brand: brandName,
+      page: categoryOfferPagination.currentPage,
+      limit: offersPerPage
+    });
+  }, [categoryName, brandName, categoryOfferPagination.currentPage, fetchCategoryOffers, offersPerPage]);
 
-  const offerProducts = offerProductsStore.filter((p) =>
-    (!categoryName || p.category.toLowerCase() === categoryName.toLowerCase()) &&
-    (!brandName || p.brand.toLowerCase() === brandName.toLowerCase()) &&
-    (!searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+
+  
+  // Filter by search term
+  const displayedProducts = (categoryProducts || []).filter(p =>
+    !searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const displayedOffers = (categoryOffers || []).filter(p =>
+    !searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleAddToCart = (product) => {
@@ -62,14 +90,23 @@ const CategoryNavigation = () => {
     alert(`${product.name} added to cart!`);
   };
 
-  const handleProductPageJump = (newPage) => setProductPage(newPage);
-  const handleOfferPageJump = (newPage) => setOfferPage(newPage);
+  const handleProductPageJump = (newPage) => {
+    setCategoryCurrentPage(newPage);
+  };
+
+  const handleOfferPageJump = (newPage) => {
+    setCategoryOfferCurrentPage(newPage);
+  };
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   return (
     <div className="category-page">
       {/* Header */}
       <header className="cat-header">
-        <h1>{brandName || categoryName || "Products"}</h1>
+        <h1>{brandName || categoryName || "Products"} Products</h1>
         <div className="search-cat">
           <input
             type="text"
@@ -77,20 +114,19 @@ const CategoryNavigation = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button onClick={() => { setProductPage(1); setOfferPage(1); }}>Search</button>
         </div>
       </header>
 
-      {/* PC GRID */}
+      {/* Desktop Grid */}
       {!isMobile && (
         <>
           <div className="pc-cat-grid">
             {displayedProducts.length > 0 ? (
               displayedProducts.map((p) => (
-                <div key={p._id} className="pc-cat-card">
+                <div key={p.id} className="pc-cat-card" onClick={() => handleProductClick(p.id)}>
                   {p.countInStock === 0 && <span className="mob-badge out-of-stock">Out of Stock</span>}
                   <div className="pc-cat-image">
-                    <img src={p.images[0]} />
+                    <img src={p.images[0]} alt={p.name} />
                   </div>
                   <div className="pc-cat-details">
                     <h3>{p.name}</h3>
@@ -104,15 +140,15 @@ const CategoryNavigation = () => {
             )}
           </div>
 
-          {/* Desktop Pagination */}
-          {laptopPagination.totalPages > 1 && (
+          {/* Product Pagination */}
+          {categoryPagination.totalPages > 1 && (
             <div className="pagination-controls">
-              {Array.from({ length: laptopPagination.totalPages }, (_, index) => index + 1).map((p) => (
+              {Array.from({ length: categoryPagination.totalPages }, (_, i) => i + 1).map(p => (
                 <button
                   key={p}
                   onClick={() => handleProductPageJump(p)}
-                  disabled={p === laptopPagination.currentPage}
-                  className={p === laptopPagination.currentPage ? "active" : ""}
+                  disabled={p === categoryPagination.currentPage}
+                  className={p === categoryPagination.currentPage ? "active" : ""}
                 >
                   {p}
                 </button>
@@ -120,21 +156,18 @@ const CategoryNavigation = () => {
             </div>
           )}
 
-          {/* Offers Section */}
+          {/* Offers Grid */}
           <div id="pc-cat-grid-offers">
-            <header>
-              <h1>Offers for {brandName || categoryName || "Products"}</h1>
-            </header>
-
+            <header><h1>Offers for {brandName || categoryName || "Products"} Products</h1></header>
             <div className="pc-cat-grid">
-              {offerProducts.length > 0 ? (
-                offerProducts.map((p) => (
-                  <div key={p._id} className="pc-cat-card">
+              {displayedOffers.length > 0 ? (
+                displayedOffers.map((p) => (
+                  <div key={p.id} className="pc-cat-card" onClick={() => handleProductClick(p.id)}>
                     {p.countInStock === 0 && <span className="badge out-of-stock">Out of Stock</span>}
                     {p.countInStock > 0 && <span className="badge in-stock">In Stock</span>}
                     {p.discountPrice > 0 && <span className="badge offer">{Math.round((p.discountPrice / p.price) * 100)}% OFF</span>}
                     <div className="pc-cat-image">
-                      <img src={p.images[0]} />
+                      <img src={p.images[0]} alt={p.name} />
                     </div>
                     <div className="pc-cat-details">
                       <h3>{p.name}</h3>
@@ -149,14 +182,14 @@ const CategoryNavigation = () => {
             </div>
 
             {/* Offers Pagination */}
-            {offerPagination.totalPages > 1 && (
+            {categoryOfferPagination.totalPages > 1 && (
               <div className="pagination-controls">
-                {Array.from({ length: offerPagination.totalPages }, (_, index) => index + 1).map((p) => (
+                {Array.from({ length: categoryOfferPagination.totalPages }, (_, i) => i + 1).map(p => (
                   <button
                     key={p}
                     onClick={() => handleOfferPageJump(p)}
-                    disabled={p === offerPagination.currentPage}
-                    className={p === offerPagination.currentPage ? "active" : ""}
+                    disabled={p === categoryOfferPagination.currentPage}
+                    className={p === categoryOfferPagination.currentPage ? "active" : ""}
                   >
                     {p}
                   </button>
@@ -167,75 +200,71 @@ const CategoryNavigation = () => {
         </>
       )}
 
-      {/* MOBILE CARDS */}
+      {/* Mobile Grid */}
       {isMobile && (
         <main id="mob-pr-container">
-          {/* Products */}
+          {/* Mobile Products */}
           <div className="mob-pr-cards">
-            {displayedProducts.length > 0 ? (
-              displayedProducts.map((p) => (
-                <div key={p._id} className="mob-pr-card">
-                  <div className="mob-pr-badges">
-                    {p.countInStock === 0 && <span className="mob-badge out-of-stock">Out of Stock</span>}
-                    {p.countInStock > 0 && <span className="mob-badge in-stock">In Stock</span>}
-                    {p.discountPrice > 0 && <span className="mob-badge offer">{Math.round((p.discountPrice / p.price) * 100)}%</span>}
-                  </div>
-                  <div className="mob-pr-image"><img src={p.images[0]} alt={p.name} /></div>
-                  <div className="mob-pr-details">
-                    <h3>{p.brand}</h3>
-                    <h3>{p.name}</h3>
-                    <h3>{p.price.toLocaleString()} IQD</h3>
-                  </div>
-                  <div className="mob-pr-buttons">
-                    <button onClick={() => handleAddToCart(p)}><Add /></button>
-                    <button><Heart /></button>
-                  </div>
+            {displayedProducts.length > 0 ? displayedProducts.map(p => (
+              <div key={p.id} className="mob-pr-card" onClick={() => handleProductClick(p.id)}>
+                <div className="mob-pr-badges">
+                  {p.countInStock === 0 && <span className="mob-badge out-of-stock">Out of Stock</span>}
+                  {p.countInStock > 0 && <span className="mob-badge in-stock">In Stock</span>}
+                  {p.discountPrice > 0 && <span className="mob-badge offer">{Math.round((p.discountPrice / p.price) * 100)}%</span>}
                 </div>
-              ))
-            ) : (<div className="mob-loading">No products found.</div>)}
+                <div className="mob-pr-image"><img src={p.images[0]} alt={p.name} /></div>
+                <div className="mob-pr-details">
+                  <h3>{p.brand}</h3>
+                  <h3>{p.name}</h3>
+                  <h3>{p.price.toLocaleString()} IQD</h3>
+                </div>
+                <div className="mob-pr-buttons">
+                  <button onClick={() => handleAddToCart(p)}><Add /></button>
+                  <button><Heart /></button>
+                </div>
+              </div>
+            )) : <div className="mob-loading">No products found.</div>}
           </div>
 
           {/* Mobile Product Pagination */}
-          {laptopPagination.totalPages > 1 && (
+          {categoryPagination.totalPages > 1 && (
             <div className="mob-pagination-controls">
-              <button onClick={() => handleProductPageJump(Math.max(productPage - 1, 1))} disabled={productPage === 1}><ArrowLeft /></button>
-              <span className="mob-page-indicator">{productPage} of {laptopPagination.totalPages}</span>
-              <button onClick={() => handleProductPageJump(Math.min(productPage + 1, laptopPagination.totalPages))} disabled={productPage === laptopPagination.totalPages}><ArrowRight /></button>
+              <button onClick={() => handleProductPageJump(Math.max(categoryPagination.currentPage - 1, 1))} disabled={categoryPagination.currentPage === 1}><ArrowLeft /></button>
+              <span className="mob-page-indicator">{categoryPagination.currentPage} of {categoryPagination.totalPages}</span>
+              <button onClick={() => handleProductPageJump(Math.min(categoryPagination.currentPage + 1, categoryPagination.totalPages))} disabled={categoryPagination.currentPage === categoryPagination.totalPages}><ArrowRight /></button>
             </div>
           )}
 
-          {/* Mobile Offers Section */}
+          {/* Mobile Offers */}
           <header><h1>Offers for {brandName || categoryName || "Products"}</h1></header>
           <div className="mob-pr-cards">
-            {offerProducts.length > 0 ? (
-              offerProducts.map((p) => (
-                <div key={p._id} className="mob-pr-card">
-                  <div className="mob-pr-badges">
-                    {p.countInStock === 0 && <span className="mob-badge out-of-stock">Out of Stock</span>}
-                    {p.countInStock > 0 && <span className="mob-badge in-stock">In Stock</span>}
-                    {p.discountPrice > 0 && <span className="mob-badge offer">{Math.round((p.discountPrice / p.price) * 100)}%</span>}
-                  </div>
-                  <div className="mob-pr-image"><img src={p.images[0]} alt={p.name} /></div>
-                  <div className="mob-pr-details">
-                    <h3>{p.brand}</h3>
-                    <h3>{p.name}</h3>
-                    <h3>{p.price.toLocaleString()} IQD</h3>
-                  </div>
-                  <div className="mob-pr-buttons">
-                    <button onClick={() => handleAddToCart(p)}><Add /></button>
-                    <button><Heart /></button>
-                  </div>
+            {displayedOffers.length > 0 ? displayedOffers.map(p => (
+              <div key={p.id} className="mob-pr-card" onClick={() => handleProductClick(p.id)}>
+                <div className="mob-pr-badges">
+                  {p.countInStock === 0 && <span className="mob-badge out-of-stock">Out of Stock</span>}
+                  {p.countInStock > 0 && <span className="mob-badge in-stock">In Stock</span>}
+                  {p.discountPrice > 0 && <span className="mob-badge offer">{Math.round((p.discountPrice / p.price) * 100)}%</span>}
                 </div>
-              ))
-            ) : (<div className="mob-loading">No offers found.</div>)}
+                <div className="mob-pr-image"><img src={p.images[0]} alt={p.name} /></div>
+                <div className="mob-pr-details">
+                  <h3>{p.brand}</h3>
+                  <h3>{p.name}</h3>
+                  <h3>{p.price.toLocaleString()} IQD</h3>
+                </div>
+                <div className="mob-pr-buttons">
+                  <button onClick={() => handleAddToCart(p)}><Add /></button>
+                  <button><Heart /></button>
+                </div>
+              </div>
+            )) : <div className="mob-loading">No offers found.</div>}
           </div>
 
           {/* Mobile Offers Pagination */}
-          {offerPagination.totalPages > 1 && (
+          {categoryOfferPagination.totalPages > 1 && (
             <div className="mob-pagination-controls">
-              <button onClick={() => handleOfferPageJump(Math.max(offerPage - 1, 1))} disabled={offerPage === 1}><ArrowLeft /></button>
-              <span className="mob-page-indicator">{offerPage} of {offerPagination.totalPages}</span>
-              <button onClick={() => handleOfferPageJump(Math.min(offerPage + 1, offerPagination.totalPages))} disabled={offerPage === offerPagination.totalPages}><ArrowRight /></button>
+              <button onClick={() => handleOfferPageJump(Math.max(categoryOfferPagination.currentPage - 1, 1))} disabled={categoryOfferPagination.currentPage === 1}><ArrowLeft /></button>
+              <span className="mob-page-indicator">{categoryOfferPagination.currentPage} of {categoryOfferPagination.totalPages}</span>
+              <button onClick={() => handleOfferPageJump(Math.min(categoryOfferPagination.currentPage + 1, categoryOfferPagination.totalPages))} disabled={categoryOfferPagination.currentPage === categoryOfferPagination.totalPages}><ArrowRight /></button>
             </div>
           )}
         </main>

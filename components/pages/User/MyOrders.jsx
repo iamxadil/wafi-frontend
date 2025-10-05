@@ -64,7 +64,7 @@ const MyOrdersPage = () => {
     <main className="pr-orders-page">
       <header className="pr-orders-page-header">
         <h1>My Orders</h1>
-        <p>View your recent purchases and track them</p>
+        <p style={{marginTop: "20px"}}>View your recent purchases and track them</p>
       </header>
 
       <section className="pr-orders-attach">

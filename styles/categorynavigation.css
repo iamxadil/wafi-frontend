@@ -1,13 +1,13 @@
 /* --- GENERAL STYLES --- */
 .category-page {
-  padding: 20px;
+
   font-family: Arial, sans-serif;
 }
 
 .cat-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 2rem;
   margin-bottom: 20px;
   flex-wrap: wrap;
   padding: 2rem 2rem;
@@ -59,6 +59,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding-bottom: 2rem;
 }
 
 #pc-cat-grid-offers header {
@@ -87,6 +88,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 250px;
 
 }
 
@@ -97,12 +99,15 @@
 .pc-cat-details h3 {
   margin: 0 0 4px 0;
   font-size: 18px;
+  padding: 4px;
+  font-weight: 200;
 }
 
 .pc-cat-details p {
   margin: 2px 0;
   font-size: 14px;
   color: #555;
+  padding: 4px;
 }
 
 .pc-cat-details p:last-child {
@@ -127,12 +132,20 @@
 
 /* --- RESPONSIVE DYNAMIC SIZING --- */
 @media (max-width: 650px) {
-  .cat-header h1 {
-    font-size: 20px;
+
+
+
+
+  .search-cat {
+    width: 100%;
   }
 
+  .cat-header h1 {
+    font-size:2rem;
+  }
+  
   .cat-header input {
-    padding: 0.25rem;
+    padding: 0.6rem;
   }
 
   .mob-card {

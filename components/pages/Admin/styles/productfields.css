@@ -97,8 +97,8 @@ input[type="checkbox"]:checked::after {
   gap: 8px;
   justify-content: center;
   align-items: center;
-  margin-top: 1rem;
-margin-bottom: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   flex-wrap: wrap;
 }
 
@@ -146,6 +146,7 @@ margin-bottom: 2rem;
     align-items: center;
     gap: 1.4rem;
     width: 500px;
+  
   }
 
   .image-container {
@@ -232,6 +233,7 @@ margin-bottom: 2rem;
   .mob-cards-container {
     justify-content: center;
     align-items: center;
+    
   }
 
   .mob-card {
@@ -240,7 +242,7 @@ margin-bottom: 2rem;
     border: 1px solid var(--line-clr);
     padding-bottom: 1rem;
     border-radius: 12px;
-    height: 420px;
+   
   }
 
   .image-container {

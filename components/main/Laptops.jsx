@@ -120,62 +120,60 @@ const handleScroll = async (e) => {
             </div>
           </header>
 
-          <section id="pc-pr-cards-container">
-            <AnimatePresence custom={direction} mode="wait">
-              <motion.div
-                key={laptopPagination.currentPage}
-                className="pc-pr-cards"
-                custom={direction}
-                initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                {laptopProducts && laptopProducts.length > 0 ? (
-                  laptopProducts.map((product) => (
-                    <div className="pc-pr-card" key={product.id} onClick={() => handleCardClick(product.id)} style={{ cursor: "pointer" }}>
-                      {product.countInStock === 0 && (
-                        <span className="badge out-of-stock">Out of Stock</span>
-                      )}
-                      {product.countInStock > 0 && (
-                        <span className="badge in-stock">In Stock</span>
-                      )}
-                      {product.discountPrice > 0 && (
-                        <span className="badge offer">
-                          {Math.round(
-                            (product.discountPrice / product.price) * 100
-                          )}
-                          % OFF
-                        </span>
-                      )}
-                      <div className="pc-image-wrapper">
-                        <div
-                          className="pc-pr-image"
-                          style={{ backgroundImage: `url(${product.images[0]})` }}
-                        ></div>
-                      </div>
-                      <div className="pc-pr-details">
-                        <p>{product.brand}</p>
-                        <h2>{product.name}</h2>
-                        <p>{product.price.toLocaleString()} IQD</p>
-                      </div>
-                      <div className="add-to-cart">
-                        <button
-                          className="atc-btn"
-                          onClick={(e) => {e.stopPropagation(); handleAddToCart(product); } } 
-                          
-                        >
-                          Add to Cart
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p>Loading laptops...</p>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </section>
+         <section id="pc-pr-cards-container">
+  <div className="pc-pr-cards">
+    {laptopProducts && laptopProducts.length > 0 ? (
+      laptopProducts.map((product) => (
+        <motion.div
+          key={product.id}
+          className="pc-pr-card"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          onClick={() => handleCardClick(product.id)}
+          style={{ cursor: "pointer" }}
+        >
+          {product.countInStock === 0 && (
+            <span className="badge out-of-stock">Out of Stock</span>
+          )}
+          {product.countInStock > 0 && (
+            <span className="badge in-stock">In Stock</span>
+          )}
+          {product.discountPrice > 0 && (
+            <span className="badge offer">
+              {Math.round((product.discountPrice / product.price) * 100)}% OFF
+            </span>
+          )}
+          <div className="pc-image-wrapper">
+            <div
+              className="pc-pr-image"
+              style={{ backgroundImage: `url(${product.images[0]})` }}
+            ></div>
+          </div>
+          <div className="pc-pr-details">
+            <p>{product.brand}</p>
+            <h2>{product.name}</h2>
+            <p>{product.price.toLocaleString()} IQD</p>
+          </div>
+          <div className="add-to-cart">
+            <button
+              className="atc-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddToCart(product);
+              }}
+            >
+              Add to Cart
+            </button>
+          </div>
+        </motion.div>
+      ))
+    ) : (
+      <p>Loading laptops...</p>
+    )}
+  </div>
+</section>
 
           <div className="pagination-controls">
             {Array.from(
