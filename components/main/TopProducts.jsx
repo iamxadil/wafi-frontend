@@ -35,6 +35,10 @@ const TopProducts = () => {
     addToCart(product);
   };
 
+  const handleCardClick = (id) => {
+  navigate(`/product/${id}`);
+};
+
   const getVisibleProducts = () => {
     if (total <= visibleCounts) return topProducts;
     const endIndex = currentIndex + visibleCounts;
@@ -58,7 +62,7 @@ const TopProducts = () => {
 
               <div className="carousel-track">
                 {visibleProducts.map(product => (
-                  <div className="pc-product-card" key={product._id}>
+                  <div className="pc-product-card" key={product._id} onClick={() => handleCardClick(product.id)}>
                     <div className="product-image-wrapper">
                       <div
                         className="pc-product-image"

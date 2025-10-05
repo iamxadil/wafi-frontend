@@ -36,6 +36,7 @@ import Payment from '../components/main/Payment.jsx';
 import PermissionFields from '../components/pages/Admin/forms/PermissionFields.jsx';
 import OrderConfirmation from '../components/main/OrderConfirmation.jsx';
 import ProductDetails from '../pages/ProductDetails.jsx';
+import AppFooter from '../components/main/AppFooter.jsx';
 import { unlockAudio } from "../components/effects/PlayNotSound.jsx";
 
 
@@ -45,6 +46,7 @@ import './app.css';
 function App() {
   const location = useLocation();
   const hideNavbarOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment"];
+  const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment"];
   const user = useAuthStore((state) => state.user);
   const profile = useAuthStore((state) => state.profile);
   const theme = useThemeStore((state) => state.theme);
@@ -83,6 +85,7 @@ function App() {
   return (
     <>
       {!hideNavbarOn.some(path => location.pathname.startsWith(path)) && <Navbar />}
+
 
       {showAdminFeatures && (
         <>
@@ -128,6 +131,7 @@ function App() {
         <Route path='/static' element={<Static />}/>
 
       </Routes>
+           {!footerOn.some(path => location.pathname.startsWith(path)) && <AppFooter />}
     </>
   );
 }

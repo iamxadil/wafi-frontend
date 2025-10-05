@@ -8,6 +8,7 @@ import Offers from '../components/main/Offers.jsx';
 import TrendingProducts from "../components/main/TrendingProducts.jsx";
 import MobLandingPage from "../components/main/MobLandingPage.jsx";
 
+
 const Home = () => {
 
   const width = useWindowWidth();
@@ -23,7 +24,6 @@ const Home = () => {
       <Laptops />
       <Offers />
       <TrendingProducts />
-
       {/*Mobile View */}
 
     </>

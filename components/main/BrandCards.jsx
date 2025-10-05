@@ -11,6 +11,7 @@ import {
    SiDell as Dell,
    SiLogitechg as Logitech   
 } from "react-icons/si";
+import { useNavigate } from 'react-router-dom';
 
 const BrandCards = () => {
   const cards = [
@@ -23,6 +24,8 @@ const BrandCards = () => {
     { name : "Dell", icon: <Dell />},
     { name : "Logitech", icon: <Logitech />},
   ]
+
+  const navigate = useNavigate();
 
   // Animation variants
   const brandVariants = {
@@ -48,8 +51,9 @@ const BrandCards = () => {
             viewport={{ once: false, amount: 0.3 }} 
             whileHover={{ 
               scale: 1.1, 
-              boxShadow: "0 8px 20px rgba(0,0,0,0.2)" 
+              boxShadow: "0 8px 20px rgba(0,0,0,0.2)", 
             }}
+            onClick={() => navigate(`/category/laptops/${card.name}`)}
           >
             <h2>{card.icon} {card.name}</h2>
           </motion.div>

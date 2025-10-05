@@ -33,11 +33,16 @@
   width: 300px;
   height: 380px;
   backdrop-filter: blur(10px);
-
-
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
   h2 {
     font-size: 1.25rem;
   }
+}
+
+.pc-product-card:hover {
+  transform: translateY(-15px);
+
 }
 
 .pc-product-details {

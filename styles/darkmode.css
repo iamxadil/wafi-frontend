@@ -25,7 +25,9 @@
   --img: url('../assets/svg/wafi-logo-outline-white.svg');
   --gradient-start: #2c4493;  
   --gradient-end: #462775;
-  --landing-bg: linear-gradient(135deg, rgba(20, 20, 20, 0.2), rgba(0, 0, 0, 0.2)), url('../assets/laptops-bg-dark.jpg'); /* NEW */
+  --landing-bg: linear-gradient(135deg, rgba(20, 20, 20, 0.2), rgba(0, 0, 0, 0.2)), url('../assets/laptops-bg-dark.jpg');
+  --footer-img: url('../assets/svg/wafi-logo-filled-white.svg');
+   /* NEW */
 }
 
 [data-theme="light"] {
@@ -37,7 +39,9 @@
   --img: url('../assets/svg/wafi-logo-outline.svg');
   --gradient-start: #5e63ff;  
   --gradient-end: #00d4ff;
-  --landing-bg: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(247,100,186,0.1)), url('../assets/laptops-bg.jpg'); /* NEW */
+  --landing-bg: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(247,100,186,0.1)), url('../assets/laptops-bg.jpg');
+  --footer-img: url('../assets/svg/wafi-logo-filled.svg');
+   /* NEW */
 }
 
 
