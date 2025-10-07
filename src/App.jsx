@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Zoom, Bounce, Flip } from 'react-toastify';
 
 //Stores
 import useAuthStore from "../components/stores/useAuthStore.jsx";
@@ -17,6 +18,7 @@ import VerifyEmail from '../components/pages/Auth/VerifyEmail.jsx';
 import ResetPassword from '../components/pages/Auth/ResetPassword.jsx';
 import MyOrdersPage from '../components/pages/User/MyOrders.jsx';
 import Static from '../pages/Static.jsx';
+import Accessories from '../pages/Accessories.jsx';
 
 import Home from '../pages/Home'; 
 import CategoryNavigation from '../pages/CategoryNavigation.jsx';
@@ -94,7 +96,9 @@ function App() {
         </>
       )}
 
-      <ToastContainer position="top-right" autoClose={5000} />
+      <ToastContainer position="top-right" autoClose={3000} stacked transition={Zoom} limit={5}/>
+      
+
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -128,7 +132,7 @@ function App() {
         <Route path="/category/:categoryName" element={<CategoryNavigation />} />
         <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
         <Route path='/laptops' element={<CatLaptops />}/>
-        <Route path='/static' element={<Static />}/>
+        <Route path='/accessories' element={<Accessories />}/>
 
       </Routes>
            {!footerOn.some(path => location.pathname.startsWith(path)) && <AppFooter />}

@@ -24,14 +24,28 @@ const Offers = () => {
     fetchOffers(1);
   }, [fetchOffers]);
 
-  const handleAddToCart = (product) => {
-    if (product.countInStock <= 0) {
-      toast.error("Sorry, this product is out of stock");
-      return;
-    }
-    const token = useAuthStore.getState().token;
-    addToCart(product, 1, token);
+const getFinalPrice = (product) => product.discountPrice > 0
+    ? product.price - product.discountPrice
+    : product.price;
+
+  const handleAddToCart = async (product, quantity = 1) => {
+  // Check stock
+  if (product.countInStock <= 0) {
+    toast.error("Sorry, this product is out of stock");
+    return;
+  }
+
+  // Prepare product data with calculated finalPrice
+  const productToAdd = {
+    ...product,
+    originalPrice: product.price,
+    discountPrice: product.discountPrice,
+    finalPrice: getFinalPrice(product),
   };
+
+  const token = useAuthStore.getState().token;
+  addToCart(productToAdd, quantity, token);
+};
 
   const handlePageJump = (page) => {
     if (page !== offerPagination.currentPage) {

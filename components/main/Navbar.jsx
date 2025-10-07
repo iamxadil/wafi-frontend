@@ -73,7 +73,7 @@ const Navbar = () => {
 
           <li>
             <span><JoystickIcon /></span>
-            <a href="#">Accessories</a>
+            <Link to="/accessories">Accessories</Link>
             <ul className="submenu">
               <li><Link to="/category/Keyboards">Keyboards</Link></li>
               <li><Link to="/category/Mice">Mice</Link></li>
