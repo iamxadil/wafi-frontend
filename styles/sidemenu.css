@@ -36,7 +36,6 @@
 }
 
 .sub-name {
-  border: 1px solid var(--accent-clr);
   width: 150px;
   display: flex;
   flex-direction: column;

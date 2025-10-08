@@ -41,8 +41,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
           dragDirectionLock
           dragConstraints={{ left: 0, right: 0 }}
           onDragEnd={(event, info) => {
-            // Only close if dragged more than 100px to the right
-            if (info.offset.x > 350) {
+            if (info.offset.x > 200) {
               setIsOpen(false);
             }
           }}
@@ -60,7 +59,8 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
               <button onClick={() => toggleMenu("laptops")}>Laptops</button>
               {openMenus.laptops && (
                 <ul>
-                  <li>Acer</li>
+                  <li onClick={() => handleNavigation("/laptops")}>All Laptops</li>
+                  <li onClick={() => handleNavigation("/category/laptops/Acer")}>Acer</li>
                   <li onClick={() => handleNavigation("/category/laptops/Asus")}>Asus</li>
                   <li onClick={() => handleNavigation("/category/laptops/Apple")}>Apple</li>
                   <li onClick={() => handleNavigation("/category/laptops/Lenovo")}>Lenovo</li>
@@ -75,6 +75,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
               <button onClick={() => toggleMenu("accessories")}>Accessories</button>
               {openMenus.accessories && (
                 <ul>
+                  <li onClick={() => handleNavigation("/accessories")}>All Acessories</li>
                   <li onClick={() => handleNavigation("/category/Keyboards")}>Keyboards</li>
                   <li onClick={() => handleNavigation("/category/Mice")}>Mice</li>
                   <li onClick={() => handleNavigation("/category/Headphones")}>Headphones</li>
@@ -87,6 +88,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
               <button onClick={() => toggleMenu("others")}>Others</button>
               {openMenus.others && (
                 <ul>
+                  <li onClick={() => handleNavigation("/others")}>All</li>
                   <li onClick={() => handleNavigation("/category/Routers")}>Routers</li>
                   <li onClick={() => handleNavigation("/category/Cables")}>Cables</li>
                   <li onClick={() => handleNavigation("/category/Adapters")}>Adapters</li>

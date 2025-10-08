@@ -22,7 +22,6 @@ const BrandCards = () => {
     { name : "Lenovo", icon: <Lenovo />},
     { name : "HP", icon: <HP />},
     { name : "Dell", icon: <Dell />},
-    { name : "Logitech", icon: <Logitech />},
   ]
 
   const navigate = useNavigate();

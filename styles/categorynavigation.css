@@ -6,35 +6,40 @@
 
 .cat-header {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
   gap: 2rem;
   margin-bottom: 20px;
   flex-wrap: wrap;
-  padding: 2rem 2rem;
-
+  padding: 2rem 3rem;
 }
 
 .cat-header h1 {
-  font-size: 2rem;
   margin: 0 0 10px 0;
+  font-size: 1.85rem !important;
 }
 
 .cat-header input {
-  padding: 6px 10px;
   font-size: 16px;
-  border: 1px solid var(--text);
   color: var(--text);
-  border-radius: 4px;
-  flex-grow: 1;
-  max-width: 300px;
+  width: 100%;
   background: none;
   outline: none;
+  border: none;
 }
 
 .search-cat {
   display: flex;
   align-items: center;
   gap: 1rem;
+  width: 400px;
+  border: 1px solid var(--text);
+  border-radius: 12px;
+  padding: 6px;
+
+  svg {
+    margin-left: 4px;
+  }
 }
 
 .search-cat button {
@@ -44,14 +49,7 @@
   font-weight: 800;
 }
 
-/* --- PC GRID LAYOUT (>650px) --- */
-.pc-cat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-  padding: 0 2rem;
 
-}
 
 #pc-cat-grid-offers {
 
@@ -62,9 +60,8 @@
   padding-bottom: 2rem;
 }
 
-#pc-cat-grid-offers header {
-  padding: 0 2rem;
-    margin-top: 4rem;
+#pc-cat-cards-container header {
+  margin-top: 4rem;
 }
 
 .pc-cat-card {
@@ -140,6 +137,9 @@
     width: 100%;
   }
 
+  .cat-header {
+    padding-left: 2rem;
+  }
   .cat-header h1 {
     font-size:2rem;
   }
@@ -167,3 +167,37 @@
   }
 }
 
+#offers-header {
+  width: 100%;
+}
+
+#pc-cat-cards-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin-top: 2.5rem;
+  width: 100%;
+    padding: 0 3rem;
+}
+.pc-cat-cards {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 4rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+
+}
+
+#pc-cat-card {
+  margin-top: 3rem;
+
+
+}
+
+@media (max-width: 1480px) {
+  .pc-cat-cards {
+    justify-content: center;
+  }
+}

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BiSearchAlt as Search, BiHeart as Heart } from "react-icons/bi";
-import { FiCpu as CPU } from "react-icons/fi";
-import { CgSmartphoneRam as RAM } from "react-icons/cg";
-import { AiOutlineFullscreen as Screen } from "react-icons/ai";
+import { Cpu as CPU, MemoryStick as RAM, Airplay as Screen} from 'lucide-react';
 import { IoAdd as Add } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import useProductStore from "../components/stores/useProductStore.jsx";
@@ -105,6 +103,7 @@ const CatLaptops = () => {
   const topLaptops = laptopProducts
     .filter((p) => p.isTopProduct && p.approved)
     .sort((a, b) => b.rating - a.rating);
+    
 
   return (
     <>
@@ -185,14 +184,14 @@ const CatLaptops = () => {
                         <h2 className="pr-name">{product.name}</h2>
                         <div className="specs">
                           <p>
-                            <RAM /> {product.specs.ram}
+                            <RAM size={16}/> {product.specs.ram}
                           </p>
                           <p>
-                            <CPU />
+                            <CPU size={16}/>
                             {product.specs.cpu}
                           </p>
                           <p>
-                            <Screen />
+                            <Screen size={16} />
                             {product.specs.screenSize} "
                           </p>
                         </div>
@@ -219,6 +218,71 @@ const CatLaptops = () => {
             </div>
           </section>
         )}
+
+        
+        {width > 650 && 
+        <header className="cat-tops-container" ref={topPicksRef}>
+          <h1>Navigate Our Inventory</h1>
+        </header>}
+
+        {/* Desktop Cards */}
+        {width > 650 && (
+          <section id="pc-pr-cards-container">
+            <div className="pc-pr-cards">
+              {laptopProducts.length > 0
+                ? laptopProducts.map((product) => (
+                    <div
+                      className="pc-pr-card"
+                      key={product.id}
+                      onClick={() => navigate(`/product/${product.id}`)}
+                    >
+                      <div className="pc-image-wrapper">
+                        <div
+                          className="pc-pr-image"
+                          style={{ backgroundImage: `url(${product.images[0]})` }}
+                        />
+                      </div>
+                      <div className="pc-pr-details">
+                        <p>{product.brand}</p>
+                        <h2 className="pr-name">{product.name}</h2>
+                        <div className="specs">
+                          <p>
+                            <RAM size={16}/> {product.specs.ram}
+                          </p>
+                          <p>
+                            <CPU size={16}/>
+                            {product.specs.cpu}
+                          </p>
+                          <p>
+                            <Screen size={16}/>
+                            {product.specs.screenSize} "
+                          </p>
+                        </div>
+                        <p>
+                          {(product.price - (product.discountPrice || 0)).toLocaleString()} IQD
+                        </p>
+                      </div>
+                      <div className="add-to-cart">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart(product);
+                          }}
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                : <div className="loading-container">
+                  <SpinnerCircularSplit	 enabled={true} size={30} thickness={200} color="dc143c" secondaryColor="#606060ff"/>
+                  <h2>Loading..</h2>
+                  </div>}
+            </div>
+          </section>
+        )}
+
+        
 
         {/* Mobile Cards */}
         {width <= 650 && (
@@ -261,7 +325,7 @@ const CatLaptops = () => {
           </section>
         )}
 
-        <WhyOurLaptops />
+      
       </main>
     </>
   );

@@ -6,4 +6,4 @@ const Accessories = () => {
   )
 }
 
-export default Accessories;
+export default Accessories

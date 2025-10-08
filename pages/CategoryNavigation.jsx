@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../styles/categorynavigation.css";
 import { IoAdd as Add } from "react-icons/io5";
 import { BiHeart as Heart, BiLeftArrow as ArrowLeft, BiRightArrow as ArrowRight } from "react-icons/bi";
+import { Cpu as CPU, MemoryStick as RAM, Airplay as Screen} from 'lucide-react';
+import { Search } from 'lucide-react';
+
 import useProductStore from "../components/stores/useProductStore.jsx";
 import useCartStore from "../components/stores/useCartStore.jsx";
 import useAuthStore from "../components/stores/useAuthStore.jsx";
@@ -81,14 +84,28 @@ const CategoryNavigation = () => {
     !searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddToCart = (product) => {
-    if (product.countInStock <= 0) {
-      alert("Sorry, this product is out of stock");
-      return;
-    }
-    addToCart(product, 1, token);
-    alert(`${product.name} added to cart!`);
+   const getFinalPrice = (product) => product.discountPrice > 0
+    ? product.price - product.discountPrice
+    : product.price;
+
+  const handleAddToCart = async (product, quantity = 1) => {
+  // Check stock
+  if (product.countInStock <= 0) {
+    toast.error("Sorry, this product is out of stock");
+    return;
+  }
+
+  // Prepare product data with calculated finalPrice
+  const productToAdd = {
+    ...product,
+    originalPrice: product.price,
+    discountPrice: product.discountPrice,
+    finalPrice: getFinalPrice(product),
   };
+
+  const token = useAuthStore.getState().token;
+  addToCart(productToAdd, quantity, token);
+};
 
   const handleProductPageJump = (newPage) => {
     setCategoryCurrentPage(newPage);
@@ -108,37 +125,68 @@ const CategoryNavigation = () => {
       <header className="cat-header">
         <h1>{brandName || categoryName || "Products"} Products</h1>
         <div className="search-cat">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <Search />
+          <input type="search" placeholder="Search Products.." value={searchTerm}  onChange={(e) => setSearchTerm(e.target.value)}/>
         </div>
       </header>
 
       {/* Desktop Grid */}
       {!isMobile && (
         <>
-          <div className="pc-cat-grid">
-            {displayedProducts.length > 0 ? (
-              displayedProducts.map((p) => (
-                <div key={p.id} className="pc-cat-card" onClick={() => handleProductClick(p.id)}>
-                  {p.countInStock === 0 && <span className="mob-badge out-of-stock">Out of Stock</span>}
-                  <div className="pc-cat-image">
-                    <img src={p.images[0]} alt={p.name} />
-                  </div>
-                  <div className="pc-cat-details">
-                    <h3>{p.name}</h3>
-                    <p>{p.brand}</p>
-                    <p>{p.price.toLocaleString()} IQD</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>No products found.</p>
-            )}
-          </div>
+        <section id="pc-cat-cards-container">
+            <div className="pc-cat-cards">
+              {displayedProducts.length > 0
+                ? displayedProducts.map((product) => (
+                    <div
+                      className="pc-pr-card"
+                      id="pc-cat-card"
+                      key={product.id}
+                      onClick={() => navigate(`/product/${product.id}`)}
+                    >
+                      <div className="pc-image-wrapper">
+                        <div
+                          className="pc-pr-image"
+                          style={{ backgroundImage: `url(${product.images[0]})` }}
+                        />
+                      </div>
+                      <div className="pc-pr-details">
+                        <p>{product.brand}</p>
+                        <h2 className="pr-name">{product.name}</h2>
+                        {product.specs.ram && product.specs.cpu && product.specs.screenSize ?
+                        <div className="specs">
+                          <p>
+                            <RAM size={16}/> {product.specs.ram}
+                          </p>
+                          <p>
+                            <CPU size={16}/>
+                            {product.specs.cpu}
+                          </p>
+                          <p>
+                            <Screen size={16} />
+                            {product.specs.screenSize} "
+                          </p>
+                        </div> : null}
+                        <p>
+                          {(product.price - (product.discountPrice || 0)).toLocaleString()} IQD
+                        </p>
+                      </div>
+                      <div className="add-to-cart">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart(product);
+                          }}
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                : <div className="loading-container">
+                  <h2>Loading..</h2>
+                  </div>}
+            </div>
+          </section>
 
           {/* Product Pagination */}
           {categoryPagination.totalPages > 1 && (
@@ -157,29 +205,61 @@ const CategoryNavigation = () => {
           )}
 
           {/* Offers Grid */}
-          <div id="pc-cat-grid-offers">
-            <header><h1>Offers for {brandName || categoryName || "Products"} Products</h1></header>
-            <div className="pc-cat-grid">
-              {displayedOffers.length > 0 ? (
-                displayedOffers.map((p) => (
-                  <div key={p.id} className="pc-cat-card" onClick={() => handleProductClick(p.id)}>
-                    {p.countInStock === 0 && <span className="badge out-of-stock">Out of Stock</span>}
-                    {p.countInStock > 0 && <span className="badge in-stock">In Stock</span>}
-                    {p.discountPrice > 0 && <span className="badge offer">{Math.round((p.discountPrice / p.price) * 100)}% OFF</span>}
-                    <div className="pc-cat-image">
-                      <img src={p.images[0]} alt={p.name} />
+          <section id="pc-cat-cards-container">
+          <header><h1>Offers for {brandName || categoryName || "Products"} Products</h1></header>
+            <div className="pc-cat-cards">
+              {displayedOffers.length > 0
+                ? displayedOffers.map((product) => (
+                    <div
+                      className="pc-pr-card"
+                      id="pc-cat-card"
+                      key={product.id}
+                      onClick={() => navigate(`/product/${product.id}`)}
+                    >
+                      <div className="pc-image-wrapper">
+                        <div
+                          className="pc-pr-image"
+                          style={{ backgroundImage: `url(${product.images[0]})` }}
+                        />
+                      </div>
+                      <div className="pc-pr-details">
+                        <p>{product.brand}</p>
+                        <h2 className="pr-name">{product.name}</h2>
+                        {product.specs.ram && product.specs.cpu && product.specs.screenSize ?
+                        <div className="specs">
+                          <p>
+                            <RAM size={16}/> {product.specs.ram}
+                          </p>
+                          <p>
+                            <CPU size={16}/>
+                            {product.specs.cpu}
+                          </p>
+                          <p>
+                            <Screen size={16} />
+                            {product.specs.screenSize} "
+                          </p>
+                        </div> : null}
+                        <p>
+                          {(product.price - (product.discountPrice || 0)).toLocaleString()} IQD
+                        </p>
+                      </div>
+                      <div className="add-to-cart">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart(product);
+                          }}
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
                     </div>
-                    <div className="pc-cat-details">
-                      <h3>{p.name}</h3>
-                      <p>{p.brand}</p>
-                      <p>{p.price.toLocaleString()} IQD</p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p>No offers found.</p>
-              )}
+                  ))
+                : <div className="loading-container">
+                  <h2>Loading..</h2>
+                  </div>}
             </div>
+          
 
             {/* Offers Pagination */}
             {categoryOfferPagination.totalPages > 1 && (
@@ -196,7 +276,7 @@ const CategoryNavigation = () => {
                 ))}
               </div>
             )}
-          </div>
+          </section>
         </>
       )}
 
@@ -236,7 +316,7 @@ const CategoryNavigation = () => {
           )}
 
           {/* Mobile Offers */}
-          <header><h1>Offers for {brandName || categoryName || "Products"}</h1></header>
+          <header id="offers-header"><h1>Offers for {brandName || categoryName || "Products"}</h1></header>
           <div className="mob-pr-cards">
             {displayedOffers.length > 0 ? displayedOffers.map(p => (
               <div key={p.id} className="mob-pr-card" onClick={() => handleProductClick(p.id)}>

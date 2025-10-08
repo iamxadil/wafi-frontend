@@ -40,6 +40,7 @@ import OrderConfirmation from '../components/main/OrderConfirmation.jsx';
 import ProductDetails from '../pages/ProductDetails.jsx';
 import AppFooter from '../components/main/AppFooter.jsx';
 import { unlockAudio } from "../components/effects/PlayNotSound.jsx";
+import ScrollTop from '../components/hooks/ScrollTop.jsx';
 
 
 import './app.css';
@@ -97,7 +98,7 @@ function App() {
       )}
 
       <ToastContainer position="top-right" autoClose={3000} stacked transition={Zoom} limit={5}/>
-      
+      <ScrollTop />
 
 
       <Routes>
