@@ -15,6 +15,7 @@ import HeadphoneImg from "../../assets/img/headphone.png";
 import MouseImg from "../../assets/img/mouse.png";
 import JoystickImg from "../../assets/img/joystick.png";
 import KeyboardImg from "../../assets/img/keyboard.png";
+import OptimizeImage from "../hooks/OptimizeImage";
 
 const MobLandingPage = () => {
   const navigate = useNavigate();
@@ -27,13 +28,19 @@ const MobLandingPage = () => {
 
   // Images for slider with categories
   const images = [
-    { src: LaptopImg, category: "laptops" },
-    { src: HeadphoneImg, category: "headphones" },
-    { src: MouseImg, category: "mice" },
-    { src: JoystickImg, category: "joysticks" },
-    { src: KeyboardImg, category: "keyboards" },
-    { src: LaptopImg, category: "laptops" },
+    { src: LaptopImg, category: "Laptops" },
+    { src: HeadphoneImg, category: "Headphones" },
+    { src: MouseImg, category: "Mice" },
+    { src: JoystickImg, category: "Joysticks" },
+    { src: KeyboardImg, category: "Keyboards" },
   ];
+
+  const navCat = (category) => {
+
+    if (!category) return; 
+    const path = category.toLowerCase() === "laptops" ? "/Laptops" : `/category/${category}`;
+    navigate(path);
+  }
 
   // Search effect: only trigger if query has text
   useEffect(() => {
@@ -77,7 +84,7 @@ const MobLandingPage = () => {
           <div className="mob-search">
             <Search size={25} />
             <input
-              type="text"
+              type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search products..."
@@ -134,14 +141,11 @@ const MobLandingPage = () => {
               {results.length > 0 ? (
                 results.map((item, index) => (
                   <div
-                    className="mob-search-result-item"
-                    key={index}
-                    onClick={() => navigate(`/product/${item._id}`)}
-                  >
-                    <img
-                      src={item.images[0] || "/placeholder.png"}
-                      alt={item.name}
-                    />
+                    className="mob-search-result-item" key={index} onClick={() => navigate(`/product/${item._id}`)} >
+                     <img
+                          src={item.images[0] || "/placeholder.png"}
+                          alt={item.name}
+                        />
                     <div className="mob-result-info">
                       <span>{item.name}</span>
                       <span>{item.price.toLocaleString()} IQD</span>
@@ -165,7 +169,7 @@ const MobLandingPage = () => {
             <div
               className="slider-card"
               key={index}
-              onClick={() => navigate(`/${item.category}`)}
+              onClick={() => navCat(item.category)}
               style={{ cursor: "pointer" }}
             >
               <img src={item.src} alt={`Product ${index + 1}`} />

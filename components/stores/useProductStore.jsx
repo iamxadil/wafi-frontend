@@ -13,6 +13,7 @@ const useProductStore = create((set, get) => ({
   laptopProducts: [], 
   laptopPagination: { totalPages: 1, currentPage: 1 }, 
   laptopLimit: 4,   
+  topLaptopProducts: [],
 
   // Single Product State
   selectedProduct: null,
@@ -54,16 +55,14 @@ const useProductStore = create((set, get) => ({
   
   setPage: (newPage) => set({ page: newPage }),
 
-  // Helper to normalize product objects
-  normalizeProduct: (product) => ({
-    ...product,
-    id: product._id,
-    images: (product.images || []).map(img =>
-      img.startsWith("http") ? img : `${API_URL}:5000/${img}`
-    ),
-    finalPrice: product.discountPrice ?? product.price - discountPrice
-  }),
-
+ normalizeProduct: (product) => ({
+  ...product,
+  id: product._id,
+  images: (product.images || []).map(img =>
+    img.startsWith("http") ? img : `${API_URL}:5000/${img}`
+  ),
+  finalPrice: Number(product.price || 0) - Number(product.discountPrice || 0),
+}),
   // Fetch products
   fetchProducts: async (searchTerm = "", sort = "", filters = {}, page= 1, limit=5) => {
     try {
@@ -221,36 +220,37 @@ const useProductStore = create((set, get) => ({
   },
 
   fetchLaptops: async ({ page = 1, limit, brands = [], minPrice, maxPrice, sort, search } = {}) => {
-    try {
-      const state = get();
-      const pageLimit = limit || state.laptopLimit;
+  try {
+    const state = get();
+    const pageLimit = limit ?? 4; 
 
-      let query = `category=Laptops&page=${page}&limit=${pageLimit}`;
-      if (brands.length > 0) query += `&brand=${brands.join(",")}`;
-      if (minPrice != null) query += `&minPrice=${minPrice}`;
-      if (maxPrice != null) query += `&maxPrice=${maxPrice}`;
-      if (sort) query += `&sort=${sort}`;
-      if (search) query += `&search=${encodeURIComponent(search)}`;
+    let query = `category=Laptops&page=${page}&limit=${pageLimit}`;
+    if (brands.length > 0) query += `&brand=${brands.join(",")}`;
+    if (minPrice != null) query += `&minPrice=${minPrice}`;
+    if (maxPrice != null) query += `&maxPrice=${maxPrice}`;
+    if (sort) query += `&sort=${sort}`;
+    if (search) query += `&search=${encodeURIComponent(search)}`;
 
-      const res = await axios.get(`${API_URL}/api/products?${query}`, { withCredentials: true });
-      const laptops = Array.isArray(res.data.products) ? res.data.products : [];
-      const normalized = laptops.map(get().normalizeProduct);
+    const res = await axios.get(`${API_URL}/api/products?${query}`, { withCredentials: true });
+    const laptops = Array.isArray(res.data.products) ? res.data.products : [];
+    const normalized = laptops.map(get().normalizeProduct);
 
-      set({
-        laptopProducts: normalized,
-        laptopPagination: {
-          currentPage: res.data.page || page,
-          totalPages: res.data.pages || 1,
-        },
-        laptopLimit: pageLimit,
-      });
+    set({
+      laptopProducts: normalized,
+      laptopPagination: {
+        currentPage: res.data.page || page,
+        totalPages: res.data.pages || 1,
+      },
+      laptopLimit: pageLimit, // updates the store
+    });
 
-      return res.data;
-    } catch (error) {
-      console.error("❌ Failed to fetch laptops:", error);
-      set({ laptopProducts: [] });
-    }
-  },
+    return res.data;
+  } catch (error) {
+    console.error("❌ Failed to fetch laptops:", error);
+    set({ laptopProducts: [] });
+  }
+},
+
 
   fetchProduct: async (id) => {
     set({ loading: true, error: null, selectedProduct: null });
@@ -445,21 +445,11 @@ fetchCategoryOffers: async ({ brand, category, page = 1, limit = 6 } = {}) => {
 
     const res = await axios.get(`${API_URL}/api/products/offers?${query.toString()}`, { withCredentials: true });
 
-    // Normalize and filter approved offers
-    const normalized = res.data.products
-      .map(get().normalizeProduct)
-      .filter((p) => p.approved === true);
-
-    // 🔹 Local filter as backup
-    const filtered = normalized.filter((p) => {
-      let matches = true;
-      if (brand) matches = matches && p.brand.toLowerCase() === brand.toLowerCase();
-      if (category) matches = matches && p.category.toLowerCase() === category.toLowerCase();
-      return matches;
-    });
+    // Only normalize, don't filter approved or category/brand here
+    const normalized = res.data.products.map(get().normalizeProduct);
 
     set({
-      categoryOffers: filtered,
+      categoryOffers: normalized,
       categoryOfferPagination: {
         totalPages: res.data.pages || 1,
         currentPage: res.data.page || page,
@@ -477,6 +467,7 @@ fetchCategoryOffers: async ({ brand, category, page = 1, limit = 6 } = {}) => {
   }
 },
 
+
 // Pagination setters
 setCategoryCurrentPage: (page) => 
   set((state) => ({
@@ -487,6 +478,21 @@ setCategoryOfferCurrentPage: (page) =>
   set((state) => ({
     categoryOfferPagination: { ...state.categoryOfferPagination, currentPage: page }
   })),
+
+
+
+
+ fetchTopLaptops: async (limit = 4) => {
+  try {
+    const res = await axios.get(`${API_URL}/api/products?category=Laptops&isTopProduct=true&limit=${limit}`);
+    const topLaptops = res.data.products.map(get().normalizeProduct);
+    set({ topLaptopProducts: topLaptops });
+  } catch (err) {
+    console.error("Failed to fetch top laptops", err);
+    set({ topLaptopProducts: [] });
+  }
+}
+
 
 
 }));

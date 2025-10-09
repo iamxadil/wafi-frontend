@@ -73,6 +73,7 @@
   border-radius: 10px;
   padding: 12px 18px;
   color: var(--text);
+  
 }
 .cat-search-container button:hover {
   background-color: #1a1a1a;
@@ -162,18 +163,19 @@
   left: 0;
   right: 0;
   background: var(--landing-bg);
-  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0.5rem;
   max-height: 250px;
   overflow-y: auto;
   z-index: 999;
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  
 }
 
 .dropdown-item {
   padding: 0.8rem 1rem;
   cursor: pointer;
   transition: background 0.2s ease;
+  
 }
 
 .dropdown-item:hover {

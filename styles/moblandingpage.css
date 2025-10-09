@@ -95,6 +95,8 @@ position: absolute;
 .mob-search-result-item {
   display: flex;
   align-items: center;
+  
+
   gap: 16px;
   padding: 0.5rem 1rem;
   cursor: pointer;
@@ -116,8 +118,13 @@ position: absolute;
 .mob-result-info {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   font-size: 0.85rem;
+  gap: 0.5rem;
+  
 }
+
+
 
 .mob-result-info span:first-child {
   font-weight: 500;

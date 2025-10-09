@@ -12,7 +12,7 @@ const Payment = () => {
   // Cart
   const cartItems = useCartStore((state) => state.cart);
   const clearCart = useCartStore((state) => state.clearCart);
-  const delivery = 5000;
+  const delivery = 0;
 
   // Use finalPrice for subtotal
   const subtotal = cartItems.reduce(

@@ -8,6 +8,8 @@ import {
 } from "react-icons/tb";
 import useCartStore from "../stores/useCartStore";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../stores/useAuthStore";
+import OptimizeImage from '../hooks/OptimizeImage.jsx';
 
 const TopProducts = () => {
   const width = useWindowWidth();
@@ -31,9 +33,28 @@ const TopProducts = () => {
   const next = () => setCurrentIndex(prev => (prev + 1) % total);
   const previous = () => setCurrentIndex(prev => (prev - 1 + total) % total);
 
-  const handleAddToCart = (product) => {
-    addToCart(product);
+const getFinalPrice = (product) => product.discountPrice > 0
+    ? product.price - product.discountPrice
+    : product.price;
+
+  const handleAddToCart = async (product, quantity = 1) => {
+  // Check stock
+  if (product.countInStock <= 0) {
+    toast.error("Sorry, this product is out of stock");
+    return;
+  }
+
+  // Prepare product data with calculated finalPrice
+  const productToAdd = {
+    ...product,
+    originalPrice: product.price,
+    discountPrice: product.discountPrice,
+    finalPrice: getFinalPrice(product),
   };
+
+  const token = useAuthStore.getState().token;
+  addToCart(productToAdd, quantity, token);
+};
 
   const handleCardClick = (id) => {
   navigate(`/product/${id}`);
@@ -62,22 +83,25 @@ const TopProducts = () => {
 
               <div className="carousel-track">
                 {visibleProducts.map(product => (
-                  <div className="pc-product-card" key={product._id} onClick={() => handleCardClick(product.id)}>
-                    <div className="product-image-wrapper">
-                      <div
-                        className="pc-product-image"
-                        style={{ backgroundImage: `url(${product.images?.[0]})` }}
-                      ></div>
+                  <div className="pc-pr-card" key={product._id} onClick={() => handleCardClick(product.id)}>
+                    <div className="pc-image-wrapper">
+                     <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
                     </div>
 
-                    <div className="pc-product-details">
+                    <div className="pc-pr-details">
                       <p>{product.brand}</p>
                       <h2>{product.name}</h2>
-                      <p>{product.price.toLocaleString()} IQD</p>
+                      <p>{product.finalPrice.toLocaleString()} IQD</p>
                     </div>
 
                     <div className="add-to-cart">
-                      <button className="atc-btn" onClick={() => handleAddToCart(product)}>
+                       <button
+                        className="atc-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
+                      >
                         Add to Cart
                       </button>
                     </div>

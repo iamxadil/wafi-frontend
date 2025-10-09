@@ -6,13 +6,10 @@ import {
   MdOutlineLocationSearching as Track
 } from "react-icons/md";
 
-import { IoPinOutline as Pin,
-  IoPhonePortraitOutline as Phone,
-  IoPersonCircleOutline as Person,
-  IoMailOpenOutline as Email
-} from "react-icons/io5";
+import { UserRound as Person, MapPin as Pin, Smartphone as Phone, Mail as Email, Truck as Truck} from 'lucide-react';
 
-import { TbTruck as Truck} from "react-icons/tb";
+
+import { useNavigate } from "react-router-dom";
 
 import '../styles/orderdetailsmodal.css';
 
@@ -22,6 +19,7 @@ const OrderDetailsModal = () => {
   const setSelectedOrder = useOrderStore((state) => state.setSelectedOrder);
   const trackModal = useOrderStore((state) => state.trackModal);
   const setTrackModal = useOrderStore((state) => state.setTrackModal);
+  const navigate = useNavigate();
 
   if (!selectedOrder) return null;
 
@@ -99,9 +97,18 @@ const OrderDetailsModal = () => {
                     <img src={item.image} alt={item.name} />
                   </div>
                   <div className="order-item-details">
-                    <h4 className="order-item-name">{item.name} <span>x{item.quantity}</span></h4>
-                    <h4 className="order-item-price">{item.price.toLocaleString()} IQD</h4>
-                  </div>
+                       <h5 
+                    className="order-item-sku" 
+                    onClick={() => navigate(`/product/${item.product}`)} 
+                    style={{ cursor: "pointer", color: "#1890ff", fontSize: "0.85", fontWeight: "800" }}
+                  >
+                    Navigate to Page
+                  </h5>
+                  <h4 className="order-item-name">
+                    {item.name} <span>x{item.quantity}</span>
+                  </h4>
+                  <h4 className="order-item-price">{item.price.toLocaleString()} IQD</h4>
+                </div>
                 </div>
               ))}
             </div>

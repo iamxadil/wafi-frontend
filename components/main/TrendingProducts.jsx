@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import { useNavigate } from "react-router-dom";
+import OptimizeImage from "../hooks/OptimizeImage.jsx";
 
 const TrendingProducts = () => {
   const fetchTrendingProducts = useProductStore(
@@ -108,18 +109,13 @@ const TrendingProducts = () => {
                         </span>
                       )}
                       <div className="pc-image-wrapper">
-                        <div
-                          className="pc-pr-image"
-                          style={{ backgroundImage: `url(${product.images[0]})` }}
-                        ></div>
+                       <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
                       </div>
                       <div className="pc-pr-details">
                         <p>{product.brand}</p>
                         <h2>{product.name}</h2>
                         <p>
-                          {product.discountPrice > 0
-                            ? `${(product.price - product.discountPrice).toLocaleString()} IQD`
-                            : `${product.price.toLocaleString()} IQD`}
+                         {product.finalPrice.toLocaleString()} IQD
                         </p>
                       </div>
                       <div className="add-to-cart">

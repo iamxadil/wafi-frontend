@@ -105,6 +105,7 @@
   font-size: 14px;
   color: #555;
   padding: 4px;
+
 }
 
 .pc-cat-details p:last-child {
@@ -178,8 +179,9 @@
   justify-content: center;
   margin-top: 2.5rem;
   width: 100%;
-    padding: 0 3rem;
+  padding: 0 3rem;
 }
+
 .pc-cat-cards {
   display: flex;
   gap: 2.5rem;
@@ -187,7 +189,6 @@
   justify-content: flex-start;
   flex-wrap: wrap;
   width: 100%;
-
 }
 
 #pc-cat-card {
@@ -196,8 +197,14 @@
 
 }
 
-@media (max-width: 1480px) {
+@media (max-width: 1150px) {
   .pc-cat-cards {
     justify-content: center;
+  }
+}
+@media(max-width: 1150px) {
+  #pc-cat-cards-container {
+    padding: 0 1rem;
+ 
   }
 }

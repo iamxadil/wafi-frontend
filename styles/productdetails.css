@@ -221,6 +221,7 @@
   text-align: left;
   position: relative;
   cursor: pointer;
+ 
 }
 
 .description-header {
@@ -244,6 +245,7 @@
 .description-content {
   overflow: hidden;
   transition: max-height 0.4s ease, padding-top 0.3s ease;
+   width: 100%;
 }
 
 .description-content.collapsed {
@@ -258,16 +260,29 @@
 
 .description-list {
   margin: 0;
-  padding-left: 1.5rem;
   line-height: 1.6;
   list-style-type: disc;
   color: var(--text);
   display: block;
+  width: 100%;
+  padding: 0 !important;
+  margin-top: 1rem;
 }
 
 .description-list li {
   display: list-item;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+
+  svg {
+    align-self: flex-start;
+    height: 20px;
+    width: 20px;
+    flex-shrink: 0;
+    
+    margin-right: 12px;
+
+  }
 }
 
 

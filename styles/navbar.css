@@ -38,8 +38,12 @@ a {
 
 .text {
   font-size: 1rem !important;
-  margin-left: 4px;
   font-weight: 400;
+ 
+}
+
+.dash {
+  margin-left: 4px;
 }
 
 .search-container {

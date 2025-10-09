@@ -19,7 +19,7 @@ const Cart = () => {
 
   // Totals using finalPrice
   const subtotal = cartItems.reduce((sum, item) => sum + (item.finalPrice || item.price) * item.qty, 0);
-  const delivery = 5000;
+  const delivery = 0;
 
   return (
     <main id='cart-page'>

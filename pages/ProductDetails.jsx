@@ -10,7 +10,18 @@ import useAuthStore from "../components/stores/useAuthStore.jsx";
 import { toast } from "react-toastify";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import { Card, Button, Rate, Divider, Carousel } from "antd";
+import { Cpu, Gpu, Monitor, Palette, MemoryStick , Ruler, MousePointer, HardDriveDownload} from "lucide-react";
 
+const keywordIcons = {
+  GPU: <Gpu/>,
+  CPU: <Cpu/>,
+  Display: <Monitor/>,
+  STORAGE: <HardDriveDownload />,
+  Color: <Palette />,
+  RAM: <MemoryStick/>,
+  Size: <Ruler />,
+  Sensitivity: <MousePointer/>,
+};
 
 
 const ProductDetails = () => {
@@ -101,9 +112,38 @@ const ProductDetails = () => {
     await deleteReview(selectedProduct.id, reviewId);
   };
 
-  const descriptionLines = selectedProduct.description
-    ? selectedProduct.description.split(/(?<=\.|\?|!)/).map(line => line.trim()).filter(Boolean)
-    : [];
+const descriptionLines = selectedProduct.description
+  ? selectedProduct.description
+      // Normalize newlines
+      .replace(/\r\n|\r/g, "\n")
+      // Add newline before bullets/dashes if missing
+      .replace(/\s*[•\-–—]\s*/g, "\n$&")
+      // Split sentences by punctuation + space + capital/number
+      .split(/(?<=[.!?])\s+(?=[A-Z0-9])/g)
+      // Split further by newlines
+      .flatMap(line => line.split(/\n+/))
+      // Trim whitespace
+      .map(line => line.trim())
+      // Remove empty lines
+      .filter(Boolean)
+      // Add bullets and optional icons
+      .map(line => {
+        const matchedKeyword = Object.keys(keywordIcons).find(keyword =>
+          line.toLowerCase().startsWith(keyword.toLowerCase())
+        );
+
+        const bullet = line.match(/^[•\-–—]/) ? "" : "• ";
+
+        return matchedKeyword
+          ? (
+            <span key={line} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              {keywordIcons[matchedKeyword]} {line}
+            </span>
+          )
+          : bullet + line;
+      })
+  : [];
+
 
   const avgRating = selectedProduct.reviews?.length
     ? selectedProduct.reviews.reduce((acc, r) => acc + r.rating, 0) / selectedProduct.reviews.length
@@ -247,7 +287,7 @@ const ProductDetails = () => {
         />
 
         {selectedProduct.reviews?.length > 0 && (
-          <span style={{ fontSize: 12, color: "var(--secondary-text-clr)", color: "var(--line-clr)" }}>
+          <span style={{ fontSize: 12, color: "var(--line-clr)" }}>
             ({selectedProduct.reviews.length} reviews)
           </span>
         )}
@@ -355,7 +395,11 @@ const ProductDetails = () => {
         </div>
         <div className={`description-content ${expanded ? "expanded" : "collapsed"}`}>
           <ul className="description-list">
-            {descriptionLines.map((line, index) => <li key={index}>{line}</li>)}
+            {descriptionLines.map((line, index) => (
+              <li key={index}>
+                {line}
+              </li>
+            ))}
           </ul>
         </div>
       </div>

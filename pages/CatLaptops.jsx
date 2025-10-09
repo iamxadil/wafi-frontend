@@ -7,16 +7,15 @@ import useProductStore from "../components/stores/useProductStore.jsx";
 import useCartStore from "../components/stores/useCartStore.jsx";
 import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth";
-import WhyOurLaptops from "../components/main/WhyOurLaptops.jsx";
 import { SpinnerCircularSplit	 } from 'spinners-react';
-
+import OptimizeImage from "../components/hooks/OptimizeImage.jsx";
 
 import "../styles/catlaptops.css";
 
 const CatLaptops = () => {
   const navigate = useNavigate();
   const width = useWindowWidth();
-  const { fetchLaptops, laptopProducts } = useProductStore();
+  const { fetchLaptops, laptopProducts, laptopPagination, topLaptopProducts, fetchTopLaptops } = useProductStore();
   const addToCart = useCartStore((state) => state.addToCart);
   const token = useAuthStore.getState().token;
 
@@ -26,9 +25,16 @@ const CatLaptops = () => {
   const searchRef = useRef(null);
   const topPicksRef = useRef(null);
 
-  useEffect(() => {
-    fetchLaptops();
-  }, [fetchLaptops]);
+
+  const handlePageChange = (newPage) => {
+  fetchLaptops({ page: newPage });
+  };
+
+useEffect(() => {
+  fetchTopLaptops(4); 
+  fetchLaptops({limit: 8});     
+}, []);
+
 
   // Filter laptops based on query
   useEffect(() => {
@@ -100,9 +106,10 @@ const CatLaptops = () => {
     }
   };
 
-  const topLaptops = laptopProducts
-    .filter((p) => p.isTopProduct && p.approved)
-    .sort((a, b) => b.rating - a.rating);
+ const topLaptops = topLaptopProducts
+  .filter((p) => p.approved)
+  .sort((a, b) => b.rating - a.rating);
+
     
 
   return (
@@ -164,6 +171,7 @@ const CatLaptops = () => {
 
         {/* Desktop Cards */}
         {width > 650 && (
+          <>
           <section id="pc-pr-cards-container">
             <div className="pc-pr-cards">
               {topLaptops.length > 0
@@ -174,10 +182,7 @@ const CatLaptops = () => {
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="pc-image-wrapper">
-                        <div
-                          className="pc-pr-image"
-                          style={{ backgroundImage: `url(${product.images[0]})` }}
-                        />
+                     <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
                       </div>
                       <div className="pc-pr-details">
                         <p>{product.brand}</p>
@@ -217,16 +222,19 @@ const CatLaptops = () => {
                   </div>}
             </div>
           </section>
+
+          </>
         )}
 
         
         {width > 650 && 
         <header className="cat-tops-container" ref={topPicksRef}>
-          <h1>Navigate Our Inventory</h1>
+          <h1>Laptops</h1>
         </header>}
 
         {/* Desktop Cards */}
         {width > 650 && (
+          <>
           <section id="pc-pr-cards-container">
             <div className="pc-pr-cards">
               {laptopProducts.length > 0
@@ -237,10 +245,7 @@ const CatLaptops = () => {
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="pc-image-wrapper">
-                        <div
-                          className="pc-pr-image"
-                          style={{ backgroundImage: `url(${product.images[0]})` }}
-                        />
+                      <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
                       </div>
                       <div className="pc-pr-details">
                         <p>{product.brand}</p>
@@ -280,6 +285,39 @@ const CatLaptops = () => {
                   </div>}
             </div>
           </section>
+
+          <div className="pagination-controls">
+
+            {/* Previous button */}
+            <button
+              onClick={() => handlePageChange(Math.max(laptopPagination.currentPage - 1, 1))}
+              disabled={laptopPagination.currentPage === 1}
+            >
+              Prev
+            </button>
+
+            {/* Page numbers */}
+            {Array.from({ length: laptopPagination.totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={page === laptopPagination.currentPage ? "active" : ""}
+              >
+                {page}
+              </button>
+            ))}
+
+            {/* Next button */}
+            <button
+              onClick={() =>
+                handlePageChange(Math.min(laptopPagination.currentPage + 1, laptopPagination.totalPages))
+              }
+              disabled={laptopPagination.currentPage === laptopPagination.totalPages}
+            >
+              Next
+            </button>
+          </div>
+          </>
         )}
 
         
@@ -296,7 +334,7 @@ const CatLaptops = () => {
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="mob-pr-image">
-                        <img src={product.images[0]} alt={product.name} />
+                       <OptimizeImage src={product.images[0]} alt={product.name} className="mob-pr-image" />
                       </div>
                       <div className="mob-pr-details">
                         <h3>{product.brand}</h3>

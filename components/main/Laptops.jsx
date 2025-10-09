@@ -9,6 +9,7 @@ import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import { useNavigate } from "react-router-dom";
 import {BiRightArrowAlt as ArrowRight, BiHeart as Heart, BiLeftArrowAlt as ArrowLeft} from "react-icons/bi"
 import { IoAdd as Add} from "react-icons/io5";
+import OptimizeImage from "../hooks/OptimizeImage.jsx";
 
 
 const LaptopProducts = () => {
@@ -28,7 +29,7 @@ const LaptopProducts = () => {
 
   // fetch laptops whenever component mounts or brand changes
   useEffect(() => {
-    fetchLaptops({ page: 1, brands: selectedBrand ? [selectedBrand] : [] });
+    fetchLaptops({ page: 1, brands: selectedBrand ? [selectedBrand] : [], limit: 4 });
   }, [fetchLaptops, selectedBrand]);
 
 
@@ -161,10 +162,7 @@ const handleScroll = async (e) => {
             </span>
           )}
           <div className="pc-image-wrapper">
-            <div
-              className="pc-pr-image"
-              style={{ backgroundImage: `url(${product.images[0]})` }}
-            ></div>
+           <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
           </div>
           <div className="pc-pr-details">
             <p>{product.brand}</p>
@@ -246,13 +244,13 @@ const handleScroll = async (e) => {
             </div>
 
             <div className="mob-pr-image">
-              <img src={product.images[0]} alt={product.name} />
+           <OptimizeImage src={product.images[0]} alt={product.name} className="mob-pr-image" />
             </div>
 
             <div className="mob-pr-details">
-              <h3>{product.brand}</h3>
+              <h2>{product.brand}</h2>
               <h3>{product.name}</h3>
-              <h3>{product.price.toLocaleString()} IQD</h3>
+              <p>{product.price.toLocaleString()} IQD</p>
             </div>
 
             <div className="mob-pr-buttons">

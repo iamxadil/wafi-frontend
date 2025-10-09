@@ -105,7 +105,7 @@ const Navbar = () => {
                 <li className="icon">
                   <Link to="/admin-dashboard" style={{ display: "flex", alignItems: "center" }}>
                     <span><DashboardIcon /></span>
-                    <span className="text">Dashboard</span>
+                    <span className="text dash">Dashboard</span>
                   </Link>
                 </li>
               )}

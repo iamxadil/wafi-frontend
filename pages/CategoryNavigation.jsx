@@ -10,6 +10,7 @@ import useProductStore from "../components/stores/useProductStore.jsx";
 import useCartStore from "../components/stores/useCartStore.jsx";
 import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
+import OptimizeImage from "../components/hooks/OptimizeImage.jsx";
 
 const CategoryNavigation = () => {
   const { categoryName, brandName } = useParams();
@@ -144,15 +145,12 @@ const CategoryNavigation = () => {
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="pc-image-wrapper">
-                        <div
-                          className="pc-pr-image"
-                          style={{ backgroundImage: `url(${product.images[0]})` }}
-                        />
+                      <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
                       </div>
                       <div className="pc-pr-details">
                         <p>{product.brand}</p>
                         <h2 className="pr-name">{product.name}</h2>
-                        {product.specs.ram && product.specs.cpu && product.specs.screenSize ?
+                        {product.specs.ram && product.specs.cpu && product.specs.screenSize && width > 780 ?
                         <div className="specs">
                           <p>
                             <RAM size={16}/> {product.specs.ram}
@@ -217,10 +215,7 @@ const CategoryNavigation = () => {
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="pc-image-wrapper">
-                        <div
-                          className="pc-pr-image"
-                          style={{ backgroundImage: `url(${product.images[0]})` }}
-                        />
+                       <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
                       </div>
                       <div className="pc-pr-details">
                         <p>{product.brand}</p>
@@ -292,7 +287,9 @@ const CategoryNavigation = () => {
                   {p.countInStock > 0 && <span className="mob-badge in-stock">In Stock</span>}
                   {p.discountPrice > 0 && <span className="mob-badge offer">{Math.round((p.discountPrice / p.price) * 100)}%</span>}
                 </div>
-                <div className="mob-pr-image"><img src={p.images[0]} alt={p.name} /></div>
+                <div className="mob-pr-image">
+                 <OptimizeImage src={p.images[0]} alt={p.name} className="mob-pr-image" />
+                  </div>
                 <div className="mob-pr-details">
                   <h3>{p.brand}</h3>
                   <h3>{p.name}</h3>
@@ -325,7 +322,9 @@ const CategoryNavigation = () => {
                   {p.countInStock > 0 && <span className="mob-badge in-stock">In Stock</span>}
                   {p.discountPrice > 0 && <span className="mob-badge offer">{Math.round((p.discountPrice / p.price) * 100)}%</span>}
                 </div>
-                <div className="mob-pr-image"><img src={p.images[0]} alt={p.name} /></div>
+                <div className="mob-pr-image">
+                <OptimizeImage src={p.images[0]} alt={p.name} className="mob-pr-image" />
+                </div>
                 <div className="mob-pr-details">
                   <h3>{p.brand}</h3>
                   <h3>{p.name}</h3>

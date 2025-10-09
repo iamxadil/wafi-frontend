@@ -5,6 +5,7 @@ import useCartStore from "../stores/useCartStore.jsx";
 import useAuthStore from "../stores/useAuthStore.jsx";
 import { toast } from "react-toastify";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
+import OptimizeImage from '../hooks/OptimizeImage.jsx';
 import { useNavigate } from "react-router-dom";
 import { BiRightArrowAlt as ArrowRight, BiHeart as Heart, BiLeftArrowAlt as ArrowLeft } from "react-icons/bi";
 import { IoAdd as Add } from "react-icons/io5";
@@ -93,18 +94,13 @@ const getFinalPrice = (product) => product.discountPrice > 0
                       </span>
                     )}
                     <div className="pc-image-wrapper">
-                      <div
-                        className="pc-pr-image"
-                        style={{ backgroundImage: `url(${product.images[0]})` }}
-                      ></div>
+                     <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
                     </div>
                     <div className="pc-pr-details">
                       <p>{product.brand}</p>
                       <h2>{product.name}</h2>
                       <p>
-                        {product.discountPrice > 0
-                          ? `${(product.price - product.discountPrice).toLocaleString()} IQD`
-                          : `${product.price.toLocaleString()} IQD`}
+                        {product.finalPrice.toLocaleString()} IQD
                       </p>
                     </div>
                     <div className="add-to-cart">
@@ -168,14 +164,14 @@ const getFinalPrice = (product) => product.discountPrice > 0
 
                   {/* Image */}
                   <div className="mob-pr-image">
-                    <img src={product.images[0]} alt={product.name} />
+                  <OptimizeImage src={product.images[0]} alt={product.name} className="mob-pr-image" />
                   </div>
 
                   {/* Details */}
                   <div className="mob-pr-details">
-                    <h3>{product.brand}</h3>
+                    <h2>{product.brand}</h2>
                     <h3>{product.name}</h3>
-                    <h3>{product.discountPrice > 0 ? (product.price - product.discountPrice).toLocaleString() + " IQD" : product.price.toLocaleString() + " IQD"}</h3>
+                    <p>{product.discountPrice > 0 ? (product.price - product.discountPrice).toLocaleString() + " IQD" : product.price.toLocaleString() + " IQD"}</p>
                   </div>
 
                   {/* Buttons */}
