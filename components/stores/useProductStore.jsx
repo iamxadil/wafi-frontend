@@ -272,48 +272,61 @@ const useProductStore = create((set, get) => ({
   },
 
 // Fetch offers function
-fetchOffers: async (page = 1) => {
-  set({ offersLoading: true });
+fetchOffers: async ({ page = 1, limit, category, minPrice, maxPrice, sort, search } = {}) => {
   try {
-    const limit = get().offerLimit;
-    const res = await axios.get(
-      `${API_URL}/api/products/offers?page=${page}&limit=${limit}`,
-      { withCredentials: true }
-    );
+    const state = get();
+    const pageLimit = limit ?? state.offerLimit ?? 4; 
 
-    // normalize and filter only approved products
-    const normalized = res.data.products
-      .map(get().normalizeProduct)
-      .filter((p) => p.approved === true);
+    let query = `page=${page}&limit=${pageLimit}`;
+    if (category) query += `&category=${category}`;
+    if (minPrice != null) query += `&minPrice=${minPrice}`;
+    if (maxPrice != null) query += `&maxPrice=${maxPrice}`;
+    if (sort) query += `&sort=${sort}`;
+    if (search) query += `&search=${encodeURIComponent(search)}`;
+
+    const res = await axios.get(`${API_URL}/api/products/offers?${query}`, { withCredentials: true });
+    const offers = Array.isArray(res.data.products) ? res.data.products : [];
+    const normalized = offers.map(state.normalizeProduct).filter(p => p.approved);
 
     set({
       offerProducts: normalized,
       offerPagination: {
+        currentPage: res.data.page || page,
         totalPages: res.data.pages || 1,
-        currentPage: res.data.page || page, // ✅ prefer backend’s value
       },
+      offerLimit: pageLimit, // updates store
     });
-  } catch (err) {
-    console.error("❌ Failed to fetch offers:", err);
+
+    return res.data;
+  } catch (error) {
+    console.error("❌ Failed to fetch offers:", error);
     set({
       offerProducts: [],
       offerPagination: { totalPages: 1, currentPage: 1 },
     });
-  } finally {
-    set({ offersLoading: false });
   }
 },
 
 
-fetchTrendingProducts: async (page = 1) => {
+fetchTrendingProducts: async ({ page = 1, limit, brands = [], minPrice, maxPrice, sort, search } = {}) => {
   set({ trendingLoading: true });
+
   try {
-    const limit = 4;
-    const res = await axios.get(`${API_URL}/api/products/trending?page=${page}&limit=${limit}`, {
+    const pageLimit = limit ?? 4; // default limit
+    let query = `category=Laptops&page=${page}&limit=${pageLimit}`;
+
+    if (brands.length > 0) query += `&brand=${brands.join(",")}`;
+    if (minPrice != null) query += `&minPrice=${minPrice}`;
+    if (maxPrice != null) query += `&maxPrice=${maxPrice}`;
+    if (sort) query += `&sort=${sort}`;
+    if (search) query += `&search=${encodeURIComponent(search)}`;
+
+    const res = await axios.get(`${API_URL}/api/products/trending?${query}`, {
       withCredentials: true,
     });
 
-    const normalized = res.data.products.map(get().normalizeProduct);
+    const products = Array.isArray(res.data.products) ? res.data.products : [];
+    const normalized = products.map(get().normalizeProduct);
 
     set({
       trendingProducts: normalized,
@@ -321,14 +334,21 @@ fetchTrendingProducts: async (page = 1) => {
         totalPages: res.data.pages || 1,
         currentPage: res.data.page || page,
       },
+      trendingLimit: pageLimit, // store current page limit
     });
+
+    return res.data;
   } catch (err) {
     console.error("❌ Failed to fetch trending products:", err);
-    set({ trendingProducts: [], trendingPagination: { totalPages: 1, currentPage: 1 } });
+    set({ 
+      trendingProducts: [], 
+      trendingPagination: { totalPages: 1, currentPage: 1 } 
+    });
   } finally {
     set({ trendingLoading: false });
   }
 },
+
 
 searchProducts: async (query, filters = {}) => {
     try {

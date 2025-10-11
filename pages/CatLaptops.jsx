@@ -1,23 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+// src/pages/CatLaptops.jsx
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { BiSearchAlt as Search, BiHeart as Heart } from "react-icons/bi";
-import { Cpu as CPU, MemoryStick as RAM, Airplay as Screen} from 'lucide-react';
-import { IoAdd as Add } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import useProductStore from "../components/stores/useProductStore.jsx";
-import useCartStore from "../components/stores/useCartStore.jsx";
-import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth";
-import { SpinnerCircularSplit	 } from 'spinners-react';
-import OptimizeImage from "../components/hooks/OptimizeImage.jsx";
-
+import ProductGrid from "../components/main/ProductGrid.jsx";
+import ProductCard from '../components/main/ProductCard.jsx';
+import MobileCard from "../components/main/MobileCard.jsx";
+import Pagination from '../components/main/Pagination.jsx';
 import "../styles/catlaptops.css";
 
+
+
+
+
 const CatLaptops = () => {
+
   const navigate = useNavigate();
   const width = useWindowWidth();
-  const { fetchLaptops, laptopProducts, laptopPagination, topLaptopProducts, fetchTopLaptops } = useProductStore();
-  const addToCart = useCartStore((state) => state.addToCart);
-  const token = useAuthStore.getState().token;
+  const { fetchLaptops, laptopProducts, laptopPagination, topLaptopProducts, fetchTopLaptops, laptopLimit } = useProductStore();
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -26,346 +27,156 @@ const CatLaptops = () => {
   const topPicksRef = useRef(null);
 
 
-  const handlePageChange = (newPage) => {
-  fetchLaptops({ page: newPage });
-  };
-
 useEffect(() => {
-  fetchTopLaptops(4); 
-  fetchLaptops({limit: 8});     
-}, []);
+  fetchTopLaptops(4);
+  if (width > 650) {
+    fetchLaptops({ limit: 6 });
+  } else {
+    fetchLaptops({ limit: 5 });
+  }
+}, [width]);
 
-
-  // Filter laptops based on query
   useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      setActiveIndex(-1);
-      return;
-    }
-
-    const filtered = laptopProducts
-      .filter((p) => p.approved)
-      .filter(
-        (p) =>
-          p.name.toLowerCase().includes(query.toLowerCase()) ||
-          p.brand.toLowerCase().includes(query.toLowerCase())
-      )
-      .sort((a, b) => b.rating - a.rating);
-
-    setResults(filtered);
-    setActiveIndex(-1);
+    const trimmed = query.trim();
+    if (!trimmed) return setResults([]), setActiveIndex(-1);
+    const id = setTimeout(() => {
+      const filtered = laptopProducts.filter((p) => p.approved).filter((p) =>
+        p.name.toLowerCase().includes(trimmed.toLowerCase()) ||
+        p.brand.toLowerCase().includes(trimmed.toLowerCase())
+      ).sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      setResults(filtered); setActiveIndex(-1);
+    }, 250);
+    return () => clearTimeout(id);
   }, [query, laptopProducts]);
-
-  // Close dropdown if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setResults([]);
-        setActiveIndex(-1);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const handleKeyDown = (e) => {
     if (!results.length) return;
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setActiveIndex((prev) => (prev + 1) % results.length);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActiveIndex((prev) => (prev - 1 + results.length) % results.length);
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (activeIndex >= 0) handleResultClick(results[activeIndex]._id);
-    } else if (e.key === "Escape") {
-      setResults([]);
-      setActiveIndex(-1);
-    }
+    if (e.key === "ArrowDown") setActiveIndex((p) => (p + 1) % results.length);
+    else if (e.key === "ArrowUp") setActiveIndex((p) => (p - 1 + results.length) % results.length);
+    else if (e.key === "Enter" && activeIndex >= 0) handleResultClick(results[activeIndex]._id || results[activeIndex].id);
+    else if (e.key === "Escape") setResults([]), setActiveIndex(-1);
   };
 
-  const handleResultClick = (id) => {
-    navigate(`/product/${id}`);
-    setQuery("");
-    setResults([]);
+  const handleResultClick = (id) => { if (!id) return; navigate(`/product/${id}`); setQuery(""); setResults([]); };
+  const handlePageChange = (page) => fetchLaptops({ page, limit: laptopLimit });
+  const handleExploreClick = () => topPicksRef.current?.scrollIntoView({ behavior: "smooth" });
+
+  const topLaptops = useMemo(() => (topLaptopProducts || []).filter((p) => p.approved).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 4), [topLaptopProducts]);
+
+  const filters = [
+    { key: "brand", title: "Brand", options: ["Apple", "Acer", "Asus", "HP", "Lenovo"], multiple: true },
+    { key: "ram", title: "RAM", options: ["8GB", "16GB", "32GB"], multiple: true },
+    { key: "cpu", title: "CPU", options: ["i5", "i7", "i9"], multiple: true },
+    { key: "screen", title: "Screen Size", options: ['13"', '14"', '15"', '16"'], multiple: true },
+    { key: "price", title: "Price Range", options: ["<500", "500-1000", "1000-1500", ">1500"], multiple: false },
+  ];
+
+    const handleFiltersChange = (selected) => {
+    console.log("Selected filters:", selected);
+    // Filter products logic
   };
-
-  const handleAddToCart = (product) => {
-    if (product.countInStock <= 0) {
-      alert("Sorry, this product is out of stock");
-      return;
-    }
-    addToCart(product, 1, token);
-  };
-
-  const handleExploreClick = () => {
-    if (topPicksRef.current) {
-      topPicksRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
- const topLaptops = topLaptopProducts
-  .filter((p) => p.approved)
-  .sort((a, b) => b.rating - a.rating);
-
-    
 
   return (
-    <>
-      <main id="cat-laptops-page">
-        {/* Header */}
-        <header id="cat-laptops-header" ref={searchRef}>
-          <div className="lines">
-            <h1 className="main-line">Universe of Laptops</h1>
-            <p className="subline">Innovation in every pixel.</p>
-          </div>
-
-          {/* Search Dropdown */}
-          <div className="cat-search-container">
-            <div className="cat-search" style={{ position: "relative" }}>
-              <Search size={20} /> <h3>Where Dreams Come True.</h3>
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              {results.length > 0 && (
-                <div className="mob-search-results">
-                  <div className="mob-search-results-inner">
-                    {results.map((item, index) => (
-                      <div
-                        key={index}
-                        className={`mob-search-result-item ${
-                          activeIndex === index ? "active" : ""
-                        }`}
-                        onClick={() => handleResultClick(item._id)}
-                        onMouseEnter={() => setActiveIndex(index)}
-                      >
-                        <img
-                          src={item.images[0] || "/placeholder.png"}
-                          alt={item.name}
-                        />
-                        <div className="mob-result-info">
-                          <span>{item.name}</span>
-                          <span>
-                            {((item.price || 0) - (item.discountPrice || 0)).toLocaleString()} IQD
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            <button onClick={handleExploreClick}>Explore</button>
-          </div>
-        </header>
-
-        {/* Top Picks */}
-        <header className="cat-tops-container" ref={topPicksRef}>
-          <h1>Our Top Picks</h1>
-        </header>
-
-        {/* Desktop Cards */}
-        {width > 650 && (
-          <>
-          <section id="pc-pr-cards-container">
-            <div className="pc-pr-cards">
-              {topLaptops.length > 0
-                ? topLaptops.map((product) => (
-                    <div
-                      className="pc-pr-card"
-                      key={product.id}
-                      onClick={() => navigate(`/product/${product.id}`)}
-                    >
-                      <div className="pc-image-wrapper">
-                     <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
-                      </div>
-                      <div className="pc-pr-details">
-                        <p>{product.brand}</p>
-                        <h2 className="pr-name">{product.name}</h2>
-                        <div className="specs">
-                          <p>
-                            <RAM size={16}/> {product.specs.ram}
-                          </p>
-                          <p>
-                            <CPU size={16}/>
-                            {product.specs.cpu}
-                          </p>
-                          <p>
-                            <Screen size={16} />
-                            {product.specs.screenSize} "
-                          </p>
-                        </div>
-                        <p>
-                          {(product.price - (product.discountPrice || 0)).toLocaleString()} IQD
-                        </p>
-                      </div>
-                      <div className="add-to-cart">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddToCart(product);
-                          }}
-                        >
-                          Add to Cart
-                        </button>
-                      </div>
+    <main id="cat-laptops-page">
+      {/* Header + Search */}
+      <header id="cat-laptops-header" ref={searchRef}>
+        <div className="lines"><h1 className="main-line">Universe of Laptops</h1><p className="subline">Innovation in every pixel.</p></div>
+        <div className="cat-search-container">
+          <div className="cat-search"><Search size={20} /><h3>Where Dreams Come True.</h3>
+            <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} placeholder="Search by name or brand..." />
+            {results.length > 0 && (
+              <div className="mob-search-results">
+                <div className="mob-search-results-inner">
+                  {results.map((item, index) => (
+                    <div key={item._id || item.id || index} className={`mob-search-result-item ${activeIndex === index ? "active" : ""}`}
+                      onClick={() => handleResultClick(item._id || item.id)} onMouseEnter={() => setActiveIndex(index)}>
+                      <img src={item.images?.[0] || "/placeholder.png"} alt={item.name} />
+                      <div className="mob-result-info"><span>{item.name}</span><span>{((item.price || 0) - (item.discountPrice || 0)).toLocaleString()} IQD</span></div>
                     </div>
-                  ))
-                : <div className="loading-container">
-                  <SpinnerCircularSplit	 enabled={true} size={30} thickness={200} color="dc143c" secondaryColor="#606060ff"/>
-                  <h2>Loading..</h2>
-                  </div>}
-            </div>
-          </section>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          <button onClick={handleExploreClick}>Explore</button>
+        </div>
+      </header>
 
-          </>
-        )}
+      {/* Top Picks */}
+      <header className="cat-tops-container" ref={topPicksRef}>
+        <h1>Our Top Picks</h1>
+      </header>
 
-        
-        {width > 650 && 
-        <header className="cat-tops-container" ref={topPicksRef}>
-          <h1>Laptops</h1>
+      {/* Desktop Top Cards */}
+      {width > 650 && (
+        <section id="pc-pr-cards-container">
+        <div className="pc-pr-cards">
+         {topLaptops.map((product) => <ProductCard key={product.id || product._id} product={product}/>)}
+        </div>
+        </section>
+      )}
+
+      {width > 650 && <header className="cat-tops-container">
+        <h1>Laptops</h1>
         </header>}
 
-        {/* Desktop Cards */}
-        {width > 650 && (
-          <>
-          <section id="pc-pr-cards-container">
-            <div className="pc-pr-cards">
-              {laptopProducts.length > 0
-                ? laptopProducts.map((product) => (
-                    <div
-                      className="pc-pr-card"
-                      key={product.id}
-                      onClick={() => navigate(`/product/${product.id}`)}
-                    >
-                      <div className="pc-image-wrapper">
-                      <OptimizeImage src={product.images[0]} alt={product.name} className="pc-pr-image" />
-                      </div>
-                      <div className="pc-pr-details">
-                        <p>{product.brand}</p>
-                        <h2 className="pr-name">{product.name}</h2>
-                        <div className="specs">
-                          <p>
-                            <RAM size={16}/> {product.specs.ram}
-                          </p>
-                          <p>
-                            <CPU size={16}/>
-                            {product.specs.cpu}
-                          </p>
-                          <p>
-                            <Screen size={16}/>
-                            {product.specs.screenSize} "
-                          </p>
-                        </div>
-                        <p>
-                          {(product.price - (product.discountPrice || 0)).toLocaleString()} IQD
-                        </p>
-                      </div>
-                      <div className="add-to-cart">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddToCart(product);
-                          }}
-                        >
-                          Add to Cart
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                : <div className="loading-container">
-                  <SpinnerCircularSplit	 enabled={true} size={30} thickness={200} color="dc143c" secondaryColor="#606060ff"/>
-                  <h2>Loading..</h2>
-                  </div>}
-            </div>
-          </section>
+      {/* Desktop Grid */}
+      {width > 650 && (
+        <main className="products-grid-container">
+          {laptopProducts.map((laptop) => (
+           <ProductGrid
+                key={laptop._id || laptop.id}
+                product={laptop}
+              />
 
-          <div className="pagination-controls">
+          ))}
+        </main>
+      )}
 
-            {/* Previous button */}
-            <button
-              onClick={() => handlePageChange(Math.max(laptopPagination.currentPage - 1, 1))}
-              disabled={laptopPagination.currentPage === 1}
-            >
-              Prev
-            </button>
 
-            {/* Page numbers */}
-            {Array.from({ length: laptopPagination.totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={page === laptopPagination.currentPage ? "active" : ""}
-              >
-                {page}
-              </button>
-            ))}
-
-            {/* Next button */}
-            <button
-              onClick={() =>
-                handlePageChange(Math.min(laptopPagination.currentPage + 1, laptopPagination.totalPages))
-              }
-              disabled={laptopPagination.currentPage === laptopPagination.totalPages}
-            >
-              Next
-            </button>
+      {/* Mobile Cards */}
+      {width <= 650 && (
+        <div id="mob-pr-container">
+          <div className="mob-pr-cards">
+          {topLaptops.map((laptop) => (
+            <MobileCard
+              key={laptop.id || laptop._id}
+              product={laptop}
+            />
+          ))}
           </div>
-          </>
+        </div>
+      )}
+
+
+      {/* Mobile Cards */}
+      {width <= 650 && (
+        <>
+        <div id="mob-pr-container">
+          <header className="cat-tops-container"><h1>Laptops</h1></header>
+          <div className="mob-pr-cards">
+          {laptopProducts.map((laptop) => (
+            <MobileCard
+              key={laptop.id || laptop._id}
+              product={laptop}
+            />
+          ))}
+          </div>
+        </div>
+        </>
+      )}
+
+
+      {/* Pagination */}
+        {laptopPagination.totalPages > 1 && (
+          <Pagination
+            currentPage={laptopPagination.currentPage}
+            totalPages={laptopPagination.totalPages}
+            onPageChange={handlePageChange}
+            mobile
+          />
         )}
-
-        
-
-        {/* Mobile Cards */}
-        {width <= 650 && (
-          <section id="mob-pr-container">
-            <div className="mob-pr-cards">
-              {topLaptops.length > 0
-                ? topLaptops.map((product) => (
-                    <div
-                      className="mob-pr-card"
-                      key={product.id}
-                      onClick={() => navigate(`/product/${product.id}`)}
-                    >
-                      <div className="mob-pr-image">
-                       <OptimizeImage src={product.images[0]} alt={product.name} className="mob-pr-image" />
-                      </div>
-                      <div className="mob-pr-details">
-                        <h3>{product.brand}</h3>
-                        <h3>{product.name}</h3>
-                        <h3>
-                          {(product.price - (product.discountPrice || 0)).toLocaleString()} IQD
-                        </h3>
-                      </div>
-                      <div className="mob-pr-buttons">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddToCart(product);
-                          }}
-                        >
-                          <Add />
-                        </button>
-                        <button onClick={(e) => e.stopPropagation()}>
-                          <Heart />
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                : "Loading laptops..."}
-            </div>
-          </section>
-        )}
-
-      
-      </main>
-    </>
+    </main>
   );
 };
 

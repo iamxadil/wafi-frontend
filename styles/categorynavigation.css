@@ -1,7 +1,17 @@
 /* --- GENERAL STYLES --- */
 .category-page {
+  font-family: "poppins" !important;
+}
 
-  font-family: Arial, sans-serif;
+#cat-container {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 3rem;
+}
+
+.cat-grid {
+  padding: 0;
+  max-width: 100%;
 }
 
 .cat-header {

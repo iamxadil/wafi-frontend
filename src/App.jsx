@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Zoom, Bounce, Flip } from 'react-toastify';
+import useWindowWidth from '../components/hooks/useWindowWidth.jsx';
 
 //Stores
 import useAuthStore from "../components/stores/useAuthStore.jsx";
@@ -54,6 +55,7 @@ function App() {
   const profile = useAuthStore((state) => state.profile);
   const theme = useThemeStore((state) => state.theme);
   const cartStore = useCartStore.getState();
+  const width = useWindowWidth();
 
   // Initialize cart on app load
   useEffect(() => {
@@ -97,7 +99,13 @@ function App() {
         </>
       )}
 
-      <ToastContainer position="top-right" autoClose={3000} stacked transition={Zoom} limit={5}/>
+        {width > 480 &&
+        <ToastContainer position="top-right !important" autoClose={3000} stacked draggable closeOnClick transition={Zoom} limit={4}/>
+         }
+        {width <=480 &&
+        <ToastContainer position="top-right !important" autoClose={3000} draggable closeOnClick transition={Zoom} limit={4}/>
+         }
+      
       <ScrollTop />
 
 
@@ -134,6 +142,7 @@ function App() {
         <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
         <Route path='/laptops' element={<CatLaptops />}/>
         <Route path='/accessories' element={<Accessories />}/>
+        <Route path='/static' element={<Static />}/>
 
       </Routes>
            {!footerOn.some(path => location.pathname.startsWith(path)) && <AppFooter />}

@@ -4,7 +4,6 @@
   align-items: center;
   margin-top: 2.5rem;
   padding-bottom: 2.5rem;
-
 }
 
 #pc-pr-cards-container {
@@ -13,7 +12,7 @@
   justify-content: center;
   margin-top: 2.5rem;
   width: 100%;
- padding: 0 4rem;
+  
 }
 
 #pc-pr-header {
@@ -30,11 +29,12 @@
 .pc-pr-cards {
   display: flex;
   align-items: flex-start; /* ✅ Changed from center */
+  width: 100%;
   gap: 4rem;
-  padding: 3rem 2rem 2rem 2rem;
   flex-wrap: wrap;
   justify-content: center;
-  
+  margin-top: 2rem;
+
 }
 
 .pc-pr-card {
@@ -109,8 +109,6 @@
   gap: 1.25rem;
   width: 100%;
 
- 
-
 }
 
 .pc-pr-details p,
@@ -121,6 +119,12 @@
 .pc-pr-details h2 {
   font-weight: 800;
   line-height: 2rem;
+}
+
+.pr-price {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .pc-pr-details .in-stock {
@@ -189,12 +193,12 @@
   position: absolute;
   top: 45px;
   left: 10px;
-  padding: 0.25rem 0.5rem;
   border-radius: 6px;
   font-size: 0.75rem;
-  font-weight: bold;
   color: white;
-  background: #e91e63; /* pinkish color for offer */
+  backdrop-filter: blur(12px);
+  background-color: #f1b36371;
+
 }
 
 /* Responsive adjustments */
@@ -283,12 +287,14 @@ select.custom:disabled {
 
 #mob-pr-container {
   width: 100%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding-bottom: 2rem;
   gap: 2rem;
+
 
   h1 {
     display: flex;
@@ -421,14 +427,11 @@ select.custom:disabled {
 
 .mob-pr-details h2 {
   font-size: 0.95rem;
- color: #7b7b7b;
+  font-weight: bold;
  
 }
 
-.mob-pr-details h3 {
-  font-weight: 400;
-  font-size: 0.95rem;
-}
+
 
 .mob-pr-details p{
   font-weight: 400;
@@ -487,35 +490,7 @@ select.custom:disabled {
   background: #ef4444;
 } /* red */
 .mob-badge.offer {
-  background: #0055ff29;
+  background: #0004d043;
   color: var(--text);
 } /* yellow */
 
-.mob-pagination-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.mob-pagination-controls button {
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--text);
-  background: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-}
-
-.mob-pagination-controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.mob-page-indicator {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
