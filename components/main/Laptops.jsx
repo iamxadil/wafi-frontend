@@ -139,14 +139,13 @@ const LaptopProducts = () => {
 
             
            {/* Pagination */}
-        {laptopPagination.totalPages > 1 && (
-          <Pagination
-            currentPage={laptopPagination.currentPage}
-            totalPages={laptopPagination.totalPages}
-            onPageChange={handlePageJump}
-            mobile
-          />
-        )}
+            {laptopProducts.length > 0 && laptopPagination.totalPages > 1 && (
+            <Pagination
+              currentPage={laptopPagination.currentPage}
+              totalPages={laptopPagination.totalPages}
+              onPageChange={handlePageJump}
+            />
+          )}
         </main>
       )}
     </>

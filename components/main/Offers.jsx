@@ -19,12 +19,7 @@ const Offers = () => {
 
   
   useEffect(() => {
-    fetchOffers(4);
-    if (width > 650) {
-      fetchOffers({ limit: 4});
-    } else {
-      fetchOffers({ limit: 4 });
-    }
+    fetchOffers({ limit: 4 });
   }, [width]);
 
   const handlePageChange = (page) => fetchOffers({ page, limit: offersLimit });
@@ -69,9 +64,10 @@ const Offers = () => {
       ) }
     
     {offerPagination.totalPages > 0 &&
-    <Pagination currentPage={offerPagination.currentPage} 
+    <Pagination 
+    currentPage={offerPagination.currentPage} 
     totalPages={offerPagination.totalPages} 
-    onPageChange={handlePageChange} mobile/>
+    onPageChange={handlePageChange}/>
     }
     
 
