@@ -137,12 +137,16 @@ const LaptopProducts = () => {
           </AnimatePresence>
           </div>
 
+            
+           {/* Pagination */}
+        {laptopPagination.totalPages > 1 && (
           <Pagination
             currentPage={laptopPagination.currentPage}
             totalPages={laptopPagination.totalPages}
             onPageChange={handlePageJump}
             mobile
           />
+        )}
         </main>
       )}
     </>

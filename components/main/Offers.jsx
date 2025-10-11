@@ -68,7 +68,12 @@ const Offers = () => {
         
       ) }
     
-    <Pagination currentPage={offerPagination.currentPage} totalPages={offerPagination.totalPages} onPageChange={handlePageChange} />
+    {offerPagination.totalPages > 0 &&
+    <Pagination currentPage={offerPagination.currentPage} 
+    totalPages={offerPagination.totalPages} 
+    onPageChange={handlePageChange} mobile/>
+    }
+    
 
     </main>
     </>
