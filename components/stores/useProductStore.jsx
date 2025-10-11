@@ -234,12 +234,13 @@ const useProductStore = create((set, get) => ({
     const res = await axios.get(`${API_URL}/api/products?${query}`, { withCredentials: true });
     const laptops = Array.isArray(res.data.products) ? res.data.products : [];
     const normalized = laptops.map(get().normalizeProduct);
+    const totalPages = res.data.total > 0 ? res.data.pages : 0;
 
     set({
       laptopProducts: normalized,
       laptopPagination: {
         currentPage: res.data.page || page,
-        totalPages: res.data.pages || 1,
+        totalPages,
       },
       laptopLimit: pageLimit, // updates the store
     });
@@ -287,12 +288,13 @@ fetchOffers: async ({ page = 1, limit, category, minPrice, maxPrice, sort, searc
     const res = await axios.get(`${API_URL}/api/products/offers?${query}`, { withCredentials: true });
     const offers = Array.isArray(res.data.products) ? res.data.products : [];
     const normalized = offers.map(state.normalizeProduct).filter(p => p.approved);
+    const totalPages = res.data.pages && res.data.pages > 0 ? res.data.pages : 0;
 
     set({
       offerProducts: normalized,
       offerPagination: {
         currentPage: res.data.page || page,
-        totalPages: res.data.pages || 1,
+        totalPages,
       },
       offerLimit: pageLimit, // updates store
     });
@@ -327,11 +329,12 @@ fetchTrendingProducts: async ({ page = 1, limit, brands = [], minPrice, maxPrice
 
     const products = Array.isArray(res.data.products) ? res.data.products : [];
     const normalized = products.map(get().normalizeProduct);
+    const totalPages = res.data.pages && res.data.pages > 0 ? res.data.pages : 0;
 
     set({
       trendingProducts: normalized,
       trendingPagination: {
-        totalPages: res.data.pages || 1,
+        totalPages,
         currentPage: res.data.page || page,
       },
       trendingLimit: pageLimit, // store current page limit
@@ -436,11 +439,12 @@ fetchCategoryProducts: async ({ brand, category, searchTerm = "", page = 1, limi
 
     const res = await axios.get(`${API_URL}/api/products?${query.toString()}`, { withCredentials: true });
     const normalized = res.data.products.map(get().normalizeProduct);
+    const totalPages = res.data.pages && res.data.pages > 0 ? res.data.pages : 0;
 
     set({
       categoryProducts: normalized,
       categoryPagination: {
-        totalPages: res.data.pages || 1,
+        totalPages: totalPages,
         currentPage: res.data.page || page,
       },
       categoryLimit: limit
@@ -467,11 +471,12 @@ fetchCategoryOffers: async ({ brand, category, page = 1, limit = 6 } = {}) => {
 
     // Only normalize, don't filter approved or category/brand here
     const normalized = res.data.products.map(get().normalizeProduct);
+    const totalPages = res.data.pages && res.data.pages > 0 ? res.data.pages : 0;
 
     set({
       categoryOffers: normalized,
       categoryOfferPagination: {
-        totalPages: res.data.pages || 1,
+        totalPages,
         currentPage: res.data.page || page,
       },
       categoryOfferLimit: limit

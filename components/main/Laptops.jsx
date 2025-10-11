@@ -54,6 +54,7 @@ const LaptopProducts = () => {
     }
   };
 
+  console.log(laptopPagination.totalPages);
   return (
     <>
       {/* Desktop */}
@@ -77,30 +78,24 @@ const LaptopProducts = () => {
             </div>
           </header>
 
-
-        <div id="pc-pr-cards-container">
-        <div className="pc-pr-cards">
-          {laptopProducts && laptopProducts.length > 0 ? (
-            laptopProducts.map((product) => (
-              <ProductCard
-                key={product.id || product._id}
-                product={product}
-                onAddToCart={handleAddToCart}
-                onView={() => navigate(`/product/${product.id || product._id}`)}
-              />
-            ))
-          ) : (
-            <p>Loading laptops...</p>
-          )}
+          <div id="pc-pr-cards-container">
+            <div className="pc-pr-cards">
+              {laptopProducts && laptopProducts.length > 0 ? (
+                laptopProducts.map((product) => (
+                  <ProductCard
+                    key={product.id || product._id}
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                    onView={() =>
+                      navigate(`/product/${product.id || product._id}`)
+                    }
+                  />
+                ))
+              ) : (
+                <p>Loading laptops...</p>
+              )}
             </div>
           </div>
-
-
-          <Pagination
-            currentPage={laptopPagination.currentPage}
-            totalPages={laptopPagination.totalPages}
-            onPageChange={handlePageJump}
-          />
         </main>
       )}
 
@@ -108,7 +103,10 @@ const LaptopProducts = () => {
       {width <= 650 && (
         <main id="mob-pr-container">
           <header className="mob-pr-header">
-            <h1> <Link to="/laptops">Laptops</Link></h1>
+            <h1>
+              {" "}
+              <Link to="/laptops">Laptops</Link>
+            </h1>
             <div className="mob-select-wrap">
               <select
                 className="mob-custom"
@@ -127,26 +125,25 @@ const LaptopProducts = () => {
 
           <div className="mob-pr-cards">
             <AnimatePresence initial={false}>
-            {laptopProducts.map((product, index) => (
-              <MobileCard
-                key={product._id || product.id}
-                product={product}
-                customDelay={index * 0.01} // subtle stagger
-              />
-            ))}
-          </AnimatePresence>
+              {laptopProducts.map((product, index) => (
+                <MobileCard
+                  key={product._id || product.id}
+                  product={product}
+                  customDelay={index * 0.01} // subtle stagger
+                />
+              ))}
+            </AnimatePresence>
           </div>
-
-            
-           {/* Pagination */}
-            {laptopProducts.length > 0 && laptopPagination.totalPages > 1 && (
-            <Pagination
-              currentPage={laptopPagination.currentPage}
-              totalPages={laptopPagination.totalPages}
-              onPageChange={handlePageJump}
-            />
-          )}
         </main>
+      )}
+
+      {/* Pagination */}
+      {laptopProducts.length > 0 && laptopPagination.totalPages > 1 && (
+        <Pagination
+          currentPage={laptopPagination.currentPage}
+          totalPages={laptopPagination.totalPages}
+          onPageChange={handlePageJump}
+        />
       )}
     </>
   );
