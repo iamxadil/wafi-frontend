@@ -109,7 +109,7 @@ const ProductGrid = ({ product, onAddToCart, onView }) => {
               <span style={{color: "var(--text)", fontWeight: "bold"}} className="final-price">{product.finalPrice?.toLocaleString()} IQD</span>
             </>
           ) : (
-            <span className="final-price">{product.finalPrice?.toLocaleString()} IQD</span>
+            <span style={{color: "var(--text)"}} className="final-price">{product.finalPrice?.toLocaleString()} IQD</span>
           )}
         </div>
       </div>
