@@ -4,7 +4,10 @@ import OptimizeImage from "../hooks/OptimizeImage.jsx";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "../stores/useCartStore.jsx";
 import useAuthStore from "../stores/useAuthStore.jsx";
+import useFavoritesStore from "../stores/useFavoritesStore.jsx";
+
 import { toast } from "react-toastify";
+import { Heart } from "lucide-react";
 
 const ProductCard = ({product}) => {
 
@@ -18,6 +21,9 @@ const ProductCard = ({product}) => {
   const navigate = useNavigate();
   const handleAddToCart = (product) => { if (product.countInStock <= 0) return toast.error("Out of stock"); addToCart(product, 1, token); };
 
+  //Favorites
+  const { toggleFavorite, isFavorite } = useFavoritesStore();
+  const favorite = isFavorite(product.id || product._id);
 
   return (
     <div className="pc-pr-card" onClick={() => navigate(`/product/${id}`)}>
@@ -62,6 +68,10 @@ const ProductCard = ({product}) => {
         >
           Add to Cart
         </button>
+      </div>
+
+      <div className="heart-btn" onClick={(e) => {e.stopPropagation(); toggleFavorite(product)}}>
+      { favorite ? <Heart fill="red" stroke="none" size={18}/> : <Heart size={18} />}
       </div>
     </div>
   );

@@ -17,6 +17,8 @@ const Cart = () => {
   const removeFromCart = useCartStore(state => state.removeFromCart);
   const clearCart = useCartStore(state => state.clearCart);
 
+
+
   // Totals using finalPrice
   const subtotal = cartItems.reduce((sum, item) => sum + (item.finalPrice || item.price) * item.qty, 0);
   const delivery = 0;
@@ -77,7 +79,6 @@ const Cart = () => {
                   {width > 850 && (
                     <div className="action-product">
                       <button className='delete-btn' onClick={() => removeFromCart(item._id)}><Delete /></button>
-                      <button className='favorite-btn'><Heart /></button>
                     </div>
                   )}
                 </div>

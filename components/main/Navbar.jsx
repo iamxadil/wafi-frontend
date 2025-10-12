@@ -15,6 +15,8 @@ import {
   IoMenu as Hamburger,
 } from "react-icons/io5";
 
+import { Heart } from 'lucide-react';
+import useFavoritesStore from "../stores/useFavoritesStore";
 import { Link } from "react-router-dom";
 import DarkMode from '../main/Darkmode.jsx';
 import Sidemenu from "./Sidemenu.jsx";
@@ -24,6 +26,7 @@ import useCartStore from "../stores/useCartStore.jsx";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 
 const Navbar = () => {
+
   const [isDropdown, setDropdown] = useState(false);
   const profile = useAuthStore((state) => state.profile);
   const {user} = useAuthStore();
@@ -35,6 +38,7 @@ const Navbar = () => {
 
   const [isSideMenuOpen, setSideMenuOpen] = useState(false);
   const toggleSideMenu = () => setSideMenuOpen(!isSideMenuOpen);
+  const favorites = useFavoritesStore((state) => state.favorites || []);
 
   useEffect(() => {
     profile();
@@ -97,7 +101,14 @@ const Navbar = () => {
           <Link to="/cart">
           <li className="icon" data-count={cartItems.length} id="cart">
           <span><CartIcon /></span>
-           </li></Link>
+           </li>
+           </Link>
+
+            <Link to="/favorites">
+            <li className="icon" data-count={favorites.length} id="favorites">
+              <span><Heart /></span>
+            </li>
+          </Link>
 
           <DarkMode/>
 

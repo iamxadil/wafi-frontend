@@ -64,7 +64,7 @@ const useProductStore = create((set, get) => ({
   finalPrice: Number(product.price || 0) - Number(product.discountPrice || 0),
 }),
   // Fetch products
-  fetchProducts: async (searchTerm = "", sort = "", filters = {}, page= 1, limit=5) => {
+  fetchProducts: async (searchTerm = "", sort = "", filters = {}, page= 1, limit=5, admin) => {
     try {
       const query = new URLSearchParams();
       if (searchTerm) query.append("search", searchTerm);
@@ -83,6 +83,7 @@ const useProductStore = create((set, get) => ({
 
       query.append("page", page);
       query.append("limit", limit);
+      if (admin) query.append("admin", "true");
 
       const res = await axios.get(`${API_URL}/api/products?${query.toString()}`, { withCredentials: true });
       const products = Array.isArray(res.data.products) ? res.data.products : [];

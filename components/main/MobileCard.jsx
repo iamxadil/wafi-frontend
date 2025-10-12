@@ -1,18 +1,27 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { BiHeart as Heart } from "react-icons/bi";
+import { Heart } from "lucide-react";
 import { IoAdd as Add } from "react-icons/io5";
 import OptimizeImage from "../hooks/OptimizeImage.jsx";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "../stores/useCartStore.jsx";
 import useAuthStore from "../stores/useAuthStore.jsx";
+import useFavoritesStore from "../stores/useFavoritesStore.jsx";
 import { toast } from "react-toastify";
 
 const MobileCard = ({ product, customDelay = 0 }) => {
+
   const id = product.id || product._id;
   const navigate = useNavigate();
+
+  //Cart
   const addToCart = useCartStore((state) => state.addToCart);
   const token = useAuthStore.getState().token;
+
+
+   //Favorites
+  const { toggleFavorite, isFavorite } = useFavoritesStore();
+  const favorite = isFavorite(product.id || product._id);
 
   const handleAddToCart = (p) => {
     if (p.countInStock <= 0) return toast.error("Out of stock");
@@ -61,7 +70,9 @@ const MobileCard = ({ product, customDelay = 0 }) => {
       {/* Action Buttons */}
       <div className="mob-pr-buttons">
         <button onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}><Add /></button>
-        <button onClick={(e) => e.stopPropagation()}><Heart /></button>
+        <button onClick={(e) => {e.stopPropagation(); toggleFavorite(product)}}>
+         { favorite ? <Heart fill="red" stroke="none" size={16}/> : <Heart  size={16}/>}
+        </button>
       </div>
     </motion.div>
   );

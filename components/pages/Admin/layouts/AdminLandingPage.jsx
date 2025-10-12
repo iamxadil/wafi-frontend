@@ -59,7 +59,6 @@ const AdminLandingPage = () => {
   const countAllProducts = useProductStore((state) => state.countAllProducts);
   const allProducts = useProductStore((state) => state.allProducts);
   const countPending = allProducts.filter((p) => !p.approved).length;
-  const countApproved = allProducts.filter((p) => p.approved).length;
 
   //Orders Related
   const fetchAllOrders = useOrderStore((state) => state.fetchAllOrders);

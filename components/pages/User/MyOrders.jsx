@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { IoIosArrowForward } from "react-icons/io";
 import useOrderStore from "../../stores/useOrderStore.jsx";
 import "../../../styles/myorderspage.css";
 
@@ -10,7 +9,6 @@ const MyOrdersPage = () => {
   const fetchMyOrders = useOrderStore((state) => state.fetchMyOrders);
   const myOrders = useOrderStore((state) => state.myOrders || []);
   const attachedOrders = useOrderStore((state) => state.attachedOrders || {});
-
   const loadingMyOrders = useOrderStore((state) => state.loadingMyOrders);
 
   // Attach states
@@ -43,14 +41,13 @@ const MyOrdersPage = () => {
     );
 
     cardRefs.current.forEach((card) => card && observer.observe(card));
-
     return () => observer.disconnect();
   }, [combinedOrders]);
 
   const handleAttachOrder = async () => {
     if (!attachId.trim()) return;
-
     setAttachError(null);
+
     try {
       await attachOrderToUser(attachId.trim());
       setAttachId("");
@@ -64,7 +61,7 @@ const MyOrdersPage = () => {
     <main className="pr-orders-page">
       <header className="pr-orders-page-header">
         <h1>My Orders</h1>
-        <p style={{marginTop: "20px"}}>View your recent purchases and track them</p>
+        <p style={{ marginTop: "20px" }}>View your recent purchases and track them</p>
       </header>
 
       <section className="pr-orders-attach">
@@ -78,7 +75,9 @@ const MyOrdersPage = () => {
           {attachLoading ? "Attaching..." : "Attach Order"}
         </button>
         {(attachError || attachErrorFromStore) && (
-          <span className="pr-orders-attach-error">{attachError || attachErrorFromStore}</span>
+          <span className="pr-orders-attach-error">
+            {attachError || attachErrorFromStore}
+          </span>
         )}
       </section>
 
@@ -107,19 +106,27 @@ const MyOrdersPage = () => {
               <div className="pr-order-card-items">
                 {order.items.map((item, i) => (
                   <div className="pr-order-item" key={i}>
+                    <img
+                      src={item.image || "/placeholder.png"}
+                      alt={item.name}
+                      className="pr-item-img"
+                    />
                     <span className="pr-item-name">{item.name}</span>
                     <span className="pr-item-qty">x{item.quantity}</span>
-                    <span className="pr-item-price">{item.price.toLocaleString()} IQD</span>
+                    <span className="pr-item-price">
+                      {item.price.toLocaleString()} IQD
+                    </span>
                   </div>
                 ))}
               </div>
 
               <div className="pr-order-card-footer">
-                <span className="pr-order-date">{new Date(order.createdAt).toLocaleDateString()}</span>
-                <span className="pr-order-total">{order.totalPrice.toLocaleString()} IQD</span>
-                <button className="pr-order-details-btn">
-                  View <IoIosArrowForward />
-                </button>
+                <span className="pr-order-date">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </span>
+                <span className="pr-order-total">
+                  {order.totalPrice.toLocaleString()} IQD
+                </span>
               </div>
             </div>
           ))

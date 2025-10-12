@@ -11,11 +11,12 @@ const ApprovalFields = () => {
     deleteSingleProduct,
   } = useProductStore();
 
+  // Fetch all products for admin on mount
   useEffect(() => {
-    fetchProducts();
+    fetchProducts("", "", {}, 1, 100, "true"); // admin = "true"
   }, [fetchProducts]);
 
-  // filter pending approvals (not approved yet)
+  // Filter products that are not approved yet
   const pendingProducts = products.filter((p) => !p.approved);
 
   return (
@@ -38,22 +39,17 @@ const ApprovalFields = () => {
           </thead>
           <tbody>
             {pendingProducts.map((product) => (
-              <tr
-                key={product.id}
-                className={`${
-                  product.status === "approved"
-                    ? "approved"
-                    : product.status === "denied"
-                    ? "denied"
-                    : ""
-                }`}
-              >
+              <tr key={product.id}>
                 <td>
-                  <img
-                    src={product.images?.[0]}
-                    alt={product.name}
-                    className="approval-thumb"
-                  />
+                  {product.images?.[0] ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="approval-thumb"
+                    />
+                  ) : (
+                    <span>No Image</span>
+                  )}
                 </td>
                 <td>{product.name}</td>
                 <td>{product.category}</td>
@@ -61,11 +57,12 @@ const ApprovalFields = () => {
                 <td>{product.price.toLocaleString()} IQD</td>
                 <td>
                   <button
-                    onClick={() => setProductApproval(product.id, "approve")}
+                    onClick={() =>
+                      setProductApproval(product.id, "approve")
+                    }
                   >
                     Approve
                   </button>
-
                   <button onClick={() => deleteSingleProduct(product.id)}>
                     Delete
                   </button>

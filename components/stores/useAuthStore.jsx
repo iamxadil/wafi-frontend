@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import { User, LogOut, Mail, Key } from 'lucide-react';
 import useCartStore from "./useCartStore";
+import useFavoritesStore from './useFavoritesStore';
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const RESEND_COOLDOWN_MS = 2 * 60 * 1000; // 2 minutes
@@ -56,8 +57,11 @@ signin: async (email, password, navigate, rememberMe) => {
 
       // Merge guest cart
       await useCartStore.getState().syncCartWithServer(true);
-      navigate("/");
 
+      useFavoritesStore.getState().initGuestFavorites();
+      await useFavoritesStore.getState().mergeOnLogin();
+
+      navigate("/");
     } catch (error) {
       set({ loading: false });
 

@@ -21,7 +21,15 @@ const Payment = () => {
   );
   const total = subtotal + delivery;
 
-  const cities = ["Baghdad", "Basra", "Mosul", "Erbil", "Najaf"];
+  const cities = ["Al-Anbar", 
+    "Erbil", "Babil", 
+    "Baghdad", "Basra",
+    "Dhi-Qar", "Duhok",
+    "Diyala", "Halabja",
+    "Karbala", "Kirkuk",
+    "Muthanna", "Maysan",
+    "Nineveh", "Najaf", "Qadisya", "Salahu-Din", "Sulaymaniyah", "Wasit"];
+
   const [phoneValid, setPhoneValid] = useState(true);
 
   // Form

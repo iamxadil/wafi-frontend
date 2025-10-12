@@ -25,7 +25,7 @@ const LaptopProducts = () => {
     fetchLaptops({
       page: 1,
       brands: selectedBrand ? [selectedBrand] : [],
-      limit: width > 650 ? 4 : 6,
+      limit: width > 650 ? 4 : 4,
     });
   }, [fetchLaptops, selectedBrand, width]);
 
@@ -54,7 +54,6 @@ const LaptopProducts = () => {
     }
   };
 
-  console.log(laptopPagination.totalPages);
   return (
     <>
       {/* Desktop */}
@@ -129,7 +128,6 @@ const LaptopProducts = () => {
                 <MobileCard
                   key={product._id || product.id}
                   product={product}
-                  customDelay={index * 0.01} // subtle stagger
                 />
               ))}
             </AnimatePresence>

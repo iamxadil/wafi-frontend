@@ -38,7 +38,7 @@ const ProductModal = ({ isOpen, onClose, productToEdit }) => {
 
   const [priceInput, setPriceInput] = useState('');
   const [discountPriceInput, setDiscountPriceInput] = useState('');
-  const [category, setCategory] = useState(productToEdit?.category || categories[0]);
+  const [category, setCategory] = useState(productToEdit?.category ?? categories[0]);
   const [specs, setSpecs] = useState(defaultSpecs);
 
   useEffect(() => {
@@ -49,13 +49,13 @@ const ProductModal = ({ isOpen, onClose, productToEdit }) => {
     }
     setImages([]);
 
-    setPriceInput(productToEdit?.price?.toLocaleString() || '');
-    setDiscountPriceInput(productToEdit?.discountPrice?.toLocaleString() || '');
-    setCategory(productToEdit?.category || categories[0]);
+    setPriceInput(productToEdit?.price?.toLocaleString() ?? '');
+    setDiscountPriceInput(productToEdit?.discountPrice?.toLocaleString() ?? '');
+    setCategory(productToEdit?.category ?? categories[0]);
     setSpecs({
       ...defaultSpecs,
       ...productToEdit?.specs,
-      colorOptions: productToEdit?.specs?.colorOptions?.join(", ") || "",
+      colorOptions: productToEdit?.specs?.colorOptions?.join(", ") ?? "",
     });
   }, [productToEdit, isOpen]);
 
@@ -73,13 +73,21 @@ const ProductModal = ({ isOpen, onClose, productToEdit }) => {
     setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    const newPreviews = files.map(file => ({ url: URL.createObjectURL(file), file, isExisting: false }));
+    setImagePreviews(prev => [...prev, ...newPreviews]);
+    setImages(prev => [...prev, ...files]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData();
     formData.append("name", e.target.name.value);
-    if (productToEdit?.sku) formData.append("sku", productToEdit.sku); // readonly
+    if (productToEdit?.sku) formData.append("sku", productToEdit.sku);
     formData.append("brand", e.target.brand.value);
     formData.append("countInStock", e.target.countInStock.value || 0);
     formData.append("category", category);
@@ -88,10 +96,18 @@ const ProductModal = ({ isOpen, onClose, productToEdit }) => {
     formData.append("description", e.target.description.value || "");
     formData.append("isTopProduct", e.target.isTopProduct.checked);
 
-    // Laptop specs only if category is Laptops
     if (category === "Laptops") {
       const specsData = { ...specs, colorOptions: specs.colorOptions.split(",").map(c => c.trim()) };
-      Object.keys(specsData).forEach(key => formData.append(`specs[${key}]`, specsData[key]));
+      
+      // Convert numeric fields safely
+      ['screenSize', 'releaseYear'].forEach(key => {
+        const value = specsData[key];
+        specsData[key] = value !== "" ? Number(value) : undefined;
+      });
+
+      Object.keys(specsData).forEach(key => {
+        if (specsData[key] !== undefined) formData.append(`specs[${key}]`, specsData[key]);
+      });
     }
 
     images.forEach(file => formData.append("images", file));
@@ -139,80 +155,94 @@ const ProductModal = ({ isOpen, onClose, productToEdit }) => {
           >
             <h2>{productToEdit ? "Edit Product" : "Add Product"}</h2>
             <form onSubmit={handleSubmit}>
+
               <div className="form-inputs">
-                <input name="name" placeholder="Product Name" required defaultValue={productToEdit?.name || ''} />
-                
-                {/* SKU readonly */}
-                <input name="sku" placeholder="SKU" value={productToEdit?.sku || 'Auto-generated'} readOnly />
-
-                <input name="brand" placeholder="Brand" required defaultValue={productToEdit?.brand || ''} />
-                <input name="countInStock" type="number" placeholder="Quantity" required defaultValue={productToEdit?.countInStock} />
-
-                {/* Category select */}
+                <input name="name" placeholder="Product Name" required defaultValue={productToEdit?.name ?? ''} />
+                <input name="sku" placeholder="SKU" value={productToEdit?.sku ?? 'Auto-generated'} readOnly />
+                <input name="brand" placeholder="Brand" required defaultValue={productToEdit?.brand ?? ''} />
+                <input
+                  name="countInStock"
+                  type="number"
+                  placeholder="Quantity"
+                  required
+                  defaultValue={productToEdit?.countInStock ?? 0}
+                />
                 <select name="category" value={category} onChange={(e) => setCategory(e.target.value)}>
                   {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
-
                 <input
                   name="price"
                   type="text"
                   placeholder="Price"
                   required
-                  value={priceInput}
+                  value={priceInput ?? ""}
                   onChange={(e) => {
                     const cleaned = e.target.value.replace(/\D/g, '');
-                    setPriceInput(Number(cleaned).toLocaleString());
+                    setPriceInput(cleaned ? Number(cleaned).toLocaleString() : "");
                   }}
                 />
                 <input
                   name="discountPrice"
                   type="text"
                   placeholder="Discount Price"
-                  value={discountPriceInput}
+                  value={discountPriceInput ?? ""}
                   onChange={(e) => {
                     const cleaned = e.target.value.replace(/\D/g, '');
-                    setDiscountPriceInput(Number(cleaned).toLocaleString());
+                    setDiscountPriceInput(cleaned ? Number(cleaned).toLocaleString() : "");
                   }}
                 />
-
-                <textarea name="description" placeholder="Description" defaultValue={productToEdit?.description || ''} />
+                <textarea name="description" placeholder="Description" defaultValue={productToEdit?.description ?? ''} />
               </div>
 
-              {/* Laptop Specs */}
               {category === "Laptops" && (
                 <div className="laptop-specs">
                   <h4>Laptop Specs</h4>
-                  <input type="text" placeholder="RAM" value={specs.ram} onChange={(e) => setSpecs(prev => ({ ...prev, ram: e.target.value }))} />
-                  <input type="text" placeholder="CPU" value={specs.cpu} onChange={(e) => setSpecs(prev => ({ ...prev, cpu: e.target.value }))} />
-                  <input type="text" placeholder="GPU" value={specs.gpu} onChange={(e) => setSpecs(prev => ({ ...prev, gpu: e.target.value }))} />
-                  <input type="text" placeholder="Storage" value={specs.storage} onChange={(e) => setSpecs(prev => ({ ...prev, storage: e.target.value }))} />
-                  <input type="number" placeholder="Screen Size (inches)" value={specs.screenSize} onChange={(e) => setSpecs(prev => ({ ...prev, screenSize: e.target.value }))} />
-                  <input type="text" placeholder="Resolution" value={specs.resolution} onChange={(e) => setSpecs(prev => ({ ...prev, resolution: e.target.value }))} />
-                  <input type="text" placeholder="OS" value={specs.os} onChange={(e) => setSpecs(prev => ({ ...prev, os: e.target.value }))} />
-                  <input type="text" placeholder="Battery" value={specs.battery} onChange={(e) => setSpecs(prev => ({ ...prev, battery: e.target.value }))} />
-                  <input type="text" placeholder="Weight" value={specs.weight} onChange={(e) => setSpecs(prev => ({ ...prev, weight: e.target.value }))} />
-                  <input type="text" placeholder="Ports" value={specs.ports} onChange={(e) => setSpecs(prev => ({ ...prev, ports: e.target.value }))} />
-                  <input type="number" placeholder="Release Year" value={specs.releaseYear} onChange={(e) => setSpecs(prev => ({ ...prev, releaseYear: e.target.value }))} />
-                  <label>
-                    <input type="checkbox" checked={specs.touchscreen} onChange={(e) => setSpecs(prev => ({ ...prev, touchscreen: e.target.checked }))} />
-                    Touchscreen
-                  </label>
-                  <input type="text" placeholder="Warranty" value={specs.warranty} onChange={(e) => setSpecs(prev => ({ ...prev, warranty: e.target.value }))} />
-                  <input type="text" placeholder="Color Options (comma separated)" value={specs.colorOptions} onChange={(e) => setSpecs(prev => ({ ...prev, colorOptions: e.target.value }))} />
+                  {Object.keys(defaultSpecs).map((key) => {
+                    if (key === "touchscreen") {
+                      return (
+                        <label key={key}>
+                          <input type="checkbox" checked={specs.touchscreen} onChange={(e) => setSpecs(prev => ({ ...prev, touchscreen: e.target.checked }))} />
+                          Touchscreen
+                        </label>
+                      );
+                    }
+                    return (
+                      <input
+                        key={key}
+                        type={key === "screenSize" || key === "releaseYear" ? "number" : "text"}
+                        placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                        value={specs[key] ?? ""}
+                        onChange={(e) => setSpecs(prev => ({ ...prev, [key]: e.target.value }))}
+                      />
+                    );
+                  })}
                 </div>
               )}
 
               <div className="top-product-field">
                 <label>
-                  <input type="checkbox" name="isTopProduct" defaultChecked={productToEdit?.isTopProduct || false} />
+                  <input type="checkbox" name="isTopProduct" defaultChecked={productToEdit?.isTopProduct ?? false} />
                   Mark as Top Product
                 </label>
               </div>
 
-              <label className="file-upload-label">
-                <input type="file" multiple accept="image/*" onChange={handleImageChange} />
-                + Upload Images
-              </label>
+              {/* Drag & Drop Image Upload */}
+              <div
+                className="file-dropzone"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('fileInput').click()}
+              >
+                <p>Drag & Drop Images Here or Click to Upload</p>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                  id="fileInput"
+                />
+              </div>
 
               <div className="image-preview-grid">
                 <AnimatePresence>

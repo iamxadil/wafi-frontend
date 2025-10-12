@@ -1,0 +1,25 @@
+#fav-container {
+  padding: 3rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+#fav-container h1 {
+  font-weight: 600;
+  font-size: 2.5rem;
+}
+
+#no-favs  {
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1rem 3rem;
+text-align: center;
+line-height: 1.5rem;
+}
+
+#no-favs a {
+  color: var(--accent-clr);
+}

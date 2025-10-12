@@ -32,7 +32,7 @@ useEffect(() => {
   if (width > 650) {
     fetchLaptops({ limit: 6 });
   } else {
-    fetchLaptops({ limit: 5 });
+    fetchLaptops({ limit: 6 });
   }
 }, [width]);
 
@@ -123,11 +123,11 @@ useEffect(() => {
       {/* Desktop Grid */}
       {width > 650 && (
         <main className="products-grid-container">
-          {laptopProducts.map((laptop) => (
-           <ProductGrid
-                key={laptop._id || laptop.id}
-                product={laptop}
-              />
+          {laptopProducts.map((laptop, index) => (
+           <ProductGrid key={laptop._id || laptop.id}
+            product={laptop} 
+            index={index} 
+            />
 
           ))}
         </main>

@@ -2,15 +2,16 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Zoom, Bounce, Flip } from 'react-toastify';
+import { Zoom } from 'react-toastify';
 import useWindowWidth from '../components/hooks/useWindowWidth.jsx';
 
-//Stores
+// Stores
 import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useThemeStore from "../components/stores/useThemeStore.jsx";
 import useCartStore from '../components/stores/useCartStore.jsx';
+import useFavoritesStore from '../components/stores/useFavoritesStore.jsx';
 
-//Components
+// Components
 import Navbar from '../components/main/Navbar.jsx';
 import Signin from "../components/pages/Auth/Signin.jsx";
 import Register from '../components/pages/Auth/Register.jsx';
@@ -20,7 +21,6 @@ import ResetPassword from '../components/pages/Auth/ResetPassword.jsx';
 import MyOrdersPage from '../components/pages/User/MyOrders.jsx';
 import Static from '../pages/Static.jsx';
 import Accessories from '../pages/Accessories.jsx';
-
 import Home from '../pages/Home'; 
 import CategoryNavigation from '../pages/CategoryNavigation.jsx';
 import CatLaptops from '../pages/CatLaptops.jsx';
@@ -42,27 +42,28 @@ import ProductDetails from '../pages/ProductDetails.jsx';
 import AppFooter from '../components/main/AppFooter.jsx';
 import { unlockAudio } from "../components/effects/PlayNotSound.jsx";
 import ScrollTop from '../components/hooks/ScrollTop.jsx';
-
+import Favorites from '../components/pages/User/Favorites.jsx';
 
 import './app.css';
-
 
 function App() {
   const location = useLocation();
   const hideNavbarOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment"];
-  const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment"];
+  const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment", "/favorites"];
+
   const user = useAuthStore((state) => state.user);
   const profile = useAuthStore((state) => state.profile);
   const theme = useThemeStore((state) => state.theme);
   const cartStore = useCartStore.getState();
+  const favoritesStore = useFavoritesStore.getState();
   const width = useWindowWidth();
 
-  // Initialize cart on app load
+  // --- Initialize cart on app load ---
   useEffect(() => {
     const init = async () => {
       try {
-        const userData = await profile(); // returns user object or null
-        await cartStore.initCart();       // safely loads server or guest cart
+        await profile();       // fetch profile if logged in
+        await cartStore.initCart(); // safely load server or guest cart
       } catch (err) {
         console.error("Failed to initialize cart:", err);
       }
@@ -70,14 +71,30 @@ function App() {
     init();
   }, []);
 
-  // Set theme
+  // --- Initialize favorites on app load ---
+  useEffect(() => {
+    const initFavorites = async () => {
+      try {
+        if (user) {
+          // logged in → load from API
+          await favoritesStore.loadFavorites?.();
+        } else {
+          // guest → load from localStorage
+          favoritesStore.initGuestFavorites?.();
+        }
+      } catch (err) {
+        console.error("Failed to initialize favorites:", err);
+      }
+    };
+    initFavorites();
+  }, [user]);
+
+  // --- Set theme ---
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-  const showAdminFeatures = user && user.role === "admin";
-
-  // Unlock audio for first click
+  // --- Unlock audio for first click ---
   useEffect(() => {
     const unlock = () => {
       unlockAudio();
@@ -87,10 +104,11 @@ function App() {
     return () => window.removeEventListener("click", unlock);
   }, []);
 
+  const showAdminFeatures = user && user.role === "admin";
+
   return (
     <>
       {!hideNavbarOn.some(path => location.pathname.startsWith(path)) && <Navbar />}
-
 
       {showAdminFeatures && (
         <>
@@ -99,15 +117,28 @@ function App() {
         </>
       )}
 
-        {width > 480 &&
-        <ToastContainer position="top-right !important" autoClose={3000} stacked draggable closeOnClick transition={Zoom} limit={4}/>
-         }
-        {width <=480 &&
-        <ToastContainer position="top-right !important" autoClose={3000} draggable closeOnClick transition={Zoom} limit={4}/>
-         }
-      
-      <ScrollTop />
+      {width > 480 ? (
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          stacked
+          draggable
+          closeOnClick
+          transition={Zoom}
+          limit={4}
+        />
+      ) : (
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          draggable
+          closeOnClick
+          transition={Zoom}
+          limit={4}
+        />
+      )}
 
+      <ScrollTop />
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -140,12 +171,13 @@ function App() {
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/category/:categoryName" element={<CategoryNavigation />} />
         <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
-        <Route path='/laptops' element={<CatLaptops />}/>
-        <Route path='/accessories' element={<Accessories />}/>
-        <Route path='/static' element={<Static />}/>
-
+        <Route path='/laptops' element={<CatLaptops />} />
+        <Route path='/accessories' element={<Accessories />} />
+        <Route path='/favorites' element={<Favorites />} />
+        <Route path='/static' element={<Static />} />
       </Routes>
-           {!footerOn.some(path => location.pathname.startsWith(path)) && <AppFooter />}
+
+      {!footerOn.some(path => location.pathname.startsWith(path)) && <AppFooter />}
     </>
   );
 }

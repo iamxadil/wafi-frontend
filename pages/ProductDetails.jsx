@@ -116,12 +116,8 @@ const descriptionLines = selectedProduct.description
   ? selectedProduct.description
       // Normalize newlines
       .replace(/\r\n|\r/g, "\n")
-      // Add newline before bullets/dashes if missing
-      .replace(/\s*[•\-–—]\s*/g, "\n$&")
-      // Split sentences by punctuation + space + capital/number
-      .split(/(?<=[.!?])\s+(?=[A-Z0-9])/g)
-      // Split further by newlines
-      .flatMap(line => line.split(/\n+/))
+      // Split on ". " but keep the dot at the end of each sentence
+      .split(/(?<=\.) +/)
       // Trim whitespace
       .map(line => line.trim())
       // Remove empty lines
@@ -143,6 +139,7 @@ const descriptionLines = selectedProduct.description
           : bullet + line;
       })
   : [];
+
 
 
   const avgRating = selectedProduct.reviews?.length

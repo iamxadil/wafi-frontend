@@ -22,7 +22,6 @@ const ProfileDropdown = ({ className, onClose }) => {
 
   return (
     <ul className={`profile-dropdown ${className || ''}`} onClick={handleClick}>
-      <li onClick={onClose}><HeartIcon/>My Favorites</li>
       <li onClick={onClose}><Link to="/my-orders"><OrdersIcon/> My Orders </Link></li>
       <li onClick={onClose}> <Link to="/settings"><SettingsIcon/> Settings</Link></li>
       <li onClick={handleLogout}>

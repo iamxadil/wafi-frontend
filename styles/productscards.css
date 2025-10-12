@@ -453,7 +453,6 @@ select.custom:disabled {
   border: 1px solid var(--text);
   border-radius: 4px;
   padding: 6px 8px;
-  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -494,3 +493,23 @@ select.custom:disabled {
   color: var(--text);
 } /* yellow */
 
+.heart-btn {
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 2%;
+  right: 3%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.heart-btn:hover {
+    background-color: rgb(80, 13, 13);
+    scale: 1.14;
+    color: #fff;
+
+}
