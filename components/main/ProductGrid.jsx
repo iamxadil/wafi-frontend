@@ -8,6 +8,8 @@ import useAuthStore from "../stores/useAuthStore.jsx";
 import useCartStore from "../stores/useCartStore.jsx";
 import useFavoritesStore from "../stores/useFavoritesStore.jsx";
 import { toast } from "react-toastify";
+import "../../styles/grids.css";
+
 
 const ProductGrid = ({ product, animateEntry = true, index }) => {
   const cardRef = useRef(null);
