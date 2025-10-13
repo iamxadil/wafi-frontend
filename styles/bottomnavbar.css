@@ -19,13 +19,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
   border-radius: 2rem;
   padding: 8px 14px;
   box-shadow: 0 0.5px 12px rgba(3,8,18,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
   border: 1px solid var(--panel-border);
   backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
   user-select: none;
+  overflow: visible;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Morphing Gooey Blob */
@@ -35,6 +37,7 @@
   top: 0;
   border-radius: 999px;
   filter: url(#goo);
+  -webkit-filter: url(#goo);
   z-index: 1;
   pointer-events: none;
   display: flex;
@@ -43,6 +46,8 @@
   opacity: 0.98;
   touch-action: pan-x;
   cursor: grab;
+  will-change: transform;
+  transform: translate3d(0,0,0);
 }
 
 .morph-blob-inner {
@@ -70,7 +75,9 @@
   background: radial-gradient(circle at 40% 30%, #6ee7b7, rgba(110,231,183,0.2));
   pointer-events: none;
   filter: blur(1.5px);
+  -webkit-filter: blur(1.5px);
   will-change: transform, opacity;
+  transition: transform 0.18s ease-out, opacity 0.3s ease-in-out;
 }
 
 /* Nav Items */
@@ -145,8 +152,8 @@
 /* Badges for cart/favorites */
 .nav-badge {
   position: absolute;
-  top: -2px;
-  right: -2px;
+  top: -6px;
+  right: -6px;
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
@@ -161,6 +168,7 @@
   box-shadow: 0 0 12px rgba(110,231,183,0.45);
   pointer-events: none;
   z-index: 3;
+  animation: badgePulse 1.2s ease-in-out infinite;
 }
 
 @keyframes badgePulse {
