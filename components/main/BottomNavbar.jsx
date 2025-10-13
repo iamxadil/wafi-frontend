@@ -179,7 +179,7 @@ export default function BottomNavbar() {
     >
       <svg width="0" height="0">
         <defs>
-       <filter id="goo" x="-50%" y="-50%" width="200%" height="200%">
+       <filter id="goo" x="-50%" y="-50%" width="400%" height="400%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
           <feColorMatrix
             in="blur"
@@ -207,7 +207,7 @@ export default function BottomNavbar() {
               width: b.size,
               height: b.size,
               transform: `translate3d(${b.x - blob.x + b.offsetX}px, ${b.y - blob.y + b.offsetY}px, 0)`,
-              opacity: 0.6 + Math.random() * 0.3,
+              opacity: 0.6 + Math.random() * 4,
             }}
           />
         ))}
