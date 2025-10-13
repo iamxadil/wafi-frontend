@@ -197,25 +197,23 @@ export default function BottomNavbar() {
       </svg>
 
       <ul id="bottom-links" ref={containerRef}>
-      <div id="morph-blob" style={blobStyle}>
-        <div className="goo-wrap">
-          <div className="morph-blob-inner">
-            {bubbles.map((b) => (
-              <span
-                key={b.id}
-                className="bubble"
-                style={{
-                  width: b.size,
-                  height: b.size,
-                  transform: `translate3d(${b.x - blob.x + b.offsetX}px, ${b.y - blob.y + b.offsetY}px, 0)`,
-                  opacity: 0.6 + Math.random() * 0.3,
-                  transition: "transform 0.18s ease-out, opacity 0.3s ease-in-out",
-                }}
-              />
-            ))}
-          </div>
-        </div>
+     <div id="morph-blob" style={blobStyle}>
+      <div className="morph-blob-inner">
+        {bubbles.map((b) => (
+          <span
+            key={b.id}
+            className="bubble"
+            style={{
+              width: b.size,
+              height: b.size,
+              transform: `translate3d(${b.x - blob.x + b.offsetX}px, ${b.y - blob.y + b.offsetY}px, 0)`,
+              opacity: 0.6 + Math.random() * 0.3,
+            }}
+          />
+        ))}
       </div>
+    </div>
+
 
 
         {LINKS.map((link, i) => {
