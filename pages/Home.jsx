@@ -8,11 +8,9 @@ import Offers from '../components/main/Offers.jsx';
 import TrendingProducts from "../components/main/TrendingProducts.jsx";
 import MobLandingPage from "../components/main/MobLandingPage.jsx";
 
-
 const Home = () => {
 
   const width = useWindowWidth();
-
   return (
     <>
       {width > 650 && <LandingPage />}

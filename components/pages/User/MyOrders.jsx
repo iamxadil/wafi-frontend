@@ -1,8 +1,35 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import useOrderStore from "../../stores/useOrderStore.jsx";
 import "../../../styles/myorderspage.css";
+import { Link } from "react-router-dom";
+import {motion} from 'framer-motion';
+import useAuthStore from "../../stores/useAuthStore.jsx";
 
 const MyOrdersPage = () => {
+  //User
+  const user = useAuthStore((state) => state.user);
+
+
+ if (!user) {
+  return (
+    <main id='not-signed-in-page'>
+      <motion.div 
+        className='not-signed-in-glass'
+         initial={{ opacity: 0, y: 50 }}   // start 50px below
+        animate={{ opacity: 1, y: 0 }}    // move to original position
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+        <h2>Welcome!</h2>
+        <p>You need to sign in or register to view your orders.</p>
+        <div className='auth-buttons'>
+          <Link to='/signin' className='btn-login'>Sign In</Link>
+          <Link to='/register' className='btn-register'>Register</Link>
+        </div>
+      </motion.div>
+    </main>
+  );
+}
+
   const cardRefs = useRef([]);
 
   // Fetching states
@@ -18,6 +45,8 @@ const MyOrdersPage = () => {
 
   const [attachId, setAttachId] = useState("");
   const [attachError, setAttachError] = useState(null);
+
+
 
   // Combine myOrders and attachedOrders safely
   const combinedOrders = useMemo(() => {

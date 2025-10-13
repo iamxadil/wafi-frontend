@@ -1,108 +1,130 @@
-import React, { useState } from "react";
-import { MdOutlineCloseFullscreen as Close } from "react-icons/md";
+// src/components/Sidemenu.jsx
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { X, Laptop, Cpu, Router, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import "../../styles/sidemenu.css";
 
+const menuData = [
+  {
+    title: "Laptops",
+    icon: <Laptop size={25} />,
+    items: [
+      { label: "All Laptops", path: "/laptops" },
+      { label: "Acer", path: "/category/laptops/Acer" },
+      { label: "Asus", path: "/category/laptops/Asus" },
+      { label: "Apple", path: "/category/laptops/Apple" },
+      { label: "MSI", path: "/category/laptops/MSI" },
+      { label: "Dell", path: "/category/laptops/Dell" },
+      { label: "HP", path: "/category/laptops/HP" },
+      { label: "Lenovo", path: "/category/laptops/Lenovo" },
+    ],
+  },
+  {
+    title: "Accessories",
+    icon: <Cpu size={25} />,
+    items: [
+      { label: "All Accessories", path: "/accessories" },
+      { label: "Headphones", path: "/category/Headphones" },
+      { label: "Mice", path: "/category/Mice" },
+      { label: "Keyboards", path: "/category/Keyboards" },
+    ],
+  },
+  {
+    title: "Networking",
+    icon: <Router size={25} />,
+    items: [
+      { label: "All Components", path: "/others" },
+      { label: "Routers", path: "/category/Routers" },
+      { label: "Cables", path: "/category/Cables" },
+      { label: "Adapters", path: "/category/Adapters" },
+    ],
+  },
+];
+
 const Sidemenu = ({ isOpen, setIsOpen }) => {
-  const [openMenus, setOpenMenus] = useState({
-    laptops: false,
-    accessories: false,
-    others: false,
-  });
+  const [openIndex, setOpenIndex] = useState(null);
+  const navigate = useNavigate();
 
-  const toggleMenu = (menuName) => {
-    setOpenMenus((prev) => ({
-      laptops: false,
-      accessories: false,
-      others: false,
-      ...(prev[menuName] ? {} : { [menuName]: true }),
-    }));
+  // Disable background scroll
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
+    return () => { document.body.style.overflow = "auto"; };
+  }, [isOpen]);
+
+  const toggleSubmenu = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
   };
 
-    const navigate = useNavigate();
-
-    const handleNavigation = (path) => {
-    navigate(path);   // navigate to the new route
-    setIsOpen(false); // close the side menu
+  const handleNavigate = (path) => {
+    navigate(path);
+    setIsOpen(false);
   };
-  
-  return (
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <motion.nav
-          id="sidemenu-container"
-          initial={{ x: "100%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "100%", opacity: 0 }}
-          transition={{ type: "tween", duration: 0.3 }}
-          drag="x"
-          dragDirectionLock
-          dragConstraints={{ left: 0, right: 0 }}
-          onDragEnd={(event, info) => {
-            if (info.offset.x > 200) {
-              setIsOpen(false);
-            }
-          }}
-        >
-          <div className="close-sidemenu" onClick={() => setIsOpen(false)}>
-            <Close size={25} />
-          </div>
+        <>
+          {/* Backdrop */}
+          <motion.div
+            className="sidemenu-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+          />
 
-          <ul>
-            <li className="sub-name">
-              <Link to="/" onClick={() => setIsOpen(!isOpen)}><button>Home</button></Link>
-            </li>
+          {/* Menu */}
+          <motion.nav
+            className="sidemenu-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="sidemenu-close" onClick={() => setIsOpen(false)}>
+              <h1>Menu <X size={24} /></h1>
+            </div>
 
-            <li className="sub-name">
-              <button onClick={() => toggleMenu("laptops")}>Laptops</button>
-              {openMenus.laptops && (
-                <ul>
-                  <li onClick={() => handleNavigation("/laptops")}>All Laptops</li>
-                  <li onClick={() => handleNavigation("/category/laptops/Acer")}>Acer</li>
-                  <li onClick={() => handleNavigation("/category/laptops/Asus")}>Asus</li>
-                  <li onClick={() => handleNavigation("/category/laptops/Apple")}>Apple</li>
-                  <li onClick={() => handleNavigation("/category/laptops/Lenovo")}>Lenovo</li>
-                  <li onClick={() => handleNavigation("/category/laptops/HP")}>HP</li>
-                  <li onClick={() => handleNavigation("/category/laptops/MSI")}>MSI</li>
-                  <li onClick={() => handleNavigation("/category/laptops/Dell")}>Dell</li>
-                </ul>
-              )}
-            </li>
+            <ul className="sidemenu-list">
+              {menuData.map((menu, i) => (
+                <li key={i}>
+                  <button className="sidemenu-main-btn" onClick={() => toggleSubmenu(i)}>
+                    <span className="sidemenu-icon">{menu.icon}</span>
+                    <span className="sidemenu-title">{menu.title}</span>
+                    <span className="sidemenu-arrow">{openIndex === i ? <ChevronUp /> : <ChevronDown />}</span>
+                  </button>
 
-            <li className="sub-name">
-              <button onClick={() => toggleMenu("accessories")}>Accessories</button>
-              {openMenus.accessories && (
-                <ul>
-                  <li onClick={() => handleNavigation("/accessories")}>All Acessories</li>
-                  <li onClick={() => handleNavigation("/category/Keyboards")}>Keyboards</li>
-                  <li onClick={() => handleNavigation("/category/Mice")}>Mice</li>
-                  <li onClick={() => handleNavigation("/category/Headphones")}>Headphones</li>
-                  <li onClick={() => handleNavigation("/category/Joysticks")}>Joysticks</li>
-                </ul>
-              )}
-            </li>
-
-            <li className="sub-name">
-              <button onClick={() => toggleMenu("others")}>Others</button>
-              {openMenus.others && (
-                <ul>
-                  <li onClick={() => handleNavigation("/others")}>All</li>
-                  <li onClick={() => handleNavigation("/category/Routers")}>Routers</li>
-                  <li onClick={() => handleNavigation("/category/Cables")}>Cables</li>
-                  <li onClick={() => handleNavigation("/category/Adapters")}>Adapters</li>
-                </ul>
-              )}
-            </li>
-
-            <li className="sub-name">
-              <button>Contact Us</button>
-            </li>
-          </ul>
-        </motion.nav>
+                  <AnimatePresence>
+                    {openIndex === i && (
+                      <motion.ul
+                        className="sidemenu-sublist"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        {menu.items.map((item, j) => (
+                          <li
+                            key={j}
+                            className="sidemenu-subitem"
+                            onClick={() => handleNavigate(item.path)}
+                          >
+                            {item.label}
+                          </li>
+                        ))}
+                      </motion.ul>
+                    )}
+                  </AnimatePresence>
+                </li>
+              ))}
+            </ul>
+          </motion.nav>
+        </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

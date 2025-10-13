@@ -1,0 +1,170 @@
+:root {
+  --panel-bg: rgba(6,10,18,0.42);
+  --panel-border: rgba(255,255,255,0.06);
+  --accent: #6ee7b7;
+  --accent-glow: rgba(43,209,143,0.14);
+  --text: #eaf6f3;
+}
+
+/* Bottom Navbar Container */
+#bottom-navbar {
+  position: fixed;
+  left: 50%;
+  bottom: 2.4%;
+  transform: translateX(-50%);
+  width: 88vw;
+  max-width: 560px;
+  height: 74px;
+  z-index: 2400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius: 2rem;
+  padding: 8px 14px;
+  box-shadow: 0 0.5px 12px rgba(3,8,18,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(14px) saturate(160%);
+  user-select: none;
+}
+
+/* Morphing Gooey Blob */
+#morph-blob {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 999px;
+  filter: url(#goo);
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.98;
+  touch-action: pan-x;
+  cursor: grab;
+}
+
+.morph-blob-inner {
+  width: 78%;
+  height: 78%;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.15) 6%, rgba(110,231,183,0.3) 36%, rgba(43,209,143,0.45) 100%);
+  box-shadow: 0 18px 60px rgba(43,209,143,0.14), inset 0 3px 12px rgba(255,255,255,0.06), inset 0 -6px 24px rgba(8,14,20,0.26);
+  position: relative;
+  overflow: hidden;
+  will-change: transform, box-shadow;
+  animation: blobGlow 3.8s ease-in-out infinite alternate;
+}
+
+@keyframes blobGlow {
+  0% { box-shadow: 0 18px 60px rgba(43,209,143,0.14), inset 0 3px 12px rgba(255,255,255,0.06), inset 0 -6px 24px rgba(8,14,20,0.26); }
+  50% { box-shadow: 0 22px 68px rgba(43,209,143,0.22), inset 0 4px 14px rgba(255,255,255,0.08), inset 0 -7px 28px rgba(8,14,20,0.32); }
+  100% { box-shadow: 0 18px 60px rgba(43,209,143,0.14), inset 0 3px 12px rgba(255,255,255,0.06), inset 0 -6px 24px rgba(8,14,20,0.26); }
+}
+
+/* Bubbles */
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #6ee7b7, rgba(110,231,183,0.2));
+  pointer-events: none;
+  filter: blur(1.5px);
+  will-change: transform, opacity;
+}
+
+/* Nav Items */
+#bottom-links {
+  position: relative;
+  width: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0 6px;
+  list-style: none;
+}
+
+.nav-item {
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 54px;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 54px;
+  height: 54px;
+}
+
+.nav-link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  color: var(--text);
+  transition: transform 300ms cubic-bezier(.22,1,.36,1), color 250ms ease;
+  position: relative;
+  z-index: 2;
+}
+
+.nav-link:hover, .nav-link:focus {
+  transform: translateY(-8px) scale(1.05);
+  color: var(--accent);
+  outline: none;
+}
+
+.nav-link.active {
+  color: var(--accent);
+  transform: translateY(0px) scale(1.09);
+}
+
+.nav-link.active::after {
+  content:"";
+  position:absolute;
+  bottom:8px;
+  left:50%;
+  transform:translateX(-50%);
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background: var(--accent) ;
+  box-shadow:0 6px 20px rgba(43,209,143,0.16);
+  z-index:2;
+}
+
+/* Badges for cart/favorites */
+.nav-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 12px rgba(110,231,183,0.45);
+  pointer-events: none;
+  z-index: 3;
+}
+
+@keyframes badgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}

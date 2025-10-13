@@ -23,3 +23,59 @@ line-height: 1.5rem;
 #no-favs a {
   color: var(--accent-clr);
 }
+
+
+/* Favorites Page - No Favorites */
+#no-favs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #eaf6f3;
+  border-radius: 16px;
+  margin: 40px auto;
+  width: 82vw;
+  max-width: 600px;
+  backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: 2px 1px 12px rgba(6,10,18,0.6), inset 12px 2px 0px 0px rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#no-favs:hover {
+  transform: translateY(-4px);
+}
+
+#no-favs p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-top: 12px;
+    color: var(--text);
+
+}
+
+#no-favs a {
+  color: #6ee7b7;
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  transition: all 0.25s ease;
+  
+}
+
+#no-favs a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0%;
+  height: 2px;
+  background: #6ee7b7;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+#no-favs a:hover::after {
+  width: 100%;
+}

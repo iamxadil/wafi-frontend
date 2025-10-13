@@ -19,6 +19,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  padding: 4rem 0;
 
 }
 
@@ -512,4 +513,12 @@ select.custom:disabled {
     scale: 1.14;
     color: #fff;
 
+}
+
+.lg-header {
+  width: 100%;
+  padding: 4rem 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

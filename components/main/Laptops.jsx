@@ -123,14 +123,12 @@ const LaptopProducts = () => {
           </header>
 
           <div className="mob-pr-cards">
-            <AnimatePresence initial={false}>
               {laptopProducts.map((product, index) => (
                 <MobileCard
                   key={product._id || product.id}
                   product={product}
                 />
               ))}
-            </AnimatePresence>
           </div>
         </main>
       )}

@@ -3,12 +3,15 @@ import '../../../styles/profilepage.css';
 import useAuthStore from '../../stores/useAuthStore';
 import { toast } from 'react-toastify';
 import ChangePassword from './ChangePassword';
-import useOrderStore from '../../stores/useOrderStore';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Profile = () => {
-  const { profile, user, updateProfile } = useAuthStore();
+  const { profile, user, updateProfile, logout } = useAuthStore();
   const [isEdit, setIsEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
   const handleOpenModal = () => setShowModal(true);
 
   const [formData, setFormData] = useState({
@@ -17,9 +20,6 @@ const Profile = () => {
     currentPassword: '',
     newPassword: '',
   });
-
-  const { fetchLastOrder, lastOrder, loading } = useOrderStore();
-  const [carouselIndex, setCarouselIndex] = useState(0);
 
   // Initialize user profile
   useEffect(() => {
@@ -35,12 +35,7 @@ const Profile = () => {
         newPassword: '',
       });
     }
-  }, []);
-
-  // Fetch last order
-  useEffect(() => {
-    fetchLastOrder();
-  }, []);
+  }, [user]);
 
   const handleSave = async () => {
     try {
@@ -61,24 +56,36 @@ const Profile = () => {
     }
   };
 
-  // Carousel navigation
-  const handlePrev = () => {
-    if (!lastOrder || !lastOrder.items) return;
-    setCarouselIndex((prev) =>
-      prev === 0 ? lastOrder.items.length - 1 : prev - 1
-    );
+  const handleLogout = () => {
+    logout(navigate);
   };
 
-  const handleNext = () => {
-    if (!lastOrder || !lastOrder.items) return;
-    setCarouselIndex((prev) =>
-      prev === lastOrder.items.length - 1 ? 0 : prev + 1
-    );
-  };
+  // --- Conditional Rendering ---
+ if (!user) {
+  return (
+    <main id='not-signed-in-page'>
+      <motion.div 
+        className='not-signed-in-glass'
+         initial={{ opacity: 0, y: 50 }}   // start 50px below
+        animate={{ opacity: 1, y: 0 }}    // move to original position
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+        <h2>Welcome!</h2>
+        <p>You need to sign in or register to view your profile.</p>
+        <div className='auth-buttons'>
+          <Link to='/signin' className='btn-login'>Sign In</Link>
+          <Link to='/register' className='btn-register'>Register</Link>
+        </div>
+      </motion.div>
+    </main>
+  );
+}
+
 
   return (
     <main id='profile-page'>
       {showModal && <ChangePassword onClose={() => setShowModal(false)} />}
+
       <header id='welcome'>
         <h1>
           <span style={{ fontWeight: '200' }}>Hello,</span> {formData.name || user?.name}
@@ -132,54 +139,11 @@ const Profile = () => {
             <button className='change-password' onClick={handleOpenModal}>
               Change Password
             </button>
+
+            <button className='logout-btn' onClick={handleLogout}>
+              Logout
+            </button>
           </div>
-        </div>
-
-        {/* Last Order */}
-        <div id="last-order">
-          <h1 id='last-order-title'>Last Order</h1>
-
-          {loading && <p>Loading...</p>}
-          {!loading && !lastOrder && <div className='no-order-card'> <p>No orders yet.</p> </div> }
-
-          {lastOrder && lastOrder.items.length > 0 && (
-            <div className="order-card">
-              <div className="order-summary">
-                <p>
-                    <span className={`status ${lastOrder.status.toLowerCase().replace(/\s+/g, "-")}`}>
-                      {lastOrder.status}
-                    </span>
-                  </p>
-                <p>Total: {lastOrder.totalPrice.toLocaleString()} IQD</p>
-              </div>
-
-              <div className="order-carousel">
-                <button className="arrow left" onClick={handlePrev}>
-                  &#10094;
-                </button>
-
-                <div className="order-items">
-                  <div className="order-item-card">
-                    <img
-                      src={lastOrder.items[carouselIndex].image}
-                      alt={lastOrder.items[carouselIndex].name}
-                    />
-
-                    <div className='order-item-info'>
-                    <p>{lastOrder.items[carouselIndex].name}</p>
-                    <p>Price: {lastOrder.items[carouselIndex].price.toLocaleString()} IQD</p>
-                    <p>Quantity: {lastOrder.items[carouselIndex].quantity}</p>
-                    </div>
-                   
-                  </div>
-                </div>
-
-                <button className="arrow right" onClick={handleNext}>
-                  &#10095;
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </section>
     </main>

@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Zoom } from 'react-toastify';
 import useWindowWidth from '../components/hooks/useWindowWidth.jsx';
+import { Hamburger } from 'lucide-react';
 
 // Stores
 import useAuthStore from "../components/stores/useAuthStore.jsx";
@@ -43,13 +44,17 @@ import AppFooter from '../components/main/AppFooter.jsx';
 import { unlockAudio } from "../components/effects/PlayNotSound.jsx";
 import ScrollTop from '../components/hooks/ScrollTop.jsx';
 import Favorites from '../components/pages/User/Favorites.jsx';
+import BottomNavbar from "../components/main/BottomNavbar.jsx";
+import Sidemenu from '../components/main/Sidemenu.jsx';
+
 
 import './app.css';
 
 function App() {
   const location = useLocation();
   const hideNavbarOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment"];
-  const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment", "/favorites"];
+  const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment", "/favorites", "/my-orders", "/settings"];
+  const bottomNavbarOn = ["/admin-dashboard"];
 
   const user = useAuthStore((state) => state.user);
   const profile = useAuthStore((state) => state.profile);
@@ -108,8 +113,8 @@ function App() {
 
   return (
     <>
-      {!hideNavbarOn.some(path => location.pathname.startsWith(path)) && <Navbar />}
 
+      {!hideNavbarOn.some(path => location.pathname.startsWith(path)) && <Navbar />}
       {showAdminFeatures && (
         <>
           <NotificationToast />
@@ -163,8 +168,8 @@ function App() {
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
         {/* User & cart */}
-        <Route path="/settings" element={<AllowedRoute><Profile /></AllowedRoute>} />
-        <Route path="/my-orders" element={<AllowedRoute><MyOrdersPage /></AllowedRoute>} />
+        <Route path="/settings" element={<Profile />} />
+        <Route path="/my-orders" element={<MyOrdersPage />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/payment' element={<Payment />} />
         <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
@@ -177,6 +182,7 @@ function App() {
         <Route path='/static' element={<Static />} />
       </Routes>
 
+      {!bottomNavbarOn.some(path => location.pathname.startsWith(path)) && <BottomNavbar />}
       {!footerOn.some(path => location.pathname.startsWith(path)) && <AppFooter />}
     </>
   );

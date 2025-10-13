@@ -109,112 +109,6 @@
 }
 
 /* -------------------------
-   Last Order Section
-   ------------------------- */
-#last-order {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 500px;
-}
-
-#last-order #last-order-title {
-  font-weight: 600;
-  font-size: 1.4rem;
-}
-
-/* Order Card */
-.order-card {
-  border: 1px solid var(--text);
-  border-radius: 12px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.no-order-card {
-    border: 1px solid ;
-    border-radius: 12px;
-    padding: 1rem;
-    height: 200px;
- 
-}
-
-/* Order Summary */
-.order-summary {
-  display: flex;
-  justify-content: space-between;
-  gap: 6px;
-  font-weight: 500;
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-
-
-}
-
-/* Carousel Container */
-.order-carousel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-  
-}
-
-.order-carousel .arrow {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-
-/* Items inside order (carousel) */
-.order-items {
-  display: flex;
-  gap: 1rem;
-  overflow: hidden;
-  flex: 1;
-  justify-content: center;
-
-
-}
-
-.order-item-card {
-  min-width: 150px;
-  flex-shrink: 0;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  height: auto;
-  min-height: 120px;
-  gap: 0.45rem;
-  padding: 8px;
-
-  h1 {
-    font-size: 1.4rem;
-  font-weight: 600;
-  }
-}
-
-.order-item-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.order-item-card img {
-  max-width: 100px;
-  border-radius: 4px;
-  object-fit: contain;
-}
-
-/* -------------------------
    Responsive Styles
    ------------------------- */
 @media (max-width: 900px) {
@@ -224,77 +118,10 @@
 
 }
 
-
-
-}
-
-
-@media (max-width: 490px) {
-
-.order-item-card {
-    flex-direction: column;
-    padding: 12px;
-
-}
-
-.order-item-info p{
-    font-size: 0.9rem;
-    display: flex;
-}
-
-.order-summary .status {
-      font-size: 0.85rem;
-      margin-top: 4px;
-}
-
-.order-summary  {
-    align-items: center;
 }
 
 
 
-}
-
-/* -------------------------
-   Scrollbar Styling
-   ------------------------- */
-.order-items::-webkit-scrollbar {
-  height: 6px;
-}
-
-.order-items::-webkit-scrollbar-thumb {
-  background-color: var(--text);
-  border-radius: 3px;
-}
-
-
-/* Status inside order summary */
-.order-summary .status {
-  position: relative;
-  display: inline-block;
-  font-weight: 600;
-  padding: 0.3rem 0.4rem;
-  border-radius: 6px;
-  color: white;
-  z-index: 1; /* Keep text above the pulse */
-  overflow: hidden; /* clip pseudo-element */
-}
-
-/* Create the pulsing wave */
-.order-summary .status::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  background-color: inherit; /* inherit the status color */
-  border-radius: 6px;
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 0.5;
-  z-index: 0;
-  animation: pulse-wave 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
-}
 
 /* Pulse wave animation */
 @keyframes pulse-wave {
@@ -312,22 +139,79 @@
   }
 }
 
-/* Status colors */
-.order-summary .status.waiting {
-  background-color: rgb(87, 0, 0);
+
+
+
+/* Static neon glass card - ultra elegant */
+
+#not-signed-in-page {
+    position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(51, 51, 51, 0.195); /* subtle border */
+  border-radius: 2rem;
+  padding: 3rem 2rem;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
 }
-.order-summary .status.packaging {
-  background-color: #3498db;
+
+/* Header text - neon accent, subtle glow */
+.not-signed-in-glass h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: #6ee7b7; /* neon accent */
 }
-.order-summary .status.on-the-way {
-  background-color: #cc9900;
+
+/* Description */
+.not-signed-in-glass p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: var(--text);
+  line-height: 1.5;
 }
-.order-summary .status.delivered {
-  background-color: green;
+
+/* Buttons container */
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
 }
-.order-summary .status.canceled {
-  background-color: red;
+
+/* Buttons styling - minimalist glassy pills */
+.auth-buttons .btn-login,
+.auth-buttons .btn-register {
+  padding: 0.6rem 1.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 105, 70, 0.881);
+  background: rgba(11, 140, 71, 0.08);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
 }
-.order-summary .status.refunded {
-  background-color: purple;
+
+/* Hover effect - subtle lift and color change */
+.auth-buttons .btn-login:hover,
+.auth-buttons .btn-register:hover {
+  background: rgba(110, 231, 183, 0.18);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 395px) {
+  #not-signed-in-page {
+    width: 90%;
+  }
+
+  .auth-buttons .btn-login,
+  .auth-buttons .btn-register{
+    font-size: 0.90rem;
+  }
 }

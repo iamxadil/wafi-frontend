@@ -29,12 +29,11 @@ const CatLaptops = () => {
 
 useEffect(() => {
   fetchTopLaptops(4);
-  if (width > 650) {
-    fetchLaptops({ limit: 6 });
-  } else {
-    fetchLaptops({ limit: 6 });
-  }
-}, [width]);
+  fetchLaptops({ limit: 6 });
+
+
+  
+}, [fetchLaptops, fetchTopLaptops]);
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -104,7 +103,7 @@ useEffect(() => {
 
       {/* Top Picks */}
       <header className="cat-tops-container" ref={topPicksRef}>
-        <h1>Our Top Picks</h1>
+        <h1>Top Rated Laptops</h1>
       </header>
 
       {/* Desktop Top Cards */}

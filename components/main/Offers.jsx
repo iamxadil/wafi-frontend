@@ -44,7 +44,6 @@ const Offers = () => {
               <h1>Offers</h1>
             </header>
             <div className="mob-pr-cards">
-              <AnimatePresence initial={false}>
                 {offerProducts.map((product, index) => (
                   <MobileCard
                     key={product._id || product.id}
@@ -52,7 +51,6 @@ const Offers = () => {
                     customDelay={index * 0.08}
                   />
                 ))}
-              </AnimatePresence>
             </div>
           </>
         )}

@@ -53,7 +53,7 @@ const SideDashboard = () => {
           </li>
         )}
 
-        <DarkMode />
+      
 
         {/* Notifications - visible to everyone */}
         <li className="menu">

@@ -1,53 +1,109 @@
-#sidemenu-container {
-  backdrop-filter: blur(25px);
-  position: fixed;
-  right: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  z-index: 2000;
-
-
-}
-
-.close-sidemenu {
-  background-color: rgba(220, 20, 60, 0.108);
-  width: 50px;
-  height: 50px;
+.sidemenu-backdrop {
   position: absolute;
-  top: 5%;
-  right: 5%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  cursor: pointer;
-  
-  svg {
-    color: var(--text);
-  }
+  inset: 0;
+  z-index: 5000;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Safari */
 }
 
-#sidemenu-container ul {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5em;
-}
-
-.sub-name {
-  width: 150px;
+.sidemenu-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  z-index: 5000;
+  padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
+  backdrop-filter: blur(12px);
+
+ 
+}
+
+.sidemenu-close {
+  display: flex;
   align-items: center;
-  justify-content: flex-start;
-  border-radius: 12px;
+}
+
+.sidemenu-close h1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  color: #fff;
+}
+
+.sidemenu-list {
+  list-style: none;
+  padding: 2rem 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
 
 }
 
-.sub-name button {
+.sidemenu-main-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 6px;
+  padding: 0.85rem;
+  padding-left: 0 !important;
   background: none;
-  border: none;
- font-weight: 800;
+  border-radius: 24px;
+  border: var(--theme);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+
+
+
+}
+
+.sidemenu-icon {
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  
+}
+
+.sidemenu-title {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.sidemenu-arrow {
+  margin-left: auto;
+  font-size: 0.7rem;
+}
+
+.sidemenu-sublist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
+  align-items: flex-start; 
+  border-left: 1px solid rgb(48, 185, 3);
+  
+}
+
+.sidemenu-subitem {
+  cursor: pointer;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-weight: 400;
+  transition: all 0.5s ease;
+  color: #fff;
+  width: 100%;
+  
+
 }
 

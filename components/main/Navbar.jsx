@@ -12,8 +12,9 @@ import {
   IoLaptopOutline as LaptopIcon,
   IoGameControllerOutline as JoystickIcon,
   IoShapesOutline as OthersIcon,
-  IoMenu as Hamburger,
+  IoMenu as Menu
 } from "react-icons/io5";
+import { Menu as MenuIcon } from "lucide-react"; // hamburger icon
 
 import { Heart } from 'lucide-react';
 import useFavoritesStore from "../stores/useFavoritesStore";
@@ -27,6 +28,7 @@ import useWindowWidth from "../hooks/useWindowWidth.jsx";
 
 const Navbar = () => {
 
+  const [menuOpen, setMenuOpen] = useState(false);
   const [isDropdown, setDropdown] = useState(false);
   const profile = useAuthStore((state) => state.profile);
   const {user} = useAuthStore();
@@ -35,9 +37,6 @@ const Navbar = () => {
   const toggleDropdown = () => setDropdown(!isDropdown);
   const width = useWindowWidth();
 
-
-  const [isSideMenuOpen, setSideMenuOpen] = useState(false);
-  const toggleSideMenu = () => setSideMenuOpen(!isSideMenuOpen);
   const favorites = useFavoritesStore((state) => state.favorites || []);
 
   useEffect(() => {
@@ -54,8 +53,7 @@ const Navbar = () => {
         </div>
 
         <ul id="nav-links">
-          <li>
-            <Link to="/">
+          <li> <Link to="/">
               <span><HomeIcon /></span>
               <span>Home</span>
             </Link>
@@ -98,19 +96,26 @@ const Navbar = () => {
         </ul>
 
         <ul id="user-interaction">
+          
+
+          <DarkMode />
+
+          {width > 1150 && 
           <Link to="/cart">
           <li className="icon" data-count={cartItems.length} id="cart">
           <span><CartIcon /></span>
            </li>
-           </Link>
+           </Link>}
+          
 
-            <Link to="/favorites">
+          {width > 1150 &&
+          <Link to="/favorites">
             <li className="icon" data-count={favorites.length} id="favorites">
               <span><Heart /></span>
             </li>
-          </Link>
+          </Link>}
 
-          <DarkMode/>
+        
 
             {(user?.role === "admin" || user?.role === "moderator") && (
                 <li className="icon">
@@ -121,6 +126,8 @@ const Navbar = () => {
                 </li>
               )}
 
+        
+            {width > 1150 &&
           <li onClick={toggleDropdown} style={{ position: "relative", cursor: "pointer" }} className="profile icon">
             {user ? (
               <>
@@ -129,7 +136,8 @@ const Navbar = () => {
                   <span className="user">{user.name}</span>
                   <ProfileDropdown className={isDropdown ? "show" : ""} onClose={() => {setDropdown(!isDropdown)}}/>
                 </span>
-              </>
+                 </>
+             
             ) : (
               <Link to="/signin">
                 <span className="user-container">
@@ -138,24 +146,21 @@ const Navbar = () => {
                 </span>
               </Link>
             )}
-          </li>
+          </li>}
+          
           
 
-          {width < 1150 && 
-
-            <Hamburger 
-            size={25} 
-            onClick={() => toggleSideMenu()} 
-            style={{ cursor: "pointer" }}
-          />
-          }    
+            {width < 1150 && 
+             <li className="icon">
+              <span><Menu size={28}  cursor="pointer"  onClick={() => setMenuOpen(true)} /></span>
+            </li>
+            }
+           
+            
         </ul>
       </nav>
-      
-       {isSideMenuOpen && (
-        <Sidemenu isOpen={isSideMenuOpen} setIsOpen={setSideMenuOpen} />
-      )}
-      
+    
+      <Sidemenu isOpen={menuOpen} setIsOpen={setMenuOpen} />
       <div id="spacer" style={{height: "80px"}}></div>
     </>
   );
