@@ -36,8 +36,7 @@
   left: 0;
   top: 0;
   border-radius: 50%;
-  filter: url(#goo);
-  -webkit-filter: url(#goo);
+  overflow: hidden;
   z-index: 1;
   pointer-events: none;
   display: flex;
@@ -47,10 +46,17 @@
   touch-action: pan-x;
   cursor: grab;
   will-change: transform;
-  transform: translate3d(0,0,0);
-  overflow: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
+
+#morph-blob .goo-wrap {
+  position: absolute;
+  inset: 0;
+  filter: url(#goo);
+  -webkit-filter: url(#goo);
+  will-change: transform;
+}
 .morph-blob-inner {
   width: 78%;
   height: 78%;

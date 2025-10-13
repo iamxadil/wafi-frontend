@@ -197,7 +197,8 @@ export default function BottomNavbar() {
       </svg>
 
       <ul id="bottom-links" ref={containerRef}>
-        <div id="morph-blob" style={blobStyle}>
+      <div id="morph-blob" style={blobStyle}>
+        <div className="goo-wrap">
           <div className="morph-blob-inner">
             {bubbles.map((b) => (
               <span
@@ -206,9 +207,7 @@ export default function BottomNavbar() {
                 style={{
                   width: b.size,
                   height: b.size,
-                  transform: `translate3d(${b.x - blob.x + b.offsetX}px, ${
-                    b.y - blob.y + b.offsetY
-                  }px, 0)`,
+                  transform: `translate3d(${b.x - blob.x + b.offsetX}px, ${b.y - blob.y + b.offsetY}px, 0)`,
                   opacity: 0.6 + Math.random() * 0.3,
                   transition: "transform 0.18s ease-out, opacity 0.3s ease-in-out",
                 }}
@@ -216,6 +215,8 @@ export default function BottomNavbar() {
             ))}
           </div>
         </div>
+      </div>
+
 
         {LINKS.map((link, i) => {
           const count =
