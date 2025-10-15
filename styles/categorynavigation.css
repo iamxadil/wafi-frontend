@@ -10,8 +10,11 @@
 }
 
 .cat-grid {
-  padding: 0;
-  max-width: 100%;
+  padding: 2rem 0 !important;
+  width: 100% ;
+  margin: 0px 0px !important;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)) !important;
+
 }
 
 .cat-header {
@@ -180,6 +183,7 @@
 
 #offers-header {
   width: 100%;
+  margin-top: 2rem;
 }
 
 #pc-cat-cards-container {

@@ -221,7 +221,6 @@ forgotPassword: async (email) => {
     try {
       const res = await axios.put(`${API_URL}/api/users/profile`, data, { withCredentials: true });
       set({ user: res.data });
-      toast.success("Profile updated successfully", { transition: Slide });
       return res.data;
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to update profile", { transition: Slide });

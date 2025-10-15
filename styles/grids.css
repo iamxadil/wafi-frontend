@@ -99,6 +99,7 @@
 .product-price {
   display: flex;
   gap: 8px;
+  color: var(--text);
 }
 
 .rating-stars {

@@ -31,18 +31,13 @@ const MobileCard = ({ product, customDelay = 0 }) => {
   return (
     <motion.div
       className="mob-pr-card"
-      initial={{ opacity: 0, x: 80, filter: "blur(6px)" }}
+      initial={{ opacity: 0, x: 0, filter: "blur(6px)" }}
       animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-      exit={{ opacity: 0, x: -80, filter: "blur(4px)" }}
+      exit={{ opacity: 0, x: 0, filter: "blur(4px)" }}
       transition={{
         duration: 0.6,
         ease: [0.42, 0, 0.58, 1],
         delay: customDelay,
-      }}
-      whileHover={{
-        scale: 1.04,
-        y: -3,
-        boxShadow: "0 12px 30px rgba(0,0,0,0.15)",
       }}
       onClick={() => navigate(`/product/${id}`)}
     >

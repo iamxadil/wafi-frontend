@@ -108,10 +108,7 @@ const CategoryNavigation = () => {
             
               {displayedProducts.length > 0 ? (
                 displayedProducts.map((product) => (
-                  <ProductGrid
-                    key={product.id || product._id}
-                    product={product}
-                  />
+                  <ProductGrid key={product.id || product._id}  product={product} />
                 ))
               ) : (
                 <div className="loading-container">
@@ -168,22 +165,16 @@ const CategoryNavigation = () => {
           <div className="mob-pr-cards">
             {displayedProducts.length > 0 ? (
               displayedProducts.map((p) => (
-                <MobileCard
-                  key={p.id || p._id}
-                  product={p}
-
-                />
+                <MobileCard key={p.id || p._id} product={p}  />
               ))
             ) : (
               <div className="mob-loading">No products found.</div>
             )}
           </div>
 
-          <Pagination
-            totalPages={categoryPagination.totalPages}
-            currentPage={categoryPagination.currentPage}
-            onPageChange={handleProductPageJump}
-            mobile
+          <Pagination totalPages={categoryPagination.totalPages} 
+           currentPage={categoryPagination.currentPage} 
+           onPageChange={handleProductPageJump}
           />
 
           {/* Mobile Offers */}

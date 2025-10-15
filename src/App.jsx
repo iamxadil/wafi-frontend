@@ -4,7 +4,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Zoom } from 'react-toastify';
 import useWindowWidth from '../components/hooks/useWindowWidth.jsx';
-import { Hamburger } from 'lucide-react';
 
 // Stores
 import useAuthStore from "../components/stores/useAuthStore.jsx";
@@ -47,8 +46,8 @@ import Favorites from '../components/pages/User/Favorites.jsx';
 import BottomNavbar from "../components/main/BottomNavbar.jsx";
 import Sidemenu from '../components/main/Sidemenu.jsx';
 
+import './output.css';
 
-import './app.css';
 
 function App() {
   const location = useLocation();

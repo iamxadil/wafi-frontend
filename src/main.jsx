@@ -5,6 +5,8 @@ import "antd/dist/reset.css";
 import App from "./App.jsx";
 import favicon from "../assets/svg/wafi-logo-outline.svg";
 
+
+
 // Create a small wrapper to handle favicon setup
 function Root() {
   useEffect(() => {
