@@ -53,7 +53,7 @@ function App() {
   const location = useLocation();
   const hideNavbarOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment"];
   const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment", "/favorites", "/my-orders", "/settings"];
-  const bottomNavbarOn = ["/admin-dashboard"];
+  const bottomNavbarOn = ["/admin-dashboard", "/cart", "payment"];
 
   const user = useAuthStore((state) => state.user);
   const profile = useAuthStore((state) => state.profile);
