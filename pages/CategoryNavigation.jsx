@@ -4,17 +4,14 @@ import "../styles/categorynavigation.css";
 import { Search } from "lucide-react";
 
 import useProductStore from "../components/stores/useProductStore.jsx";
-import useCartStore from "../components/stores/useCartStore.jsx";
-import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
-import OptimizeImage from "../components/hooks/OptimizeImage.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx"
 import MobileCard from "../components/main/MobileCard.jsx";
 import Pagination from "../components/main/Pagination.jsx";
+import { Spin } from "antd";
 
 const CategoryNavigation = () => {
   const { categoryName, brandName } = useParams();
-  const navigate = useNavigate();
 
   const {
     fetchCategoryProducts,
@@ -112,7 +109,7 @@ const CategoryNavigation = () => {
                 ))
               ) : (
                 <div className="loading-container">
-                  <h2>Loading..</h2>
+                  <h2 style={{display: "flex", alignItems: "center", gap: "12px"}}>Loading <Spin /></h2>
                 </div>
               )}
           </div>
@@ -146,7 +143,7 @@ const CategoryNavigation = () => {
                 ))
               ) : (
                 <div className="loading-container">
-                  <h2>Loading..</h2>
+                  <h2 style={{display: "flex", alignItems: "center", gap: "12px"}}>Loading <Spin /></h2>
                 </div>
               )}
             </div>

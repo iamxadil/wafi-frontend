@@ -12,6 +12,7 @@
     "frontend": "npm run dev --prefix frontend"
   },
   "dependencies": {
+    "@splinetool/react-spline": "^4.1.0",
     "antd": "5.27.4",
     "axios": "1.12.2",
     "dayjs": "1.11.18",

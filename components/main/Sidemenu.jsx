@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Laptop, Cpu, Router, ChevronDown, ChevronUp } from "lucide-react";
+import { X, Laptop, Mouse, Router, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/sidemenu.css";
 
@@ -23,7 +23,7 @@ const menuData = [
   },
   {
     title: "Accessories",
-    icon: <Cpu size={25} />,
+    icon: <Mouse size={25} />,
     items: [
       { label: "All Accessories", path: "/accessories" },
       { label: "Headphones", path: "/category/Headphones" },

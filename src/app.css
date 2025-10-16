@@ -73,7 +73,7 @@ body {
   font-family: 'Poppins', 'sans-serif' !important;
 }
 
-h1, h2, h3, h4, h5, h6, p, span, button, li, ul, a {
+h1, h2, h3, h4, h5, h6, p, span, button, li, ul, a, th, td, svg {
   color: var(--text);
   transition: color 0.3s ease;
   font-family: 'Poppins', 'sans-serif' !important;
@@ -86,7 +86,6 @@ li {
 }
 
 button {
-  background-color: var(--button-bg);
   color: var(--text);
   border: var(--button-border);
   padding: 0.5rem 1rem;
@@ -96,9 +95,8 @@ button {
 
 .loading-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  min-height: 200px;
   gap: 1rem;
 }
 

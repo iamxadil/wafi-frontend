@@ -1,177 +1,127 @@
-/* --- Layout --- */
+/* approvalfields.css */
+
+/* Wrapper */
 .approval-wrapper {
-  padding: 24px;
-  overflow-x: auto; /* allow horizontal scroll on small screens */
-  background-color: var(--button-bg);
-  border-radius: 12px;
-  padding-bottom: 4rem;
-}
-
-.approval-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0 0 16px 0;
-  color: var(--text);
-}
-
-.approval-empty {
-  color: var(--accent-clr);
-  margin: 8px 0 0;
-}
-
-/* --- Table --- */
-.approval-table {
   width: 100%;
-  border-collapse: collapse;
-  border: 1px solid var(--line-clr);
-  border-radius: 12px;
-  overflow: hidden; /* keeps rounded corners on thead background */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  padding-bottom: 4rem;
-}
-
-.approval-table thead {
-  background-color: var(--button-bg);
-}
-
-.approval-table th,
-.approval-table td {
-  padding: 12px 14px;
-  text-align: left;
-  vertical-align: middle;
-  border-bottom: 1px solid var(--line-clr);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   color: var(--text);
-  font-size: 0.95rem;
+  padding-bottom: 4rem !important;
 }
 
-.approval-table tr:last-child td {
-  border-bottom: none;
-}
 
-.approval-table tbody tr:hover {
-  background-color: var(--accent-clr);
+.approval-wrapper th {
+  background: var(--line-clr) !important;
 }
-
-/* --- Product Image --- */
-.approval-thumb {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  display: block;
-}
-
-/* --- Status highlighting --- */
-.approval-table tr.approved {
-  background-color: #ecfdf5;               /* light green */
-  box-shadow: inset 0 0 0 2px #34d399;     /* emerald ring */
-  transition: background-color 160ms ease, box-shadow 160ms ease;
-}
-
-.approval-table tr.denied {
-  background-color: #fef2f2;               /* light red */
-  box-shadow: inset 0 0 0 2px #f87171;     /* red ring */
-  transition: background-color 160ms ease, box-shadow 160ms ease;
-}
-
-/* --- Actions --- */
-.approval-table td:last-child {
-  white-space: nowrap; /* keep action buttons on one line */
-}
-
-.approval-table button {
-  appearance: none;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 0.9rem;
+/* Title */
+.approval-title {
+  font-size: 1.8rem;
   font-weight: 600;
-  cursor: pointer;
-  background-color: #111827; /* default fallback */
   color: var(--text);
-  transition: transform 120ms ease, filter 120ms ease, background-color 120ms ease;
+  margin-bottom: 1rem;
 }
 
-.approval-table button + button {
-  margin-left: 8px;
+/* Empty state */
+.approval-empty {
+  font-size: 1.2rem;
+  color: var(--text);
+  text-align: center;
+  padding: 2rem 0;
 }
 
-.approval-table button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
+/* Table adjustments */
+.ant-table {
+  background-color: var(--background);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.approval-table button:active {
-  transform: translateY(0);
-  filter: brightness(0.97);
+/* Table header text */
+.ant-table-thead > tr > th {
+  color: var(--text);
+  font-weight: 600;
+  background-color: var(--background);
+  border-bottom: 1px solid var(--line-clr);
 }
 
-/* Optional: targeted classes if you add them to buttons */
-.approve-btn {
-  background-color: #10b981; /* green */
-}
-.approve-btn:hover {
-  background-color: #0ea371;
+
+
+
+
+/* Center pagination */
+.ant-pagination {
+  justify-content: center !important;
+  margin-top: 1rem;
+ 
 }
 
-.deny-btn {
-  background-color: #ef4444; /* red */
-}
-.deny-btn:hover {
-  background-color: #d63c3c;
+.ant-pagination a {
+  color: var(--line-clr) !important;
 }
 
-.delete-btn {
-  background-color: #374151; /* gray-700 */
-}
-.delete-btn:hover {
-  background-color: #2b3340;
+/* Mobile cards */
+.ant-card {
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--background);
+
 }
 
-/* If you didn't add classes, style by order (Approve, Deny, Delete) */
-.approval-table td:last-child button:nth-child(1) {
-  background-color: #10b981;
-}
-.approval-table td:last-child button:nth-child(1):hover {
-  background-color: #0ea371;
+.ant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.approval-table td:last-child button:nth-child(2) {
-  background-color: #ef4444;
-}
-.approval-table td:last-child button:nth-child(2):hover {
-  background-color: #d63c3c;
-}
-
-.approval-table td:last-child button:nth-child(3) {
-  background-color: #374151;
-}
-.approval-table td:last-child button:nth-child(3):hover {
-  background-color: #2b3340;
+/* Card body alignment */
+.ant-card-body {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem !important;
 }
 
-/* --- Responsive tweaks --- */
-@media (max-width: 640px) {
-  .approval-title {
-    font-size: 1.1rem;
-    margin-bottom: 12px;
+/* Buttons spacing */
+.ant-card-body .ant-btn {
+  margin: 0 !important;
+  min-width: 70px;
+}
+
+/* Modal content */
+.ant-modal-content {
+  color: #fff !important ;
+  border-radius: 8px;
+}
+
+
+.ant-modal-body {
+  background-color: #fff!important;
+}
+
+/* Modal title */
+.ant-modal-title {
+  color: var(--text) !important;
+  font-weight: 600;
+}
+
+/* Modal tags spacing */
+.ant-tag {
+  margin-right: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 940px) {
+  .approval-wrapper {
+    padding: 1rem;
   }
 
-  .approval-table th,
-  .approval-table td {
-    padding: 10px 12px;
-    font-size: 0.9rem;
-  }
-
-  .approval-thumb {
-    width: 48px;
-    height: 48px;
-  }
-
-  .approval-table button {
-    padding: 7px 10px;
-    font-size: 0.85rem;
-    border-radius: 7px;
+  .ant-card-body {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 }

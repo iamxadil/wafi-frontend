@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import { Card, Button, Rate, Divider, Carousel } from "antd";
 import { Cpu, Gpu, Monitor, Palette, MemoryStick , Ruler, MousePointer, HardDriveDownload} from "lucide-react";
+import { Spin } from "antd";
 
 const keywordIcons = {
   GPU: <Gpu/>,
@@ -52,7 +53,7 @@ const ProductDetails = () => {
     if (selectedProduct && selectedProduct.images?.length > 0) setMainImage(selectedProduct.images[0]);
   }, [selectedProduct]);
 
-  if (!selectedProduct) return <p>Loading product...</p>;
+  if (!selectedProduct) return <Spin fullscreen/>;
 
   const brandIcons = {
     Asus: SiAsus, Apple: SiApple, Lenovo: SiLenovo,
