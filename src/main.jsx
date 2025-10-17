@@ -1,13 +1,17 @@
 import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
-import "antd/dist/reset.css";
+import { MantineProvider, createTheme } from "@mantine/core";
+import "@mantine/core/styles.css"; // 👈 required in v8
+import "antd/dist/reset.css";      // optional, but keep it before MantineProvider
 import App from "./App.jsx";
 import favicon from "../assets/svg/wafi-logo-outline.svg";
 
+const theme = createTheme({
+  /** optional customizations */
+  primaryColor: "blue",
+});
 
-
-// Create a small wrapper to handle favicon setup
 function Root() {
   useEffect(() => {
     const link =
@@ -20,7 +24,9 @@ function Root() {
 
   return (
     <Router>
-      <App />
+      <MantineProvider theme={theme}>
+        <App />
+      </MantineProvider>
     </Router>
   );
 }

@@ -73,11 +73,15 @@ body {
   font-family: 'Poppins', 'sans-serif' !important;
 }
 
-h1, h2, h3, h4, h5, h6, p, span, button, li, ul, a, th, td, svg {
+h1, h2, h3, h4, h5, h6, p, span, button, li, ul, a, th, td {
   color: var(--text);
   transition: color 0.3s ease;
   font-family: 'Poppins', 'sans-serif' !important;
 
+}
+
+td {
+  background-color: var(--background);
 }
 
 li {

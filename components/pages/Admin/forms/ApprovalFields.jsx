@@ -1,40 +1,47 @@
 // ApprovalFields.jsx
 import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  Container,
+  Group,
+  Image,
+  Modal,
+  SimpleGrid,
+  Table,
+  Text,
+  Title,
+  Stack,
+  Badge,
+  Pagination,
+} from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import useProductStore from "../../../stores/useProductStore";
-import "../styles/approvalfields.css";
-import { Table, Button, Modal, Typography, Tag, Card, Row, Col } from "antd";
 
 const ApprovalFields = () => {
   const { products, fetchProducts, setProductApproval, deleteSingleProduct } =
     useProductStore();
 
-  // Fetch all products for admin on mount
   useEffect(() => {
     fetchProducts("", "", {}, 1, 100, "true");
   }, [fetchProducts]);
 
-  const { Text, Title, Paragraph } = Typography;
-
-  // Filter pending products
   const pendingProducts = products.filter((p) => !p.approved);
-
-  // Approve loading
   const [approvingId, setApprovingId] = useState(null);
-
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [opened, { open, close }] = useDisclosure(false);
+  const isMobile = useMediaQuery("(max-width: 940px)");
 
-  const showModal = (product) => {
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+  const paginatedProducts = pendingProducts.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+  const handleShowModal = (product) => {
     setSelectedProduct(product);
-    setIsModalOpen(true);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    setSelectedProduct(null);
+    open();
   };
 
   const handleApprove = async (id) => {
@@ -48,218 +55,230 @@ const ApprovalFields = () => {
     }
   };
 
-  // Responsive detection
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 940);
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 940);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Table columns
-  const columns = [
-    {
-      title: "Image",
-      dataIndex: "images",
-      key: "image",
-      render: (images) =>
-        images?.[0] ? (
-          <img
-            src={images[0]}
-            alt="Product"
-            style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8 }}
+  const rows = paginatedProducts.map((p) => (
+    <Table.Tr key={p.id} style={{ backgroundColor: "var(--background)", color: "var(--text)" }} >
+      <Table.Td>
+        {p.images?.[0] ? (
+          <Image
+            src={p.images[0]}
+            alt={p.name}
+            width={60}
+            height={60}
+            radius="sm"
+            fit="contain"
+            style={{ objectFit: "contain" }}
           />
         ) : (
-          <span style={{ color: "var(--text)" }}>No Image</span>
-        ),
-    },
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Category", dataIndex: "category", key: "category" },
-    { title: "Brand", dataIndex: "brand", key: "brand" },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (p) => (
-        <span style={{ color: "#5e63ff", fontWeight: 600 }}>
-          {p.toLocaleString()} IQD
-        </span>
-      ),
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, r) => (
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <Text c="dimmed">No Image</Text>
+        )}
+      </Table.Td>
+      <Table.Td>{p.name}</Table.Td>
+      <Table.Td>{p.category}</Table.Td>
+      <Table.Td>{p.brand}</Table.Td>
+      <Table.Td>
+        <Text fw={600} c="blue">
+          {p.price.toLocaleString()} IQD
+        </Text>
+      </Table.Td>
+      <Table.Td>
+        <Group gap="sm">
           <Button
-            size="small"
-            type="primary"
-            loading={approvingId === r.id}
-            onClick={() => handleApprove(r.id)}
-            style={{ color: "var(--text)" }}
+            size="xs"
+            loading={approvingId === p.id}
+            onClick={() => handleApprove(p.id)}
+            color="blue"
           >
             Approve
           </Button>
-
           <Button
-            size="small"
-            danger
-            onClick={() => deleteSingleProduct(r.id)}
-            style={{ background: "red" }}
+            size="xs"
+            color="red"
+            onClick={() => deleteSingleProduct(p.id)}
+            styles={{ root: { backgroundColor: "red", color: "#fff" } }}
+            
           >
             Delete
           </Button>
-
-          <Button style={{ background: "none" }} onClick={() => showModal(r)} size="small">
-            View Details
+          <Button
+            size="xs"
+            variant="light"
+            onClick={() => handleShowModal(p)}
+            styles={{ root: { color: "var(--text)" } }}
+            
+          >
+            View
           </Button>
-        </div>
-      ),
-    },
-  ];
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  ));
 
   return (
-    <div className="approval-wrapper">
-      <Title level={3} style={{ color: "var(--text)" }}>
+    <Container fluid p={0} py="md" pb={45}>
+      <Title order={3} mb="md" c="var(--text)">
         Pending Product Approvals
       </Title>
 
       {pendingProducts.length === 0 ? (
-        <Paragraph style={{ color: "var(--text)" }}>
-          No products awaiting approval 🎉
-        </Paragraph>
+        <Text c="var(--text)">No products awaiting approval 🎉</Text>
       ) : isMobile ? (
-        // Mobile cards
-        <Row gutter={[16, 16]}>
-          {pendingProducts.map((product) => (
-            <Col span={24} key={product.id}>
+        <>
+          <SimpleGrid cols={1} spacing={14}>
+            {paginatedProducts.map((p) => (
               <Card
-                hoverable
-                style={{ backgroundColor: "var(--background)", color: "var(--text)" }}
-                bodyStyle={{ padding: "1rem" }}
+                key={p.id}
+                shadow="sm"
+                radius="sm"
+                withBorder
+                style={{ backgroundColor: "var(--background)", color: "var(--text)", marginBottom: 0 }}
               >
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-                  {/* Centered Image */}
-                  {product.images?.[0] ? (
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      style={{
-                        width: 120,
-                        height: 120,
-                        objectFit: "cover",
-                        borderRadius: 8,
-                      }}
+                <Stack spacing={0}>
+                  {p.images?.[0] ? (
+                    <Image
+                      src={p.images[0]}
+                      alt={p.name}
+                      width="100%"
+                      height={200}
+                      radius={0}
+                      fit="contain"
+                      style={{ objectFit: "contain" }}
                     />
                   ) : (
-                    <span style={{ color: "var(--text)" }}>No Image</span>
+                    <Text c="dimmed">No Image</Text>
                   )}
 
-                  {/* Product info */}
-                  <div style={{ textAlign: "center" }}>
-                    <Text strong style={{ display: "block", fontSize: "1.1rem" }}>
-                      {product.name}
+                  <Stack p="sm" spacing="xs">
+                    <Text fw={600} c="var(--text)">
+                      {p.name}
                     </Text>
-                    <Text>Category: {product.category}</Text>
-                    <br />
-                    <Text>Brand: {product.brand}</Text>
-                    <br />
-                    <Text style={{ color: "#5e63ff", fontWeight: 600 }}>
-                      {product.price.toLocaleString()} IQD
+                    <Text c="var(--text)" fz="sm">
+                      Category: {p.category}
                     </Text>
-                  </div>
+                    <Text c="var(--text)" fz="sm">
+                      Brand: {p.brand}
+                    </Text>
+                    <Text fw={600} c="blue">
+                      {p.price.toLocaleString()} IQD
+                    </Text>
 
-                  {/* Buttons aligned */}
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center" }}>
-                    <Button
-                      size="small"
-                      type="primary"
-                      loading={approvingId === product.id}
-                      onClick={() => handleApprove(product.id)}
-                      style={{ color: "var(--text)" }}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      size="small"
-                      danger
-                      onClick={() => deleteSingleProduct(product.id)}
-                      style={{ background: "red" }}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      size="small"
-                      style={{ background: "none" }}
-                      onClick={() => showModal(product)}
-                    >
-                      View Details
-                    </Button>
-                  </div>
-                </div>
+                    <Group mt="sm" position="apart">
+                      <Button
+                        size="xs"
+                        loading={approvingId === p.id}
+                        onClick={() => handleApprove(p.id)}
+                        color="blue"
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        size="xs"
+                        color="red"
+                        onClick={() => deleteSingleProduct(p.id)}
+                        styles={{ root: { backgroundColor: "red", color: "#fff" } }}
+                      >
+                        Delete
+                      </Button>
+                      <Button
+                        size="xs"
+                        variant="light"
+                        onClick={() => handleShowModal(p)}
+                        styles={{ root: { color: "var(--text)" } }}
+                      >
+                        View
+                      </Button>
+                    </Group>
+                  </Stack>
+                </Stack>
               </Card>
-            </Col>
-          ))}
-        </Row>
+            ))}
+          </SimpleGrid>
+
+          <Group position="center" mt="md">
+            <Pagination
+              total={Math.ceil(pendingProducts.length / pageSize)}
+              page={page}
+              onChange={setPage}
+            />
+          </Group>
+        </>
       ) : (
-        // Desktop Table
-        <Table
-          dataSource={pendingProducts}
-          columns={columns}
-          rowHoverable={false}
-          pagination={{
-            current: currentPage,
-            pageSize: 5,
-            onChange: (page) => setCurrentPage(page),
-            position: ["bottomCenter"],
-          }}
-        />
+        <>
+          <Table striped highlightOnHover withTableBorder style={{backgroundColor: "var(--background)", color: "var(--text)" }}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Image</Table.Th>
+                <Table.Th>Name</Table.Th>
+                <Table.Th>Category</Table.Th>
+                <Table.Th>Brand</Table.Th>
+                <Table.Th>Price</Table.Th>
+                <Table.Th>Actions</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
+          </Table>
+
+          <Group position="center" mt="md">
+            <Pagination
+              total={Math.ceil(pendingProducts.length / pageSize)}
+              page={page}
+              onChange={setPage}
+            />
+          </Group>
+        </>
       )}
 
       {/* Modal */}
       <Modal
+        opened={opened}
+        onClose={close}
         title={selectedProduct?.name}
-        open={isModalOpen}
-        onCancel={handleCancel}
-        footer={null}
-        bodyStyle={{
-          backgroundColor: "var(--background)",
-          color: "var(--text)",
-          padding: "2rem",
+        size="lg"
+        centered
+        styles={{
+          content: {
+            backgroundColor: "var(--background)",
+            color: "var(--text)",
+          },
+          header: {
+            backgroundColor: "var(--background)",
+          },
+          title: {
+            color: "var(--text)",
+          },
         }}
       >
         {selectedProduct && (
-          <>
-            <img
-              src={selectedProduct.images?.[0]}
-              alt={selectedProduct.name}
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                borderRadius: 8,
-                marginBottom: 16,
-              }}
-            />
-            <Paragraph>
-              <Text strong>Description:</Text>
-              <br />
-              {selectedProduct.description}
-            </Paragraph>
-            <Text strong>
-              Stock: <Tag color="magenta">{selectedProduct.countInStock}</Tag>
+          <Stack spacing="sm">
+            {selectedProduct.images?.[0] && (
+              <Image
+                src={selectedProduct.images[0]}
+                alt={selectedProduct.name}
+                width="100%"
+                height={300}
+                radius={0}
+                fit="contain"
+                style={{ objectFit: "contain" }}
+              />
+            )}
+            <Text c="var(--text)">
+              <strong>Description:</strong> {selectedProduct.description}
             </Text>
-            <br />
-            <Text strong>
-              SKU: <Tag color="blue">{selectedProduct.sku}</Tag>
-            </Text>
-            <br />
-            <Text strong>
-              Brand: <Tag color="purple">{selectedProduct.brand}</Tag>
-            </Text>
-          </>
+            <Group gap="xs">
+              <Text fw={500}>Stock:</Text>
+              <Badge color="pink">{selectedProduct.countInStock}</Badge>
+            </Group>
+            <Group gap="xs">
+              <Text fw={500}>SKU:</Text>
+              <Badge color="blue">{selectedProduct.sku}</Badge>
+            </Group>
+            <Group gap="xs">
+              <Text fw={500}>Brand:</Text>
+              <Badge color="violet">{selectedProduct.brand}</Badge>
+            </Group>
+          </Stack>
         )}
       </Modal>
-    </div>
+    </Container>
   );
 };
 

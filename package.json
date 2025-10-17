@@ -12,6 +12,10 @@
     "frontend": "npm run dev --prefix frontend"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mantine/core": "^8.3.5",
+    "@mantine/hooks": "^8.3.5",
     "@splinetool/react-spline": "^4.1.0",
     "antd": "5.27.4",
     "axios": "1.12.2",
