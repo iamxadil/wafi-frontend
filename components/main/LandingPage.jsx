@@ -4,7 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { PerspectiveCamera, Environment, ContactShadows, useGLTF } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import "../../styles/threecarousel.css";
-import Search from './Search.jsx';
+import Search from "./Search.jsx";
 
 // === Models with per-model responsive settings ===
 const models = [
@@ -33,10 +33,7 @@ const models = [
     shadowScale: 5,
     shadowBlur: 3,
     shadowFar: 1,
-    responsive: {
-      lift: 1.2,
-      scale: 0.65,
-    },
+    responsive: { lift: 1.2, scale: 0.65 },
   },
   {
     name: "Laptop 2",
@@ -63,10 +60,7 @@ const models = [
     shadowScale: 5,
     shadowBlur: 4,
     shadowFar: 1,
-    responsive: {
-      lift: 1,
-      scale: 1,
-    },
+    responsive: { lift: 1, scale: 1 },
   },
   {
     name: "Mouse",
@@ -93,14 +87,14 @@ const models = [
     shadowScale: 3,
     shadowBlur: 2,
     shadowFar: 0.8,
-    responsive: {
-      lift: 0.75,
-      scale: 0.9,
-    },
+    responsive: { lift: 0.75, scale: 0.9 },
   },
 ];
 
-// === SceneModel with per-model responsive lift & scale and drag feedback ===
+// === Preload all models ===
+models.forEach((m) => useGLTF.preload(m.path));
+
+// === SceneModel ===
 function SceneModel({ model, activeKey, responsiveLift = 0, responsiveScale = 1, dragOffset = 0 }) {
   const ref = useRef();
   const { scene } = useGLTF(model.path);
@@ -114,7 +108,7 @@ function SceneModel({ model, activeKey, responsiveLift = 0, responsiveScale = 1,
   useFrame(() => {
     if (!ref.current) return;
 
-    // Position with landing offset + responsive lift + drag feedback
+    // Smooth landing
     ref.current.position.x += (model.landingOffset[0] + dragOffset - ref.current.position.x) * model.positionSpeed;
     ref.current.position.y += (model.landingOffset[1] + responsiveLift - ref.current.position.y) * model.positionSpeed;
     ref.current.position.z += (model.landingOffset[2] - ref.current.position.z) * model.positionSpeed;
@@ -165,7 +159,9 @@ export default function ThreeCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
   const camRef = useRef();
-  const [dragOffset, setDragOffset] = useState(0); // for visual feedback while dragging
+  const dragOffset = useRef(0);
+  const lastSwipe = useRef(0);
+  const swipeCooldown = 250; // ms
 
   useEffect(() => {
     const handleResize = () => setViewportWidth(window.innerWidth);
@@ -178,34 +174,42 @@ export default function ThreeCarousel() {
   const responsiveLift = isMobile ? currentModel.responsive.lift : 0;
   const responsiveScale = isMobile ? currentModel.responsive.scale : 1;
 
-  // Drag/swipe
+  // Swipe / Drag
   const startX = useRef(0);
   const isDragging = useRef(false);
 
-  const nextModel = () => setCurrentIndex((prev) => (prev + 1) % models.length);
-  const prevModel = () => setCurrentIndex((prev) => (prev - 1 + models.length) % models.length);
+  const nextModel = () => {
+    if (Date.now() - lastSwipe.current < swipeCooldown) return;
+    lastSwipe.current = Date.now();
+    setCurrentIndex((prev) => (prev + 1) % models.length);
+  };
 
+  const prevModel = () => {
+    if (Date.now() - lastSwipe.current < swipeCooldown) return;
+    lastSwipe.current = Date.now();
+    setCurrentIndex((prev) => (prev - 1 + models.length) % models.length);
+  };
+
+  // Handle start
   const handleDragStart = (x) => {
     startX.current = x;
     isDragging.current = true;
   };
 
+  // Handle move
   const handleDragMove = (x) => {
     if (!isDragging.current) return;
-    const delta = x - startX.current;
-    setDragOffset(delta * 0.005); // small visual movement
+    dragOffset.current = (x - startX.current) * 0.01; // move object slightly
   };
 
-  const handleDragEnd = (x) => {
+  // Handle end
+  const handleDragEnd = () => {
     if (!isDragging.current) return;
-    const delta = x - startX.current;
-    setDragOffset(0); // reset visual offset
-
-    if (Math.abs(delta) > 50) {
-      if (delta < 0) nextModel();
-      else prevModel();
-    }
+    const delta = dragOffset.current;
+    dragOffset.current = 0;
     isDragging.current = false;
+    if (delta < -0.5) nextModel();
+    else if (delta > 0.5) prevModel();
   };
 
   return (
@@ -213,11 +217,11 @@ export default function ThreeCarousel() {
       style={{ width: "100%", height: "100vh", overflow: "hidden", position: "relative" }}
       onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
       onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
-      onTouchEnd={(e) => handleDragEnd(e.changedTouches[0].clientX)}
+      onTouchEnd={handleDragEnd}
       onMouseDown={(e) => handleDragStart(e.clientX)}
       onMouseMove={(e) => handleDragMove(e.clientX)}
-      onMouseUp={(e) => handleDragEnd(e.clientX)}
-      onMouseLeave={(e) => handleDragEnd(e.clientX)}
+      onMouseUp={handleDragEnd}
+      onMouseLeave={handleDragEnd}
     >
       <Canvas style={{ width: "100%", height: "100%" }} shadows dpr={[1, 2]}>
         <PerspectiveCamera ref={camRef} makeDefault position={[0, 0, 5]} fov={isMobile ? 55 : 45} />
@@ -228,7 +232,7 @@ export default function ThreeCarousel() {
             activeKey={currentIndex}
             responsiveLift={responsiveLift}
             responsiveScale={responsiveScale}
-            dragOffset={dragOffset}
+            dragOffset={dragOffset.current}
           />
         </Suspense>
       </Canvas>
