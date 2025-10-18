@@ -1,0 +1,50 @@
+
+.model-container {
+    height: 90vh;
+    margin: 0 auto;
+    background-color: crimson;
+}
+
+.model-texts {
+     backdrop-filter: blur(4px);
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--line-clr);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.model-texts p {
+ font-size: 1.15rem;
+ font-weight: 400;
+}
+
+.cta-buttons button{
+    background: none;
+    border-radius: 12px;
+    transition: all 0.2s ease-out;
+    backdrop-filter: blur(4px);
+    font-weight: 600;
+    border: none;
+}
+
+.cta-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 1rem;
+}
+
+
+.cta-buttons button {
+    background-color: #000;
+    color: #fff;
+}
+.cta-buttons button:hover {
+    background-color: #361133;
+    color: #fff;
+}

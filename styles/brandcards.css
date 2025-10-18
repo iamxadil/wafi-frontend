@@ -7,8 +7,15 @@
   gap: 4rem;
   max-width: 95%;
   margin: 0 auto;
+  margin-top: -100px;
 }
 
+
+@media (max-width: 650px) {
+  #brand-cards-container {
+    margin-top: 1rem;
+  }
+}
 
 .brand-cards {
   display: flex;

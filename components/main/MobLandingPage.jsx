@@ -15,7 +15,6 @@ import HeadphoneImg from "../../assets/img/headphone.png";
 import MouseImg from "../../assets/img/mouse.png";
 import JoystickImg from "../../assets/img/joystick.png";
 import KeyboardImg from "../../assets/img/keyboard.png";
-import OptimizeImage from "../hooks/OptimizeImage";
 
 const MobLandingPage = () => {
   const navigate = useNavigate();

@@ -1,158 +1,269 @@
-import React, { useState, useEffect, useRef } from 'react';
-import '../../styles/landingpage.css';
-import { RiSearchLine as SearchIcon } from "react-icons/ri";
-import { motion } from 'framer-motion';
-import TypingText from '../effects/TypingText';
-import useWindowWidth from '../hooks/useWindowWidth';
-import { useNavigate } from 'react-router-dom';
-import useProductStore from '../stores/useProductStore.jsx';
-import debounce from 'lodash.debounce';
-import laptopImg from '../../assets/img/laptop.png';
-import backgroundImg from '../../assets/img/background.png';
+// src/components/ThreeCarousel.jsx
+import React, { Suspense, useRef, useState, useEffect } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { PerspectiveCamera, Environment, ContactShadows, useGLTF } from "@react-three/drei";
+import { motion, AnimatePresence } from "framer-motion";
+import "../../styles/threecarousel.css";
+import Search from './Search.jsx';
 
+// === Models with per-model responsive settings ===
+const models = [
+  {
+    name: "Laptop 1",
+    path: "/models/laptop3.glb",
+    scale: 0.8,
+    landingOffset: [0, -0.1, 0],
+    landingRotation: [-0.5, 1, 0],
+    text: "Seamless Experience",
+    desc: "Every click, every move — smoother than ever.",
+    spinAxis: "x",
+    spinSpeed: 0.01,
+    positionSpeed: 0.01,
+    rotationSpeed: 0.06,
+    ambientIntensity: 3,
+    ambientColor: "#ffffff",
+    lightPosition: [3, 5, 3],
+    lightIntensity: 2,
+    lightColor: "crimson",
+    lightPosition2: [-4, 2, -3],
+    lightIntensity2: 0.25,
+    environmentPreset: "city",
+    shadowPosition: [0, -1, 0],
+    shadowOpacity: 0.2,
+    shadowScale: 5,
+    shadowBlur: 3,
+    shadowFar: 1,
+    responsive: {
+      lift: 1.2,
+      scale: 0.65,
+    },
+  },
+  {
+    name: "Laptop 2",
+    path: "/models/laptop2.glb",
+    scale: 0.9,
+    landingOffset: [0.5, -0.6, 0],
+    landingRotation: [0, 0, 0],
+    text: "Engineered for Excellence",
+    desc: "Maximum power, minimum compromise.",
+    spinAxis: "y",
+    spinSpeed: 0.01,
+    positionSpeed: 0.01,
+    rotationSpeed: 0.01,
+    ambientIntensity: 2,
+    ambientColor: "#ffeedd",
+    lightPosition: [4, 3, 2],
+    lightIntensity: 1.5,
+    lightColor: "purple",
+    lightPosition2: [-2, 2, -3],
+    lightIntensity2: 0.7,
+    environmentPreset: "city",
+    shadowPosition: [0, -0.55, 0],
+    shadowOpacity: 0.4,
+    shadowScale: 5,
+    shadowBlur: 4,
+    shadowFar: 1,
+    responsive: {
+      lift: 1,
+      scale: 1,
+    },
+  },
+  {
+    name: "Mouse",
+    path: "/models/mouse2.glb",
+    scale: 20,
+    landingOffset: [0, 0.5, 0],
+    landingRotation: [0, 1, 0],
+    text: "Unmatched Precision",
+    desc: "Ultra-responsive, ultra-durable, ultra-sleek.",
+    spinAxis: "x",
+    spinSpeed: 0.01,
+    positionSpeed: 0.02,
+    rotationSpeed: 0.01,
+    ambientIntensity: 1.5,
+    ambientColor: "#ddddff",
+    lightPosition: [2, 4, 2],
+    lightIntensity: 1.2,
+    lightColor: "blue",
+    lightPosition2: [-3, 1, -2],
+    lightIntensity2: 1,
+    environmentPreset: "city",
+    shadowPosition: [0, -0.55, 0],
+    shadowOpacity: 0.5,
+    shadowScale: 3,
+    shadowBlur: 2,
+    shadowFar: 0.8,
+    responsive: {
+      lift: 0.75,
+      scale: 0.9,
+    },
+  },
+];
 
+// === SceneModel with per-model responsive lift & scale and drag feedback ===
+function SceneModel({ model, activeKey, responsiveLift = 0, responsiveScale = 1, dragOffset = 0 }) {
+  const ref = useRef();
+  const { scene } = useGLTF(model.path);
 
+  useEffect(() => {
+    if (!ref.current) return;
+    ref.current.rotation.set(0, 0, 0);
+    ref.current.position.set(0, 0, 0);
+  }, [activeKey]);
 
-const containerVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut", staggerChildren: 0.3 }
-  }
-};
+  useFrame(() => {
+    if (!ref.current) return;
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
+    // Position with landing offset + responsive lift + drag feedback
+    ref.current.position.x += (model.landingOffset[0] + dragOffset - ref.current.position.x) * model.positionSpeed;
+    ref.current.position.y += (model.landingOffset[1] + responsiveLift - ref.current.position.y) * model.positionSpeed;
+    ref.current.position.z += (model.landingOffset[2] - ref.current.position.z) * model.positionSpeed;
 
-const LandingPage = () => {
-  const width = useWindowWidth();
-  const navigate = useNavigate();
-  const searchProducts = useProductStore((state) => state.searchProducts);
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(-1); // for keyboard navigation
-  const inputRef = useRef(null);
+    // Spin
+    if (model.spinAxis === "x") ref.current.rotation.x += model.spinSpeed;
+    if (model.spinAxis === "y") ref.current.rotation.y += model.spinSpeed;
+    if (model.spinAxis === "z") ref.current.rotation.z += model.spinSpeed;
 
-  // Debounced search function
-  const handleSearch = debounce(async (text) => {
-    if (!text.trim()) {
-      setResults([]);
-      setActiveIndex(-1);
-      return;
-    }
-    const products = await searchProducts(text);
-    setResults(products);
-    setActiveIndex(-1);
-  }, 300);
-
-  const handleInputChange = (e) => {
-    const text = e.target.value;
-    setQuery(text);
-    handleSearch(text);
-  };
-
-  const handleResultClick = (id) => {
-    setQuery('');
-    setResults([]);
-    navigate(`/product/${id}`);
-  };
-
-  // Keyboard navigation
-  const handleKeyDown = (e) => {
-    if (!results.length) return;
-
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setActiveIndex((prev) => (prev + 1) % results.length);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setActiveIndex((prev) => (prev - 1 + results.length) % results.length);
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (activeIndex >= 0) {
-        handleResultClick(results[activeIndex].id);
-      }
-    } else if (e.key === 'Escape') {
-      setResults([]);
-      setActiveIndex(-1);
-    }
-  };
+    // Smooth rotation
+    ref.current.rotation.x += (model.landingRotation[0] - ref.current.rotation.x) * model.rotationSpeed;
+    ref.current.rotation.y += (model.landingRotation[1] - ref.current.rotation.y) * model.rotationSpeed;
+    ref.current.rotation.z += (model.landingRotation[2] - ref.current.rotation.z) * model.rotationSpeed;
+  });
 
   return (
     <>
-
-    <div id='landing-page'>
-      <motion.div
-        className="left-hero"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.h1 variants={itemVariants}>
-          ALWAFI FOR YOUR UNLIMITED ENTERTAINMENT
-        </motion.h1>
-
-        <motion.p variants={itemVariants}>
-          Make Your Journey With Our Most Fresh Products Inspired & Crafted From The Most Unique Brands. 
-        </motion.p>
-
-        <motion.div
-          id="search-container"
-          variants={itemVariants}
-          style={{ position: 'relative' }}
-        >
-          <input
-            type="text"
-            placeholder='Search for products...'
-            value={query}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            ref={inputRef}
-          />
-          <SearchIcon />
-
-          {results.length > 0 && (
-            <div className="search-results">
-              {results.map((product, index) => (
-                <div
-                  key={product.id}
-                  className={`search-result-item ${activeIndex === index ? 'active' : ''}`}
-                  onClick={() => handleResultClick(product.id)}
-                  onMouseEnter={() => setActiveIndex(index)}
-                >
-                  <img src={product.images[0]} alt={product.name} className="search-result-img" />
-                  <div className="search-result-info">
-                    <span className="search-result-name">{product.name}</span>
-                    <span className="search-result-brand">{product.brand}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </motion.div>
-      </motion.div>
-
-      <div className='right-hero'>
-        { width > 720 && (
-          <div id="laptop-container">
-            { width > 1350 && <img src={laptopImg} alt="Laptop" id='laptop'/> }
-            <img src={backgroundImg} id='background' alt="Background"/> 
-            { width > 1350 && (
-              <div id="layer">
-                <TypingText texts={["Look upon the sky", "The best of the best"]} />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-
- 
+      <ambientLight intensity={model.ambientIntensity} color={model.ambientColor} />
+      <directionalLight position={model.lightPosition} intensity={model.lightIntensity} color={model.lightColor} castShadow />
+      <directionalLight position={model.lightPosition2} intensity={model.lightIntensity2} color={model.lightColor2 || model.lightColor} />
+      <Environment preset={model.environmentPreset} />
+      <ContactShadows
+        position={model.shadowPosition}
+        opacity={model.shadowOpacity}
+        scale={model.shadowScale}
+        blur={model.shadowBlur}
+        far={model.shadowFar}
+      />
+      <primitive ref={ref} object={scene} scale={model.scale * responsiveScale} />
     </>
   );
-};
+}
 
-export default LandingPage;
+// === Camera Controller ===
+function CameraController({ camRef, targetPos }) {
+  useFrame(() => {
+    if (!camRef.current) return;
+    camRef.current.position.x += (targetPos[0] - camRef.current.position.x) * 0.1;
+    camRef.current.position.y += (targetPos[1] - camRef.current.position.y) * 0.1;
+    camRef.current.position.z += (targetPos[2] - camRef.current.position.z) * 0.1;
+    camRef.current.lookAt(0, 0.2, 0);
+  });
+  return null;
+}
+
+// === Main Carousel ===
+export default function ThreeCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+  const camRef = useRef();
+  const [dragOffset, setDragOffset] = useState(0); // for visual feedback while dragging
+
+  useEffect(() => {
+    const handleResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobile = viewportWidth < 768;
+  const currentModel = models[currentIndex];
+  const responsiveLift = isMobile ? currentModel.responsive.lift : 0;
+  const responsiveScale = isMobile ? currentModel.responsive.scale : 1;
+
+  // Drag/swipe
+  const startX = useRef(0);
+  const isDragging = useRef(false);
+
+  const nextModel = () => setCurrentIndex((prev) => (prev + 1) % models.length);
+  const prevModel = () => setCurrentIndex((prev) => (prev - 1 + models.length) % models.length);
+
+  const handleDragStart = (x) => {
+    startX.current = x;
+    isDragging.current = true;
+  };
+
+  const handleDragMove = (x) => {
+    if (!isDragging.current) return;
+    const delta = x - startX.current;
+    setDragOffset(delta * 0.005); // small visual movement
+  };
+
+  const handleDragEnd = (x) => {
+    if (!isDragging.current) return;
+    const delta = x - startX.current;
+    setDragOffset(0); // reset visual offset
+
+    if (Math.abs(delta) > 50) {
+      if (delta < 0) nextModel();
+      else prevModel();
+    }
+    isDragging.current = false;
+  };
+
+  return (
+    <section
+      style={{ width: "100%", height: "100vh", overflow: "hidden", position: "relative" }}
+      onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
+      onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
+      onTouchEnd={(e) => handleDragEnd(e.changedTouches[0].clientX)}
+      onMouseDown={(e) => handleDragStart(e.clientX)}
+      onMouseMove={(e) => handleDragMove(e.clientX)}
+      onMouseUp={(e) => handleDragEnd(e.clientX)}
+      onMouseLeave={(e) => handleDragEnd(e.clientX)}
+    >
+      <Canvas style={{ width: "100%", height: "100%" }} shadows dpr={[1, 2]}>
+        <PerspectiveCamera ref={camRef} makeDefault position={[0, 0, 5]} fov={isMobile ? 55 : 45} />
+        <CameraController camRef={camRef} targetPos={[0, 0, 5]} />
+        <Suspense fallback={null}>
+          <SceneModel
+            model={currentModel}
+            activeKey={currentIndex}
+            responsiveLift={responsiveLift}
+            responsiveScale={responsiveScale}
+            dragOffset={dragOffset}
+          />
+        </Suspense>
+      </Canvas>
+
+      {/* Text overlay */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.6 }}
+          style={{
+            position: "absolute",
+            bottom: isMobile ? "50%" : "40%",
+            width: "100%",
+            textAlign: "center",
+            color: "white",
+            padding: "0 1rem",
+          }}
+        >
+          <div className="model-texts">
+            <h1 style={{ fontSize: isMobile ? "1.4rem" : "2rem", fontWeight: 700, color: "var(--accent-clr)" }}>
+              {currentModel.text}
+            </h1>
+            <p style={{ fontSize: isMobile ? "0.96rem" : "1.25rem", color: "var(--line-clr)" }}>
+              {currentModel.desc}
+            </p>
+          </div>
+          <div className="cta-buttons">
+            <Search />
+            <button>Navigate</button>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </section>
+  );
+}
