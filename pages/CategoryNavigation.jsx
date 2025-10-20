@@ -1,6 +1,6 @@
 // src/pages/CategoryNavigation.jsx
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx";
@@ -15,8 +15,8 @@ import "../styles/categorynavigation.css";
 const CategoryNavigation = () => {
   const width = useWindowWidth();
   const isMobile = width < 650;
-  const { categoryName, brandName } = useParams();
 
+  const { categoryName, brandName } = useParams();
   const category = categoryName?.trim();
   const brand = brandName?.trim();
 
@@ -37,36 +37,59 @@ const CategoryNavigation = () => {
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Reset params on route change
-  useEffect(() => {
-    setSearchTerm(""); // reset input
-    setDebouncedSearch("");
-    setProductsParams({ page: 1, category, ...(brand ? { brand } : {}) , search: "" });
-    setOffersParams({ page: 1, category, ...(brand ? { brand } : {}), search: "" });
-  }, [categoryName, brandName]);
+const location = useLocation();
 
-  // Update params when search changes (typing)
-  useEffect(() => {
-    setProductsParams(prev => ({ ...prev, search: debouncedSearch, page: 1 }));
-    setOffersParams(prev => ({ ...prev, search: debouncedSearch, page: 1 }));
-  }, [debouncedSearch]);
+useEffect(() => {
 
-  // Fetch products and offers
-  const { data: productsData, isLoading: loadingProducts } = useCategoryQuery(productsParams);
-  const { data: offersData, isLoading: loadingOffers } = useCategoryQuery({
-    ...offersParams,
-    // consider discountPrice > 0 instead of offers flag in backend
+
+  // Clear local + store search
+  setSearchTerm("");
+  setDebouncedSearch("");
+
+  // Reset params but preserve other fields in the store
+  setProductsParams(prev => ({
+    ...prev,
+    page: 1,
+    category,
+    ...(brand ? { brand } : {}),
+    search: "",
+  }));
+
+  setOffersParams(prev => ({
+    ...prev,
+    page: 1,
+    category,
+    ...(brand ? { brand } : {}),
+    search: "",
+  }));
+}, [location.pathname, location.key]); // run on any navigation
+
+  // Fetch products & offers
+  const { data: productsData, isLoading: loadingProducts } = useCategoryQuery({
+    ...productsParams,
+    category,
+    ...(brand ? { brand } : {}),
   });
 
-  const displayedProducts = (productsData?.products || []).filter(p =>
-    !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
+  const { data: offersData, isLoading: loadingOffers } = useCategoryQuery({
+    ...offersParams,
+    category,
+    ...(brand ? { brand } : {}),
+    discountPrice: { $gt: 0 }, // only offers with discount
+  });
+
+  // Filter products/offers for pagination
+  const displayedProducts = (productsData?.products || []).filter(
+    p => !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
-  const displayedOffers = (offersData?.products || []).filter(p =>
-    !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
+
+  const displayedOffers = (offersData?.products || []).filter(
+    p => !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
   return (
     <div className="category-page">
+      {/* Header */}
       <header className="cat-header">
         <h1>{brandName || categoryName || "Products"} Products</h1>
         <div className="search-cat">
@@ -80,14 +103,16 @@ const CategoryNavigation = () => {
         </div>
       </header>
 
-      {/* Desktop */}
+      {/* ---------- Desktop Layout ---------- */}
       {!isMobile && (
         <>
           <main id="cat-container">
             <div className="products-grid-container cat-grid">
               {loadingProducts ? (
                 <div className="loading-container">
-                  <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>Loading <Spin /></h2>
+                  <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    Loading <Spin />
+                  </h2>
                 </div>
               ) : displayedProducts.length > 0 ? (
                 displayedProducts.map(p => <ProductGrid key={p._id} product={p} />)
@@ -99,17 +124,21 @@ const CategoryNavigation = () => {
               <Pagination
                 currentPage={productsData.pagination.currentPage}
                 totalPages={productsData.pagination.totalPages}
-                onPageChange={(page) => setProductsParams(prev => ({ ...prev, page }))}
+                onPageChange={(page) => setProductsParams({ page })}
               />
             )}
           </main>
 
           <main id="cat-container">
-            <header><h1>Offers for {brandName || categoryName || "Products"}</h1></header>
+            <header>
+              <h1>Offers for {brandName || categoryName || "Products"}</h1>
+            </header>
             <div className="products-grid-container cat-grid">
               {loadingOffers ? (
                 <div className="loading-container">
-                  <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>Loading <Spin /></h2>
+                  <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    Loading <Spin />
+                  </h2>
                 </div>
               ) : displayedOffers.length > 0 ? (
                 displayedOffers.map(p => <ProductGrid key={p._id} product={p} />)
@@ -121,36 +150,43 @@ const CategoryNavigation = () => {
               <Pagination
                 currentPage={offersData.pagination.currentPage}
                 totalPages={offersData.pagination.totalPages}
-                onPageChange={(page) => setOffersParams(prev => ({ ...prev, page }))}
+                onPageChange={(page) => setOffersParams({ page })}
               />
             )}
           </main>
         </>
       )}
 
-      {/* Mobile */}
+      {/* ---------- Mobile Layout ---------- */}
       {isMobile && (
         <main className="mob-pr-container">
           <div className="mob-pr-cards">
-            {displayedProducts.length > 0 ? displayedProducts.map(p => <MobileCard key={p._id} product={p} />) :
-              <div className="mob-loading">No products found</div>}
+            {displayedProducts.length > 0 ? (
+              displayedProducts.map(p => <MobileCard key={p._id} product={p} />)
+            ) : (
+              <div className="mob-loading">No products found</div>
+            )}
           </div>
           <Pagination
             currentPage={productsData?.pagination.currentPage || 1}
             totalPages={productsData?.pagination.totalPages || 1}
-            onPageChange={(page) => setProductsParams(prev => ({ ...prev, page }))}
+            onPageChange={(page) => setProductsParams({ page })}
           />
+
           <header id="offers-header">
             <h1>Offers for {brandName || categoryName || "Products"}</h1>
           </header>
           <div className="mob-pr-cards">
-            {displayedOffers.length > 0 ? displayedOffers.map(p => <MobileCard key={p._id} product={p} />) :
-              <div className="mob-loading">No offers found</div>}
+            {displayedOffers.length > 0 ? (
+              displayedOffers.map(p => <MobileCard key={p._id} product={p} />)
+            ) : (
+              <div className="mob-loading">No offers found</div>
+            )}
           </div>
           <Pagination
             currentPage={offersData?.pagination.currentPage || 1}
             totalPages={offersData?.pagination.totalPages || 1}
-            onPageChange={(page) => setOffersParams(prev => ({ ...prev, page }))}
+            onPageChange={(page) => setOffersParams({ page })}
           />
         </main>
       )}
