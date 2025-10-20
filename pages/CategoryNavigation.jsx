@@ -15,7 +15,11 @@ import "../styles/categorynavigation.css";
 const CategoryNavigation = () => {
   const width = useWindowWidth();
   const isMobile = width < 650;
+
   const { categoryName, brandName } = useParams();
+
+  const category = categoryName?.trim();
+  const brand = brandName?.trim(); 
 
   const {
     productsParams,
@@ -36,8 +40,8 @@ const CategoryNavigation = () => {
 
   // Update category & brand whenever the route changes
   useEffect(() => {
-    setProductsParams({ page: 1, category: categoryName, brand: brandName, search: debouncedSearch });
-    setOffersParams({ page: 1, category: categoryName, brand: brandName, search: debouncedSearch });
+    setProductsParams({ page: 1, category, ...(brand && {brand}), search: debouncedSearch });
+    setOffersParams({ page: 1, category,  ...(brand && { brand }), search: debouncedSearch });
   }, [categoryName, brandName, debouncedSearch]);
 
   // Fetch products and offers using React Query
