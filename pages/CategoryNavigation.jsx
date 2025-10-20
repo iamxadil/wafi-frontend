@@ -68,14 +68,14 @@ useEffect(() => {
   const { data: productsData, isLoading: loadingProducts } = useCategoryQuery({
     ...productsParams,
     category,
-    ...(brand ? { brand } : {}),
+    ...(brand && { brand } ),
   });
 
   const { data: offersData, isLoading: loadingOffers } = useCategoryQuery({
     ...offersParams,
     category,
-    ...(brand ? { brand } : {}),
-    discountPrice: { $gt: 0 }, // only offers with discount
+    ...(brand && { brand }),
+   
   });
 
   // Filter products/offers for pagination

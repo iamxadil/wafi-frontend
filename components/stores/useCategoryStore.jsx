@@ -8,7 +8,7 @@ const useCategoryStore = create((set) => ({
   })),
 
   // 2️⃣ Offers
-  offersParams: { page: 1, limit: 3, category: "", brand: "", search: "" },
+  offersParams: { page: 1, limit: 3, category: "", brand: "", search: "", isOffer: true },
   setOffersParams: (params) => set(state => ({
     offersParams: { ...state.offersParams, ...params }
   })),
