@@ -15,11 +15,10 @@ import "../styles/categorynavigation.css";
 const CategoryNavigation = () => {
   const width = useWindowWidth();
   const isMobile = width < 650;
-
   const { categoryName, brandName } = useParams();
 
   const category = categoryName?.trim();
-  const brand = brandName?.trim(); 
+  const brand = brandName?.trim();
 
   const {
     productsParams,
@@ -38,28 +37,36 @@ const CategoryNavigation = () => {
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Update category & brand whenever the route changes
+  // Reset params on route change
   useEffect(() => {
-    setProductsParams({ page: 1, category, ...(brand && {brand}), search: debouncedSearch });
-    setOffersParams({ page: 1, category,  ...(brand && { brand }), search: debouncedSearch });
-  }, [categoryName, brandName, debouncedSearch]);
+    setSearchTerm(""); // reset input
+    setDebouncedSearch("");
+    setProductsParams({ page: 1, category, ...(brand ? { brand } : {}) , search: "" });
+    setOffersParams({ page: 1, category, ...(brand ? { brand } : {}), search: "" });
+  }, [categoryName, brandName]);
 
-  // Fetch products and offers using React Query
+  // Update params when search changes (typing)
+  useEffect(() => {
+    setProductsParams(prev => ({ ...prev, search: debouncedSearch, page: 1 }));
+    setOffersParams(prev => ({ ...prev, search: debouncedSearch, page: 1 }));
+  }, [debouncedSearch]);
+
+  // Fetch products and offers
   const { data: productsData, isLoading: loadingProducts } = useCategoryQuery(productsParams);
-  const { data: offersData, isLoading: loadingOffers } = useCategoryQuery({ ...offersParams, offers: true });
+  const { data: offersData, isLoading: loadingOffers } = useCategoryQuery({
+    ...offersParams,
+    // consider discountPrice > 0 instead of offers flag in backend
+  });
 
-  // Filter products/offers by searchTerm for pagination
   const displayedProducts = (productsData?.products || []).filter(p =>
     !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
-
   const displayedOffers = (offersData?.products || []).filter(p =>
     !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
   return (
     <div className="category-page">
-      {/* Header */}
       <header className="cat-header">
         <h1>{brandName || categoryName || "Products"} Products</h1>
         <div className="search-cat">
@@ -73,17 +80,14 @@ const CategoryNavigation = () => {
         </div>
       </header>
 
-      {/* ---------- Desktop Layout ---------- */}
+      {/* Desktop */}
       {!isMobile && (
         <>
-          {/* Products Section */}
           <main id="cat-container">
             <div className="products-grid-container cat-grid">
               {loadingProducts ? (
                 <div className="loading-container">
-                  <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    Loading <Spin />
-                  </h2>
+                  <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>Loading <Spin /></h2>
                 </div>
               ) : displayedProducts.length > 0 ? (
                 displayedProducts.map(p => <ProductGrid key={p._id} product={p} />)
@@ -95,16 +99,13 @@ const CategoryNavigation = () => {
               <Pagination
                 currentPage={productsData.pagination.currentPage}
                 totalPages={productsData.pagination.totalPages}
-                onPageChange={(page) => setProductsParams({ page })}
+                onPageChange={(page) => setProductsParams(prev => ({ ...prev, page }))}
               />
             )}
           </main>
 
-          {/* Offers Section */}
           <main id="cat-container">
-            <header>
-              <h1>Offers for {brandName || categoryName || "Products"}</h1>
-            </header>
+            <header><h1>Offers for {brandName || categoryName || "Products"}</h1></header>
             <div className="products-grid-container cat-grid">
               {loadingOffers ? (
                 <div className="loading-container">
@@ -120,43 +121,36 @@ const CategoryNavigation = () => {
               <Pagination
                 currentPage={offersData.pagination.currentPage}
                 totalPages={offersData.pagination.totalPages}
-                onPageChange={(page) => setOffersParams({ page })}
+                onPageChange={(page) => setOffersParams(prev => ({ ...prev, page }))}
               />
             )}
           </main>
         </>
       )}
 
-      {/* ---------- Mobile Layout ---------- */}
+      {/* Mobile */}
       {isMobile && (
         <main className="mob-pr-container">
           <div className="mob-pr-cards">
-            {displayedProducts.length > 0 ? (
-              displayedProducts.map(p => <MobileCard key={p._id} product={p} />)
-            ) : (
-              <div className="mob-loading">No products found</div>
-            )}
+            {displayedProducts.length > 0 ? displayedProducts.map(p => <MobileCard key={p._id} product={p} />) :
+              <div className="mob-loading">No products found</div>}
           </div>
           <Pagination
             currentPage={productsData?.pagination.currentPage || 1}
             totalPages={productsData?.pagination.totalPages || 1}
-            onPageChange={(page) => setProductsParams({ page })}
+            onPageChange={(page) => setProductsParams(prev => ({ ...prev, page }))}
           />
-
           <header id="offers-header">
             <h1>Offers for {brandName || categoryName || "Products"}</h1>
           </header>
           <div className="mob-pr-cards">
-            {displayedOffers.length > 0 ? (
-              displayedOffers.map(p => <MobileCard key={p._id} product={p} />)
-            ) : (
-              <div className="mob-loading">No offers found</div>
-            )}
+            {displayedOffers.length > 0 ? displayedOffers.map(p => <MobileCard key={p._id} product={p} />) :
+              <div className="mob-loading">No offers found</div>}
           </div>
           <Pagination
             currentPage={offersData?.pagination.currentPage || 1}
             totalPages={offersData?.pagination.totalPages || 1}
-            onPageChange={(page) => setOffersParams({ page })}
+            onPageChange={(page) => setOffersParams(prev => ({ ...prev, page }))}
           />
         </main>
       )}
