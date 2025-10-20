@@ -25,6 +25,9 @@
   
 }
 
+.grid-header {
+  padding-left: 12rem;
+}
 
 .wave-overlay {
   position: absolute;

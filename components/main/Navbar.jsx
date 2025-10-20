@@ -14,7 +14,6 @@ import {
   IoShapesOutline as OthersIcon,
   IoMenu as Menu
 } from "react-icons/io5";
-import { Menu as MenuIcon } from "lucide-react"; // hamburger icon
 
 import { Heart } from 'lucide-react';
 import useFavoritesStore from "../stores/useFavoritesStore";

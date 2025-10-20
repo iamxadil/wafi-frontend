@@ -1,180 +1,158 @@
 // src/pages/CatLaptops.jsx
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { BiSearchAlt as Search, BiHeart as Heart } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
-import useProductStore from "../components/stores/useProductStore.jsx";
-import useWindowWidth from "../components/hooks/useWindowWidth";
-import ProductGrid from "../components/main/ProductGrid.jsx";
-import ProductCard from '../components/main/ProductCard.jsx';
-import MobileCard from "../components/main/MobileCard.jsx";
+import React from 'react';
+import useWindowWidth from '../components/hooks/useWindowWidth.jsx';
+import ProductGrid from '../components/main/ProductGrid.jsx';
+import MobileCard from '../components/main/MobileCard.jsx';
 import Pagination from '../components/main/Pagination.jsx';
-import "../styles/catlaptops.css";
-
-
-
-
+import useLaptopsStore from "../components/stores/useLaptopsStore.jsx";
+import { useLaptopsQuery } from "../components/hooks/useLaptopsQuery.jsx";
+import Loading from '../components/main/Loading.jsx';
+import SearchDropdown from '../components/main/SearchDropdown.jsx';
+import '../styles/catlaptops.css';
 
 const CatLaptops = () => {
-
-  const navigate = useNavigate();
   const width = useWindowWidth();
-  const { fetchLaptops, laptopProducts, laptopPagination, topLaptopProducts, fetchTopLaptops, laptopLimit } = useProductStore();
 
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const searchRef = useRef(null);
-  const topPicksRef = useRef(null);
+  // -----------------------------
+  // Zustand state for main laptops
+  // -----------------------------
+  const params = useLaptopsStore(state => state.laptopPageParams);
+  const setParams = useLaptopsStore(state => state.setLaptopPageParams);
 
+  // -----------------------------
+  // Zustand state for top laptops
+  // -----------------------------
+  const topParams = useLaptopsStore(state => state.topPageParams);
+  const setTopParams = useLaptopsStore(state => state.setTopPageParams);
 
-useEffect(() => {
-  fetchTopLaptops(4);
-  fetchLaptops({ limit: 6 });
+  // -----------------------------
+  // Zustand state for search dropdown
+  // -----------------------------
+  const searchParam = useLaptopsStore(state => state.searchParam);
+  const setSearchParam = useLaptopsStore(state => state.setSearchParam);
 
+  // -----------------------------
+  // Fetch main laptops
+  // -----------------------------
+  const { data, isLoading, isError } = useLaptopsQuery(params);
+  const products = data?.products || [];
+  const pagination = data?.pagination || { currentPage: 1, totalPages: 0 };
 
-  
-}, [fetchLaptops, fetchTopLaptops]);
+  // -----------------------------
+  // Fetch top laptops (backend filter)
+  // -----------------------------
+  const { data: topData, isTopLoading } = useLaptopsQuery({ ...topParams, isTopProduct: true });
+  const topProducts = topData?.products || [];
+  const topPagination = topData?.pagination || { currentPage: topParams.page, totalPages: 0 };
 
-  useEffect(() => {
-    const trimmed = query.trim();
-    if (!trimmed) return setResults([]), setActiveIndex(-1);
-    const id = setTimeout(() => {
-      const filtered = laptopProducts.filter((p) => p.approved).filter((p) =>
-        p.name.toLowerCase().includes(trimmed.toLowerCase()) ||
-        p.brand.toLowerCase().includes(trimmed.toLowerCase())
-      ).sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      setResults(filtered); setActiveIndex(-1);
-    }, 250);
-    return () => clearTimeout(id);
-  }, [query, laptopProducts]);
+  // -----------------------------
+  // Fetch search results for dropdown
+  // -----------------------------
+  const { data: searchData } = useLaptopsQuery({ 
+    ...params,
+    search: searchParam,
+    page: 1,
+    limit: 5
+  });
+  const searchResults = searchData?.products || [];
 
-  const handleKeyDown = (e) => {
-    if (!results.length) return;
-    if (e.key === "ArrowDown") setActiveIndex((p) => (p + 1) % results.length);
-    else if (e.key === "ArrowUp") setActiveIndex((p) => (p - 1 + results.length) % results.length);
-    else if (e.key === "Enter" && activeIndex >= 0) handleResultClick(results[activeIndex]._id || results[activeIndex].id);
-    else if (e.key === "Escape") setResults([]), setActiveIndex(-1);
+  // -----------------------------
+  // Handlers
+  // -----------------------------
+  const handlePageChange = (page) => {
+    if (page !== pagination.currentPage) setParams({ page });
   };
 
-  const handleResultClick = (id) => { if (!id) return; navigate(`/product/${id}`); setQuery(""); setResults([]); };
-  const handlePageChange = (page) => fetchLaptops({ page, limit: laptopLimit });
-  const handleExploreClick = () => topPicksRef.current?.scrollIntoView({ behavior: "smooth" });
-
-  const topLaptops = useMemo(() => (topLaptopProducts || []).filter((p) => p.approved).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 4), [topLaptopProducts]);
-
-  const filters = [
-    { key: "brand", title: "Brand", options: ["Apple", "Acer", "Asus", "HP", "Lenovo"], multiple: true },
-    { key: "ram", title: "RAM", options: ["8GB", "16GB", "32GB"], multiple: true },
-    { key: "cpu", title: "CPU", options: ["i5", "i7", "i9"], multiple: true },
-    { key: "screen", title: "Screen Size", options: ['13"', '14"', '15"', '16"'], multiple: true },
-    { key: "price", title: "Price Range", options: ["<500", "500-1000", "1000-1500", ">1500"], multiple: false },
-  ];
-
-    const handleFiltersChange = (selected) => {
-    console.log("Selected filters:", selected);
-    // Filter products logic
+  const handleTopPageChange = (page) => {
+    if (page !== topPagination.currentPage) setTopParams({ page });
   };
 
+  const handleSelectSearch = (product) => {
+    setParams({ search: product.name, page: 1 }); // updates main laptops
+    setSearchParam(""); // clear search input
+  };
+
+  // -----------------------------
+  // Loading / Error
+  // -----------------------------
+  if (isLoading || isTopLoading ) return (
+    <main id="cat-laptops-page" style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "1200px" }}>
+      <Loading message="Loading laptops..." />
+    </main>
+  );
+
+  if (isError) return <p style={{ textAlign: 'center' }}>Failed to load laptops.</p>;
+
+  // -----------------------------
+  // Render
+  // -----------------------------
   return (
-    <main id="cat-laptops-page">
+    <main id="pc-pr-container">
+
       {/* Header + Search */}
-      <header id="cat-laptops-header" ref={searchRef}>
-        <div className="lines"><h1 className="main-line">Universe of Laptops</h1><p className="subline">Innovation in every pixel.</p></div>
-        <div className="cat-search-container">
-          <div className="cat-search"><Search size={20} /><h3>Where Dreams Come True.</h3>
-            <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} placeholder="Search by name or brand..." />
-            {results.length > 0 && (
-              <div className="mob-search-results">
-                <div className="mob-search-results-inner">
-                  {results.map((item, index) => (
-                    <div key={item._id || item.id || index} className={`mob-search-result-item ${activeIndex === index ? "active" : ""}`}
-                      onClick={() => handleResultClick(item._id || item.id)} onMouseEnter={() => setActiveIndex(index)}>
-                      <img src={item.images?.[0] || "/placeholder.png"} alt={item.name} />
-                      <div className="mob-result-info"><span>{item.name}</span><span>{((item.price || 0) - (item.discountPrice || 0)).toLocaleString()} IQD</span></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-          <button onClick={handleExploreClick}>Explore</button>
+      <header id="cat-laptops-header">
+        <div className="lines">
+          <h1 className="main-line">Universe of Laptops</h1>
+          <p className="subline">Innovation in every pixel.</p>
         </div>
+
+        <SearchDropdown 
+          width={500}
+          products={searchResults} 
+          value={searchParam} 
+          onChange={(e) => setSearchParam(e.target.value)}
+          onSelect={handleSelectSearch}
+        />
       </header>
 
-      {/* Top Picks */}
-      <header className="cat-tops-container" ref={topPicksRef}>
-        <h1>Top Rated Laptops</h1>
-      </header>
-
-      {/* Desktop Top Cards */}
-      {width > 650 && (
-        <section id="pc-pr-cards-container">
-        <div className="pc-pr-cards">
-         {topLaptops.map((product) => <ProductCard key={product.id || product._id} product={product}/>)}
-        </div>
-        </section>
-      )}
-
-      {width > 650 && <header className="cat-tops-container">
-        <h1>Laptops</h1>
-        </header>}
-
-      {/* Desktop Grid */}
-      {width > 650 && (
-        <main className="products-grid-container">
-          {laptopProducts.map((laptop, index) => (
-           <ProductGrid key={laptop._id || laptop.id}
-            product={laptop} 
-            index={index} 
-            />
-
-          ))}
-        </main>
-      )}
-
-
-      {/* Mobile Cards */}
-      {width <= 650 && (
-        <div id="mob-pr-container">
-          <div className="mob-pr-cards">
-          {topLaptops.map((laptop) => (
-            <MobileCard
-              key={laptop.id || laptop._id}
-              product={laptop}
-            />
-          ))}
-          </div>
-        </div>
-      )}
-
-
-      {/* Mobile Cards */}
-      {width <= 650 && (
-        <>
-        <div id="mob-pr-container">
-          <header className="cat-tops-container"><h1>Laptops</h1></header>
-          <div className="mob-pr-cards">
-          {laptopProducts.map((laptop) => (
-            <MobileCard
-              key={laptop.id || laptop._id}
-              product={laptop}
-            />
-          ))}
-          </div>
-        </div>
-        </>
-      )}
-
-
-      {/* Pagination */}
-        {laptopPagination.totalPages > 1 && (
-          <Pagination
-            currentPage={laptopPagination.currentPage}
-            totalPages={laptopPagination.totalPages}
-            onPageChange={handlePageChange}
-            mobile
-          />
+      {/* Main Laptops */}
+      <header className="pr-header"><h1>Laptops</h1></header>
+      <div className={width > 650 ? 'products-grid-container' : 'mob-pr-cards'}>
+        {products.length > 0 ? (
+          products.map((product, index) =>
+            width > 650 ? (
+              <ProductGrid key={product._id || product.id} product={product} />
+            ) : (
+              <MobileCard key={product._id || product.id} product={product} customDelay={index * 0.08} />
+            )
+          )
+        ) : (
+          <p style={{ textAlign: 'center' }}>No laptops found.</p>
         )}
+      </div>
+
+      {products.length > 0 && pagination.totalPages > 1 && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
+
+      {/* Top Laptops */}
+      <header className="pr-header"><h1>Top Laptops</h1></header>
+      <div className={width > 650 ? 'products-grid-container' : 'mob-pr-cards'}>
+        {topProducts.length > 0 ? (
+          topProducts.map((product, index) =>
+            width > 650 ? (
+              <ProductGrid key={product._id || product.id} product={product} />
+            ) : (
+              <MobileCard key={product._id || product.id} product={product} customDelay={index * 0.08} />
+            )
+          )
+        ) : (
+          <p style={{ textAlign: 'center' }}>No top laptops found.</p>
+        )}
+      </div>
+
+      {topProducts.length > 0 && topPagination.totalPages > 1 && (
+        <Pagination
+          currentPage={topPagination.currentPage}
+          totalPages={topPagination.totalPages}
+          onPageChange={handleTopPageChange}
+        />
+      )}
+
     </main>
   );
 };

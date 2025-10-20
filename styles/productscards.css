@@ -15,12 +15,28 @@
   
 }
 
-#pc-pr-header {
+.pc-pr-header {
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 4rem 0;
 
+}
+
+.pr-header {
+  width: 80%;
+  padding-left: 1rem;
+  
+}
+
+@media (max-width: 650px) {
+  .pr-header {
+    width: 100%;
+    padding: 1.5rem 0rem 3rem 2rem;
+  }
+  .pr-header h1{
+     font-size: 1.6rem;
+  }
 }
 
 #pc-pr-header h1 {
@@ -286,9 +302,8 @@ select.custom:disabled {
   cursor: not-allowed;
 }
 
-#mob-pr-container {
+.mob-pr-container {
   width: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -310,7 +325,10 @@ select.custom:disabled {
 .mob-pr-header {
   display: flex;
   width: 100%;
-  padding-right: 2rem;
+  padding: 2rem 3rem;
+  justify-content: space-between;
+  align-items: center;
+
 }
 
 .mob-select-wrap {
@@ -365,7 +383,6 @@ select.custom:disabled {
   display: flex;
   gap: 1rem;
   justify-content:space-evenly;
-
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;

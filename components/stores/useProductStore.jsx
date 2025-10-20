@@ -63,6 +63,7 @@ const useProductStore = create((set, get) => ({
   ),
   finalPrice: Number(product.price || 0) - Number(product.discountPrice || 0),
 }),
+
   // Fetch products
   fetchProducts: async (searchTerm = "", sort = "", filters = {}, page= 1, limit=5, admin) => {
     try {
@@ -273,42 +274,6 @@ const useProductStore = create((set, get) => ({
     }
   },
 
-// Fetch offers function
-fetchOffers: async ({ page = 1, limit, category, minPrice, maxPrice, sort, search } = {}) => {
-  try {
-    const state = get();
-    const pageLimit = limit ?? state.offerLimit ?? 4; 
-
-    let query = `page=${page}&limit=${pageLimit}`;
-    if (category) query += `&category=${category}`;
-    if (minPrice != null) query += `&minPrice=${minPrice}`;
-    if (maxPrice != null) query += `&maxPrice=${maxPrice}`;
-    if (sort) query += `&sort=${sort}`;
-    if (search) query += `&search=${encodeURIComponent(search)}`;
-
-    const res = await axios.get(`${API_URL}/api/products/offers?${query}`, { withCredentials: true });
-    const offers = Array.isArray(res.data.products) ? res.data.products : [];
-    const normalized = offers.map(state.normalizeProduct).filter(p => p.approved);
-    const totalPages = res.data.pages && res.data.pages > 0 ? res.data.pages : 0;
-
-    set({
-      offerProducts: normalized,
-      offerPagination: {
-        currentPage: res.data.page || page,
-        totalPages,
-      },
-      offerLimit: pageLimit, // updates store
-    });
-
-    return res.data;
-  } catch (error) {
-    console.error("❌ Failed to fetch offers:", error);
-    set({
-      offerProducts: [],
-      offerPagination: { totalPages: 1, currentPage: 1 },
-    });
-  }
-},
 
 
 fetchTrendingProducts: async ({ page = 1, limit, brands = [], minPrice, maxPrice, sort, search } = {}) => {
@@ -427,86 +392,6 @@ deleteReview: async (productId, reviewId) => {
     });
   }
 },
-
-
-fetchCategoryProducts: async ({ brand, category, searchTerm = "", page = 1, limit = 6 } = {}) => {
-  try {
-    const query = new URLSearchParams();
-    if (brand) query.append("brand", brand);
-    if (category) query.append("category", category);
-    if (searchTerm) query.append("search", searchTerm);
-    query.append("page", page);
-    query.append("limit", limit);
-
-    const res = await axios.get(`${API_URL}/api/products?${query.toString()}`, { withCredentials: true });
-    const normalized = res.data.products.map(get().normalizeProduct);
-    const totalPages = res.data.pages && res.data.pages > 0 ? res.data.pages : 0;
-
-    set({
-      categoryProducts: normalized,
-      categoryPagination: {
-        totalPages: totalPages,
-        currentPage: res.data.page || page,
-      },
-      categoryLimit: limit
-    });
-  } catch (err) {
-    console.error("❌ Failed to fetch category products:", err);
-    set({
-      categoryProducts: [],
-      categoryPagination: { totalPages: 1, currentPage: 1 },
-    });
-  }
-},
-
-fetchCategoryOffers: async ({ brand, category, page = 1, limit = 6 } = {}) => {
-  set({ offersLoading: true });
-  try {
-    const query = new URLSearchParams();
-    if (brand) query.append("brand", brand);
-    if (category) query.append("category", category);
-    query.append("page", page);
-    query.append("limit", limit);
-
-    const res = await axios.get(`${API_URL}/api/products/offers?${query.toString()}`, { withCredentials: true });
-
-    // Only normalize, don't filter approved or category/brand here
-    const normalized = res.data.products.map(get().normalizeProduct);
-    const totalPages = res.data.pages && res.data.pages > 0 ? res.data.pages : 0;
-
-    set({
-      categoryOffers: normalized,
-      categoryOfferPagination: {
-        totalPages,
-        currentPage: res.data.page || page,
-      },
-      categoryOfferLimit: limit
-    });
-  } catch (err) {
-    console.error("❌ Failed to fetch category offers:", err);
-    set({
-      categoryOffers: [],
-      categoryOfferPagination: { totalPages: 1, currentPage: 1 },
-    });
-  } finally {
-    set({ offersLoading: false });
-  }
-},
-
-
-// Pagination setters
-setCategoryCurrentPage: (page) => 
-  set((state) => ({
-    categoryPagination: { ...state.categoryPagination, currentPage: page }
-  })),
-
-setCategoryOfferCurrentPage: (page) => 
-  set((state) => ({
-    categoryOfferPagination: { ...state.categoryOfferPagination, currentPage: page }
-  })),
-
-
-
 
  fetchTopLaptops: async (limit = 4) => {
   try {

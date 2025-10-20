@@ -48,37 +48,52 @@ const useFavoritesStore = create((set, get) => ({
   // -----------------------
   // Toggle a favorite
   // -----------------------
-  toggleFavorite: async (product) => {
-    const user = useAuthStore.getState().user;
-    const { _id } = product;
+ toggleFavorite: async (product) => {
+  const user = useAuthStore.getState().user;
+  const { _id } = product;
 
-    if (!user) {
-      // Guest → localStorage
-      let stored = localStorage.getItem(GUEST_FAV_KEY);
-      let guestFavs = stored ? JSON.parse(stored) : [];
+  // Guest → localStorage (stays the same)
+  if (!user) {
+    let stored = localStorage.getItem(GUEST_FAV_KEY);
+    let guestFavs = stored ? JSON.parse(stored) : [];
 
-      const exists = guestFavs.some(f => f._id === _id);
-      guestFavs = exists
-        ? guestFavs.filter(f => f._id !== _id)
-        : [...guestFavs, product];
+    const exists = guestFavs.some(f => f._id === _id);
+    guestFavs = exists
+      ? guestFavs.filter(f => f._id !== _id)
+      : [...guestFavs, product];
 
-      localStorage.setItem(GUEST_FAV_KEY, JSON.stringify(guestFavs));
-      set({ favorites: guestFavs });
-      return;
-    }
+    localStorage.setItem(GUEST_FAV_KEY, JSON.stringify(guestFavs));
+    set({ favorites: guestFavs });
+    return;
+  }
 
-    // Logged-in → API
-    try {
-      const res = await axios.patch(
-        `${API_URL}/api/favorites/${_id}/toggle`,
-        {},
-        { withCredentials: true }
-      );
-      set({ favorites: res.data.favorites });
-    } catch (err) {
-      console.error("[FavoritesStore] Toggle failed:", err.response?.data?.message || err.message);
-    }
-  },
+  // Logged-in → API (with optimistic update)
+  const currentFavorites = get().favorites;
+  const exists = currentFavorites.some(f => f._id === _id);
+
+  // 1️⃣ Optimistic UI update (instant feedback)
+  const newFavorites = exists
+    ? currentFavorites.filter(f => f._id !== _id)
+    : [...currentFavorites, product];
+  set({ favorites: newFavorites });
+
+  // 2️⃣ Try syncing with server
+  try {
+    await axios.patch(
+      `${API_URL}/api/favorites/${_id}/toggle`,
+      {},
+      { withCredentials: true }
+    );
+    // Optional: re-fetch for accuracy if backend logic differs
+    // const res = await axios.get(`${API_URL}/api/favorites`, { withCredentials: true });
+    // set({ favorites: res.data.favorites });
+  } catch (err) {
+    console.error("[FavoritesStore] Toggle failed:", err.response?.data?.message || err.message);
+    // 3️⃣ Revert if request fails
+    set({ favorites: currentFavorites });
+  }
+},
+
 
 mergeOnLogin: async () => {
   const { favorites } = get();

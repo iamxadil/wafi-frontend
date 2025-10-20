@@ -1,4 +1,3 @@
-// ApprovalFields.jsx
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -16,6 +15,8 @@ import {
   Pagination,
 } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { Carousel } from "@mantine/carousel";
+import "@mantine/carousel/styles.css";
 import useProductStore from "../../../stores/useProductStore";
 
 const ApprovalFields = () => {
@@ -56,7 +57,10 @@ const ApprovalFields = () => {
   };
 
   const rows = paginatedProducts.map((p) => (
-    <Table.Tr key={p.id} style={{ backgroundColor: "var(--background)", color: "var(--text)" }} >
+    <Table.Tr
+      key={p.id}
+      style={{ backgroundColor: "var(--background)", color: "var(--text)" }}
+    >
       <Table.Td>
         {p.images?.[0] ? (
           <Image
@@ -95,7 +99,6 @@ const ApprovalFields = () => {
             color="red"
             onClick={() => deleteSingleProduct(p.id)}
             styles={{ root: { backgroundColor: "red", color: "#fff" } }}
-            
           >
             Delete
           </Button>
@@ -104,7 +107,6 @@ const ApprovalFields = () => {
             variant="light"
             onClick={() => handleShowModal(p)}
             styles={{ root: { color: "var(--text)" } }}
-            
           >
             View
           </Button>
@@ -130,7 +132,11 @@ const ApprovalFields = () => {
                 shadow="sm"
                 radius="sm"
                 withBorder
-                style={{ backgroundColor: "var(--background)", color: "var(--text)", marginBottom: 0 }}
+                style={{
+                  backgroundColor: "var(--background)",
+                  color: "var(--text)",
+                  marginBottom: 0,
+                }}
               >
                 <Stack spacing={0}>
                   {p.images?.[0] ? (
@@ -174,7 +180,9 @@ const ApprovalFields = () => {
                         size="xs"
                         color="red"
                         onClick={() => deleteSingleProduct(p.id)}
-                        styles={{ root: { backgroundColor: "red", color: "#fff" } }}
+                        styles={{
+                          root: { backgroundColor: "red", color: "#fff" },
+                        }}
                       >
                         Delete
                       </Button>
@@ -203,7 +211,12 @@ const ApprovalFields = () => {
         </>
       ) : (
         <>
-          <Table striped highlightOnHover withTableBorder style={{backgroundColor: "var(--background)", color: "var(--text)" }}>
+          <Table
+            striped
+            highlightOnHover
+            withTableBorder
+            style={{ backgroundColor: "var(--background)", color: "var(--text)" }}
+          >
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Image</Table.Th>
@@ -249,17 +262,43 @@ const ApprovalFields = () => {
       >
         {selectedProduct && (
           <Stack spacing="sm">
-            {selectedProduct.images?.[0] && (
-              <Image
-                src={selectedProduct.images[0]}
-                alt={selectedProduct.name}
-                width="100%"
+            {/* 🖼️ Proper Horizontal Carousel */}
+            {selectedProduct.images?.length > 0 && (
+              <Carousel
+                withIndicators
                 height={300}
-                radius={0}
-                fit="contain"
-                style={{ objectFit: "contain" }}
-              />
+                slideGap="md"
+                align="start"
+                loop
+                slideSize="100%"
+                orientation="horizontal"
+                styles={{
+                  viewport: { width: "100%" },
+                  indicator: {
+                    width: 8,
+                    height: 8,
+                    backgroundColor: "var(--text)",
+                  },
+                }}
+              >
+                {selectedProduct.images.map((img, idx) => (
+                  <Carousel.Slide key={idx}>
+                    <Image
+                      src={img}
+                      alt={`${selectedProduct.name} ${idx + 1}`}
+                      width="100%"
+                      height={300}
+                      fit="contain"
+                      style={{
+                        objectFit: "contain",
+                        backgroundColor: "var(--background)",
+                      }}
+                    />
+                  </Carousel.Slide>
+                ))}
+              </Carousel>
             )}
+
             <Text c="var(--text)">
               <strong>Description:</strong> {selectedProduct.description}
             </Text>

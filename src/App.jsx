@@ -44,7 +44,6 @@ import { unlockAudio } from "../components/effects/PlayNotSound.jsx";
 import ScrollTop from '../components/hooks/ScrollTop.jsx';
 import Favorites from '../components/pages/User/Favorites.jsx';
 import BottomNavbar from "../components/main/BottomNavbar.jsx";
-import Sidemenu from '../components/main/Sidemenu.jsx';
 
 import './output.css';
 
@@ -52,7 +51,7 @@ import './output.css';
 function App() {
   const location = useLocation();
   const hideNavbarOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment"];
-  const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment", "/favorites", "/my-orders", "/settings"];
+  const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment", "/favorites", "/my-orders", "/settings", "/product"];
   const bottomNavbarOn = ["/admin-dashboard", "/cart", "payment"];
 
   const user = useAuthStore((state) => state.user);
@@ -142,7 +141,7 @@ function App() {
         />
       )}
 
-      <ScrollTop />
+   
 
       <Routes>
         <Route path="/" element={<Home />} />
