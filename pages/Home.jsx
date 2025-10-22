@@ -18,11 +18,11 @@ const Home = () => {
       <BrandCards />
 
       {/*Desktop View */}
-      <TopProducts />
       <Laptops />
       <Offers />
       <TrendingProducts />
-      {/*Mobile View */}
+
+      
 
     </>
   );

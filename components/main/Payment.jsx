@@ -203,7 +203,7 @@ const Payment = () => {
             </div>
 
             <div className="form-group">
-              <label>Postal Code</label>
+              <label>Address 2</label>
               <input
                 type="text"
                 value={shippingInfo.postalCode}
