@@ -9,7 +9,7 @@ export const useArchiveQuery = ({ page = 1, limit = 4, sort, search } = {}) => {
   return useQuery({
     queryKey: ["archive", page, limit, sort, search],
     queryFn: async () => {
-      console.log("Fetching archived orders...", { page, limit, sort, search }); // debug
+      
       let query = `?page=${page}&limit=${limit}`;
       if (sort) query += `&sort=${sort}`;
       if (search) query += `&search=${encodeURIComponent(search)}`;

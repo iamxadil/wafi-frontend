@@ -339,6 +339,7 @@ useEffect(() => {
           page: "order-status",
           addText: "Approve",
           deleteText: "Deny",
+          
           stats: [
             { label: "Total", value: 1, icon: "📥" },
             { label: "Pending", value: 2, icon: "👤" },
