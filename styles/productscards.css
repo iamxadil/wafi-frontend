@@ -446,7 +446,7 @@ select.custom:disabled {
 .mob-pr-details h2 {
   font-size: 0.95rem;
   font-weight: bold;
- 
+  line-height: 20px;
 }
 
 
