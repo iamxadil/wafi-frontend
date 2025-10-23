@@ -111,7 +111,8 @@ function App() {
 
   return (
     <>
-
+      <ScrollTop />
+      
       {!hideNavbarOn.some(path => location.pathname.startsWith(path)) && <Navbar />}
       {showAdminFeatures && (
         <>

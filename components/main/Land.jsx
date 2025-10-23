@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSwipeable } from "react-swipeable";
 import SearchDropdown from "./SearchDropdown.jsx";
 import { useAllProductsQuery } from "../hooks/useAllProductsQuery.jsx";
 import useAllProductsStore from "../stores/useAllProductsStore.jsx";
@@ -51,25 +52,16 @@ const cards = [
   },
 ];
 
-const CarouselCard = memo(({ card, active, onClick, onNavigate }) => (
+/* Memoized card to avoid unnecessary re-renders */
+const CarouselCard = memo(({ card, active, onActivate, onNavigate }) => (
   <div
-    key={card.id}
     className={`carousel-card ${active === card.id ? "active" : ""}`}
-    onClick={() => onClick(card.id)}
+    onClick={() => onActivate(card.id)}
   >
-    <img
-      src={card.img}
-      alt={card.title}
-      loading="lazy"
-      decoding="async"
-      fetchpriority={card.id === 1 ? "high" : "auto"}
-    />
-    <div
-      className={`card-content ${active === card.id ? "show-content" : ""}`}
-    >
+    <img src={card.img} alt={card.title} loading="lazy" decoding="async" />
+    <div className={`card-content ${active === card.id ? "show-content" : ""}`}>
       <h3>{card.title}</h3>
       <p>{card.text}</p>
-
       {card.link ? (
         <button
           className="explore-btn"
@@ -95,7 +87,6 @@ const Land = () => {
 
   const searchParam = useAllProductsStore((s) => s.searchParam);
   const setSearchParam = useAllProductsStore((s) => s.setSearchParam);
-
   const { data: searchData } = useAllProductsQuery({
     limit: 5,
     page: 1,
@@ -103,9 +94,9 @@ const Land = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
-
   const searchResults = searchData?.products || [];
 
+  // Reveal animation trigger
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
@@ -115,11 +106,21 @@ const Land = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleClick = useCallback((id) => setActive(id), []);
   const handleNavigate = useCallback((path) => navigate(path), [navigate]);
+  const handleActivate = useCallback((id) => setActive(id), []);
+
+  // ✅ swipe gestures
+  const handlers = useSwipeable({
+    onSwipedLeft: () =>
+      setActive((p) => (p < cards.length ? p + 1 : p)),
+    onSwipedRight: () =>
+      setActive((p) => (p > 1 ? p - 1 : p)),
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   return (
-    <section id="feature-section">
+    <section id="feature-section" {...handlers}>
       <div className="blur-spot spot1"></div>
       <div className="blur-spot spot2"></div>
 
@@ -144,7 +145,7 @@ const Land = () => {
               key={card.id}
               card={card}
               active={active}
-              onClick={handleClick}
+              onActivate={handleActivate}
               onNavigate={handleNavigate}
             />
           ))}
@@ -158,7 +159,7 @@ const Land = () => {
             className={`indicator-btn ${
               active === card.id ? "active-indicator" : ""
             }`}
-            onClick={() => handleClick(card.id)}
+            onClick={() => setActive(card.id)}
           >
             <span className="indicator-dot"></span>
             <span className="indicator-icon">{card.icon}</span>

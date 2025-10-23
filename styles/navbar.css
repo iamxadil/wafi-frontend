@@ -605,6 +605,7 @@ background-color: var(--background);
 /* 📱 Responsive Tweaks */
 /* ============================= */
 @media (max-width: 900px) {
+
   .submenu {
     left: 50%;
     transform: translateX(-50%) translateY(10px);
@@ -624,5 +625,12 @@ background-color: var(--background);
     border: none;
     margin-left: 0;
     box-shadow: none;
+  }
+}
+
+@media (max-width: 650px) {
+  
+  #navbar {
+    padding: 1rem !important;
   }
 }
