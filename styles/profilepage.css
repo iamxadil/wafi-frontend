@@ -265,3 +265,151 @@
 .language-switch.arabic .language-thumb {
   left: 20px;
 }
+
+/* ============================= */
+/* 👤 Profile Dropdown (Glassy + Glowing Ring) */
+/* ============================= */
+
+.profile-dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0.6rem 0.4rem;
+  margin: 0;
+  min-width: 190px;
+  border-radius: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.9) translateY(10px);
+  transform-origin: top right;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  z-index: 999;
+  overflow: hidden;
+}
+
+/* ====== Glowing ring expansion ====== */
+.profile-dropdown::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 30%;
+  width: 40px;
+  height: 40px;
+  transform: translate(50%, -50%) scale(0);
+  border-radius: 50%;
+  background: var(--gradient-blur);
+  opacity: 0;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.profile-dropdown.show::before {
+  transform: translate(50%, -50%) scale(6);
+  opacity: 0.4;
+}
+
+/* Dark mode ring glow */
+[data-theme="dark"] .profile-dropdown::before {
+  background: radial-gradient(
+    circle,
+    rgba(94, 99, 255, 0.5),
+    rgba(0, 173, 181, 0.15),
+    transparent 70%
+  );
+}
+
+/* ====== Show animation ====== */
+.profile-dropdown.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+}
+
+/* ====== Dropdown items ====== */
+.profile-dropdown li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.35s ease;
+  opacity: 0;
+  transform: translateX(-10px);
+  position: relative;
+  z-index: 2; /* above ring */
+}
+
+/* Sequential reveal */
+.profile-dropdown.show li {
+  animation: slideInItem 0.45s ease forwards;
+}
+.profile-dropdown.show li:nth-child(1) { animation-delay: 0.05s; }
+.profile-dropdown.show li:nth-child(2) { animation-delay: 0.1s; }
+.profile-dropdown.show li:nth-child(3) { animation-delay: 0.15s; }
+
+/* Hover */
+.profile-dropdown li:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(6px);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .profile-dropdown li:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Links & icons */
+.profile-dropdown li a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+  text-decoration: none;
+  width: 100%;
+  transition: color 0.3s ease;
+}
+
+.profile-dropdown li:hover a {
+  color: var(--accent-clr);
+}
+
+.profile-dropdown svg {
+  font-size: 1.2rem;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.profile-dropdown li:hover svg {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Logout highlight */
+.profile-dropdown li:last-child {
+  color: #ff5c5c;
+  font-weight: 600;
+}
+
+.profile-dropdown li:last-child:hover {
+  background: rgba(255, 92, 92, 0.15);
+  box-shadow: inset 0 0 12px rgba(255, 92, 92, 0.2);
+}
+
+/* Animations */
+@keyframes slideInItem {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

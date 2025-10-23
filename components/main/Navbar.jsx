@@ -1,166 +1,216 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/navbar.css";
 
 import {
-  RiHome2Line as HomeIcon,
-  RiShoppingCartLine as CartIcon,
-  RiAccountCircleLine as ProfileIcon,
-  RiDashboardLine as DashboardIcon
-} from "react-icons/ri";
+  Home,
+  Laptop2,
+  Gamepad2,
+  Shapes,
+  ShoppingCart,
+  Heart,
+  UserCircle,
+  GaugeCircle,
+} from "lucide-react";
 
-import {
-  IoLaptopOutline as LaptopIcon,
-  IoGameControllerOutline as JoystickIcon,
-  IoShapesOutline as OthersIcon,
-  IoMenu as Menu
-} from "react-icons/io5";
-
-import { Heart } from 'lucide-react';
-import useFavoritesStore from "../stores/useFavoritesStore";
+import { CgMenuRightAlt as Menu} from "react-icons/cg";
 import { Link } from "react-router-dom";
-import DarkMode from '../main/Darkmode.jsx';
+import DarkMode from "../main/Darkmode.jsx";
 import Sidemenu from "./Sidemenu.jsx";
 import ProfileDropdown from "../pages/User/ProfileDropdown.jsx";
+
+import useFavoritesStore from "../stores/useFavoritesStore";
 import useAuthStore from "../stores/useAuthStore.jsx";
 import useCartStore from "../stores/useCartStore.jsx";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 
 const Navbar = () => {
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDropdown, setDropdown] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
+
   const profile = useAuthStore((state) => state.profile);
-  const {user} = useAuthStore();
-  const cartItems = useCartStore(state => state.cart);
-
-  const toggleDropdown = () => setDropdown(!isDropdown);
-  const width = useWindowWidth();
-
+  const { user } = useAuthStore();
+  const cartItems = useCartStore((state) => state.cart);
   const favorites = useFavoritesStore((state) => state.favorites || []);
+  const width = useWindowWidth();
 
   useEffect(() => {
     profile();
-   }, [profile])
+  }, [profile]);
+
+  const toggleDropdown = () => setDropdown((p) => !p);
 
   return (
     <>
       <nav id="navbar">
+        {/* Logo */}
         <div className="container">
           <Link to="/">
             <div id="logo"></div>
           </Link>
         </div>
 
+        {/* ===== Navigation Links ===== */}
         <ul id="nav-links">
-          <li> <Link to="/">
-              <span><HomeIcon /></span>
+          <li>
+            <Link to="/">
+              <Home size={20} />
               <span>Home</span>
             </Link>
           </li>
 
-          <li>
-            <span><LaptopIcon /></span>
-          <Link to="/laptops">Laptops</Link>
-         <ul className="submenu">
-            <li><Link to="/category/laptops/Asus">Asus</Link></li>
-            <li><Link to="/category/laptops/Acer">Acer</Link></li>
-            <li><Link to="/category/laptops/Apple">Apple</Link></li>
-            <li><Link to="/category/laptops/Lenovo">Lenovo</Link></li>
-            <li><Link to="/category/laptops/HP">HP</Link></li>
-            <li><Link to="/category/laptops/Microsoft">Microsoft</Link></li>
-            <li><Link to="/category/laptops/Dell">Dell</Link></li>
-        </ul>
-          </li>
-
-          <li>
-            <span><JoystickIcon /></span>
-            <Link to="/accessories">Accessories</Link>
-            <ul className="submenu">
-              <li><Link to="/category/Keyboards">Keyboards</Link></li>
-              <li><Link to="/category/Mice">Mice</Link></li>
-              <li><Link to="/category/Headphones">Headphones</Link></li>
-              <li><Link to="/category/Joysticks">Joysticks</Link></li>
+          <li
+            onMouseEnter={() => setActiveMenu("laptops")}
+            onMouseLeave={() => setActiveMenu(null)}
+          >
+            <Link to="/laptops">
+              <Laptop2 size={20} />
+              <span>Laptops</span>
+            </Link>
+            <ul
+              className={`submenu glassy ${
+                activeMenu === "laptops" ? "show" : ""
+              }`}
+            >
+              <div className="submenu-group">
+                {[
+                  "Asus",
+                  "Acer",
+                  "Apple",
+                  "Lenovo",
+                  "HP",
+                  "Microsoft",
+                  "Dell",
+                ].map((brand) => (
+                  <li key={brand}>
+                    <Link to={`/category/laptops/${brand}`}>{brand}</Link>
+                  </li>
+                ))}
+              </div>
             </ul>
           </li>
 
-          <li>
-            <span><OthersIcon /></span>
-            <a href="#">Others</a>
-            <ul className="submenu">
-              <li><Link to="/category/Routers">Routers</Link></li>
-              <li><Link to="/category/Cabels">Cabels</Link></li>
-              <li><Link to="/category/Adapters">Adapters</Link></li>
+          <li
+            onMouseEnter={() => setActiveMenu("accessories")}
+            onMouseLeave={() => setActiveMenu(null)}
+          >
+            <Link to="/accessories">
+              <Gamepad2 size={20} />
+              <span>Accessories</span>
+            </Link>
+            <ul
+              className={`submenu glassy ${
+                activeMenu === "accessories" ? "show" : ""
+              }`}
+            >
+              <div className="submenu-group">
+                {["Keyboards", "Mice", "Headphones", "Joysticks"].map((cat) => (
+                  <li key={cat}>
+                    <Link to={`/category/${cat}`}>{cat}</Link>
+                  </li>
+                ))}
+              </div>
+            </ul>
+          </li>
+
+          <li
+            onMouseEnter={() => setActiveMenu("others")}
+            onMouseLeave={() => setActiveMenu(null)}
+          >
+            <Link to="#">
+              <Shapes size={20} />
+              <span>Others</span>
+            </Link>
+            <ul
+              className={`submenu glassy ${
+                activeMenu === "others" ? "show" : ""
+              }`}
+            >
+              <div className="submenu-group">
+                {["Routers", "Cables", "Adapters"].map((cat) => (
+                  <li key={cat}>
+                    <Link to={`/category/${cat}`}>{cat}</Link>
+                  </li>
+                ))}
+              </div>
             </ul>
           </li>
         </ul>
 
+        {/* ===== User Interaction ===== */}
         <ul id="user-interaction">
-          
-
           <DarkMode />
 
-          {width > 1150 && 
-          <Link to="/cart">
-          <li className="icon" data-count={cartItems.length} id="cart">
-          <span><CartIcon /></span>
-           </li>
-           </Link>}
-          
+          {width > 1150 && (
+            <Link to="/cart">
+              <li className="icon" data-count={cartItems.length} id="cart">
+                <ShoppingCart size={21} />
+              </li>
+            </Link>
+          )}
 
-          {width > 1150 &&
-          <Link to="/favorites">
-            <li className="icon" data-count={favorites.length} id="favorites">
-              <span><Heart /></span>
-            </li>
-          </Link>}
+          {width > 1150 && (
+            <Link to="/favorites">
+              <li className="icon" data-count={favorites.length} id="favorites">
+                <Heart size={21} />
+              </li>
+            </Link>
+          )}
 
-        
-
-            {(user?.role === "admin" || user?.role === "moderator") && (
-                <li className="icon">
-                  <Link to="/admin-dashboard" style={{ display: "flex", alignItems: "center" }}>
-                    <span><DashboardIcon /></span>
-                    <span className="text dash">Dashboard</span>
-                  </Link>
-                </li>
-              )}
-
-        
-            {width > 1150 &&
-          <li onClick={toggleDropdown} style={{ position: "relative", cursor: "pointer" }} className="profile icon">
-            {user ? (
-              <>
-                <span><ProfileIcon /></span>
-                <span className="user-container">
-                  <span className="user">{user.name}</span>
-                  <ProfileDropdown className={isDropdown ? "show" : ""} onClose={() => {setDropdown(!isDropdown)}}/>
-                </span>
-                 </>
-             
-            ) : (
-              <Link to="/signin">
-                <span className="user-container">
-                  <span><ProfileIcon /></span>
-                  <span className="user">Sign In</span>
-                </span>
+          {(user?.role === "admin" || user?.role === "moderator") && (
+            <li className="icon">
+              <Link
+                to="/admin-dashboard"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <GaugeCircle size={20} />
+                <span className="text dash">Dashboard</span>
               </Link>
-            )}
-          </li>}
-          
-          
-
-            {width < 1150 && 
-             <li className="icon">
-              <span><Menu size={28}  cursor="pointer"  onClick={() => setMenuOpen(true)} /></span>
             </li>
-            }
-           
-            
+          )}
+
+          {width > 1150 && (
+            <li
+              onClick={toggleDropdown}
+              className="profile icon"
+              style={{ position: "relative", cursor: "pointer" }}
+            >
+              {user ? (
+                <>
+                  <UserCircle size={22} />
+                  <span className="user-container">
+                    <span className="user">{user.name}</span>
+                    <ProfileDropdown
+                      className={isDropdown ? "show" : ""}
+                      onClose={() => setDropdown(false)}
+                    />
+                  </span>
+                </>
+              ) : (
+                <Link to="/signin">
+                  <span className="user-container">
+                    <UserCircle size={22} />
+                    <span className="user">Sign In</span>
+                  </span>
+                </Link>
+              )}
+            </li>
+          )}
+
+          {width < 1150 && (
+            <li className="icon">
+              <Menu
+                size={28}
+                cursor="pointer"
+                onClick={() => setMenuOpen(true)}
+              />
+            </li>
+          )}
         </ul>
       </nav>
-    
+
       <Sidemenu isOpen={menuOpen} setIsOpen={setMenuOpen} />
-      <div id="spacer" style={{height: "80px"}}></div>
+      <div id="spacer" style={{ height: "80px" }}></div>
     </>
   );
 };

@@ -12,9 +12,6 @@
   --button-bg: #f5f5f5;
   --button-hover-bg: #b32525;
   --img: url('../assets/svg/wafi-logo-outline.svg');
-  --gradient-start: #5e63ff;
-  --gradient-end: #00d4ff;
-  --second-theme-bg: linear-gradient(135deg, #32109f, var(--base-clr));
 }
 
 [data-theme="dark"] {
@@ -32,8 +29,9 @@
   --page-hover: #ffffff;
   --page-active-bg: linear-gradient(135deg, #2c4493, #462775);
   --page-highlight-shadow: rgba(70, 39, 117, 0.3);
-  --theme: rgb(102, 11, 133);
-  --theme-bg: linear-gradient(135deg, var(--accent-clr), var(--base-clr));
+  --gradient-blur: radial-gradient(at top left,rgba(0, 173, 181, 0.45), rgba(45, 55, 72, 0.2)
+);
+
 }
 
 [data-theme="light"] {
@@ -53,6 +51,7 @@
   --page-highlight-shadow: rgba(94, 99, 255, 0.3);
   --theme: rgb(89, 24, 130);
   --theme-bg: linear-gradient(135deg, var(--accent-clr), var(--base-clr));
+  --gradient-blur: radial-gradient(at bottom right,rgba(173, 216, 230, 0.079), rgba(255, 182, 193, 0.141) 100%);
 }
 
 /* ============================= */
@@ -91,10 +90,15 @@ li {
 
 button {
   color: var(--text);
-  border: var(--button-border);
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+  background: none;
+
+}
+
+input {
+  background: none;
 }
 
 .loading-container {

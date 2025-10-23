@@ -124,6 +124,7 @@ const ProductCard = ({ product }) => {
             e.stopPropagation();
             handleAddToCart(product);
           }}
+         
         >
           Add to Cart
         </button>

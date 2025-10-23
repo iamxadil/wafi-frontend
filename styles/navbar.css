@@ -118,7 +118,6 @@ background-color: var(--background);
   flex-direction: column;
   top: 100%;
   left: 0%;
-  background: var(--button-bg);
   list-style: none;
   padding: 0.5em 0;
   margin: 0;
@@ -129,17 +128,13 @@ background-color: var(--background);
   pointer-events: none;
   transition: all 0.25s ease;
   z-index: 100;
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--line-clr);
 }
 
-.submenu li {
-  padding: 0.5em 1em;
-}
 
-.submenu li a {
-  color: var(--text);
-  text-decoration: none;
-  width: 100%;
-}
+
+
 
 #nav-links li:hover .submenu {
   opacity: 1;
@@ -368,4 +363,266 @@ background-color: var(--background);
   position: absolute;
   top: -5px;
   right: -5px;
+}
+
+/* ============================= */
+/* 🧊 1️⃣ Base Submenu Styles */
+/* ============================= */
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0.6em 0.4em;
+  margin: 0;
+  min-width: 200px;
+  border-radius: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.98);
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  z-index: 300;
+  transform-origin: top left;
+}
+
+[data-theme="dark"] .submenu {
+  background: rgba(25, 25, 35, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+}
+
+/* Show dropdown smoothly */
+#nav-links li {
+  position: relative;
+}
+
+#nav-links li:hover > .submenu,
+#nav-links li .submenu:hover {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* ============================= */
+/* 🧊 2️⃣ Submenu Items (Glassy + Glowing Reveal) */
+/* ============================= */
+
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0.6em 0.4em;
+  margin: 0;
+  min-width: 200px;
+  border-radius: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.96);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(50px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  z-index: 300;
+  transform-origin: top left;
+}
+
+/* === Glowing ring reveal === */
+.submenu::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: var(--gradient-blur);
+  opacity: 0;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#nav-links li:hover > .submenu::before {
+  transform: translate(-50%, -50%) scale(6);
+  opacity: 0.4;
+}
+
+/* Dark mode glow variation */
+[data-theme="dark"] .submenu::before {
+  background: radial-gradient(
+    circle,
+    rgba(94, 99, 255, 0.5),
+    rgba(0, 173, 181, 0.15),
+    transparent 70%
+  );
+}
+
+/* Show transition */
+#nav-links li:hover > .submenu,
+#nav-links li .submenu:hover {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* ============================= */
+/* 💠 Submenu Items */
+/* ============================= */
+.submenu li {
+  padding: 0.6em 1.2em;
+  border-radius: 10px;
+  margin: 3px 6px;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  transform: translateX(-12px);
+  opacity: 0;
+  z-index: 2; /* above glow */
+}
+
+/* Sequential stagger animation */
+#nav-links li:hover > .submenu li {
+  animation: slideInItem 0.45s ease forwards;
+}
+#nav-links li:hover > .submenu li:nth-child(1) { animation-delay: 0.05s; }
+#nav-links li:hover > .submenu li:nth-child(2) { animation-delay: 0.1s; }
+#nav-links li:hover > .submenu li:nth-child(3) { animation-delay: 0.15s; }
+#nav-links li:hover > .submenu li:nth-child(4) { animation-delay: 0.2s; }
+#nav-links li:hover > .submenu li:nth-child(5) { animation-delay: 0.25s; }
+
+/* Submenu links */
+.submenu li a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hover effect */
+.submenu li:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateX(6px);
+  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .submenu li:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.submenu li:hover a {
+  color: var(--accent-clr);
+  opacity: 1;
+}
+
+/* Underline animation */
+.submenu li::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-clr), transparent);
+  transition: width 0.35s ease;
+}
+.submenu li:hover::after {
+  width: 80%;
+}
+
+/* ============================= */
+/* 🧭 Nested Submenus (Side-slide) */
+/* ============================= */
+.submenu .submenu {
+  top: 0;
+  left: 100%;
+  margin-left: 0.4rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-20px) scale(0.96);
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.submenu li:hover > .submenu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) scale(1);
+}
+
+/* Arrow indicator */
+.submenu li a::after {
+  content: "›";
+  font-weight: 700;
+  opacity: 0.4;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.submenu li:hover a::after {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+/* ============================= */
+/* 🌈 Ambient Animations */
+/* ============================= */
+@keyframes slideInItem {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ambientGlow {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.04);
+  }
+  50% {
+    box-shadow: 0 14px 40px rgba(255, 255, 255, 0.12);
+  }
+}
+
+.submenu {
+  animation: ambientGlow 6s ease-in-out infinite alternate;
+}
+
+/* ============================= */
+/* 📱 Responsive Tweaks */
+/* ============================= */
+@media (max-width: 900px) {
+  .submenu {
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: 90%;
+  }
+
+  .submenu li {
+    padding: 0.8rem 1rem;
+  }
+
+  .submenu .submenu {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    margin-left: 0;
+    box-shadow: none;
+  }
 }
