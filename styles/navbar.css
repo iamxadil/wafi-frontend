@@ -631,6 +631,6 @@ background-color: var(--background);
 @media (max-width: 650px) {
   
   #navbar {
-    padding: 1rem !important;
+    padding: 0 1rem !important;
   }
 }

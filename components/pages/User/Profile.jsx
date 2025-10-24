@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import '../../../styles/profilepage.css';
 import useAuthStore from '../../stores/useAuthStore';
-import ChangeLanguage from './ChangeLanguage.jsx';
 import { toast } from 'react-toastify';
 import ChangePassword from './ChangePassword';
 import { useNavigate, Link } from 'react-router-dom';
@@ -165,8 +164,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Language Toggle */}
-        <ChangeLanguage />
 
       </section>
     </main>

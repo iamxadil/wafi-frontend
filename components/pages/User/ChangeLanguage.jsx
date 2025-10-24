@@ -1,29 +1,20 @@
 import React from "react";
+import { Globe, Languages } from "lucide-react";
 import useLanguageStore from "../../stores/useLanguageStore.jsx";
-import "../../../styles/profilepage.css";
+import "../../../styles/changelanguage.css";
 
 const ChangeLanguage = () => {
   const { language, toggleLanguage } = useLanguageStore();
   const isEnglish = language === "en";
 
-  const handleToggle = () => {
-    toggleLanguage();
-  };
-
   return (
-    <div className="change-language">
-      <h1 style={{ fontWeight: 600 }}>Language</h1>
-      <div className="language-toggle-group">
-        <span className={`language-label ${isEnglish ? "active" : ""}`}>English</span>
-        <div
-          className={`language-switch ${isEnglish ? "english" : "arabic"}`}
-          onClick={handleToggle}
-        >
-          <div className="language-thumb" />
+    <li className="language-toggle-btn" onClick={toggleLanguage}>
+      <div className={`lang-switch ${isEnglish ? "english" : "arabic"}`}>
+        <div className="lang-icon">
+          {isEnglish ? <Globe size={16} /> : <Languages size={16} />}
         </div>
-        <span className={`language-label ${!isEnglish ? "active" : ""}`}>Arabic</span>
       </div>
-    </div>
+    </li>
   );
 };
 

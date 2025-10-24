@@ -4,6 +4,8 @@ import { useSwipeable } from "react-swipeable";
 import SearchDropdown from "./SearchDropdown.jsx";
 import { useAllProductsQuery } from "../hooks/useAllProductsQuery.jsx";
 import useAllProductsStore from "../stores/useAllProductsStore.jsx";
+import useTranslate from "../hooks/useTranslate.jsx";
+import useLanguageStore from "../stores/useLanguageStore.jsx";
 import "../../styles/land.css";
 
 import gesture1 from "../../assets/img/gesture1.webp";
@@ -80,10 +82,16 @@ const CarouselCard = memo(({ card, active, onActivate, onNavigate }) => (
 ));
 
 const Land = () => {
+
+
   const [active, setActive] = useState(1);
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
   const navigate = useNavigate();
+
+
+  const t = useTranslate();
+  const { language } = useLanguageStore();
 
   const searchParam = useAllProductsStore((s) => s.searchParam);
   const setSearchParam = useAllProductsStore((s) => s.setSearchParam);

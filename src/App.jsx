@@ -44,7 +44,6 @@ import { unlockAudio } from "../components/effects/PlayNotSound.jsx";
 import ScrollTop from '../components/hooks/ScrollTop.jsx';
 import Favorites from '../components/pages/User/Favorites.jsx';
 import BottomNavbar from "../components/main/BottomNavbar.jsx";
-
 import './output.css';
 
 
@@ -60,6 +59,10 @@ function App() {
   const cartStore = useCartStore.getState();
   const favoritesStore = useFavoritesStore.getState();
   const width = useWindowWidth();
+
+
+
+  //--- Ar & En
 
   // --- Initialize cart on app load ---
   useEffect(() => {

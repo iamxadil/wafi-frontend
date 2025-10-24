@@ -15,6 +15,7 @@ import {
 import { CgMenuRightAlt as Menu} from "react-icons/cg";
 import { Link } from "react-router-dom";
 import DarkMode from "../main/Darkmode.jsx";
+import ChangeLanguage from "../pages/User/ChangeLanguage.jsx";
 import Sidemenu from "./Sidemenu.jsx";
 import ProfileDropdown from "../pages/User/ProfileDropdown.jsx";
 
@@ -48,6 +49,14 @@ const Navbar = () => {
           <Link to="/">
             <div id="logo"></div>
           </Link>
+
+          {width > 1150 && 
+            <>
+              <DarkMode />
+              <ChangeLanguage />  
+            </>
+          }
+         
         </div>
 
         {/* ===== Navigation Links ===== */}
@@ -139,7 +148,13 @@ const Navbar = () => {
 
         {/* ===== User Interaction ===== */}
         <ul id="user-interaction">
-          <DarkMode />
+
+              {width <= 1150 && 
+                <>
+              <DarkMode/>
+              <ChangeLanguage/>  
+                </>
+              }
 
           {width > 1150 && (
             <Link to="/cart">
@@ -197,7 +212,7 @@ const Navbar = () => {
             </li>
           )}
 
-          {width < 1150 && (
+          {width <= 1150 && (
             <li className="icon">
               <Menu
                 size={28}

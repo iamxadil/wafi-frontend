@@ -1,172 +1,102 @@
-:root {
-
-  --base-clr: #11121a;
-  --line-clr: #656565f1;
-  --hover-clr: #e1e1e1;
-  --text-clr: #e6e6e6;
-  --accent-clr: #5e63ff;
-  --secondary-text-clr: #e9e9e9;
-  --background: #fff;
-  --text: #000;
-  --button-border: 1px solid #000;
-  --button-bg: #f5f5f5;
-  --button-hover-bg: #b32525;
-  --img: url('../assets/svg/wafi-logo-outline.svg');
-  --gradient-start: #5e63ff;  
-  --gradient-end: #00d4ff; 
-  --second-theme-bg: linear-gradient(135deg, #32109f, var(--base-clr));
-
-}
-
-[data-theme="dark"] {
-  --background: #0f1011;
-  --text: #fff;
-  --button-border: 1px solid #fff;
-  --button-bg: #222533;
-  --button-hover-bg: #2f3242;
-  --img: url('../assets/svg/wafi-logo-outline-white.svg');
-  --gradient-start: #2c4493;  
-  --gradient-end: #462775;
-  --landing-bg: linear-gradient(135deg, rgba(93, 93, 93, 0.2), rgba(65, 65, 65, 0.2)), url('../assets/laptops-bg-dark.jpg');
-  --footer-img: url('../assets/svg/wafi-logo-filled-white.svg');
-
-  /* Pagination / Highlight */
-  --page-color: #ccc;
-  --page-hover: #ffffff;
-  --page-active-bg: linear-gradient(135deg, #2c4493, #462775);
-  --page-highlight-shadow: rgba(70, 39, 117, 0.3);
-  --theme: rgb(102, 11, 133);
-  --theme-bg: linear-gradient(135deg, var(--accent-clr), var(--base-clr));
-}
-
-[data-theme="light"] {
-  --background: #fff;
-  --text: #000;
-  --button-border: 1px solid #000;
-  --button-bg: #f5f5f5;
-  --button-hover-bg: #eaeaea;
-  --img: url('../assets/svg/wafi-logo-outline.svg');
-  --gradient-start: #5e63ff;  
-  --gradient-end: #00d4ff;
-  --landing-bg: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(247,100,186,0.1)), url('../assets/laptops-bg.jpg');
-  --footer-img: url('../assets/svg/wafi-logo-filled.svg');
-
-  /* Pagination / Highlight */
-  --page-color: #333;
-  --page-hover: #2563eb;
-  --page-active-bg: linear-gradient(135deg, #5e63ff, #00d4ff);
-  --page-highlight-shadow: rgba(94, 99, 255, 0.3);
-  --theme: rgb(89, 24, 130);
-  --theme-bg: linear-gradient(135deg, var(--accent-clr), var(--base-clr));
-}
-
-
-
-
-body {
-  background: var(--background);
-  color: var(--text);
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-h1, h2, h3, h4, h5, h6, p {
-  color: var(--text);
-  transition: color 0.3s ease;
-}
-
-
-li {
-  color: var(--text);
-  transition: color 0.3s ease, background 0.3s ease;
-}
-
-
-
-button {
-  background-color: var(--button-bg);
-  color: var(--text);
-  border: var(--button-border);
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
-}
-
-input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none; /* Remove default style */
-  height: 16px;
-  width: 16px;
-  background: url('data:image/svg+xml;utf8,<svg fill="%23ff1e8a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M14.348 5.652a.5.5 0 0 0-.707 0L10 9.293 6.36 5.652a.5.5 0 1 0-.707.707L9.293 10l-3.64 3.64a.5.5 0 0 0 .707.707L10 10.707l3.64 3.64a.5.5 0 0 0 .707-.707L10.707 10l3.64-3.64a.5.5 0 0 0 0-.708z"/></svg>') no-repeat center;
-  cursor: pointer;
-}
-
-input[type="search"]::-webkit-search-cancel-button:hover {
-  transform: scale(1.2);
-}
-
 .darkmode-toggle {
   list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 12px;
   cursor: pointer;
-  user-select: none;
 }
 
-.toggle-label {
-  font-size: 0.95rem;
-  color: var(--text);
-  font-weight: 500;
-  transition: color 0.25s ease;
-}
-
+/* Compact circular toggle */
 .toggle-switch {
-  width: 54px;
-  height: 28px;
-  border-radius: 999px;
-  background: rgba(88, 88, 88, 0.439);
-  border: 1px solid rgba(0, 129, 49, 0.983);
-  backdrop-filter: blur(6px) saturate(150%);
-  display: flex;
-  align-items: center;
-  padding: 2px;
-  transition: background 0.3s ease;
-  position: relative;
-
-}
-
-.toggle-switch.dark {
-  background: rgba(24, 54, 42, 0.628);
-  border-color: rgba(110,231,183,0.3);
-}
-
-.toggle-ball {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #007445, #2bd18f);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 1rem;
-  box-shadow: 0 4px 16px rgba(110,231,183,0.35), inset 0 -2px 6px rgba(0,0,0,0.2);
-  transition: transform 0.35s cubic-bezier(.22,1,.36,1), background 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  background: var(--bg-toggle);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.15),
+    0 2px 4px rgba(0,0,0,0.1);
+  backdrop-filter: blur(6px);
 }
 
-.toggle-switch.light .toggle-ball {
-  transform: translateX(0);
+/* Light mode */
+.toggle-switch.light {
+  background: linear-gradient(145deg, #fff8f1, rgba(230, 223, 243, 0.25));
+  border-color: #e0e0e0;
+  color: #b7853e;
 }
 
-.toggle-switch.dark .toggle-ball {
-  transform: translateX(26px);
+/* Dark mode */
+.toggle-switch.dark {
+  background: linear-gradient(145deg, rgba(28, 31, 39, 0.95), rgba(42, 46, 56, 0.9));
+  border-color: #444;
+  color: #a9c8f0;
 }
 
+/* Hover glow — subtle and refined */
+.toggle-switch.light:hover {
+  box-shadow:
+    0 0 10px rgba(46, 0, 91, 0.2),
+    0 0 15px rgba(185, 133, 62, 0.25),
+    inset 0 1px 2px rgba(255,255,255,0.2);
+  transform: scale(1.08);
+}
 
+.toggle-switch.dark:hover {
+  box-shadow:
+    0 0 10px rgba(0, 107, 153, 0.2),
+    0 0 15px rgba(169, 200, 240, 0.25),
+    inset 0 1px 2px rgba(255,255,255,0.1);
+  transform: scale(1.08);
+}
+
+/* Active feedback */
+.toggle-switch:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 6px rgba(0,0,0,0.2) inset;
+}
+
+/* Icon movement */
 .toggle-ball {
-  width: 24px;  /* slightly bigger than icon */
-  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.4s ease, opacity 0.3s ease;
+  opacity: 0.95;
 }
 
+/* Rotation for mode change */
+.toggle-switch.dark .toggle-ball {
+  transform: rotate(180deg);
+}
+
+/* Icon smooth fade */
+.toggle-ball svg {
+  transition: color 0.4s ease, opacity 0.3s ease;
+}
+
+.toggle-switch.light .toggle-ball svg {
+  color: #b7853e;
+}
+
+.toggle-switch.dark .toggle-ball svg {
+  color: #a9c8f0;
+}
+
+/* Hover pulse */
+.toggle-switch:hover .toggle-ball {
+  opacity: 1;
+}
+
+/* Theme variables */
+:root[data-theme="light"] {
+  --bg-toggle: linear-gradient(145deg, #fff8f1, rgba(230, 223, 243, 0.25));
+  --border: #e0e0e0;
+}
+
+:root[data-theme="dark"] {
+  --bg-toggle: linear-gradient(145deg, rgba(28, 31, 39, 0.95), rgba(42, 46, 56, 0.9));
+  --border: #444;
+}
