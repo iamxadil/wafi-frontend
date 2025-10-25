@@ -1,0 +1,381 @@
+/* =============================
+   FILTER DROPDOWN WRAPPER
+   ============================= */
+.filter-dropdown-wrapper {
+  position: relative;
+  display: flex;
+  height: 50px;
+  width: 210px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--text);
+  border-radius: 12px;
+  padding: 0.6rem 0.5rem;
+  color: var(--text);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  transition: all 0.25s ease-in-out;
+  z-index: 5;
+}
+
+.filter-dropdown-wrapper:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* =============================
+   DROPDOWN BUTTON
+   ============================= */
+.filter-dropdown-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.filter-dropdown-toggle:hover {
+  color: var(--accent, #6b7bff);
+}
+
+.arrow {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.arrow.up {
+  transform: rotate(180deg);
+  opacity: 0.9;
+}
+
+/* =============================
+   FLOATING CONTENT
+   ============================= */
+.filter-dropdown-content {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  z-index: 20;
+
+  background: var(--background);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+
+  animation: dropdownFade 0.15s ease;
+}
+
+/* Subtle fade effect (doesn't affect layout) */
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter-dropdown-content .filter-select-wrapper {
+  width: 100%;
+  margin-bottom: 0.9rem;
+}
+
+.filter-dropdown-content .filter-select-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+/* =============================
+   ACCESSIBILITY STATES
+   ============================= */
+.filter-dropdown-toggle:focus {
+  outline: none;
+}
+
+.filter-dropdown-wrapper:focus-within {
+  border-color: var(--accent, #6366f1);
+}
+
+/* =============================
+   LIGHT MODE SUPPORT
+   ============================= */
+@media (prefers-color-scheme: light) {
+  .filter-dropdown-wrapper {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: var(--text, #1e1e1e);
+  }
+
+  .filter-dropdown-content {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
+  }
+
+  .filter-dropdown-toggle:hover {
+    color: #2a2a2a;
+  }
+}
+
+/* =============================
+   RESPONSIVE DESIGN
+   ============================= */
+@media (max-width: 900px) {
+  .filter-dropdown-wrapper {
+    width: 200px;
+  }
+}
+
+@media (max-width: 650px) {
+  .filter-dropdown-wrapper {
+    width: 100%;
+    max-width: 150px;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .filter-dropdown-content {
+    width: 100%;
+    left: 0;
+    padding: 0.8rem;
+  }
+
+  .filter-dropdown-toggle {
+    font-size: 0.9rem;
+  }
+}
+/* ===========================================
+   PRICE RANGE — Polished compact layout
+   =========================================== */
+.price-range-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem; /* smaller gap for tighter grouping */
+  margin-top: 0.6rem;
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.4rem;
+  justify-content: flex-start;
+}
+
+.price-label {
+  font-size: 0.88rem;
+  color: var(--text);
+  font-weight: 600;
+  opacity: 0.85;
+  letter-spacing: 0.2px;
+  margin-bottom: 0; /* remove extra spacing */
+}
+
+.price-values {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+  color: var(--text);
+  font-weight: 500;
+  opacity: 0.9;
+  margin-top: 0.1rem;
+  margin-bottom: 0.15rem; /* just enough breathing room */
+}
+
+/* ===================== SLIDER ===================== */
+.range-slider-container {
+  position: relative;
+  height: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.price-slider {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  pointer-events: none;
+  margin: 0; /* ensure no offset */
+}
+
+.price-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--accent, #6366f1);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  pointer-events: all;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.price-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+/* Accent fill between handles */
+.slider-container::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--min, 0%) * 1%);
+  right: calc(100% - var(--max, 100%) * 1%);
+  height: 4px;
+  border-radius: 4px;
+  background: var(--accent, #6366f1);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ===================== INPUTS ===================== */
+.price-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem; /* smaller gap between fields */
+  margin-top: 0.25rem; /* reduced spacing between slider and inputs */
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 120px;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 0.3rem 2rem 0.3rem 0.6rem; /* tighter padding */
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-size: 0.83rem;
+  font-weight: 500;
+  text-align: right;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: var(--accent, #6366f1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.iqd-suffix {
+  position: absolute;
+  right: 0.6rem;
+  color: var(--text);
+  font-size: 0.72rem;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.price-separator {
+  color: var(--text);
+  opacity: 0.6;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+/* ===================== LIGHT MODE ===================== */
+@media (prefers-color-scheme: light) {
+  .price-slider {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  .price-slider::-webkit-slider-thumb {
+    border-color: rgba(0, 0, 0, 0.25);
+  }
+
+  .input-wrapper input {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1c1c1c;
+  }
+
+  .input-wrapper input:focus {
+    background: rgba(0, 0, 0, 0.07);
+  }
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 650px) {
+  .price-range-container {
+    gap: 0.35rem;
+    padding-top: 0.3rem;
+  }
+
+  .price-label {
+    font-size: 0.84rem;
+  }
+
+  .price-values {
+    font-size: 0.8rem;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .price-inputs {
+    justify-content: center;
+    gap: 0.3rem;
+  }
+
+  .input-wrapper input {
+    max-width: 90px;
+    font-size: 0.8rem;
+  }
+
+  .iqd-suffix {
+    font-size: 0.7rem;
+  }
+}
+
+/* =============================
+   CUSTOM ARROW ICON
+   ============================= */
+.arrow {
+  width: 0.8rem;
+  height: 0.8rem;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.75;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ccc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+
+.filter-dropdown-toggle:hover .arrow {
+  opacity: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23aab4ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+
+.arrow.up {
+  transform: rotate(180deg);
+  opacity: 0.9;
+}
+
+/* Light mode adjustment */
+@media (prefers-color-scheme: light) {
+  .arrow {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  }
+
+  .filter-dropdown-toggle:hover .arrow {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007bff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  }
+}
+

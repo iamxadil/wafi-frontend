@@ -1,0 +1,199 @@
+/* ===========================================
+   FILTER CONTAINER — Stable, Elegant, Responsive
+   =========================================== */
+.filters-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center the entire group */
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.5rem 1rem;
+  
+  /* Glass backdrop */
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  transition: none;
+}
+
+/* ===========================================
+   FILTER SELECT WRAPPER
+   =========================================== */
+.filter-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 42px;
+  min-height: 42px;
+  line-height: 42px;
+  transition: none;
+  backdrop-filter: none;
+}
+
+/* --- Base Select --- */
+.filter-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  width: 180px;
+  height: 100%;
+  padding: 0 2.2rem 0 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.15));
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0.03)
+  );
+
+  color: var(--text, #eaeaea);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: none;
+}
+
+/* ===========================================
+   Dropdown Arrow
+   =========================================== */
+.filter-select-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  width: 0.65rem;
+  height: 0.65rem;
+  pointer-events: none;
+  opacity: 0.8;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23bbbbbb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* ===========================================
+   Interactions
+   =========================================== */
+.filter-select:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent, #6366f1);
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.08),
+    rgba(255, 255, 255, 0.05)
+  );
+}
+
+/* ===========================================
+   Options
+   =========================================== */
+.filter-select option {
+  background: var(--background, #0b0b0b);
+  color: var(--text, #eaeaea);
+  text-align: left;
+  font-weight: 500;
+  padding: 0.4rem 0.6rem;
+}
+
+/* ===========================================
+   DIVIDERS — Elegant glassy separators
+   =========================================== */
+
+/* Add dividers between selects (only on large screens) */
+.filters-container .filter-select-wrapper:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+}
+
+/* Hide dividers when stacked or narrow */
+@media (max-width: 900px) {
+  .filters-container .filter-select-wrapper::after {
+    display: none;
+  }
+}
+
+/* ===========================================
+   RESPONSIVE BEHAVIOR
+   =========================================== */
+
+/* Medium screens */
+@media (max-width: 900px) {
+  .filters-container {
+    max-width: 700px;
+    gap: 1rem;
+  }
+
+  .filter-select {
+    width: 160px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Small screens (mobile) */
+@media (max-width: 650px) {
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem 2rem;
+    gap: 0.9rem;
+    border-radius: 12px;
+  }
+
+  .filter-select-wrapper {
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+    font-size: 0.85rem; /* ↓ slightly smaller text */
+    padding: 0 1.8rem 0 0.8rem; /* tighter padding */
+  }
+
+  .filter-select-wrapper::after {
+    right: 1.2rem;
+    width: 0.55rem;
+    height: 0.55rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 400px) {
+  .filter-select {
+    font-size: 0.8rem;
+    padding: 0 1.5rem 0 0.7rem;
+  }
+}
