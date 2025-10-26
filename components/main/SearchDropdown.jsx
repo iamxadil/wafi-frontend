@@ -31,7 +31,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
         <SearchIcon className="search-icon" />
         <input
           type="search"
-          placeholder="Search for prodocuts"
+          placeholder="Search for prodcuts.."
           ref={inputRef}
           value={value}
           onChange={onChange}

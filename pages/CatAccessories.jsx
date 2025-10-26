@@ -61,7 +61,6 @@ useEffect(() => {
     });
     const searchResults = searchData?.products || [];
 
-  console.log(pagination);
 
   //States
    const handlePageChange = (page) => {
