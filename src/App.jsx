@@ -28,7 +28,6 @@ import AdminDashboard from '../components/pages/Admin/AdminDashboard.jsx';
 import FormDashboard from '../components/pages/Admin/layouts/FormDashboard.jsx';
 import AdminLandingPage from '../components/pages/Admin/layouts/AdminLandingPage.jsx';
 import Notifications from '../components/pages/Admin/layouts/Notifications.jsx';
-import AllowedRoute from '../routes/AllowedRoute.jsx';
 import PublicRoute from '../routes/PublicRoute.jsx';
 import ProtectedRoute from '../routes/ProtectedRoute.jsx';
 import SocketListener from '../components/main/SocketListener.jsx';
@@ -44,6 +43,7 @@ import { unlockAudio } from "../components/effects/PlayNotSound.jsx";
 import ScrollTop from '../components/hooks/ScrollTop.jsx';
 import Favorites from '../components/pages/User/Favorites.jsx';
 import BottomNavbar from "../components/main/BottomNavbar.jsx";
+import CatAccessories from '../pages/CatAccessories.jsx';
 import './output.css';
 
 
@@ -179,7 +179,7 @@ function App() {
         <Route path="/category/:categoryName" element={<CategoryNavigation />} />
         <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
         <Route path='/laptops' element={<CatLaptops />} />
-        <Route path='/accessories' element={<Accessories />} />
+        <Route path='/accessories' element={<CatAccessories />} />
         <Route path='/favorites' element={<Favorites />} />
         <Route path='/static' element={<Static />} />
       </Routes>

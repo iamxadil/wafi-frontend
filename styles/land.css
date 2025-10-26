@@ -52,7 +52,7 @@
   flex-direction: column;
   justify-content: flex-start;
   z-index: 5;
-  gap: 12px;
+  gap: 2rem;
 }
 
 .feature-header h2 {

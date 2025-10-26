@@ -7,6 +7,7 @@ import Laptops from "../components/main/Laptops.jsx";
 import Offers from '../components/main/Offers.jsx';
 import TrendingProducts from "../components/main/TrendingProducts.jsx";
 import MobLandingPage from "../components/main/MobLandingPage.jsx";
+import AccessoriesProducts from "../components/main/AccessoriesProducts.jsx";
 
 const Home = () => {
 
@@ -19,6 +20,7 @@ const Home = () => {
 
       {/*Desktop View */}
       <Laptops />
+      <AccessoriesProducts />
       <Offers />
       <TrendingProducts />
 

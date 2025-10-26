@@ -1,5 +1,5 @@
 /* === HERO BASE === */
-.laptops-hero {
+.accessories-hero {
   position: relative;
   width: 100%;
   height: 80vh;
@@ -23,11 +23,11 @@
   overflow: visible;
 }
 
-/* === GRADIENT BLOBS (behind text only) === */
+/* === GRADIENT BLOBS === */
 .hero-content .blur-shape {
   position: absolute;
-  width: 450px;
-  height: 450px;
+  width: 420px;
+  height: 420px;
   border-radius: 50%;
   filter: blur(130px);
   opacity: 0.55;
@@ -37,19 +37,19 @@
   will-change: transform;
 }
 
-/* Left glow — cooler tones */
+/* Left glow */
 .hero-content .blur-1 {
-  background: radial-gradient(circle at center, var(--gradient-start, #4f5fff) 0%, transparent 70%);
-  top: -8%;
-  left: 10%;
+  background: radial-gradient(circle at center, var(--gradient-start) 0%, transparent 70%);
+  top: -5%;
+  left: 8%;
   animation-delay: 0s;
 }
 
-/* Right glow — slightly warmer accent */
+/* Right glow */
 .hero-content .blur-2 {
-  background: radial-gradient(circle at center, var(--gradient-end, #00d2ff) 0%, transparent 70%);
-  bottom: -10%;
-  right: 10%;
+  background: radial-gradient(circle at center, var(--gradient-end) 0%, transparent 70%);
+  bottom: -8%;
+  right: 8%;
   animation-delay: 4s;
 }
 
@@ -76,7 +76,7 @@
   color: var(--text);
 }
 .hero-title span {
-  background: linear-gradient(135deg, var(--gradient-start, #4f5fff), var(--gradient-end, #00d2ff));
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -85,7 +85,7 @@
   opacity: 0.85;
   margin: 0 auto 2.5rem auto;
   line-height: 1.6;
-  color: var(--accent-clr);
+  color: var(--line-clr);
   max-width: 600px;
 }
 
@@ -100,8 +100,8 @@
 }
 
 /* === TOP & BOTTOM FADES === */
-.laptops-hero::before,
-.laptops-hero::after {
+.accessories-hero::before,
+.accessories-hero::after {
   content: "";
   position: absolute;
   left: 0;
@@ -110,22 +110,20 @@
   pointer-events: none;
   z-index: 1;
 }
-
-.laptops-hero::before {
+.accessories-hero::before {
   top: 0;
   background: linear-gradient(to bottom, var(--background) 15%, rgba(var(--background-rgb), 0) 100%);
 }
-
-.laptops-hero::after {
+.accessories-hero::after {
   bottom: 0;
   background: linear-gradient(to top, var(--background) 15%, rgba(var(--background-rgb), 0) 100%);
 }
 
 /* === LIGHT THEME FIX === */
-[data-theme="light"] .laptops-hero::before {
+[data-theme="light"] .accessories-hero::before {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 10%, rgba(255, 255, 255, 0) 100%);
 }
-[data-theme="light"] .laptops-hero::after {
+[data-theme="light"] .accessories-hero::after {
   background: linear-gradient(to top, rgba(255, 255, 255, 1) 10%, rgba(255, 255, 255, 0) 100%);
 }
 
@@ -143,8 +141,9 @@
 
 /* === RESPONSIVE === */
 @media (max-width: 890px) {
-  .laptops-hero {
-    height: 55vh;
+
+  .accessories-hero {
+    height: 50vh;
   }
   .hero-title {
     font-size: clamp(2rem, 7vw, 3.5rem);
@@ -154,24 +153,23 @@
     margin-bottom: 2rem;
   }
   .hero-content .blur-shape {
-    width: 300px;
-    height: 300px;
+    width: 280px;
+    height: 280px;
     filter: blur(100px);
   }
 }
 
 /* === SCROLL REACTIVITY === */
 
-/* make the hero respond to --fade-opacity */
-.laptops-hero {
+/* Make the whole hero fade as you scroll */
+.accessories-hero {
   opacity: var(--fade-opacity, 1);
   transition: opacity 0.25s ease-out;
   will-change: opacity;
 }
 
-/* optional: also add a subtle upward shift as it fades */
-.laptops-hero .hero-content {
+/* Slight upward movement for the text as it fades */
+.accessories-hero .hero-content {
   transform: translateY(calc((1 - var(--fade-opacity, 1)) * -40px));
   transition: transform 0.25s ease-out, opacity 0.25s ease-out;
 }
-

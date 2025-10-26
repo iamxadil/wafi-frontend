@@ -1,85 +1,68 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import ProductCard from "./ProductCard.jsx";
 import MobileCard from "./MobileCard.jsx";
 import Pagination from "./Pagination.jsx";
-import { useOffersQuery } from "../hooks/useOffersQuery.jsx"; // React Query hook
-import useOffersStore from "../stores/useOffersStore.jsx";   // Zustand store
+import { useOffersQuery } from "../hooks/useOffersQuery.jsx";
+import useOffersStore from "../stores/useOffersStore.jsx";
 
 const Offers = () => {
   const width = useWindowWidth();
+  const currentPage = useOffersStore((s) => s.currentPage);
+  const setCurrentPage = useOffersStore((s) => s.setCurrentPage);
+  const offersLimit = useOffersStore((s) => s.offersLimit);
 
-  // -------------------------------
-  // UI/client state (Zustand)
-  // -------------------------------
-  const currentPage = useOffersStore((state) => state.currentPage);
-  const setCurrentPage = useOffersStore((state) => state.setCurrentPage);
-  const offersLimit = useOffersStore((state) => state.offersLimit);
-
-  // -------------------------------
-  // Server state (React Query)
-  // -------------------------------
+  // fetch data
   const { data, isLoading, isError } = useOffersQuery({
     page: currentPage,
     limit: offersLimit,
   });
 
   if (isLoading) return <p>Loading offers...</p>;
-  if (isError) return <p>Error loading offers</p>;
+  if (isError) return <p>Error loading offers.</p>;
 
   const products = data?.products || [];
   const pagination = data?.pagination || { currentPage: 1, totalPages: 0 };
 
-  // -------------------------------
-  // Pagination handler
-  // -------------------------------
-  const handlePageChange = (page) => {
-    setCurrentPage(page); // triggers React Query to fetch new page automatically
-  };
+  // ✅ cap pagination to 2 pages only for this component
+  const totalPages = Math.min(pagination.totalPages, 2);
 
   return (
     <main id="pc-pr-container">
+      <header className="pr-header">
+        <Link to="/offers">
+          <h1>Offers</h1>
+          <ArrowRight size={24} />
+        </Link>
+      </header>
 
-      {/* Desktop */}
-      {width > 650 && (
-        <>
-          <header id="pc-pr-header">
-            <h1>Offers</h1>
-          </header>
-          <div id="pc-pr-cards-container">
-            <div className="pc-pr-cards">
-              {products.map((product) => (
-                <ProductCard key={product._id || product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Mobile */}
-      {width <= 650 && (
-        <>
-          <header className="mob-pr-container">
-            <h1>Offers</h1>
-          </header>
-          <div className="mob-pr-cards">
-            {products.map((product, index) => (
+      {/* Cards */}
+      <div className={width > 650 ? "pc-pr-cards" : "mob-pr-cards"}>
+        {products.length ? (
+          products.map((product, i) =>
+            width > 650 ? (
+              <ProductCard key={product._id || product.id} product={product} />
+            ) : (
               <MobileCard
                 key={product._id || product.id}
                 product={product}
-                customDelay={index * 0.08}
+                customDelay={i * 0.08}
               />
-            ))}
-          </div>
-        </>
-      )}
+            )
+          )
+        ) : (
+          <p style={{ textAlign: "center" }}>No offers found.</p>
+        )}
+      </div>
 
       {/* Pagination */}
-      {pagination.totalPages > 0 && (
+      {products.length > 0 && totalPages > 1 && (
         <Pagination
           currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          onPageChange={handlePageChange}
+          totalPages={totalPages} // 👈 limited to 2
+          onPageChange={(p) => setCurrentPage(p)}
         />
       )}
     </main>
