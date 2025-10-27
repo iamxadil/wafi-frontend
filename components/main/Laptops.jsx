@@ -4,15 +4,21 @@ import ProductCard from "./ProductCard.jsx";
 import MobileCard from "./MobileCard.jsx";
 import Pagination from "./Pagination.jsx";
 import FilterDropdownContainer from "./FilterDropdownContainer.jsx"; // ✅ use the new reusable container
+import useTranslate from '../hooks/useTranslate.jsx';
 import { useLaptopsQuery } from "../hooks/useLaptopsQuery.jsx";
 import useLaptopsStore from "../stores/useLaptopsStore.jsx";
 import Loading from "../main/Loading.jsx";
 import "../../styles/productscards.css";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { Laptop } from 'lucide-react';
 
 const LaptopProducts = () => {
+
+  //Width Setup
   const width = useWindowWidth();
+
+  //Language Setup
+  const t = useTranslate();
 
   // Zustand state
   const params = useLaptopsStore((state) => state.mainPageParams);
@@ -48,7 +54,7 @@ const LaptopProducts = () => {
     <main id="pc-pr-container">
       {/* Header */}
       <header className="pr-header">
-        <Link to="/laptops"><h1>Laptops</h1> <ArrowRight /></Link>
+        <Link to="/laptops" style={{flexDirection: t.rowReverse}}><h1>{t("Laptops", "اللابتوبات")}</h1> <Laptop /></Link>
       </header>
 
       {/* Products */}
@@ -66,7 +72,7 @@ const LaptopProducts = () => {
             )
           )
         ) : (
-          <p style={{ textAlign: "center" }}>No laptops found.</p>
+          <p style={{ textAlign: "center" }}>{t("No Laptops Found", "لا توجد لابتوبات")}</p>
         )}
       </div>
 

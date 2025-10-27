@@ -69,15 +69,16 @@ body {
   background: var(--background);
   color: var(--text);
   transition: background 0.3s ease, color 0.3s ease;
-  font-family: 'Poppins', 'sans-serif' !important;
+  font-family: "Noto Sans Arabic" !important;
 }
 
 h1, h2, h3, h4, h5, h6, p, span, button, li, ul, a, th, td {
   color: var(--text);
   transition: color 0.3s ease;
-  font-family: 'Poppins', 'sans-serif' !important;
+  font-family: 'Noto Sans Arabic', 'sans-serif' !important;
 
 }
+
 
 td {
   background-color: var(--background);
@@ -105,8 +106,6 @@ button {
   gap: 1rem;
 }
 
-* {
-    font-family: 'Poppins', 'sans-serif' !important;
-}
+
 
 

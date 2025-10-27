@@ -5,13 +5,14 @@ import useProductStore from "../stores/useProductStore.jsx";
 import ProductCard from "./ProductCard.jsx";
 import Pagination from "./Pagination.jsx";
 import useWindowWidth from '../hooks/useWindowWidth.jsx';
+import useTranslate from "../hooks/useTranslate.jsx";
 
 const TrendingProducts = () => {
   const fetchTrendingProducts = useProductStore(state => state.fetchTrendingProducts);
   const trendingProducts = useProductStore(state => state.trendingProducts);
   const trendingLoading = useProductStore(state => state.trendingLoading);
   const width = useWindowWidth();
-
+  const t = useTranslate();
 
   // Fetch trending products on mount or width change (desktop only)
   useEffect(() => {
@@ -26,7 +27,7 @@ const TrendingProducts = () => {
   return (
     <main id="pc-pr-container">
       <header>
-        <h1>Trending Products</h1>
+        <h1>{t("Trending Products", "منتجات رائِجة")}</h1>
       </header>
 
       <section id="pc-pr-cards-container">

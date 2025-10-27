@@ -1,5 +1,5 @@
 // src/pages/CatLaptops.jsx
-import React, { useEffect } from "react";
+import React from "react";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx";
 import MobileCard from "../components/main/MobileCard.jsx";
@@ -8,10 +8,12 @@ import useLaptopsStore from "../components/stores/useLaptopsStore.jsx";
 import { useLaptopsQuery } from "../components/hooks/useLaptopsQuery.jsx";
 import Loading from "../components/main/Loading.jsx";
 import SearchDropdown from "../components/main/SearchDropdown.jsx";
+import useTranslate from "../components/hooks/useTranslate.jsx";
 import "../styles/catlaptops.css";
 
 const CatLaptops = () => {
   const width = useWindowWidth();
+  const t = useTranslate();
 
   // Zustand states
   const params = useLaptopsStore((s) => s.laptopPageParams);
@@ -36,7 +38,7 @@ const CatLaptops = () => {
     totalPages: 0,
   };
 
-  // Search results for dropdown
+  // Search dropdown
   const { data: searchData } = useLaptopsQuery({
     ...params,
     search: searchParam,
@@ -44,30 +46,6 @@ const CatLaptops = () => {
     limit: 5,
   });
   const searchResults = searchData?.products || [];
-
-  // Parallax + top/bottom fade (match CatAccessories)
-  useEffect(() => {
-    const handleScroll = () => {
-      const hero = document.querySelector(".laptops-hero");
-      const blur1 = document.querySelector(".laptops-hero .blur-1");
-      const blur2 = document.querySelector(".laptops-hero .blur-2");
-      if (!hero || !blur1 || !blur2) return;
-
-      const scrollY = window.scrollY;
-      const fadeHeight = 600;
-      const fadeValue = Math.max(0, 1 - scrollY / fadeHeight);
-      hero.style.setProperty("--fade-opacity", fadeValue.toFixed(2));
-
-      // Parallax offsets
-      const offset1 = scrollY * 0.15;
-      const offset2 = scrollY * 0.25;
-      blur1.style.transform = `translateY(${offset1}px)`;
-      blur2.style.transform = `translateY(${offset2}px)`;
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Handlers
   const handlePageChange = (page) => {
@@ -93,31 +71,35 @@ const CatLaptops = () => {
           minHeight: "1200px",
         }}
       >
-        <Loading message="Loading laptops..." />
+        <Loading message={t("Loading laptops...", "جاري تحميل اللابتوبات...")} />
       </main>
     );
   }
-  if (isError) return <p style={{ textAlign: "center" }}>Failed to load laptops.</p>;
 
-  // Render
+  if (isError)
+    return <p style={{ textAlign: "center" }}>{t("Failed to load laptops.", "فشل تحميل اللابتوبات.")}</p>;
+
   return (
     <>
-      {/* HERO (mirrors accessories) */}
+      {/* === HERO SECTION === */}
       <section className="laptops-hero">
         <div className="hero-content">
-          {/* Glows ONLY behind text */}
+          {/* Glows behind text */}
           <div className="blur-shape blur-1"></div>
           <div className="blur-shape blur-2"></div>
 
           <h1 className="hero-title">
-            Explore the <span>Laptop Universe</span>
+            {t("Explore the", "استكشف")} <span>{t("Laptop Universe", "عالم اللابتوبات")}</span>
           </h1>
           <p className="hero-subtitle">
-            Power, design, and performance — where innovation meets experience.
+            {t(
+              "Power, design, and performance — where innovation meets experience.",
+              "القوة، التصميم، والأداء — حيث تلتقي الابتكارات مع التجربة."
+            )}
           </p>
         </div>
 
-        {/* Search */}
+        {/* Search Bar */}
         <div className="search-dropdown-wrapper">
           <SearchDropdown
             width={550}
@@ -129,12 +111,13 @@ const CatLaptops = () => {
         </div>
       </section>
 
-      {/* MAIN CONTENT */}
+      {/* === MAIN CONTENT === */}
       <main id="pc-pr-container">
         {/* All Laptops */}
-        <header className="pr-header">
-          <h1>Laptops</h1>
+        <header className="pr-header" style={{flexDirection: t.rowReverse}}>
+          <h1>{t("Laptops", "اللابتوبات")}</h1>
         </header>
+
         <div className={width > 650 ? "products-grid-container cat-grid" : "mob-pr-cards"}>
           {products.length > 0 ? (
             products.map((product, index) =>
@@ -149,7 +132,7 @@ const CatLaptops = () => {
               )
             )
           ) : (
-            <p style={{ textAlign: "center" }}>No laptops found.</p>
+            <p style={{ textAlign: "center" }}>{t("No laptops found.", "لم يتم العثور على لابتوبات.")}</p>
           )}
         </div>
 
@@ -162,9 +145,10 @@ const CatLaptops = () => {
         )}
 
         {/* Top Laptops */}
-        <header className="pr-header">
-          <h1>Top Laptops</h1>
+        <header className="pr-header" style={{flexDirection: t.rowReverse}}>
+          <h1>{t("Top Laptops", "لابتوبات مُميزة")}</h1>
         </header>
+
         <div className={width > 650 ? "products-grid-container cat-grid" : "mob-pr-cards"}>
           {topProducts.length > 0 ? (
             topProducts.map((product, index) =>
@@ -179,7 +163,9 @@ const CatLaptops = () => {
               )
             )
           ) : (
-            <p style={{ textAlign: "center" }}>No top laptops found.</p>
+            <p style={{ textAlign: "center" }}>
+              {t("No top laptops found.", "لم يتم العثور على لابتوبات مميزة.")}
+            </p>
           )}
         </div>
 

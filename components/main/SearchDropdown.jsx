@@ -3,12 +3,15 @@ import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useTranslate from "../hooks/useTranslate.jsx";
 
 const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
+
   const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const [isFocused, setIsFocused] = useState(false);
+  const t = useTranslate();
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -27,17 +30,20 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {/* Input wrapper */}
-      <div className="search-input-wrapper">
+      <div className="search-input-wrapper" >
         <SearchIcon className="search-icon" />
-        <input
+       <input
           type="search"
-          placeholder="Search for prodcuts.."
+          dir={t.language === "ar" ? "rtl" : "ltr"}        
+          style={{ textAlign: t.textAlign }}            
+          placeholder={t("Search for products...", "ابحث عن المنتجات")}
           ref={inputRef}
           value={value}
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 120)}
         />
+
       </div>
 
       {/* Dropdown */}

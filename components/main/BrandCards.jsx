@@ -12,8 +12,10 @@ import {
   SiLogitechg as Logitech,
 } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
+import useTranslate from "../hooks/useTranslate";
 
 const BrandCards = () => {
+
   const navigate = useNavigate();
   const x = useMotionValue(0);
   const velocity = useRef(0);
@@ -21,6 +23,7 @@ const BrandCards = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [controls, setControls] = useState(null);
+  const t = useTranslate();
 
   const cards = [
     { name: "Asus", icon: <Asus /> },
@@ -79,9 +82,14 @@ const BrandCards = () => {
 
   return (
     <main id="brand-cards-container">
-      <header className="brand-header">
-        <h1>Our Brands</h1>
-        <p>Explore the pioneers of innovation and performance.</p>
+      <header className="brand-header" style={{alignItems: t.flexAlign}}>
+        <h1>{t("Our Brands", "علاماتُنا التجارية")}</h1>
+      <p>
+        {t(
+          "Explore the pioneers of innovation and performance.",
+          "اكتشف روّاد الابتكار والأداء المتميز."
+        )}
+      </p>     
       </header>
 
       <div

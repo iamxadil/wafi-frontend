@@ -5,7 +5,6 @@ import SearchDropdown from "./SearchDropdown.jsx";
 import { useAllProductsQuery } from "../hooks/useAllProductsQuery.jsx";
 import useAllProductsStore from "../stores/useAllProductsStore.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
-import useLanguageStore from "../stores/useLanguageStore.jsx";
 import "../../styles/land.css";
 
 import gesture1 from "../../assets/img/gesture1.webp";
@@ -15,83 +14,110 @@ import gesture4 from "../../assets/img/gesture4.webp";
 
 import { Zap, Gamepad2, Gauge, Music2 } from "lucide-react";
 
-const cards = [
+/* Static base card info (no translation here) */
+const baseCards = [
   {
     id: 1,
-    title: "Ultra thin, Maximum efficiency.",
     img: gesture1,
-    text: "Interact with your laptop through natural, responsive hand movements.",
-    label: "Power",
     icon: <Zap size={18} strokeWidth={2.4} />,
     link: "/laptops",
   },
   {
     id: 2,
-    title: "Gaming Mode.",
     img: gesture2,
-    text: "Turn any surface into your personal display — seamless and adaptive.",
-    label: "Sense",
     icon: <Gamepad2 size={18} strokeWidth={2.4} />,
     link: "/category/Mice",
   },
   {
     id: 3,
-    title: "Boosted Performance.",
     img: gesture3,
-    text: "Ultra-fast sensors for dynamic depth and motion accuracy.",
-    label: "Performance",
     icon: <Gauge size={18} strokeWidth={2.4} />,
     link: null,
   },
   {
     id: 4,
-    title: "Cinematic Rhythms.",
     img: gesture4,
-    text: "Enjoy with cutting-edge acoustic technology.",
-    label: "Audio",
     icon: <Music2 size={18} strokeWidth={2.4} />,
     link: "/category/Headphones",
   },
 ];
 
-/* Memoized card to avoid unnecessary re-renders */
-const CarouselCard = memo(({ card, active, onActivate, onNavigate }) => (
-  <div
-    className={`carousel-card ${active === card.id ? "active" : ""}`}
-    onClick={() => onActivate(card.id)}
-  >
-    <img src={card.img} alt={card.title} loading="lazy" decoding="async" />
-    <div className={`card-content ${active === card.id ? "show-content" : ""}`}>
-      <h3>{card.title}</h3>
-      <p>{card.text}</p>
-      {card.link ? (
-        <button
-          className="explore-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            onNavigate(card.link);
-          }}
-        >
-          Explore
-        </button>
-      ) : (
-        <button className="explore-btn disabled">Explore</button>
-      )}
+/* Memoized card (animation stays smooth) */
+const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
+  // apply translation dynamically per card
+  const translations = {
+    1: {
+      title: t("Ultra thin, Maximum efficiency.", "نحافة قصوى، كفاءة لا مثيل لها."),
+      text: t(
+        "Interact with your laptop through natural, responsive hand movements.",
+        "تفاعل مع حاسوبك المحمول بحركات يد طبيعية وسريعة الاستجابة."
+      ),
+      label: t("Power", "الطاقة"),
+    },
+    2: {
+      title: t("Gaming Mode.", "وضع الألعاب."),
+      text: t(
+        "Turn any surface into your personal display — seamless and adaptive.",
+        "حوّل أي سطح إلى شاشتك الخاصة — تجربة سلسة ومتجاوبة."
+      ),
+      label: t("Sense", "الإحساس"),
+    },
+    3: {
+      title: t("Boosted Performance.", "أداء معزز."),
+      text: t(
+        "Ultra-fast sensors for dynamic depth and motion accuracy.",
+        "حساسات فائقة السرعة لدقة عالية في الحركة والعمق."
+      ),
+      label: t("Performance", "الأداء"),
+    },
+    4: {
+      title: t("Cinematic Rhythms.", "أنغام سينمائية."),
+      text: t(
+        "Enjoy with cutting-edge acoustic technology.",
+        "استمتع بتقنية صوتية متطورة تمنحك تجربة غامرة."
+      ),
+      label: t("Audio", "الصوت"),
+    },
+  };
+
+  const { title, text } = translations[card.id];
+
+  return (
+    <div
+      className={`carousel-card ${active === card.id ? "active" : ""}`}
+      onClick={() => onActivate(card.id)}
+    >
+      <img src={card.img} alt={title} loading="lazy" decoding="async" />
+      <div
+        className={`card-content ${active === card.id ? "show-content" : ""}`}
+        style={{ textAlign: t.textAlign, [t.positionAlign]: "0" }}
+      >
+        <h3>{title}</h3>
+        <p>{text}</p>
+        {card.link ? (
+          <button
+            className="explore-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onNavigate(card.link);
+            }}
+          >
+            {t("Explore", "استكشف")}
+          </button>
+        ) : (
+          <button className="explore-btn disabled">{t("Explore", "استكشف")}</button>
+        )}
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
 const Land = () => {
-
-
   const [active, setActive] = useState(1);
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
   const navigate = useNavigate();
-
-
   const t = useTranslate();
-  const { language } = useLanguageStore();
 
   const searchParam = useAllProductsStore((s) => s.searchParam);
   const setSearchParam = useAllProductsStore((s) => s.setSearchParam);
@@ -108,7 +134,7 @@ const Land = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.2 }
+      { threshold: 0.25 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -117,10 +143,9 @@ const Land = () => {
   const handleNavigate = useCallback((path) => navigate(path), [navigate]);
   const handleActivate = useCallback((id) => setActive(id), []);
 
-  // ✅ swipe gestures
   const handlers = useSwipeable({
     onSwipedLeft: () =>
-      setActive((p) => (p < cards.length ? p + 1 : p)),
+      setActive((p) => (p < baseCards.length ? p + 1 : p)),
     onSwipedRight: () =>
       setActive((p) => (p > 1 ? p - 1 : p)),
     preventScrollOnSwipe: true,
@@ -128,50 +153,59 @@ const Land = () => {
   });
 
   return (
-    <section id="feature-section" {...handlers}>
+    <section id="feature-section" {...handlers} style={{ alignItems: t.flexAlign }}>
       <div className="blur-spot spot1"></div>
       <div className="blur-spot spot2"></div>
 
       <div className="feature-header">
-        <h2>Experience the Future of Interaction</h2>
-        <p>
-          Explore the evolution of digital precision — a seamless blend of motion,
-          clarity, and immersive response.
+        <h1 style={{ textAlign: t.textAlign }}>
+          {t("Experience the Future of Interaction", "استمتع بتجربة تفاعلية مستقبلية تتجاوز الحدود")}
+        </h1>
+        <p style={{ textAlign: t.textAlign }}>
+          {t(
+            "Explore the evolution of digital precision — a seamless blend of motion, clarity, and immersive response.",
+            "استكشف تطوّر الدقة الرقمية — مزيج سلس من الحركة والوضوح والاستجابة الغامرة."
+          )}
         </p>
         <SearchDropdown
           width={720}
           products={searchResults}
           value={searchParam}
           onChange={(e) => setSearchParam(e.target.value)}
+          placeholder={t("Search for products...", "ابحث عن المنتجات...")}
         />
       </div>
 
-      <div ref={ref} id="land-container" className={visible ? "visible" : ""}>
+      <div ref={ref} id="land-container" className={visible ? "visible fade-up" : ""}>
         <div className="carousel">
-          {cards.map((card) => (
+          {baseCards.map((card) => (
             <CarouselCard
               key={card.id}
               card={card}
               active={active}
               onActivate={handleActivate}
               onNavigate={handleNavigate}
+              t={t}
             />
           ))}
         </div>
       </div>
 
       <div className="indicator-bar">
-        {cards.map((card) => (
+        {baseCards.map((card) => (
           <button
             key={card.id}
-            className={`indicator-btn ${
-              active === card.id ? "active-indicator" : ""
-            }`}
+            className={`indicator-btn ${active === card.id ? "active-indicator" : ""}`}
             onClick={() => setActive(card.id)}
           >
             <span className="indicator-dot"></span>
             <span className="indicator-icon">{card.icon}</span>
-            <span className="indicator-text">{card.label}</span>
+            <span className="indicator-text">
+              {t(
+                { 1: "Power", 2: "Sense", 3: "Performance", 4: "Audio" }[card.id],
+                { 1: "الطاقة", 2: "الإحساس", 3: "الأداء", 4: "الصوت" }[card.id]
+              )}
+            </span>
           </button>
         ))}
       </div>

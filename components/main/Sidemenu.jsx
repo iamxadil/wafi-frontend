@@ -1,14 +1,14 @@
-// src/components/Sidemenu.jsx
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Laptop, Mouse, Router, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/sidemenu.css";
+import useTranslate from "../hooks/useTranslate.jsx";
 
 const menuData = [
   {
-    title: "Laptops",
+    titleKey: { en: "Laptops", ar: "لابتوبات" },
     icon: <Laptop size={25} />,
     items: [
       { label: "All Laptops", path: "/laptops" },
@@ -22,7 +22,7 @@ const menuData = [
     ],
   },
   {
-    title: "Accessories",
+    titleKey: { en: "Accessories", ar: "إكسسوارات" },
     icon: <Mouse size={25} />,
     items: [
       { label: "All Accessories", path: "/accessories" },
@@ -32,7 +32,7 @@ const menuData = [
     ],
   },
   {
-    title: "Networking",
+    titleKey: { en: "Networking", ar: "الشبكات" },
     icon: <Router size={25} />,
     items: [
       { label: "All Components", path: "/others" },
@@ -46,11 +46,13 @@ const menuData = [
 const Sidemenu = ({ isOpen, setIsOpen }) => {
   const [openIndex, setOpenIndex] = useState(null);
   const navigate = useNavigate();
+  const t = useTranslate();
 
-  // Disable background scroll
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "auto";
-    return () => { document.body.style.overflow = "auto"; };
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isOpen]);
 
   const toggleSubmenu = (index) => {
@@ -82,18 +84,36 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
+            dir={t.language === "ar" ? "rtl" : "ltr"}
           >
-            <div className="sidemenu-close" onClick={() => setIsOpen(false)}>
-              <h1>Menu <X size={24} /></h1>
+            <div
+              className="sidemenu-close"
+              onClick={() => setIsOpen(false)}
+              style={{
+                flexDirection: t.language === "ar" ? "row-reverse" : "row",
+                textAlign: t.language === "ar" ? "right" : "left",
+              }}
+            >
+              <h1>{t("Menu", "القائمة")} <X size={24} /></h1>
             </div>
 
             <ul className="sidemenu-list">
               {menuData.map((menu, i) => (
                 <li key={i}>
-                  <button className="sidemenu-main-btn" onClick={() => toggleSubmenu(i)}>
+                  <button
+                    className="sidemenu-main-btn"
+                    onClick={() => toggleSubmenu(i)}
+                    style={{
+                      flexDirection: t.language === "ar" ? "row-reverse" : "row",
+                    }}
+                  >
                     <span className="sidemenu-icon">{menu.icon}</span>
-                    <span className="sidemenu-title">{menu.title}</span>
-                    <span className="sidemenu-arrow">{openIndex === i ? <ChevronUp /> : <ChevronDown />}</span>
+                    <span className="sidemenu-title">
+                      {t(menu.titleKey.en, menu.titleKey.ar)}
+                    </span>
+                    <span className="sidemenu-arrow">
+                      {openIndex === i ? <ChevronUp /> : <ChevronDown />}
+                    </span>
                   </button>
 
                   <AnimatePresence>
@@ -104,6 +124,10 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25 }}
+                        style={{
+                          direction: t.language === "ar" ? "rtl" : "ltr",
+                          textAlign: t.language === "ar" ? "right" : "left",
+                        }}
                       >
                         {menu.items.map((item, j) => (
                           <li

@@ -92,11 +92,12 @@
 /* === SEARCH BAR WRAPPER === */
 .search-dropdown-wrapper {
   position: relative;
-  z-index: 10;
+  z-index: 6000;
   width: 100%;
   display: flex;
   justify-content: center;
   margin-top: 1rem;
+  
 }
 
 /* === TOP & BOTTOM FADES === */
@@ -161,15 +162,3 @@
 
 /* === SCROLL REACTIVITY === */
 
-/* Make the whole hero fade as you scroll */
-.accessories-hero {
-  opacity: var(--fade-opacity, 1);
-  transition: opacity 0.25s ease-out;
-  will-change: opacity;
-}
-
-/* Slight upward movement for the text as it fades */
-.accessories-hero .hero-content {
-  transform: translateY(calc((1 - var(--fade-opacity, 1)) * -40px));
-  transition: transform 0.25s ease-out, opacity 0.25s ease-out;
-}

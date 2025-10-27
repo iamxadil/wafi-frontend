@@ -7,6 +7,7 @@ import useAuthStore from "../stores/useAuthStore.jsx";
 import useFavoritesStore from "../stores/useFavoritesStore.jsx";
 import { toast } from "react-toastify";
 import { Heart } from "lucide-react";
+import useTranslate from "../hooks/useTranslate.jsx";
 
 const ProductCard = ({ product }) => {
   const id = product.id || product._id;
@@ -15,6 +16,9 @@ const ProductCard = ({ product }) => {
   const addToCart = useCartStore((state) => state.addToCart);
   const token = useAuthStore.getState().token;
   const navigate = useNavigate();
+
+  //Language Setup
+  const t = useTranslate();
 
   const handleAddToCart = (product) => {
     if (product.countInStock <= 0) return toast.error("Out of stock");
@@ -53,7 +57,7 @@ const ProductCard = ({ product }) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
         >
-          Out of Stock
+            {t("Out of Stock", "غير متوفر")}
         </motion.span>
       )}
       {product.countInStock > 0 && (
@@ -63,7 +67,7 @@ const ProductCard = ({ product }) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
         >
-          In Stock
+          {t("In Stock", "متوفر")}
         </motion.span>
       )}
       {product.discountPrice > 0 && (
@@ -73,7 +77,7 @@ const ProductCard = ({ product }) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.15 }}
         >
-          {Math.round((product.discountPrice / product.price) * 100)}% OFF
+          {Math.round((product.discountPrice / product.price) * 100)}% {t("Off", "تخفيض")}
         </motion.span>
       )}
 
@@ -126,7 +130,7 @@ const ProductCard = ({ product }) => {
           }}
          
         >
-          Add to Cart
+          {t("Add To Cart", "اضف إلى السلة")}
         </button>
       </motion.div>
 

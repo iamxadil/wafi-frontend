@@ -18,6 +18,9 @@
   padding: 0 3rem;
   margin-bottom: 2rem;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .brand-header h1 {

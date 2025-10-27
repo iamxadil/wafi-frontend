@@ -23,8 +23,10 @@ import useFavoritesStore from "../stores/useFavoritesStore";
 import useAuthStore from "../stores/useAuthStore.jsx";
 import useCartStore from "../stores/useCartStore.jsx";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
+import useTranslate from "../hooks/useTranslate.jsx";
 
 const Navbar = () => {
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDropdown, setDropdown] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
@@ -34,10 +36,9 @@ const Navbar = () => {
   const cartItems = useCartStore((state) => state.cart);
   const favorites = useFavoritesStore((state) => state.favorites || []);
   const width = useWindowWidth();
+  const t = useTranslate();
 
-  useEffect(() => {
-    profile();
-  }, [profile]);
+
 
   const toggleDropdown = () => setDropdown((p) => !p);
 
@@ -64,7 +65,7 @@ const Navbar = () => {
           <li>
             <Link to="/">
               <Home size={20} />
-              <span>Home</span>
+              <span>{t("Home", "الصفحة الرئيسية")}</span>
             </Link>
           </li>
 
@@ -74,7 +75,7 @@ const Navbar = () => {
           >
             <Link to="/laptops">
               <Laptop2 size={20} />
-              <span>Laptops</span>
+              <span>{t("Laptops", "لابتوبات")}</span>
             </Link>
             <ul
               className={`submenu glassy ${
@@ -105,7 +106,7 @@ const Navbar = () => {
           >
             <Link to="/accessories">
               <Gamepad2 size={20} />
-              <span>Accessories</span>
+              <span>{t("Accessories", "اكسسوارات")}</span>
             </Link>
             <ul
               className={`submenu glassy ${
@@ -128,7 +129,7 @@ const Navbar = () => {
           >
             <Link to="#">
               <Shapes size={20} />
-              <span>Others</span>
+              <span>{t("Others", "اخرى")}</span>
             </Link>
             <ul
               className={`submenu glassy ${

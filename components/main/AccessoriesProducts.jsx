@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react';
+import { Joystick } from 'lucide-react';
 import ProductCard from './ProductCard.jsx'
 import MobileCard from './MobileCard.jsx'
 import Pagination from './Pagination.jsx'
@@ -8,6 +8,7 @@ import useWindowWidth from '../hooks/useWindowWidth.jsx'
 import useAccessoriesStore from '../stores/useAccessoriesStore.jsx'
 import { useAccessoriesQuery } from '../hooks/useAccessoriesQuery.jsx'
 import Loading from './Loading.jsx'
+import useTranslate from '../hooks/useTranslate.jsx';
 
 const AccessoriesProducts = () => {
 
@@ -15,6 +16,8 @@ const AccessoriesProducts = () => {
   //Setup
   const width = useWindowWidth();
  
+  //Language Setup
+  const t = useTranslate();
 
   // Zustand state
   const params = useAccessoriesStore((state) => state.accessoriesParams);
@@ -39,8 +42,8 @@ const AccessoriesProducts = () => {
   return (
     <>
     <main id='pc-pr-container'>
-      <header className='pr-header'>
-        <Link to="/accessories"><h1>Accessories</h1> <ArrowRight size={25}/></Link>
+      <header className='pr-header' >
+        <Link to="/accessories" style={{flexDirection: t.rowReverse}}><h1>{t("Accessories", "الأكسسوارات")}</h1> <Joystick size={25}/></Link>
         </header>
 
        <div className={width > 650 ? "pc-pr-cards" : "mob-pr-cards"}>
@@ -57,7 +60,7 @@ const AccessoriesProducts = () => {
             )
           )
         ) : (
-          <p style={{ textAlign: "center" }}>No laptops found.</p>
+          <p style={{ textAlign: "center" }}>{t("No Accessories Found", "لا توجد اكسسوارات")}</p>
         )}
       </div>
 

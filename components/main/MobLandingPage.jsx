@@ -5,8 +5,9 @@ import "../../styles/moblandingpage.css";
 import {
   BiSearchAlt as Search,
   BiFilterAlt as Filter,
-  BiRightArrowAlt as ArrowRight,
 } from "react-icons/bi";
+import { SquaresSubtract } from 'lucide-react';
+
 import useProductStore from "../stores/useProductStore"; 
 
 // Import images so Netlify/Vite can bundle them
@@ -15,6 +16,7 @@ import HeadphoneImg from "../../assets/img/headphone.png";
 import MouseImg from "../../assets/img/mouse.png";
 import JoystickImg from "../../assets/img/joystick.png";
 import KeyboardImg from "../../assets/img/keyboard.png";
+import useTranslate from "../hooks/useTranslate";
 
 const MobLandingPage = () => {
   const navigate = useNavigate();
@@ -24,6 +26,7 @@ const MobLandingPage = () => {
   const [results, setResults] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedBrands, setSelectedBrands] = useState([]);
+  const t = useTranslate();
 
   // Images for slider with categories
   const images = [
@@ -72,9 +75,9 @@ const MobLandingPage = () => {
   return (
     <main id="mob-landing-page">
       {/* Title */}
-      <div className="mob-title">
-        <TypingText texts={["Start Your Journey Here", "The best of the best"]} />
-        <h3>Make your first order.</h3>
+      <div className="mob-title" style={{textAlign: t.textAlign}}>
+        <TypingText texts={[t("Start your journey here", ".ابدأ رِحلتك الاولى الآن"), t("The best of the best.", ".الافضل بين الافضل")]} />
+        <h3>{t("Make your first order", ".. قم بِطلبك الاول")}</h3>
       </div>
 
       {/* Search + Filter */}
@@ -82,11 +85,15 @@ const MobLandingPage = () => {
         <div className="mob-search-row">
           <div className="mob-search">
             <Search size={25} />
-            <input
+          <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search products..."
+              placeholder={t("Search products...", "ابحث عن المنتجات...")}
+              dir={t.language === "ar" ? "rtl" : "ltr"}
+              style={{
+                textAlign: t.textAlign,
+              }}
             />
           </div>
 
@@ -162,7 +169,7 @@ const MobLandingPage = () => {
 
       {/* Slider Section */}
       <section className="slider-container">
-        <h1>Discover <ArrowRight /></h1>
+        <h1 style={{flexDirection: t.rowReverse}}>{t("Discover", "اكتشف")} <SquaresSubtract /></h1>
         <div className="slider">
           {images.map((item, index) => (
             <div

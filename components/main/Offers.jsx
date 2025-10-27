@@ -1,18 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { Percent } from 'lucide-react';
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import ProductCard from "./ProductCard.jsx";
 import MobileCard from "./MobileCard.jsx";
 import Pagination from "./Pagination.jsx";
 import { useOffersQuery } from "../hooks/useOffersQuery.jsx";
 import useOffersStore from "../stores/useOffersStore.jsx";
+import useTranslate from "../hooks/useTranslate.jsx";
 
 const Offers = () => {
+
   const width = useWindowWidth();
   const currentPage = useOffersStore((s) => s.currentPage);
   const setCurrentPage = useOffersStore((s) => s.setCurrentPage);
   const offersLimit = useOffersStore((s) => s.offersLimit);
+  const t = useTranslate();
 
   // fetch data
   const { data, isLoading, isError } = useOffersQuery({
@@ -32,9 +35,9 @@ const Offers = () => {
   return (
     <main id="pc-pr-container">
       <header className="pr-header">
-        <Link to="/offers">
-          <h1>Offers</h1>
-          <ArrowRight size={24} />
+        <Link to="/offers" style={{flexDirection: t.rowReverse}}>
+          <h1>{t("Offers", "التخفيضات")}</h1>
+          <Percent size={24} />
         </Link>
       </header>
 
@@ -53,7 +56,7 @@ const Offers = () => {
             )
           )
         ) : (
-          <p style={{ textAlign: "center" }}>No offers found.</p>
+          <p style={{ textAlign: "center" }}>{t("No Offers Found", "لا توجد تخفيضات")}</p>
         )}
       </div>
 

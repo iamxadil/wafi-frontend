@@ -9,6 +9,7 @@ import useCartStore from "../stores/useCartStore.jsx";
 import useFavoritesStore from "../stores/useFavoritesStore.jsx";
 import { toast } from "react-toastify";
 import "../../styles/grids.css";
+import useTranslate from "../hooks/useTranslate.jsx";
 
 
 const ProductGrid = ({ product, animateEntry = true, index }) => {
@@ -16,6 +17,7 @@ const ProductGrid = ({ product, animateEntry = true, index }) => {
   const waveTimeout = useRef(null);
   const [waveActive, setWaveActive] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
+  const t = useTranslate();
 
   const id = product.id || product._id;
 
@@ -132,11 +134,11 @@ const ProductGrid = ({ product, animateEntry = true, index }) => {
         </AnimatePresence>
 
         {/* Badges */}
-        {product.countInStock === 0 && <span className="badge out-of-stock">Out of Stock</span>}
-        {product.countInStock > 0 && <span className="badge in-stock">In Stock</span>}
+        {product.countInStock === 0 && <span className="badge out-of-stock">{t("Out of Stock", "غير متوفر")}</span>}
+        {product.countInStock > 0 && <span className="badge in-stock">{t("In Stock", "متوفر")}</span>}
         {product.discountPrice > 0 && (
           <span className="badge offer">
-            {Math.round((product.discountPrice / product.price) * 100)}% OFF
+            {Math.round((product.discountPrice / product.price) * 100)}% {t("Off", "تخفيض")}
           </span>
         )}
 
@@ -173,8 +175,8 @@ const ProductGrid = ({ product, animateEntry = true, index }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <button onClick={(e) => { e.stopPropagation(); navigate(`/product/${id}`); }}>View Product</button>
-              <button onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}>Add to Cart</button>
+              <button onClick={(e) => { e.stopPropagation(); navigate(`/product/${id}`); }}>{t("Add To Cart", "الذهاب الى المُنتج")}</button>
+              <button onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}>{t("Add To Cart", "اضف إلى السلة")}</button>
             </motion.div>
           )}
         </AnimatePresence>

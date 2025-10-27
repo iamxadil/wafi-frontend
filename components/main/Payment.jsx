@@ -5,34 +5,30 @@ import useOrderStore from "../stores/useOrderStore.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
+import useTranslate from "../hooks/useTranslate.jsx";
 
 const Payment = () => {
   const navigate = useNavigate();
+  const t = useTranslate();
 
   // Cart
   const cartItems = useCartStore((state) => state.cart);
   const clearCart = useCartStore((state) => state.clearCart);
   const delivery = 0;
 
-  // Use finalPrice for subtotal
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + (item.finalPrice) * item.qty,
+    (sum, item) => sum + item.finalPrice * item.qty,
     0
   );
   const total = subtotal + delivery;
 
-  const cities = ["Al-Anbar", 
-    "Erbil", "Babil", 
-    "Baghdad", "Basra",
-    "Dhi-Qar", "Duhok",
-    "Diyala", "Halabja",
-    "Karbala", "Kirkuk",
-    "Muthanna", "Maysan",
-    "Nineveh", "Najaf", "Qadisya", "Salahu-Din", "Sulaymaniyah", "Wasit"];
+  const cities = [
+    "Al-Anbar", "Erbil", "Babil", "Baghdad", "Basra", "Dhi-Qar", "Duhok",
+    "Diyala", "Halabja", "Karbala", "Kirkuk", "Muthanna", "Maysan",
+    "Nineveh", "Najaf", "Qadisya", "Salahu-Din", "Sulaymaniyah", "Wasit"
+  ];
 
   const [phoneValid, setPhoneValid] = useState(true);
-
-  // Form
   const [shippingInfo, setShippingInfo] = useState({
     fullName: "",
     address: "",
@@ -42,45 +38,37 @@ const Payment = () => {
     email: "",
   });
 
-  // Loading / OTP
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
-  const [otpError, setOtpError] = useState(""); // initially no error
-
+  const [otpError, setOtpError] = useState("");
   const recaptchaRef = useRef(null);
   const [captchaToken, setCaptchaToken] = useState("");
 
-  // Store actions
   const sendOrderOTP = useOrderStore((state) => state.sendOrderOTP);
   const verifyOrderOTP = useOrderStore((state) => state.verifyOrderOTP);
   const createOrder = useOrderStore((state) => state.createOrder);
 
-  // -----------------------------
-  // Step 1: Send OTP
-  // -----------------------------
+  // Send OTP
   const handleSendOTP = async () => {
     const { email, fullName, address, city, postalCode, phone } = shippingInfo;
 
-    // Validate all fields
     if (!email || !fullName || !address || !city || !postalCode || !phone) {
-      toast.warning("Please fill in all fields");
+      toast.warning(t("Please fill in all fields", "يرجى ملء جميع الحقول"));
       return;
     }
 
-    // Email / phone validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toast.error("Invalid email address");
+      toast.error(t("Invalid email address", "عنوان البريد الإلكتروني غير صالح"));
       return;
     }
     if (!/^\d{10}$/.test(phone)) {
-      toast.error("Phone must be 10 digits");
+      toast.error(t("Phone must be 10 digits", "يجب أن يتكون رقم الهاتف من 10 أرقام"));
       return;
     }
 
-    // Execute reCAPTCHA
     try {
       const token = await recaptchaRef.current.executeAsync();
       if (!token) throw new Error("Captcha token missing");
@@ -94,39 +82,31 @@ const Payment = () => {
 
     setOtpLoading(true);
     try {
-      await sendOrderOTP(email); // only email now
-      toast.success("OTP sent to your email!");
+      await sendOrderOTP(email);
+      toast.success(t("OTP sent to your email!", "تم إرسال رمز التحقق إلى بريدك الإلكتروني!"));
       setOtpSent(true);
     } catch (err) {
-      console.error(err);
-      toast.error(err.message || "Failed to send OTP");
+      toast.error(t("Failed to send OTP", "فشل في إرسال رمز التحقق"));
     } finally {
       setOtpLoading(false);
     }
   };
 
-  // -----------------------------
-  // Step 2: Verify OTP & Place Order
-  // -----------------------------
+  // Verify OTP and place order
   const handleVerifyOTP = async () => {
     const { email, fullName, address, city, postalCode, phone } = shippingInfo;
 
     if (!otp) {
-      setOtpError("Please enter the OTP");
-      toast.warning("Please enter the OTP");
+      setOtpError(t("Please enter the OTP", "يرجى إدخال رمز التحقق"));
+      toast.warning(t("Please enter the OTP", "يرجى إدخال رمز التحقق"));
       return;
-    } else {
-      setOtpError(""); // clear error if input is fine
-    }
+    } else setOtpError("");
 
     setOtpLoading(true);
-
     try {
-      // 1️⃣ Verify OTP
       await verifyOrderOTP(email, otp);
       setOtpError("");
 
-      // 2️⃣ Create order
       const orderData = {
         items: cartItems.map((item) => ({
           product: item._id,
@@ -143,13 +123,12 @@ const Payment = () => {
       };
 
       const createdOrder = await createOrder(orderData);
-      toast.success("Order placed successfully!");
+      toast.success(t("Order placed successfully!", "تم تقديم الطلب بنجاح!"));
       clearCart();
-      setCaptchaToken("");
       navigate(`/order-confirmation/${createdOrder._id}`, { state: { order: createdOrder } });
     } catch (err) {
-      setOtpError("Invalid OTP. Try again.");
-      toast.error(err.response?.data?.message || "Invalid OTP. Try again.");
+      setOtpError(t("Invalid OTP. Try again.", "رمز التحقق غير صالح، حاول مرة أخرى."));
+      toast.error(t("Invalid OTP. Try again.", "رمز التحقق غير صالح، حاول مرة أخرى."));
     } finally {
       setOtpLoading(false);
     }
@@ -157,12 +136,12 @@ const Payment = () => {
 
   return (
     <main id="payment-page">
+      {/* Form Section */}
       <section className="info-form">
         <form>
-          {/* Shipping Info */}
           <div className="form-row">
             <div className="form-group">
-              <label>Full Name</label>
+              <label>{t("Full Name", "الاسم الكامل")}</label>
               <input
                 type="text"
                 value={shippingInfo.fullName}
@@ -170,7 +149,7 @@ const Payment = () => {
               />
             </div>
             <div className="form-group">
-              <label>Email</label>
+              <label>{t("Email", "البريد الإلكتروني")}</label>
               <input
                 type="email"
                 value={shippingInfo.email}
@@ -181,12 +160,12 @@ const Payment = () => {
 
           <div className="form-row">
             <div className="form-group">
-              <label>City</label>
+              <label>{t("City", "المدينة")}</label>
               <select
                 value={shippingInfo.city}
                 onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
               >
-                <option value="">Select City</option>
+                <option value="">{t("Select City", "اختر المدينة")}</option>
                 {cities.map((city) => (
                   <option key={city} value={city}>{city}</option>
                 ))}
@@ -194,7 +173,7 @@ const Payment = () => {
             </div>
 
             <div className="form-group">
-              <label>Address</label>
+              <label>{t("Address", "العنوان")}</label>
               <input
                 type="text"
                 value={shippingInfo.address}
@@ -203,7 +182,7 @@ const Payment = () => {
             </div>
 
             <div className="form-group">
-              <label>Address 2</label>
+              <label>{t("Address 2", "العنوان 2")}</label>
               <input
                 type="text"
                 value={shippingInfo.postalCode}
@@ -213,7 +192,7 @@ const Payment = () => {
           </div>
 
           <div className="form-group">
-            <label>Phone Number</label>
+            <label>{t("Phone Number", "رقم الهاتف")}</label>
             <div className={`phone-input ${!phoneValid ? "invalid" : ""}`}>
               <span className="prefix">+964</span>
               <input
@@ -227,16 +206,20 @@ const Payment = () => {
                 }}
               />
             </div>
-            {!phoneValid && <small className="error-text">Phone number must be 10 digits</small>}
+            {!phoneValid && (
+              <small className="error-text">
+                {t("Phone number must be 10 digits", "يجب أن يتكون رقم الهاتف من 10 أرقام")}
+              </small>
+            )}
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <label>Delivery</label>
+              <label>{t("Delivery", "التوصيل")}</label>
               <input type="text" value={`${delivery.toLocaleString()} IQD`} readOnly />
             </div>
             <div className="form-group">
-              <label>Payment Method</label>
+              <label>{t("Payment Method", "طريقة الدفع")}</label>
               <input type="text" value="Cash" readOnly />
             </div>
           </div>
@@ -253,17 +236,23 @@ const Payment = () => {
             onClick={otpSent ? handleVerifyOTP : handleSendOTP}
             disabled={loading || otpLoading}
           >
-            {otpSent ? (otpLoading ? "Verifying..." : "Verify OTP") : loading || otpLoading ? "Sending OTP..." : "Place Order"}
+            {otpSent
+              ? otpLoading
+                ? t("Verifying...", "جاري التحقق...")
+                : t("Verify OTP", "تحقق من الرمز")
+              : loading || otpLoading
+              ? t("Sending OTP...", "جاري إرسال الرمز...")
+              : t("Place Order", "تقديم الطلب")}
           </button>
 
           {otpSent && (
             <div className="otp-section">
-              <label>Enter OTP</label>
+              <label>{t("Enter OTP", "أدخل رمز التحقق")}</label>
               <input
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter OTP"
+                placeholder={t("Enter OTP", "أدخل الرمز")}
                 className={otpError ? "invalid" : ""}
               />
               {otpError && <small className="error-text">{otpError}</small>}
@@ -275,7 +264,7 @@ const Payment = () => {
       {/* Cart Summary */}
       <section className="cart-summary">
         {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
+          <p>{t("Your cart is empty.", "سلة التسوق فارغة.")}</p>
         ) : (
           <>
             <div className="cart-items">
@@ -283,31 +272,36 @@ const Payment = () => {
                 const priceToShow = item.finalPrice || item.price;
                 return (
                   <div key={item._id} className="cart-item">
-                    <img src={item?.images?.[0] || "https://placehold.co/80"} alt={item.name} />
+                    <img
+                      src={item?.images?.[0] || "https://placehold.co/80"}
+                      alt={item.name}
+                    />
                     <div className="cart-item-details">
                       <h3>{item.name}</h3>
                       <p>
-                        {item.qty} x {priceToShow.toLocaleString()} IQD
+                        {item.qty} × {priceToShow.toLocaleString()} IQD
                       </p>
                     </div>
-                    <span className="cart-item-price">{(priceToShow * item.qty).toLocaleString()} IQD</span>
+                    <span className="cart-item-price">
+                      {(priceToShow * item.qty).toLocaleString()} IQD
+                    </span>
                   </div>
                 );
               })}
             </div>
 
             <div className="cart-totals">
-              <h2>Cart Totals</h2>
+              <h2 style={{display: "flex"}}>{t("Cart Totals", "مجموع السلة")}</h2>
               <div className="totals-row">
-                <span>Delivery</span>
+                <span>{t("Delivery", "التوصيل")}</span>
                 <span>{delivery.toLocaleString()} IQD</span>
               </div>
               <div className="totals-row">
-                <span>Subtotal</span>
+                <span>{t("Subtotal", "المجموع")}</span>
                 <span>{subtotal.toLocaleString()} IQD</span>
               </div>
               <div className="totals-row total">
-                <strong>Total</strong>
+                <strong>{t("Total", "الإجمالي")}</strong>
                 <strong>{total.toLocaleString()} IQD</strong>
               </div>
             </div>

@@ -14,12 +14,14 @@ export default function useTranslate() {
   const textAlign = language === "ar" ? "right" : "left";
   const flexAlign = language === "ar" ? "flex-end" : "flex-start";
   const positionAlign = language === "ar" ? "right" : "left";
+  const rowReverse = language === "ar" ? "row-reverse" : "row"
 
   // All helpers + language state
   return Object.assign(t, {
     language,
     textAlign,
     flexAlign,
+    rowReverse,
     positionAlign,
   });
 }
