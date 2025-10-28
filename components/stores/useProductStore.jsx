@@ -221,40 +221,6 @@ const useProductStore = create((set, get) => ({
     }
   },
 
-  fetchLaptops: async ({ page = 1, limit, brands = [], minPrice, maxPrice, sort, search } = {}) => {
-  try {
-    const state = get();
-    const pageLimit = limit ?? 4; 
-
-    let query = `category=Laptops&page=${page}&limit=${pageLimit}`;
-    if (brands.length > 0) query += `&brand=${brands.join(",")}`;
-    if (minPrice != null) query += `&minPrice=${minPrice}`;
-    if (maxPrice != null) query += `&maxPrice=${maxPrice}`;
-    if (sort) query += `&sort=${sort}`;
-    if (search) query += `&search=${encodeURIComponent(search)}`;
-
-    const res = await axios.get(`${API_URL}/api/products?${query}`, { withCredentials: true });
-    const laptops = Array.isArray(res.data.products) ? res.data.products : [];
-    const normalized = laptops.map(get().normalizeProduct);
-    const totalPages = res.data.total > 0 ? res.data.pages : 0;
-
-    set({
-      laptopProducts: normalized,
-      laptopPagination: {
-        currentPage: res.data.page || page,
-        totalPages,
-      },
-      laptopLimit: pageLimit, // updates the store
-    });
-
-    return res.data;
-  } catch (error) {
-    console.error("❌ Failed to fetch laptops:", error);
-    set({ laptopProducts: [] });
-  }
-},
-
-
   fetchProduct: async (id) => {
     set({ loading: true, error: null, selectedProduct: null });
     try {

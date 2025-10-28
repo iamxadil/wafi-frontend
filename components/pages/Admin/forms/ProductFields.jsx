@@ -56,13 +56,6 @@ const ProductFields = () => {
   const handlePrevPage = () => page > 1 && setPage(page - 1);
   const handleNextPage = () => setPage(page + 1);
 
-  const handleApprovalToggle = async (product) => {
-    try {
-      await updateProduct(product.id, { ...product, approved: !product.approved });
-    } catch (err) {
-      console.error("Error updating approval:", err);
-    }
-  };
 
   const renderTableRows = () =>
     filteredProducts.length > 0 ? (

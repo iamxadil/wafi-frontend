@@ -89,8 +89,10 @@ const Navbar = () => {
                   "Apple",
                   "Lenovo",
                   "HP",
+                  "MSI",
                   "Microsoft",
                   "Dell",
+                  
                 ].map((brand) => (
                   <li key={brand}>
                     <Link to={`/category/laptops/${brand}`}>{brand}</Link>
@@ -114,7 +116,7 @@ const Navbar = () => {
               }`}
             >
               <div className="submenu-group">
-                {["Keyboards", "Mice", "Headphones", "Joysticks"].map((cat) => (
+                {["Keyboards", "Mice", "Headphones", "Bags"].map((cat) => (
                   <li key={cat}>
                     <Link to={`/category/${cat}`}>{cat}</Link>
                   </li>
@@ -137,7 +139,7 @@ const Navbar = () => {
               }`}
             >
               <div className="submenu-group">
-                {["Routers", "Cables", "Adapters"].map((cat) => (
+                {["Routers", "Cables", "Adapters", "Flash Drives", "Hard Disks & SSDs"].map((cat) => (
                   <li key={cat}>
                     <Link to={`/category/${cat}`}>{cat}</Link>
                   </li>

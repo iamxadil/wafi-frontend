@@ -11,7 +11,7 @@ const menuData = [
     titleKey: { en: "Laptops", ar: "لابتوبات" },
     icon: <Laptop size={25} />,
     items: [
-      { label: "All Laptops", path: "/laptops" },
+      { label: { en: "All Laptops", ar: "جميع اللابتوبات" }, path: "/laptops" },
       { label: "Acer", path: "/category/laptops/Acer" },
       { label: "Asus", path: "/category/laptops/Asus" },
       { label: "Apple", path: "/category/laptops/Apple" },
@@ -25,7 +25,7 @@ const menuData = [
     titleKey: { en: "Accessories", ar: "إكسسوارات" },
     icon: <Mouse size={25} />,
     items: [
-      { label: "All Accessories", path: "/accessories" },
+      { label: { en: "All Accessories", ar: "جميع الإكسسوارات" }, path: "/accessories" },
       { label: "Headphones", path: "/category/Headphones" },
       { label: "Mice", path: "/category/Mice" },
       { label: "Keyboards", path: "/category/Keyboards" },
@@ -35,7 +35,7 @@ const menuData = [
     titleKey: { en: "Networking", ar: "الشبكات" },
     icon: <Router size={25} />,
     items: [
-      { label: "All Components", path: "/others" },
+      { label: { en: "All Components", ar: "جميع المكونات" }, path: "/others" },
       { label: "Routers", path: "/category/Routers" },
       { label: "Cables", path: "/category/Cables" },
       { label: "Adapters", path: "/category/Adapters" },
@@ -68,7 +68,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* === Backdrop === */}
           <motion.div
             className="sidemenu-backdrop"
             initial={{ opacity: 0 }}
@@ -77,7 +77,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
             onClick={() => setIsOpen(false)}
           />
 
-          {/* Menu */}
+          {/* === Menu Container === */}
           <motion.nav
             className="sidemenu-container"
             initial={{ opacity: 0 }}
@@ -86,6 +86,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
             transition={{ duration: 0.3 }}
             dir={t.language === "ar" ? "rtl" : "ltr"}
           >
+            {/* === Header === */}
             <div
               className="sidemenu-close"
               onClick={() => setIsOpen(false)}
@@ -94,9 +95,12 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                 textAlign: t.language === "ar" ? "right" : "left",
               }}
             >
-              <h1>{t("Menu", "القائمة")} <X size={24} /></h1>
+              <h1>
+                {t("Menu", "القائمة")} <X size={24} />
+              </h1>
             </div>
 
+            {/* === Menu List === */}
             <ul className="sidemenu-list">
               {menuData.map((menu, i) => (
                 <li key={i}>
@@ -116,6 +120,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                     </span>
                   </button>
 
+                  {/* === Submenu === */}
                   <AnimatePresence>
                     {openIndex === i && (
                       <motion.ul
@@ -135,7 +140,9 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                             className="sidemenu-subitem"
                             onClick={() => handleNavigate(item.path)}
                           >
-                            {item.label}
+                            {typeof item.label === "object"
+                              ? t(item.label.en, item.label.ar)
+                              : item.label}
                           </li>
                         ))}
                       </motion.ul>

@@ -1,5 +1,6 @@
 import '../styles/productdetails.css';
-import { SiAsus, SiApple, SiLenovo, SiHp, SiAcer, SiLogitech, SiRazer } from "react-icons/si";
+import { SiAsus, SiApple, SiLenovo, SiHp, SiAcer, SiLogitech, SiRazer, SiRedragon } from "react-icons/si";
+import { SiMsibusiness as SiMsi} from "react-icons/si";
 import { FiChevronDown, FiShare2, FiTrash2 } from "react-icons/fi";
 import { TiPlus as Plus, TiMinus as Minus } from "react-icons/ti";
 import React, { useEffect, useState } from "react";
@@ -10,7 +11,7 @@ import useAuthStore from "../components/stores/useAuthStore.jsx";
 import { toast } from "react-toastify";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import { Card, Button, Rate, Divider, Carousel } from "antd";
-import { Cpu, Gpu, Monitor, Palette, MemoryStick , Ruler, MousePointer, HardDriveDownload} from "lucide-react";
+import { Cpu, Gpu, Monitor, Palette, MemoryStick , Ruler, MousePointer, HardDriveDownload, Brackets} from "lucide-react";
 import { Spin } from "antd";
 import useTranslate from '../components/hooks/useTranslate.jsx';
 
@@ -44,7 +45,7 @@ const ProductDetails = () => {
   const [qty, setQty] = useState(1);
   const [mainImage, setMainImage] = useState("");
   const [fade, setFade] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   const [newRating, setNewRating] = useState(0);
   const [newComment, setNewComment] = useState("");
@@ -58,7 +59,8 @@ const ProductDetails = () => {
 
   const brandIcons = {
     Asus: SiAsus, Apple: SiApple, Lenovo: SiLenovo,
-    HP: SiHp, Acer: SiAcer, Logitech: SiLogitech, Razer: SiRazer
+    HP: SiHp, Acer: SiAcer, Logitech: SiLogitech, Razer: SiRazer, MSI: SiMsi,
+    REDRAGON: SiRedragon
   };
 
   const handleThumbnailClick = (img) => {
@@ -156,13 +158,13 @@ const descriptionLines = selectedProduct.description
     {width > 950 && (
       <div className="dt-container">
         <main id='product-card'>
-          <div className="dt-brand">{selectedProduct.brand && React.createElement(brandIcons[selectedProduct.brand] || SiAsus)}</div>
+          <div className="dt-brand">{selectedProduct.brand && React.createElement(brandIcons[selectedProduct.brand] || Brackets)}</div>
 
           <section className='pr-img-container'>
             <div className="image-wrapper">
               <div className="image-overlay"><FiShare2 className="share-icon" onClick={handleShare} /></div>
               <div className="main-pr-img">
-                <img src={mainImage || null} alt={selectedProduct.name} className={fade ? "fade-out" : "fade-in"} />
+                <img style={{minWidth: "350px"}} src={mainImage || null} alt={selectedProduct.name} className={fade ? "fade-out" : "fade-in"} />
               </div>
             </div>
             <div className="thumbnail-row">
@@ -175,7 +177,7 @@ const descriptionLines = selectedProduct.description
 
           <section className='pr-details-container'>
             <div className="dt-name">
-              <h1>{selectedProduct.name}</h1>
+              <h1 style={{fontSize: "28px"}}>{selectedProduct.name}</h1>
               <p>
                 SKU: {selectedProduct.sku || "N/A"} <span>-</span>
                 <span>
@@ -244,6 +246,7 @@ const descriptionLines = selectedProduct.description
                   width: "100%",
                   height: 250,
                   objectFit: "contain"
+                 
                 }}
               />
             </div>
@@ -269,7 +272,7 @@ const descriptionLines = selectedProduct.description
       <div style={{ marginTop: "1rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, }}>
           {selectedProduct.brand &&
-            React.createElement(brandIcons[selectedProduct.brand] || SiAsus, {
+            React.createElement(brandIcons[selectedProduct.brand] || Brackets, {
               size: 25,
               color: "var(--text)"
             })}

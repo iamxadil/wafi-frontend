@@ -11,11 +11,12 @@ import { Spin } from "antd";
 import useCategoryStore from "../components/stores/useCategoryStore.jsx";
 import { useCategoryQuery } from "../components/hooks/useCategoryQuery.jsx";
 import "../styles/categorynavigation.css";
+import useTranslate from "../components/hooks/useTranslate.jsx";
 
 const CategoryNavigation = () => {
   const width = useWindowWidth();
   const isMobile = width < 650;
-
+  const t = useTranslate();
   const { categoryName, brandName } = useParams();
   const category = categoryName?.trim();
   const brand = brandName?.trim();
@@ -91,7 +92,7 @@ useEffect(() => {
     <div className="category-page">
       {/* Header */}
       <header className="cat-header">
-        <h1>{brandName || categoryName || "Products"} Products</h1>
+        <h1>{brandName || categoryName || "Products"} {t("Products", "منتجات")}</h1>
         <div className="search-cat">
           <Search />
           <input
@@ -117,7 +118,7 @@ useEffect(() => {
               ) : displayedProducts.length > 0 ? (
                 displayedProducts.map(p => <ProductGrid key={p._id} product={p} />)
               ) : (
-                <div style={{ textAlign: "center" }}>No products found.</div>
+                <div style={{ textAlign: "center" }}>{t("No Products Found", "لا توجد منتجات")}</div>
               )}
             </div>
             {productsData?.pagination.totalPages > 1 && (
@@ -131,7 +132,7 @@ useEffect(() => {
 
           <main id="cat-container">
             <header>
-              <h1>Offers for {brandName || categoryName || "Products"}</h1>
+              <h1>{brandName || categoryName} {t("Offers", "عروض")}</h1>
             </header>
             <div className="products-grid-container cat-grid">
               {loadingOffers ? (
@@ -143,7 +144,7 @@ useEffect(() => {
               ) : displayedOffers.length > 0 ? (
                 displayedOffers.map(p => <ProductGrid key={p._id} product={p} />)
               ) : (
-                <div style={{ textAlign: "center" }}>No offers found.</div>
+                <div style={{ textAlign: "center" }}>{t("No Offers Found", "لا توجد عروض")}</div>
               )}
             </div>
             {offersData?.pagination.totalPages > 1 && (
@@ -164,7 +165,7 @@ useEffect(() => {
             {displayedProducts.length > 0 ? (
               displayedProducts.map(p => <MobileCard key={p._id} product={p} />)
             ) : (
-              <div className="mob-loading">No products found</div>
+              <div className="mob-loading">{t("No Products Found", "لا توجد منتجات")}</div>
             )}
           </div>
           <Pagination
@@ -180,7 +181,7 @@ useEffect(() => {
             {displayedOffers.length > 0 ? (
               displayedOffers.map(p => <MobileCard key={p._id} product={p} />)
             ) : (
-              <div className="mob-loading">No offers found</div>
+              <div className="mob-loading">{t("No Offers Found", "لا توجد عروض")}</div>
             )}
           </div>
           <Pagination

@@ -20,7 +20,6 @@ import VerifyEmail from '../components/pages/Auth/VerifyEmail.jsx';
 import ResetPassword from '../components/pages/Auth/ResetPassword.jsx';
 import MyOrdersPage from '../components/pages/User/MyOrders.jsx';
 import Static from '../pages/Static.jsx';
-import Accessories from '../pages/Accessories.jsx';
 import Home from '../pages/Home'; 
 import CategoryNavigation from '../pages/CategoryNavigation.jsx';
 import CatLaptops from '../pages/CatLaptops.jsx';
@@ -39,8 +38,6 @@ import PermissionFields from '../components/pages/Admin/forms/PermissionFields.j
 import OrderConfirmation from '../components/main/OrderConfirmation.jsx';
 import ProductDetails from '../pages/ProductDetails.jsx';
 import AppFooter from '../components/main/AppFooter.jsx';
-import { unlockAudio } from "../components/effects/PlayNotSound.jsx";
-import ScrollTop from '../components/hooks/ScrollTop.jsx';
 import Favorites from '../components/pages/User/Favorites.jsx';
 import BottomNavbar from "../components/main/BottomNavbar.jsx";
 import CatAccessories from '../pages/CatAccessories.jsx';
@@ -100,21 +97,10 @@ function App() {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-  // --- Unlock audio for first click ---
-  useEffect(() => {
-    const unlock = () => {
-      unlockAudio();
-      window.removeEventListener("click", unlock);
-    };
-    window.addEventListener("click", unlock);
-    return () => window.removeEventListener("click", unlock);
-  }, []);
-
   const showAdminFeatures = user && user.role === "admin";
 
   return (
     <>
-      <ScrollTop />
       
       {!hideNavbarOn.some(path => location.pathname.startsWith(path)) && <Navbar />}
       {showAdminFeatures && (
@@ -181,7 +167,7 @@ function App() {
         <Route path='/laptops' element={<CatLaptops />} />
         <Route path='/accessories' element={<CatAccessories />} />
         <Route path='/favorites' element={<Favorites />} />
-        <Route path='/static' element={<Static />} />
+       
       </Routes>
 
       {!bottomNavbarOn.some(path => location.pathname.startsWith(path)) && <BottomNavbar />}

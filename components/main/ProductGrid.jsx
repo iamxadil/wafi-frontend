@@ -175,7 +175,7 @@ const ProductGrid = ({ product, animateEntry = true, index }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <button onClick={(e) => { e.stopPropagation(); navigate(`/product/${id}`); }}>{t("Add To Cart", "الذهاب الى المُنتج")}</button>
+              <button onClick={(e) => { e.stopPropagation(); navigate(`/product/${id}`); }}>{t("View Product", "الذهاب الى المُنتج")}</button>
               <button onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}>{t("Add To Cart", "اضف إلى السلة")}</button>
             </motion.div>
           )}

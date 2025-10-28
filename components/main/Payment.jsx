@@ -178,15 +178,17 @@ const Payment = () => {
                 type="text"
                 value={shippingInfo.address}
                 onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })}
+                placeholder={t("ex. Karada", "مثل: الكرادة")}
               />
             </div>
 
             <div className="form-group">
-              <label>{t("Address 2", "العنوان 2")}</label>
+              <label>{t("Nearest Landmark", "اقرب نقطة دالة")}</label>
               <input
                 type="text"
                 value={shippingInfo.postalCode}
                 onChange={(e) => setShippingInfo({ ...shippingInfo, postalCode: e.target.value })}
+                placeholder={t("ex. Near Univerity of Technology", "مثل: قرب الجامعة التكنولوجية")}
               />
             </div>
           </div>
@@ -220,7 +222,7 @@ const Payment = () => {
             </div>
             <div className="form-group">
               <label>{t("Payment Method", "طريقة الدفع")}</label>
-              <input type="text" value="Cash" readOnly />
+              <input type="text" value={t("Cash on Delivery", "الدفع عند الاستلام")} readOnly />
             </div>
           </div>
 

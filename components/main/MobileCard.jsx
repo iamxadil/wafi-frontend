@@ -8,12 +8,14 @@ import useCartStore from "../stores/useCartStore.jsx";
 import useAuthStore from "../stores/useAuthStore.jsx";
 import useFavoritesStore from "../stores/useFavoritesStore.jsx";
 import { toast } from "react-toastify";
+import useTranslate from "../hooks/useTranslate.jsx";
 
 const MobileCard = ({ product, customDelay = 0 }) => {
 
   const id = product.id || product._id;
   const navigate = useNavigate();
-
+  const t = useTranslate();
+  
   //Cart
   const addToCart = useCartStore((state) => state.addToCart);
   const token = useAuthStore.getState().token;
@@ -46,7 +48,7 @@ const MobileCard = ({ product, customDelay = 0 }) => {
       {product.countInStock > 0 && <span className="badge in-stock">In Stock</span>}
       {product.discountPrice > 0 && (
         <span className="badge offer">
-          {Math.round((product.discountPrice / product.price) * 100)}% OFF
+          {Math.round((product.discountPrice / product.price) * 100)}% {t("Off", "تخفيض")}
         </span>
       )}
 
