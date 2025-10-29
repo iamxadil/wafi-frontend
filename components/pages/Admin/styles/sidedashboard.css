@@ -1,6 +1,7 @@
 
 .sidebar {
-    height: 80vh;
+    height: 680px;
+    min-height: 50vh;
     max-width: 59px;
     padding: .2rem;
     padding-top: 1.5rem;
@@ -108,13 +109,14 @@
         display: flex !important;
     }
 
-@media (max-width: 1250px) {
+@media (max-width: 1350px) {
 
     .sidebar{
         min-width: 100%;
         flex-direction: row;
         border: none !important;
-        height: 95px;
+        max-height: 90px !important;
+        min-height: 90px;
         justify-content: center;
         align-items: center;
         position: fixed;

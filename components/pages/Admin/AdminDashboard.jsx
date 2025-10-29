@@ -1,8 +1,7 @@
 import React from 'react';
 import { Outlet } from "react-router-dom";
 import SideDashboard from './layouts/SideDashboard.jsx';
-import HeaderDashboard from './layouts/HeaderDashboard.jsx';
-import FormDashboard from './layouts/FormDashboard.jsx';
+import AdminHeader from './AdminHeader.jsx';
 
 const AdminDashboard = () => {
   return (

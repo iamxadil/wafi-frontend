@@ -54,42 +54,7 @@ td {
   padding: .5rem;
 }
 
-/* ✅ Styled checkboxes */
-input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--text);
-  border-radius: 4px;
-  background-color: transparent;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease-in-out;
-}
-
-input[type="checkbox"]:hover {
-  border-color: var(--accent, #007bff);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
-}
-
-input[type="checkbox"]:checked {
-  background-color: var(--accent, #007bff);
-  border-color: var(--accent, #007bff);
-}
-
-input[type="checkbox"]:checked::after {
-  content: "✓";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 12px;
-  font-weight: bold;
-  color: #fff;
-}
 
 /* Pagination styling */
 .pagination-controls {

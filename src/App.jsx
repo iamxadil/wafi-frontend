@@ -41,6 +41,7 @@ import AppFooter from '../components/main/AppFooter.jsx';
 import Favorites from '../components/pages/User/Favorites.jsx';
 import BottomNavbar from "../components/main/BottomNavbar.jsx";
 import CatAccessories from '../pages/CatAccessories.jsx';
+import Products from '../components/pages/Admin/navs/Products.jsx';
 import './output.css';
 
 
@@ -139,7 +140,7 @@ function App() {
         {/* Admin dashboard */}
         <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
           <Route index element={<AdminLandingPage />} />
-          <Route path="products" element={<FormDashboard page="products" />} />
+          <Route path="products" element={<Products />} />
           <Route path="users" element={<FormDashboard page="users" />} />
           <Route path="approvals" element={<FormDashboard page="approvals" />} />
           <Route path="notifications" element={<Notifications />} />
