@@ -6,6 +6,14 @@ import "@mantine/core/styles.css";
 import App from "./App.jsx";
 import favicon from "../assets/svg/wafi-logo-outline.svg";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import '../styles/landingpage.css';
+import '../styles/productscards.css';
+import '../styles/pagination.css';
+import '../styles/grids.css';
+import '../styles/darkmode.css';
+import '../styles/navbar.css';
+import '../styles/profilepage.css';
+import '../styles/bottomnavbar.css';
 
   const theme = createTheme({
     primaryColor: "blue",

@@ -1,5 +1,5 @@
 import React from "react";
-import LandingPage from '../components/main/LandingPage.jsx';
+import Search from "../components/main/Search.jsx";
 import Land from '../components/main/Land.jsx';
 import BrandCards from '../components/main/BrandCards.jsx';
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";

@@ -1,109 +1,126 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Zoom } from 'react-toastify';
-import useWindowWidth from '../components/hooks/useWindowWidth.jsx';
+// src/App.jsx
+import React, { useEffect, useMemo, Suspense, lazy } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { ToastContainer, Zoom } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// Stores
+// === Hooks & Stores ===
+import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useThemeStore from "../components/stores/useThemeStore.jsx";
-import useCartStore from '../components/stores/useCartStore.jsx';
-import useFavoritesStore from '../components/stores/useFavoritesStore.jsx';
+import useCartStore from "../components/stores/useCartStore.jsx";
+import useFavoritesStore from "../components/stores/useFavoritesStore.jsx";
 
-// Components
-import Navbar from '../components/main/Navbar.jsx';
-import Signin from "../components/pages/Auth/Signin.jsx";
-import Register from '../components/pages/Auth/Register.jsx';
-import ForgotPassword from '../components/pages/Auth/ForgotPassword.jsx';
-import VerifyEmail from '../components/pages/Auth/VerifyEmail.jsx';
-import ResetPassword from '../components/pages/Auth/ResetPassword.jsx';
-import MyOrdersPage from '../components/pages/User/MyOrders.jsx';
-import Static from '../pages/Static.jsx';
-import Home from '../pages/Home'; 
-import CategoryNavigation from '../pages/CategoryNavigation.jsx';
-import CatLaptops from '../pages/CatLaptops.jsx';
-import AdminDashboard from '../components/pages/Admin/AdminDashboard.jsx';
-import FormDashboard from '../components/pages/Admin/layouts/FormDashboard.jsx';
-import AdminLandingPage from '../components/pages/Admin/layouts/AdminLandingPage.jsx';
-import Notifications from '../components/pages/Admin/layouts/Notifications.jsx';
-import PublicRoute from '../routes/PublicRoute.jsx';
-import ProtectedRoute from '../routes/ProtectedRoute.jsx';
-import SocketListener from '../components/main/SocketListener.jsx';
-import NotificationToast from '../components/main/NotificationToast.jsx';
-import Profile from '../components/pages/User/Profile.jsx';
-import Cart from '../components/main/Cart.jsx';
-import Payment from '../components/main/Payment.jsx';
-import PermissionFields from '../components/pages/Admin/forms/PermissionFields.jsx';
-import OrderConfirmation from '../components/main/OrderConfirmation.jsx';
-import ProductDetails from '../pages/ProductDetails.jsx';
-import AppFooter from '../components/main/AppFooter.jsx';
-import Favorites from '../components/pages/User/Favorites.jsx';
+// === Shared Layouts ===
+import Navbar from "../components/main/Navbar.jsx";
 import BottomNavbar from "../components/main/BottomNavbar.jsx";
-import CatAccessories from '../pages/CatAccessories.jsx';
-import Products from '../components/pages/Admin/navs/Products.jsx';
-import './output.css';
+import AppFooter from "../components/main/AppFooter.jsx";
+import NotificationToast from "../components/main/NotificationToast.jsx";
+import SocketListener from "../components/main/SocketListener.jsx";
 
+// === Lazy-loaded Pages ===
+// Home & Core
+const Home = lazy(() => import("../pages/Home.jsx"));
+const ProductDetails = lazy(() => import("../pages/ProductDetails.jsx"));
+const CategoryNavigation = lazy(() => import("../pages/CategoryNavigation.jsx"));
+const CatLaptops = lazy(() => import("../pages/CatLaptops.jsx"));
+const CatAccessories = lazy(() => import("../pages/CatAccessories.jsx"));
 
-function App() {
+// Auth
+const Signin = lazy(() => import("../components/pages/Auth/Signin.jsx"));
+const Register = lazy(() => import("../components/pages/Auth/Register.jsx"));
+const ForgotPassword = lazy(() => import("../components/pages/Auth/ForgotPassword.jsx"));
+const VerifyEmail = lazy(() => import("../components/pages/Auth/VerifyEmail.jsx"));
+const ResetPassword = lazy(() => import("../components/pages/Auth/ResetPassword.jsx"));
+
+// User
+const Profile = lazy(() => import("../components/pages/User/Profile.jsx"));
+const MyOrders = lazy(() => import("../components/pages/User/MyOrders.jsx"));
+const Favorites = lazy(() => import("../components/pages/User/Favorites.jsx"));
+
+// Admin
+const AdminDashboard = lazy(() => import("../components/pages/Admin/AdminDashboard.jsx"));
+const AdminLandingPage = lazy(() => import("../components/pages/Admin/layouts/AdminLandingPage.jsx"));
+const Products = lazy(() => import("../components/pages/Admin/navs/Products.jsx"));
+const Notifications = lazy(() => import("../components/pages/Admin/layouts/Notifications.jsx"));
+const PermissionFields = lazy(() => import("../components/pages/Admin/forms/PermissionFields.jsx"));
+const FormDashboard = lazy(() => import("../components/pages/Admin/layouts/FormDashboard.jsx"));
+
+// Cart & Orders
+const Cart = lazy(() => import("../components/main/Cart.jsx"));
+const Payment = lazy(() => import("../components/main/Payment.jsx"));
+const OrderConfirmation = lazy(() => import("../components/main/OrderConfirmation.jsx"));
+
+// Routes
+import PublicRoute from "../routes/PublicRoute.jsx";
+import ProtectedRoute from "../routes/ProtectedRoute.jsx";
+
+// Styles
+import "./output.css";
+
+export default function App() {
   const location = useLocation();
-  const hideNavbarOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment"];
-  const footerOn = ["/admin-dashboard", "/dashboard", "/cart", "/payment", "/favorites", "/my-orders", "/settings", "/product"];
-  const bottomNavbarOn = ["/admin-dashboard", "/cart", "payment"];
-
-  const user = useAuthStore((state) => state.user);
-  const profile = useAuthStore((state) => state.profile);
-  const theme = useThemeStore((state) => state.theme);
+  const { user, profile } = useAuthStore.getState();
+  const theme = useThemeStore((s) => s.theme);
   const cartStore = useCartStore.getState();
   const favoritesStore = useFavoritesStore.getState();
   const width = useWindowWidth();
 
+  // === Route filters (memoized once) ===
+  const hideNavbarOn = useMemo(() => ["/admin-dashboard", "/dashboard", "/cart", "/payment"], []);
+  const footerOn = useMemo(
+    () => [
+      "/admin-dashboard",
+      "/dashboard",
+      "/cart",
+      "/payment",
+      "/favorites",
+      "/my-orders",
+      "/settings",
+      "/product",
+    ],
+    []
+  );
+  const bottomNavbarOn = useMemo(() => ["/admin-dashboard", "/cart", "/payment"], []);
 
-
-  //--- Ar & En
-
-  // --- Initialize cart on app load ---
+  // === Initial App Bootstrap ===
   useEffect(() => {
-    const init = async () => {
+    (async () => {
       try {
-        await profile();       // fetch profile if logged in
-        await cartStore.initCart(); // safely load server or guest cart
+        await profile();
       } catch (err) {
-        console.error("Failed to initialize cart:", err);
+        console.warn("Profile load failed:", err.message);
+      } finally {
+        await cartStore.initCart();
       }
-    };
-    init();
+    })();
   }, []);
 
-  // --- Initialize favorites on app load ---
+  // === Initialize favorites ===
   useEffect(() => {
-    const initFavorites = async () => {
+    (async () => {
       try {
-        if (user) {
-          // logged in → load from API
-          await favoritesStore.loadFavorites?.();
-        } else {
-          // guest → load from localStorage
-          favoritesStore.initGuestFavorites?.();
-        }
+        if (user) await favoritesStore.loadFavorites?.();
+        else favoritesStore.initGuestFavorites?.();
       } catch (err) {
-        console.error("Failed to initialize favorites:", err);
+        console.warn("Favorites init failed:", err.message);
       }
-    };
-    initFavorites();
+    })();
   }, [user]);
 
-  // --- Set theme ---
+  // === Theme binding ===
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-  const showAdminFeatures = user && user.role === "admin";
+  const showAdminFeatures = user?.role === "admin";
 
   return (
     <>
-      
-      {!hideNavbarOn.some(path => location.pathname.startsWith(path)) && <Navbar />}
+      {/* === Navbar === */}
+      {!hideNavbarOn.some((path) => location.pathname.startsWith(path)) && <Navbar />}
+
+      {/* === Admin Socket & Notifications === */}
       {showAdminFeatures && (
         <>
           <NotificationToast />
@@ -111,70 +128,96 @@ function App() {
         </>
       )}
 
-      {width > 480 ? (
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          stacked
-          draggable
-          closeOnClick
-          transition={Zoom}
-          limit={4}
-        />
-      ) : (
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          draggable
-          closeOnClick
-          transition={Zoom}
-          limit={4}
-        />
-      )}
+      {/* === Global Toast === */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        stacked={width > 480}
+        draggable
+        closeOnClick
+        transition={Zoom}
+        limit={4}
+      />
 
-   
+      {/* === Lazy routes with fallback === */}
+      <Suspense
+        fallback={
+          <div className="global-loader">
+            <span className="spinner" />
+          </div>
+        }
+      >
+        <Routes>
+          {/* Public */}
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/signin"
+            element={
+              <PublicRoute>
+                <Signin />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
+          {/* User */}
+          <Route path="/settings" element={<Profile />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/favorites" element={<Favorites />} />
 
-        {/* Admin dashboard */}
-        <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
-          <Route index element={<AdminLandingPage />} />
-          <Route path="products" element={<Products />} />
-          <Route path="users" element={<FormDashboard page="users" />} />
-          <Route path="approvals" element={<FormDashboard page="approvals" />} />
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="order-status" element={<FormDashboard page="order-status" />} />
-          <Route path="archive" element={<FormDashboard page="archive" />} />
-          <Route path="permissions" element={<PermissionFields />} />
-        </Route>
+          {/* Product / Category */}
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/category/:categoryName" element={<CategoryNavigation />} />
+          <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
+          <Route path="/laptops" element={<CatLaptops />} />
+          <Route path="/accessories" element={<CatAccessories />} />
 
-        {/* Auth routes */}
-        <Route path="/signin" element={<PublicRoute><Signin /></PublicRoute>} />
-        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/verify-email/:token" element={<VerifyEmail />} />
+          {/* Cart / Checkout */}
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
 
-        {/* User & cart */}
-        <Route path="/settings" element={<Profile />} />
-        <Route path="/my-orders" element={<MyOrdersPage />} />
-        <Route path='/cart' element={<Cart />} />
-        <Route path='/payment' element={<Payment />} />
-        <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/category/:categoryName" element={<CategoryNavigation />} />
-        <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
-        <Route path='/laptops' element={<CatLaptops />} />
-        <Route path='/accessories' element={<CatAccessories />} />
-        <Route path='/favorites' element={<Favorites />} />
-       
-      </Routes>
+          {/* Admin */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminLandingPage />} />
+            <Route path="products" element={<Products />} />
+            <Route path="users" element={<FormDashboard page="users" />} />
+            <Route path="approvals" element={<FormDashboard page="approvals" />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="order-status" element={<FormDashboard page="order-status" />} />
+            <Route path="archive" element={<FormDashboard page="archive" />} />
+            <Route path="permissions" element={<PermissionFields />} />
+          </Route>
+        </Routes>
+      </Suspense>
 
-      {!bottomNavbarOn.some(path => location.pathname.startsWith(path)) && <BottomNavbar />}
-      {!footerOn.some(path => location.pathname.startsWith(path)) && <AppFooter />}
+      {/* === Persistent Layouts === */}
+      {!bottomNavbarOn.some((path) => location.pathname.startsWith(path)) && <BottomNavbar />}
+      {!footerOn.some((path) => location.pathname.startsWith(path)) && <AppFooter />}
     </>
   );
 }
-
-export default App;

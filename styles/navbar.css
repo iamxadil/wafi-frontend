@@ -1,15 +1,21 @@
 
-
 #navbar {
   width: 100%;
   padding: 0 2rem !important;
-  height: 80px;
+  height: 85px;
   display: flex;
-  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: space-between;
   position: fixed;
-  color: var(--text); 
+  top: 0;
   z-index: 1000;
+  color: var(--text);
+  /* ✅ The key parts */
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
 }
+
+
 
 
 
@@ -112,30 +118,6 @@ ul li {
 background-color: var(--background);
 
 }
-
-.submenu {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 100%;
-  left: 0%;
-  list-style: none;
-  padding: 0.5em 0;
-  margin: 0;
-  border-radius: 4px;
-  min-width: 180px;
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  transition: all 0.25s ease;
-  z-index: 100;
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--line-clr);
-}
-
-
-
-
 
 #nav-links li:hover .submenu {
   opacity: 1;
@@ -279,40 +261,6 @@ background-color: var(--background);
   background-color: var(--background);
 }
 
-.profile-dropdown {
-  position: absolute;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  top: 120%;
-  right: 2%;
-  background: var(--button-bg);
-  list-style: none;
-  padding: 0.5em 0;
-  margin: 0;
-  border-radius: 4px;
-  min-width: 180px;
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  transition: all 0.25s ease;
-  z-index: 100;
-  font-size: 1rem;
-}
-.profile-dropdown li {
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  gap: .4em;
-  border-radius: 6px;
-}
-
-.profile-dropdown.show {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-  display: flex; 
-}
 
 .user-container {
   display: flex;
@@ -369,32 +317,10 @@ background-color: var(--background);
 /* ============================= */
 /* 🧊 1️⃣ Base Submenu Styles */
 /* ============================= */
-.submenu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  padding: 0.6em 0.4em;
-  margin: 0;
-  min-width: 200px;
-  border-radius: 14px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(10px) scale(0.98);
-  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-  z-index: 300;
-  transform-origin: top left;
-}
+
 
 [data-theme="dark"] .submenu {
-  background: rgba(25, 25, 35, 0.45);
+  background: rgb(25, 25, 35);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
 }
@@ -430,8 +356,7 @@ background-color: var(--background);
   pointer-events: none;
   transform: translateY(10px) scale(0.96);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(50px) saturate(160%);
+  background: rgba(255, 255, 255, 0.895);
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
   overflow: hidden;
@@ -635,3 +560,4 @@ background-color: var(--background);
     padding: 0 1rem !important;
   }
 }
+

@@ -31,7 +31,6 @@ const Navbar = () => {
   const [isDropdown, setDropdown] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
 
-  const profile = useAuthStore((state) => state.profile);
   const { user } = useAuthStore();
   const cartItems = useCartStore((state) => state.cart);
   const favorites = useFavoritesStore((state) => state.favorites || []);
@@ -188,20 +187,13 @@ const Navbar = () => {
           )}
 
           {width > 1150 && (
-            <li
-              onClick={toggleDropdown}
-              className="profile icon"
-              style={{ position: "relative", cursor: "pointer" }}
+            <li  onClick={toggleDropdown}  className="profile icon" style={{ position: "relative", cursor: "pointer" }}
             >
               {user ? (
                 <>
                   <UserCircle size={22} />
-                  <span className="user-container">
+                    <span className="user-container">
                     <span className="user">{user.name}</span>
-                    <ProfileDropdown
-                      className={isDropdown ? "show" : ""}
-                      onClose={() => setDropdown(false)}
-                    />
                   </span>
                 </>
               ) : (
@@ -226,6 +218,13 @@ const Navbar = () => {
           )}
         </ul>
       </nav>
+      
+          {isDropdown && (
+        <ProfileDropdown
+          className="show"
+          onClose={() => setDropdown(false)}
+        />
+      )}
 
       <Sidemenu isOpen={menuOpen} setIsOpen={setMenuOpen} />
       <div id="spacer" style={{ height: "80px" }}></div>

@@ -66,8 +66,3 @@
   }
 }
 
-.pagination-controls button.active {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-}

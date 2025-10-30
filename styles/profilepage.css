@@ -267,87 +267,110 @@
 }
 
 /* ============================= */
-/* 👤 Profile Dropdown (Glassy + Glowing Ring) */
+/* 👤 Compact Glassy Profile Dropdown */
 /* ============================= */
 
+/* ============================= */
+/* 👤 Premium Glassy Profile Dropdown */
+/* ============================= */
 .profile-dropdown {
-  position: absolute;
-  top: 120%;
-  right: 0;
+  position: fixed;
+  top: 80px; /* below navbar */
+  right: 2.2rem;
   display: flex;
   flex-direction: column;
   list-style: none;
-  padding: 0.6rem 0.4rem;
   margin: 0;
-  min-width: 190px;
+  width: 160px;
+  padding: 0.4rem 0.3rem;
   border-radius: 14px;
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.9) translateY(10px);
+  transform: scale(0.95) translateY(10px);
   transform-origin: top right;
-  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(18px) saturate(160%);
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s ease;
+
+  /* 🌫️ Frosted glass with inner glow */
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
-  z-index: 999;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.25),
+    inset 0 0 12px rgba(255, 255, 255, 0.08);
+
+  z-index: 2000;
   overflow: hidden;
+  animation: ambientPulse 10s ease-in-out infinite alternate;
 }
 
-/* ====== Glowing ring expansion ====== */
-.profile-dropdown::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 30%;
-  width: 40px;
-  height: 40px;
-  transform: translate(50%, -50%) scale(0);
-  border-radius: 50%;
-  background: var(--gradient-blur);
-  opacity: 0;
-  transition: transform 0.8s ease, opacity 0.8s ease;
-  pointer-events: none;
-  z-index: 0;
+/* Dark mode refinement */
+[data-theme="dark"] .profile-dropdown {
+  background: rgba(25, 25, 35, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.65),
+    inset 0 0 15px rgba(255, 255, 255, 0.05);
 }
 
-.profile-dropdown.show::before {
-  transform: translate(50%, -50%) scale(6);
-  opacity: 0.4;
-}
-
-/* Dark mode ring glow */
-[data-theme="dark"] .profile-dropdown::before {
-  background: radial-gradient(
-    circle,
-    rgba(94, 99, 255, 0.5),
-    rgba(0, 173, 181, 0.15),
-    transparent 70%
-  );
-}
-
-/* ====== Show animation ====== */
+/* === Entry animation === */
 .profile-dropdown.show {
   opacity: 1;
   pointer-events: auto;
   transform: scale(1) translateY(0);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.3),
+    inset 0 0 14px rgba(255, 255, 255, 0.1);
 }
 
-/* ====== Dropdown items ====== */
+/* ====== Glowing ring reveal ====== */
+.profile-dropdown::before {
+  content: "";
+  position: absolute;
+  top: 45%;
+  right: 25%;
+  width: 45px;
+  height: 45px;
+  transform: translate(50%, -50%) scale(0);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--accent-clr) 0%,
+    rgba(255, 255, 255, 0.1) 40%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: transform 0.9s ease, opacity 0.9s ease;
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(10px);
+}
+
+.profile-dropdown.show::before {
+  transform: translate(50%, -50%) scale(5);
+  opacity: 0.45;
+}
+
+/* ============================= */
+/* 🧊 Dropdown Items */
+/* ============================= */
 .profile-dropdown li {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.7rem 1rem;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
   border-radius: 10px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--text);
   cursor: pointer;
-  transition: all 0.35s ease;
+  transition: all 0.25s ease;
   opacity: 0;
   transform: translateX(-10px);
   position: relative;
-  z-index: 2; /* above ring */
+  z-index: 2;
 }
 
 /* Sequential reveal */
@@ -358,7 +381,7 @@
 .profile-dropdown.show li:nth-child(2) { animation-delay: 0.1s; }
 .profile-dropdown.show li:nth-child(3) { animation-delay: 0.15s; }
 
-/* Hover */
+/* Hover effect with depth pulse */
 .profile-dropdown li:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateX(6px);
@@ -366,14 +389,15 @@
 }
 
 [data-theme="dark"] .profile-dropdown li:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.05);
 }
 
 /* Links & icons */
 .profile-dropdown li a {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   color: var(--text);
   text-decoration: none;
   width: 100%;
@@ -384,29 +408,33 @@
   color: var(--accent-clr);
 }
 
+/* Icon hover energy */
 .profile-dropdown svg {
-  font-size: 1.2rem;
-  opacity: 0.8;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  font-size: 1.1rem;
+  opacity: 0.85;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .profile-dropdown li:hover svg {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.2) rotate(-5deg);
 }
 
-/* Logout highlight */
+/* Logout emphasis */
 .profile-dropdown li:last-child {
   color: #ff5c5c;
   font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .profile-dropdown li:last-child:hover {
   background: rgba(255, 92, 92, 0.15);
-  box-shadow: inset 0 0 12px rgba(255, 92, 92, 0.2);
+  box-shadow: inset 0 0 14px rgba(255, 92, 92, 0.25);
 }
 
-/* Animations */
+/* ============================= */
+/* 🌈 Animations */
+/* ============================= */
 @keyframes slideInItem {
   to {
     transform: translateX(0);
@@ -414,5 +442,20 @@
   }
 }
 
-
-
+@keyframes ambientPulse {
+  0% {
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.25),
+      inset 0 0 10px rgba(255, 255, 255, 0.06);
+  }
+  50% {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.3),
+      inset 0 0 16px rgba(255, 255, 255, 0.12);
+  }
+  100% {
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.25),
+      inset 0 0 10px rgba(255, 255, 255, 0.06);
+  }
+}

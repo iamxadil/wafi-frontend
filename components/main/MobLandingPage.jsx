@@ -1,105 +1,139 @@
-import React, { useState, useEffect } from "react";
-import TypingText from "../effects/TypingText";
-import { useNavigate } from "react-router-dom"; 
+import React, { useState, useEffect, useRef, useMemo, Suspense } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/moblandingpage.css";
-import {
-  BiSearchAlt as Search,
-  BiFilterAlt as Filter,
-} from "react-icons/bi";
-import { SquaresSubtract } from 'lucide-react';
+import { SquaresSubtract } from "lucide-react";
+import useProductStore from "../stores/useProductStore";
+import useTranslate from "../hooks/useTranslate";
 
-import useProductStore from "../stores/useProductStore"; 
+// Lazy-load icons to reduce bundle size
+const SearchIcon = React.lazy(() =>
+  import("react-icons/bi").then((m) => ({ default: m.BiSearchAlt }))
+);
+const FilterIcon = React.lazy(() =>
+  import("react-icons/bi").then((m) => ({ default: m.BiFilterAlt }))
+);
 
-// Import images so Netlify/Vite can bundle them
+// Lazy import images (handled by Vite)
 import LaptopImg from "../../assets/img/laptop.png";
 import HeadphoneImg from "../../assets/img/headphone.png";
 import MouseImg from "../../assets/img/mouse.png";
 import JoystickImg from "../../assets/img/joystick.png";
 import KeyboardImg from "../../assets/img/keyboard.png";
-import useTranslate from "../hooks/useTranslate";
 
 const MobLandingPage = () => {
   const navigate = useNavigate();
   const searchProducts = useProductStore((state) => state.searchProducts);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const t = useTranslate();
+  const abortRef = useRef(null);
 
-  // Images for slider with categories
-  const images = [
-    { src: LaptopImg, category: "Laptops" },
-    { src: HeadphoneImg, category: "Headphones" },
-    { src: MouseImg, category: "Mice" },
-    { src: JoystickImg, category: "Joysticks" },
-    { src: KeyboardImg, category: "Keyboards" },
-  ];
+  // Memoized image list to avoid re-renders
+  const images = useMemo(
+    () => [
+      { src: LaptopImg, category: "Laptops" },
+      { src: HeadphoneImg, category: "Headphones" },
+      { src: MouseImg, category: "Mice" },
+      { src: JoystickImg, category: "Joysticks" },
+      { src: KeyboardImg, category: "Keyboards" },
+    ],
+    []
+  );
 
   const navCat = (category) => {
-
-    if (!category) return; 
-    const path = category.toLowerCase() === "laptops" ? "/Laptops" : `/category/${category}`;
+    if (!category) return;
+    const path =
+      category.toLowerCase() === "laptops"
+        ? "/Laptops"
+        : `/category/${category}`;
     navigate(path);
-  }
+  };
 
-  // Search effect: only trigger if query has text
+  // --- 🔎 Optimized Live Search ---
   useEffect(() => {
-    const fetchResults = async () => {
-      if (query.trim().length > 0) {
-        const filters = selectedBrands.length
-          ? { brand: selectedBrands.join(",") }
-          : {};
-        const data = await searchProducts(query, filters);
-        setResults(data || []);
-      } else {
-        setResults([]);
-      }
-    };
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
 
-    const timer = setTimeout(fetchResults, 300); // debounce
-    return () => clearTimeout(timer);
+    // Cancel previous request if still pending
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    const timeout = setTimeout(async () => {
+      try {
+        const filters =
+          selectedBrands.length > 0
+            ? { brand: selectedBrands.join(",") }
+            : {};
+        const data = await searchProducts(query, filters, {
+          signal: controller.signal,
+        });
+        setResults(Array.isArray(data) ? data : []);
+      } catch (err) {
+        if (err.name !== "AbortError") console.error("Search failed:", err);
+      }
+    }, 350); // debounce 350ms
+
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
   }, [query, selectedBrands, searchProducts]);
 
+  // --- Filter logic ---
   const toggleBrand = (brand) => {
-    if (selectedBrands.includes(brand)) {
-      setSelectedBrands(selectedBrands.filter((b) => b !== brand));
-    } else {
-      setSelectedBrands([...selectedBrands, brand]);
-    }
+    setSelectedBrands((prev) =>
+      prev.includes(brand)
+        ? prev.filter((b) => b !== brand)
+        : [...prev, brand]
+    );
   };
 
   const clearFilters = () => setSelectedBrands([]);
 
   return (
     <main id="mob-landing-page">
-      {/* Title */}
-      <div className="mob-title" style={{textAlign: t.textAlign}}>
-        <TypingText texts={[t("Start your journey here", ".ابدأ رِحلتك الاولى الآن"), t("The best of the best.", ".الافضل بين الافضل")]} />
-        <h3>{t("Make your first order", ".. قم بِطلبك الاول")}</h3>
+      {/* ======= Title ======= */}
+      <div
+        className="mob-title"
+        style={{ textAlign: t.textAlign }}
+      >
+        <h2>{t("Start your journey here", "ابدأ رحلتك الآن")}</h2>
+        <h4>{t("Make your first order", "قم بطلبك الأول")}</h4>
       </div>
 
-      {/* Search + Filter */}
+      {/* ======= Search + Filter ======= */}
       <div className="mob-search-container">
         <div className="mob-search-row">
           <div className="mob-search">
-            <Search size={25} />
-          <input
+            <Suspense fallback={<span>🔍</span>}>
+              <SearchIcon size={22} />
+            </Suspense>
+            <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t("Search products...", "ابحث عن المنتجات...")}
               dir={t.language === "ar" ? "rtl" : "ltr"}
-              style={{
-                textAlign: t.textAlign,
-              }}
+              style={{ textAlign: t.textAlign }}
             />
           </div>
 
           <div className="mob-filter">
-            <button onClick={() => setDropdownOpen(!dropdownOpen)}>
-              <Filter />
+            <button
+              onClick={() => setDropdownOpen((prev) => !prev)}
+              aria-label="Filter"
+            >
+              <Suspense fallback={<span>⚙️</span>}>
+                <FilterIcon size={22} />
+              </Suspense>
             </button>
 
             {dropdownOpen && (
@@ -118,8 +152,11 @@ const MobLandingPage = () => {
                 ))}
                 {selectedBrands.length > 0 && (
                   <li>
-                    <button className="clear-filters" onClick={clearFilters}>
-                      Clear Filters
+                    <button
+                      className="clear-filters"
+                      onClick={clearFilters}
+                    >
+                      {t("Clear Filters", "مسح الفلاتر")}
                     </button>
                   </li>
                 )}
@@ -128,57 +165,70 @@ const MobLandingPage = () => {
           </div>
         </div>
 
-        {/* Active filter chips */}
+        {/* Active filters */}
         {selectedBrands.length > 0 && (
           <div className="mob-active-filters">
             {selectedBrands.map((brand) => (
               <span className="filter-chip" key={brand}>
-                {brand} 
+                {brand}
                 <button onClick={() => toggleBrand(brand)}>×</button>
               </span>
             ))}
           </div>
         )}
 
-        {/* Dropdown search results */}
+        {/* Search results */}
         {query.trim().length > 0 && (
           <div className="mob-search-results">
             <div className="mob-search-results-inner">
               {results.length > 0 ? (
-                results.map((item, index) => (
+                results.map((item) => (
                   <div
-                    className="mob-search-result-item" key={index} onClick={() => navigate(`/product/${item._id}`)} >
-                     <img
-                          src={item.images[0] || "/placeholder.png"}
-                          alt={item.name}
-                        />
+                    key={item._id}
+                    className="mob-search-result-item"
+                    onClick={() => navigate(`/product/${item._id}`)}
+                  >
+                    <img
+                      src={item.images?.[0] || "/placeholder.png"}
+                      alt={item.name}
+                      loading="lazy"
+                    />
                     <div className="mob-result-info">
                       <span>{item.name}</span>
-                      <span>{item.price.toLocaleString()} IQD</span>
+                      <span>
+                        {item.price?.toLocaleString()} IQD
+                      </span>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="no-results">No results found</div>
+                <div className="no-results">
+                  {t("No results found", "لا توجد نتائج")}
+                </div>
               )}
             </div>
           </div>
         )}
-
       </div>
 
-      {/* Slider Section */}
+      {/* ======= Slider Section ======= */}
       <section className="slider-container">
-        <h1 style={{flexDirection: t.rowReverse}}>{t("Discover", "اكتشف")} <SquaresSubtract /></h1>
+        <h1 style={{ flexDirection: t.rowReverse }}>
+          {t("Discover", "اكتشف")} <SquaresSubtract />
+        </h1>
         <div className="slider">
           {images.map((item, index) => (
             <div
               className="slider-card"
               key={index}
               onClick={() => navCat(item.category)}
-              style={{ cursor: "pointer" }}
             >
-              <img src={item.src} alt={`Product ${index + 1}`} />
+              <img
+                src={item.src}
+                alt={item.category}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           ))}
         </div>

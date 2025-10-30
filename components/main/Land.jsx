@@ -7,6 +7,7 @@ import useAllProductsStore from "../stores/useAllProductsStore.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
 import "../../styles/land.css";
 
+// ✅ Import critical image (preloaded)
 import gesture1 from "../../assets/img/gesture1.webp";
 import gesture2 from "../../assets/img/gesture2.webp";
 import gesture3 from "../../assets/img/gesture3.webp";
@@ -14,37 +15,20 @@ import gesture4 from "../../assets/img/gesture4.webp";
 
 import { Zap, Gamepad2, Gauge, Music2 } from "lucide-react";
 
-/* Static base card info (no translation here) */
-const baseCards = [
-  {
-    id: 1,
-    img: gesture1,
-    icon: <Zap size={18} strokeWidth={2.4} />,
-    link: "/laptops",
-  },
-  {
-    id: 2,
-    img: gesture2,
-    icon: <Gamepad2 size={18} strokeWidth={2.4} />,
-    link: "/category/Mice",
-  },
-  {
-    id: 3,
-    img: gesture3,
-    icon: <Gauge size={18} strokeWidth={2.4} />,
-    link: null,
-  },
-  {
-    id: 4,
-    img: gesture4,
-    icon: <Music2 size={18} strokeWidth={2.4} />,
-    link: "/category/Headphones",
-  },
-];
+/* ============================================
+   1️⃣ Static card metadata (kept outside render)
+=============================================== */
+const baseCards = Object.freeze([
+  { id: 1, img: gesture1, icon: <Zap size={18} strokeWidth={2.4} />, link: "/laptops" },
+  { id: 2, img: gesture2, icon: <Gamepad2 size={18} strokeWidth={2.4} />, link: "/category/Mice" },
+  { id: 3, img: gesture3, icon: <Gauge size={18} strokeWidth={2.4} />, link: null },
+  { id: 4, img: gesture4, icon: <Music2 size={18} strokeWidth={2.4} />, link: "/category/Headphones" },
+]);
 
-/* Memoized card (animation stays smooth) */
+/* ============================================
+   2️⃣ Memoized CarouselCard (no re-renders)
+=============================================== */
 const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
-  // apply translation dynamically per card
   const translations = {
     1: {
       title: t("Ultra thin, Maximum efficiency.", "نحافة قصوى، كفاءة لا مثيل لها."),
@@ -52,7 +36,6 @@ const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
         "Interact with your laptop through natural, responsive hand movements.",
         "تفاعل مع حاسوبك المحمول بحركات يد طبيعية وسريعة الاستجابة."
       ),
-      label: t("Power", "الطاقة"),
     },
     2: {
       title: t("Gaming Mode.", "وضع الألعاب."),
@@ -60,7 +43,6 @@ const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
         "Turn any surface into your personal display — seamless and adaptive.",
         "حوّل أي سطح إلى شاشتك الخاصة — تجربة سلسة ومتجاوبة."
       ),
-      label: t("Sense", "الإحساس"),
     },
     3: {
       title: t("Boosted Performance.", "أداء معزز."),
@@ -68,7 +50,6 @@ const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
         "Ultra-fast sensors for dynamic depth and motion accuracy.",
         "حساسات فائقة السرعة لدقة عالية في الحركة والعمق."
       ),
-      label: t("Performance", "الأداء"),
     },
     4: {
       title: t("Cinematic Rhythms.", "أنغام سينمائية."),
@@ -76,7 +57,6 @@ const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
         "Enjoy with cutting-edge acoustic technology.",
         "استمتع بتقنية صوتية متطورة تمنحك تجربة غامرة."
       ),
-      label: t("Audio", "الصوت"),
     },
   };
 
@@ -87,31 +67,40 @@ const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
       className={`carousel-card ${active === card.id ? "active" : ""}`}
       onClick={() => onActivate(card.id)}
     >
-      <img src={card.img} alt={title} loading="lazy" decoding="async" />
+      {/* ✅ Don’t lazy-load first visible hero image */}
+      <img
+        src={card.img}
+        alt={title}
+        fetchpriority={card.id === 1 ? "high" : undefined}
+        loading={card.id === 1 ? "eager" : "lazy"}
+        width="800"
+        height="600"
+        decoding="async"
+      />
+
       <div
         className={`card-content ${active === card.id ? "show-content" : ""}`}
-        style={{ textAlign: t.textAlign, [t.positionAlign]: "0" }}
+        style={{ textAlign: t.textAlign, [t.positionAlign]: 0 }}
       >
         <h3>{title}</h3>
         <p>{text}</p>
-        {card.link ? (
-          <button
-            className="explore-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              onNavigate(card.link);
-            }}
-          >
-            {t("Explore", "استكشف")}
-          </button>
-        ) : (
-          <button className="explore-btn disabled">{t("Explore", "استكشف")}</button>
-        )}
+        <button
+          className={`explore-btn ${!card.link ? "disabled" : ""}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (card.link) onNavigate(card.link);
+          }}
+        >
+          {t("Explore", "استكشف")}
+        </button>
       </div>
     </div>
   );
 });
 
+/* ============================================
+   3️⃣ Main Landing Component
+=============================================== */
 const Land = () => {
   const [active, setActive] = useState(1);
   const [visible, setVisible] = useState(false);
@@ -119,6 +108,7 @@ const Land = () => {
   const navigate = useNavigate();
   const t = useTranslate();
 
+  /* === Zustand + React Query === */
   const searchParam = useAllProductsStore((s) => s.searchParam);
   const setSearchParam = useAllProductsStore((s) => s.setSearchParam);
   const { data: searchData } = useAllProductsQuery({
@@ -130,7 +120,7 @@ const Land = () => {
   });
   const searchResults = searchData?.products || [];
 
-  // Reveal animation trigger
+  /* === Reveal animation === */
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
@@ -140,26 +130,31 @@ const Land = () => {
     return () => observer.disconnect();
   }, []);
 
+  /* === Callbacks === */
   const handleNavigate = useCallback((path) => navigate(path), [navigate]);
   const handleActivate = useCallback((id) => setActive(id), []);
 
+  /* === Swipe gestures === */
   const handlers = useSwipeable({
-    onSwipedLeft: () =>
-      setActive((p) => (p < baseCards.length ? p + 1 : p)),
-    onSwipedRight: () =>
-      setActive((p) => (p > 1 ? p - 1 : p)),
+    onSwipedLeft: () => setActive((p) => Math.min(p + 1, baseCards.length)),
+    onSwipedRight: () => setActive((p) => Math.max(p - 1, 1)),
     preventScrollOnSwipe: true,
     trackMouse: true,
   });
 
   return (
     <section id="feature-section" {...handlers} style={{ alignItems: t.flexAlign }}>
+      {/* === Background Blur Layers === */}
       <div className="blur-spot spot1"></div>
       <div className="blur-spot spot2"></div>
 
-      <div className="feature-header">
+      {/* === Hero Header === */}
+      <header className="feature-header">
         <h1 style={{ textAlign: t.textAlign }}>
-          {t("Experience the Future of Interaction", "استمتع بتجربة تفاعلية مستقبلية تتجاوز الحدود")}
+          {t(
+            "Experience the Future of Interaction",
+            "استمتع بتجربة تفاعلية مستقبلية تتجاوز الحدود"
+          )}
         </h1>
         <p style={{ textAlign: t.textAlign }}>
           {t(
@@ -167,6 +162,7 @@ const Land = () => {
             "استكشف تطوّر الدقة الرقمية — مزيج سلس من الحركة والوضوح والاستجابة الغامرة."
           )}
         </p>
+
         <SearchDropdown
           width={720}
           products={searchResults}
@@ -174,8 +170,9 @@ const Land = () => {
           onChange={(e) => setSearchParam(e.target.value)}
           placeholder={t("Search for products...", "ابحث عن المنتجات...")}
         />
-      </div>
+      </header>
 
+      {/* === Carousel === */}
       <div ref={ref} id="land-container" className={visible ? "visible fade-up" : ""}>
         <div className="carousel">
           {baseCards.map((card) => (
@@ -191,6 +188,7 @@ const Land = () => {
         </div>
       </div>
 
+      {/* === Indicator Buttons === */}
       <div className="indicator-bar">
         {baseCards.map((card) => (
           <button

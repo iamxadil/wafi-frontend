@@ -4,6 +4,7 @@ import {
   useAddProductMutation,
   useEditProductMutation,
 } from "../../../hooks/useManageProducts.jsx";
+import { MonitorSmartphone, ScanFace, Fingerprint } from "lucide-react";
 
 const ProductsModal = ({
   setIsModalOpen,
@@ -206,9 +207,10 @@ const handleDiscountPriceChange = (e) => {
             >
               <option value="">Select category</option>
               <option value="Laptops">Laptops</option>
-              <option value="Accessories">Accessories</option>
-              <option value="Networking">Networking</option>
-              <option value="Others">Others</option>
+              <option value="Mice">Mice</option>
+              <option value="Keyboards">Keyboards</option>
+              <option value="Bags">Bags</option>
+              <option value="Headphones">Headphones</option>
             </select>
           </div>
 
@@ -318,39 +320,62 @@ const handleDiscountPriceChange = (e) => {
           </div>
 
           {/* === SPECS === */}
-          {formData.category === "Laptops" && (
-            <div className="specs-section">
-              <h3 className="specs-title">Laptop Specifications</h3>
-              <div className="specs-grid">
-                {[
-                  ["ram", "RAM", "e.g. 16GB DDR5"],
-                  ["cpu", "CPU", "e.g. Intel Core i7"],
-                  ["gpu", "GPU", "e.g. RTX 4060"],
-                  ["storage", "Storage", "e.g. 1TB SSD"],
-                  ["screenSize", "Screen Size", "e.g. 15.6\""],
-                  ["resolution", "Resolution", "e.g. 1920x1080"],
-                  ["os", "OS", "e.g. Windows 11"],
-                  ["battery", "Battery", "e.g. 75Wh"],
-                  ["weight", "Weight", "e.g. 1.8kg"],
-                  ["ports", "Ports", "e.g. HDMI, USB-C"],
-                  ["releaseYear", "Release Year", "e.g. 2024"],
-                  ["warranty", "Warranty", "e.g. 1 Year"],
-                  ["colorOptions", "Colors", "e.g. Black, Silver"],
-                ].map(([id, label, placeholder]) => (
-                  <div key={id}>
-                    <label htmlFor={id}>{label}</label>
-                    <input
-                      id={id}
-                      type={id === "releaseYear" ? "number" : "text"}
-                      value={specs[id] || ""}
-                      onChange={handleSpecsChange}
-                      placeholder={placeholder}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+        {formData.category === "Laptops" && (
+  <div className="specs-section">
+    <h3 className="specs-title">Laptop Specifications</h3>
+
+    {/* === Text Inputs === */}
+    <div className="specs-grid">
+      {[
+        ["ram", "RAM", "e.g. 16GB DDR5"],
+        ["cpu", "CPU", "e.g. Intel Core i7"],
+        ["gpu", "GPU", "e.g. RTX 4060"],
+        ["storage", "Storage", "e.g. 1TB SSD"],
+        ["screenSize", "Screen Size", "e.g. 15.6\""],
+        ["resolution", "Resolution", "e.g. 1920x1080"],
+        ["os", "OS", "e.g. Windows 11"],
+        ["battery", "Battery", "e.g. 75Wh"],
+        ["weight", "Weight", "e.g. 1.8kg"],
+        ["ports", "Ports", "e.g. HDMI, USB-C"],
+        ["releaseYear", "Release Year", "e.g. 2024"],
+        ["warranty", "Warranty", "e.g. 1 Year"],
+        ["colorOptions", "Colors", "e.g. Black, Silver"],
+      ].map(([id, label, placeholder]) => (
+        <div key={id}>
+          <label htmlFor={id}>{label}</label>
+          <input
+            id={id}
+            type={id === "releaseYear" ? "number" : "text"}
+            value={specs[id] || ""}
+            onChange={handleSpecsChange}
+            placeholder={placeholder}
+          />
+        </div>
+      ))}
+    </div>
+
+    {/* === Feature Checkboxes with Icons === */}
+    <div className="specs-checkboxes">
+      {[
+        ["touchscreen", "Touch Screen", <MonitorSmartphone size={18} />],
+        ["faceId", "Face ID", <ScanFace size={18} />],
+        ["fingerPrint", "Fingerprint Sensor", <Fingerprint size={18} />],
+      ].map(([id, label, Icon]) => (
+        <label key={id} className="spec-checkbox">
+          <input
+            id={id}
+            type="checkbox"
+            checked={!!specs[id]}
+            onChange={handleSpecsChange}
+          />
+          <span className="checkbox-icon">{Icon}</span>
+          {label}
+        </label>
+      ))}
+    </div>
+  </div>
+)}
+
 
           {/* === ACTION BUTTONS === */}
           <div className="static-actions">

@@ -35,12 +35,14 @@ import {
   Battery,
   ShieldCheck,
   Fingerprint,
-  Smile,
   PenTool,
   PaletteIcon,
   Usb,
   Expand,
   CalendarCheck2,
+  Disc3 ,
+  ScanFace,
+  MonitorSmartphone
 } from "lucide-react";
 
 import { toast } from "react-toastify";
@@ -76,15 +78,13 @@ const keywordIcons = {
 
   WEIGHT: <Ruler />,
 
-  OS: <Brackets />,
-
   WARRANTY: <ShieldCheck />,
 
-  TOUCHSCREEN: <MousePointer />,
+  TOUCHSCREEN: <MonitorSmartphone />,
 
   FINGERPRINT: <Fingerprint />,
 
-  FACEID: <Smile />,
+  FACEID: <ScanFace />,
 
   PEN: <PenTool />,
 
@@ -95,6 +95,7 @@ const keywordIcons = {
   RESOLUTION: <Expand />,
 
   RELEASEYEAR: <CalendarCheck2 />,
+  OS: <Disc3 />
 };
 
 const keywordLabels = {
@@ -312,14 +313,20 @@ const handleDoubleTap = (e) => {
 
 const handleTouchMove = (e) => {
   if (!touchZoom || e.touches.length !== 1) return;
+  e.stopPropagation();
+
   const touch = e.touches[0];
-  const container = e.currentTarget;
-  const rect = container.getBoundingClientRect();
+  const rect = e.currentTarget.getBoundingClientRect();
 
-  const x = ((touch.pageX - rect.left) / rect.width) * 100;
-  const y = ((touch.pageY - rect.top) / rect.height) * 100;
+  // Calculate normalized position (0 → 1)
+  const x = (touch.pageX - rect.left) / rect.width;
+  const y = (touch.pageY - rect.top) / rect.height;
 
-  setTouchPosition({ x, y });
+  // Flip horizontally and vertically for natural feel
+  const newX = 100 - x * 100;
+  const newY = 100 - y * 100;
+
+  setTouchPosition({ x: newX, y: newY });
 };
 
 
@@ -383,53 +390,66 @@ const handleTouchMove = (e) => {
   };
 
   // === Build formatted specs list ===
+const specOrder = [
+  "cpu",
+  "ram",
+  "storage",
+  "gpu",
+  "screenSize",
+  "colorOptions",
+  "os",
+  "battery",
+  "weight",
+  "ports",
+  "releaseYear",
+  "warranty",
+  "resolution",
+  "touchscreen",
+  "fingerPrint",
+  "faceId",
+];
 
-  const specsList = Object.entries(selectedProduct.specs || {})
+const specsList = specOrder
+  .map((key) => {
+    const value = selectedProduct.specs?.[key];
+    if (value === null || value === undefined || value === "") return null;
 
-    .filter(
-      ([_, value]) => value !== null && value !== undefined && value !== ""
-    )
+    const label = t(
+      keywordLabels[key.toUpperCase()]?.en || key,
+      keywordLabels[key.toUpperCase()]?.ar || key
+    );
 
-    .map(([key, value]) => {
-      // Normalize key label (capitalize first letter)
+    const icon = keywordIcons[key.toUpperCase()] || <Brackets />;
 
-      const label = t(
-        keywordLabels[key.toUpperCase()]?.en,
-        keywordLabels[key.toUpperCase()]?.ar
-      );
+    let formattedValue = value;
+    if (typeof value === "boolean") {
+      formattedValue = value
+        ? t("Included", "متوفر")
+        : t("Not Included", "غير متوفر");
+    } else if (Array.isArray(value)) {
+      formattedValue = value.join(", ");
+    }
 
-      // Match with keyword icons or fallback to a generic one
+    return (
+      <li
+        key={key}
+        className="spec-line"
+        style={{
+          textAlign: t.flexAlign,
+          flexDirection: t.rowReverse,
+          alignItems: t.flexAlign,
+        }}
+      >
+        <span className="spec-icon">{icon}</span>
+        <span className="spec-key" style={{ justifyContent: t.flexAlign }}>
+          {label}
+        </span>
+        <span className="spec-value">{formattedValue}</span>
+      </li>
+    );
+  })
+  .filter(Boolean);
 
-      const icon = keywordIcons[key.toUpperCase()] || <Brackets />;
-
-      // Format value nicely
-
-      let formattedValue = value;
-
-      if (typeof value === "boolean") {
-        formattedValue = value
-          ? t("Included", "متوفر")
-          : t("Not Included", "غير متوفر");
-      } else if (Array.isArray(value)) {
-        formattedValue = value.join(", ");
-      }
-
-      return (
-        <li
-          key={key}
-          className="spec-line"
-          style={{ textAlign: t.flexAlign, flexDirection: t.rowReverse, alignItems: t.flexAlign }}
-        >
-          <span className="spec-icon">{icon}</span>
-
-          <span className="spec-key" style={{ justifyContent: t.flexAlign }}>
-            {label}
-          </span>
-
-          <span className="spec-value">{formattedValue}</span>
-        </li>
-      );
-    });
 
   const descriptionLines = selectedProduct.description
     ? selectedProduct.description

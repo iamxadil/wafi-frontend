@@ -8,7 +8,6 @@ import useAuthStore from "../stores/useAuthStore.jsx";
 import useCartStore from "../stores/useCartStore.jsx";
 import useFavoritesStore from "../stores/useFavoritesStore.jsx";
 import { toast } from "react-toastify";
-import "../../styles/grids.css";
 import useTranslate from "../hooks/useTranslate.jsx";
 
 
@@ -157,8 +156,8 @@ const ProductGrid = ({ product, animateEntry = true, index }) => {
           <div className="product-price">
             {product.discountPrice > 0 ? (
               <>
-                <span className="original-price">{product.price?.toLocaleString()} IQD</span>
-                <span className="final-price">{product.finalPrice?.toLocaleString()} IQD</span>
+                <span className="original-price" style={{textDecoration: "line-through"}}>{product.price?.toLocaleString()} IQD</span>
+                <span className="final-price" style={{fontWeight: "bold"}}>{product.finalPrice?.toLocaleString()} IQD</span>
               </>
             ) : (
               <span className="final-price">{product.finalPrice?.toLocaleString()} IQD</span>
