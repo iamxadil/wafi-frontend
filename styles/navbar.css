@@ -78,14 +78,45 @@ a {
   }
 }
 
+/* === Inline SVG Logo === */
 #logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   width: 80px;
   height: 80px;
-  background-image: var(--img);
-  background-size: cover;
-  background-position: center;
-  cursor: pointer;
+  transition: transform 0.25s ease;
 }
+
+#logo:hover {
+  transform: scale(1.06);
+}
+
+.logo-svg {
+  width: 78px;
+  height: auto;
+  will-change: transform, opacity;
+  opacity: 0;
+  transform: translateY(3px);
+  animation: fadeInLogo 0.35s ease forwards;
+}
+
+.logo-path {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 12px;
+  stroke-miterlimit: 10;
+  transition: stroke 0.3s ease, transform 0.3s ease;
+}
+
+@keyframes fadeInLogo {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 ul {
   display: flex;
@@ -151,7 +182,7 @@ background-color: var(--background);
   border-radius: 4px;
   cursor: pointer;
   text-wrap: nowrap;
-  max-width: 27px;
+  max-width: 25px;
   transition: all 350ms ease-in-out;
   display: flex;
   align-items: center;
@@ -164,9 +195,7 @@ background-color: var(--background);
   width: 150px !important;
 }
 
-#cart:hover {
-  max-width: 27px !important;
-}
+
 
 
 #cart::after {
@@ -215,14 +244,9 @@ background-color: var(--background);
 
 
 
-#user-interaction .icon span {
-  font-size: 1.4rem;
-  display: flex;
-  align-items: center;
-}
 
-#user-interaction .icon:hover {
-  max-width: 250px;
+.dash-link {
+  margin-top: 8px;
 }
 
 #user-interaction .profile {

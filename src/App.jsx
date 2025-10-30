@@ -217,7 +217,7 @@ export default function App() {
 
       {/* === Persistent Layouts === */}
       {!bottomNavbarOn.some((path) => location.pathname.startsWith(path)) && <BottomNavbar />}
-      {!footerOn.some((path) => location.pathname.startsWith(path)) && <AppFooter />}
+     
     </>
   );
 }

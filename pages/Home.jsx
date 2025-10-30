@@ -1,32 +1,32 @@
-import React from "react";
-import Search from "../components/main/Search.jsx";
-import Land from '../components/main/Land.jsx';
-import BrandCards from '../components/main/BrandCards.jsx';
+import React, { Suspense, lazy } from "react";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
-import Laptops from "../components/main/Laptops.jsx";
-import Offers from '../components/main/Offers.jsx';
-import TrendingProducts from "../components/main/TrendingProducts.jsx";
-import MobLandingPage from "../components/main/MobLandingPage.jsx";
-import AccessoriesProducts from "../components/main/AccessoriesProducts.jsx";
+
+// 🧩 Lazy-load heavy sections
+const Land = lazy(() => import("../components/main/Land.jsx"));
+const BrandCards = lazy(() => import("../components/main/BrandCards.jsx"));
+const Laptops = lazy(() => import("../components/main/Laptops.jsx"));
+const Offers = lazy(() => import("../components/main/Offers.jsx"));
+const TrendingProducts = lazy(() => import("../components/main/TrendingProducts.jsx"));
+const AccessoriesProducts = lazy(() => import("../components/main/AccessoriesProducts.jsx"));
+const MobLandingPage = lazy(() => import("../components/main/MobLandingPage.jsx"));
+
+// Simple fallback while chunks load
+const Loader = () => <div style={{ textAlign: "center", padding: "2rem" }}>Loading...</div>;
 
 const Home = () => {
-
   const width = useWindowWidth();
-  return (
-    <>
-      {width > 650 && <Land />}
-      {width <= 650 && <MobLandingPage/>}
-      <BrandCards />
 
-      {/*Desktop View */}
+  return (
+    <Suspense fallback={<Loader />}>
+      
+      {width > 650 ? <Land /> : <MobLandingPage />}
+
+      <BrandCards />
       <Laptops />
       <AccessoriesProducts />
       <Offers />
       <TrendingProducts />
-
-      
-
-    </>
+    </Suspense>
   );
 };
 

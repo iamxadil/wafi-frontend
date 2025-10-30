@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  memo,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
 import SearchDropdown from "./SearchDropdown.jsx";
@@ -7,17 +13,17 @@ import useAllProductsStore from "../stores/useAllProductsStore.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
 import "../../styles/land.css";
 
-// ✅ Import critical image (preloaded)
-import gesture1 from "../../assets/img/gesture1.webp";
-import gesture2 from "../../assets/img/gesture2.webp";
-import gesture3 from "../../assets/img/gesture3.webp";
-import gesture4 from "../../assets/img/gesture4.webp";
-
 import { Zap, Gamepad2, Gauge, Music2 } from "lucide-react";
 
-/* ============================================
-   1️⃣ Static card metadata (kept outside render)
-=============================================== */
+// ✅ Static imports handled by Vite
+import gesture1 from "../../assets/img/gesture1.webp";
+import gesture2 from "../../assets/img/gesture2.avif";
+import gesture3 from "../../assets/img/gesture3.avif";
+import gesture4 from "../../assets/img/gesture4.avif";
+
+/* ===========================================================
+   1️⃣ Static card data (outside render for memoization)
+=========================================================== */
 const baseCards = Object.freeze([
   { id: 1, img: gesture1, icon: <Zap size={18} strokeWidth={2.4} />, link: "/laptops" },
   { id: 2, img: gesture2, icon: <Gamepad2 size={18} strokeWidth={2.4} />, link: "/category/Mice" },
@@ -25,9 +31,9 @@ const baseCards = Object.freeze([
   { id: 4, img: gesture4, icon: <Music2 size={18} strokeWidth={2.4} />, link: "/category/Headphones" },
 ]);
 
-/* ============================================
-   2️⃣ Memoized CarouselCard (no re-renders)
-=============================================== */
+/* ===========================================================
+   2️⃣ Carousel Card Component (memoized)
+=========================================================== */
 const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
   const translations = {
     1: {
@@ -67,7 +73,6 @@ const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
       className={`carousel-card ${active === card.id ? "active" : ""}`}
       onClick={() => onActivate(card.id)}
     >
-      {/* ✅ Don’t lazy-load first visible hero image */}
       <img
         src={card.img}
         alt={title}
@@ -98,15 +103,30 @@ const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
   );
 });
 
-/* ============================================
+/* ===========================================================
    3️⃣ Main Landing Component
-=============================================== */
+=========================================================== */
 const Land = () => {
   const [active, setActive] = useState(1);
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
   const navigate = useNavigate();
   const t = useTranslate();
+
+  /* === Programmatic image preload (runs early) === */
+  useEffect(() => {
+    // ✅ Create <link rel="preload"> dynamically to fetch hero image ASAP
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = gesture1;
+    document.head.appendChild(link);
+
+    // optional: clean up if component unmounts
+    return () => {
+      if (link.parentNode) link.parentNode.removeChild(link);
+    };
+  }, []);
 
   /* === Zustand + React Query === */
   const searchParam = useAllProductsStore((s) => s.searchParam);

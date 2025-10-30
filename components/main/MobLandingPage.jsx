@@ -5,7 +5,7 @@ import { SquaresSubtract } from "lucide-react";
 import useProductStore from "../stores/useProductStore";
 import useTranslate from "../hooks/useTranslate";
 
-// Lazy-load icons to reduce bundle size
+// === Lazy-load icons to reduce JS bundle ===
 const SearchIcon = React.lazy(() =>
   import("react-icons/bi").then((m) => ({ default: m.BiSearchAlt }))
 );
@@ -13,12 +13,12 @@ const FilterIcon = React.lazy(() =>
   import("react-icons/bi").then((m) => ({ default: m.BiFilterAlt }))
 );
 
-// Lazy import images (handled by Vite)
-import LaptopImg from "../../assets/img/laptop.png";
-import HeadphoneImg from "../../assets/img/headphone.png";
-import MouseImg from "../../assets/img/mouse.png";
-import JoystickImg from "../../assets/img/joystick.png";
-import KeyboardImg from "../../assets/img/keyboard.png";
+// === Static images (preprocessed by Vite) ===
+import LaptopImg from "../../assets/img/surface.avif";
+import HeadphoneImg from "../../assets/img/sony.avif";
+import MouseImg from "../../assets/img/logitech.webp";
+import BagImg from "../../assets/img/bag.webp";
+import KeyboardImg from "../../assets/img/keyboard.avif";
 
 const MobLandingPage = () => {
   const navigate = useNavigate();
@@ -30,13 +30,13 @@ const MobLandingPage = () => {
   const t = useTranslate();
   const abortRef = useRef(null);
 
-  // Memoized image list to avoid re-renders
+  // === Memoized images (prevent re-renders) ===
   const images = useMemo(
     () => [
       { src: LaptopImg, category: "Laptops" },
-      { src: HeadphoneImg, category: "Headphones" },
+      { src: HeadphoneImg, category: "Headphones" }, // main LCP image
       { src: MouseImg, category: "Mice" },
-      { src: JoystickImg, category: "Joysticks" },
+      { src: BagImg, category: "Bags" },
       { src: KeyboardImg, category: "Keyboards" },
     ],
     []
@@ -51,18 +51,14 @@ const MobLandingPage = () => {
     navigate(path);
   };
 
-  // --- 🔎 Optimized Live Search ---
+  // === Optimized live search with debounce + cancellation ===
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
       return;
     }
 
-    // Cancel previous request if still pending
-    if (abortRef.current) {
-      abortRef.current.abort();
-    }
-
+    if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -79,7 +75,7 @@ const MobLandingPage = () => {
       } catch (err) {
         if (err.name !== "AbortError") console.error("Search failed:", err);
       }
-    }, 350); // debounce 350ms
+    }, 350);
 
     return () => {
       clearTimeout(timeout);
@@ -87,7 +83,7 @@ const MobLandingPage = () => {
     };
   }, [query, selectedBrands, searchProducts]);
 
-  // --- Filter logic ---
+  // === Filter logic ===
   const toggleBrand = (brand) => {
     setSelectedBrands((prev) =>
       prev.includes(brand)
@@ -101,10 +97,7 @@ const MobLandingPage = () => {
   return (
     <main id="mob-landing-page">
       {/* ======= Title ======= */}
-      <div
-        className="mob-title"
-        style={{ textAlign: t.textAlign }}
-      >
+      <div className="mob-title" style={{ textAlign: t.textAlign }}>
         <h2>{t("Start your journey here", "ابدأ رحلتك الآن")}</h2>
         <h4>{t("Make your first order", "قم بطلبك الأول")}</h4>
       </div>
@@ -152,10 +145,7 @@ const MobLandingPage = () => {
                 ))}
                 {selectedBrands.length > 0 && (
                   <li>
-                    <button
-                      className="clear-filters"
-                      onClick={clearFilters}
-                    >
+                    <button className="clear-filters" onClick={clearFilters}>
                       {t("Clear Filters", "مسح الفلاتر")}
                     </button>
                   </li>
@@ -191,13 +181,13 @@ const MobLandingPage = () => {
                     <img
                       src={item.images?.[0] || "/placeholder.png"}
                       alt={item.name}
-                      loading="lazy"
+                      decoding="async"
+                      width="80"
+                      height="80"
                     />
                     <div className="mob-result-info">
                       <span>{item.name}</span>
-                      <span>
-                        {item.price?.toLocaleString()} IQD
-                      </span>
+                      <span>{item.price?.toLocaleString()} IQD</span>
                     </div>
                   </div>
                 ))
@@ -216,6 +206,7 @@ const MobLandingPage = () => {
         <h1 style={{ flexDirection: t.rowReverse }}>
           {t("Discover", "اكتشف")} <SquaresSubtract />
         </h1>
+
         <div className="slider">
           {images.map((item, index) => (
             <div
@@ -226,8 +217,10 @@ const MobLandingPage = () => {
               <img
                 src={item.src}
                 alt={item.category}
-                loading="lazy"
                 decoding="async"
+                width="400"
+                height="400"
+                loading={index === 1 ? "eager" : "lazy"} // ✅ Eager load the hero (Headphones)
               />
             </div>
           ))}

@@ -1,0 +1,10 @@
+# robots.txt for AL-WAFI Computers
+User-agent: *
+Disallow: /api/
+Disallow: /admin/
+Disallow: /server/
+Disallow: /node_modules/
+Disallow: /private/
+Allow: /
+
+Sitemap: https://alwafi.net/sitemap.xml
