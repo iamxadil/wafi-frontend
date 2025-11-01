@@ -36,23 +36,27 @@ export default defineConfig({
 
   // === Build optimization ===
   build: {
-    target: "esnext",
-    minify: "esbuild",
-    sourcemap: false,
-    chunkSizeWarningLimit: 1500, // avoids noisy warnings
-
-    // 🔥 Smart code-splitting for caching
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ["react", "react-dom"],
-          antd: ["antd"],
-          query: ["@tanstack/react-query"],
-          store: ["zustand"],
-          icons: ["lucide-react", "react-icons"],
-          utils: ["axios", "dayjs"],
-        },
+  target: "es2018", // ✅ safe for all iPhones
+  minify: "esbuild",
+  sourcemap: false,
+  chunkSizeWarningLimit: 1500,
+  rollupOptions: {
+    output: {
+      manualChunks: {
+        react: ["react", "react-dom"],
+        antd: ["antd"],
+        query: ["@tanstack/react-query"],
+        store: ["zustand"],
+        icons: ["lucide-react", "react-icons"],
+        utils: ["axios", "dayjs"],
       },
     },
   },
+},
+optimizeDeps: {
+  esbuildOptions: {
+    target: "es2018", // ✅ match build target
+  },
+},
+
 });
