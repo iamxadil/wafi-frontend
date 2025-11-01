@@ -10,7 +10,6 @@ import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useThemeStore from "../components/stores/useThemeStore.jsx";
 import useCartStore from "../components/stores/useCartStore.jsx";
 import useFavoritesStore from "../components/stores/useFavoritesStore.jsx";
-import VitalsTracker from "../components/main/VitalsTracker.jsx";
 
 // === Shared Layouts ===
 import Navbar from "../components/main/Navbar.jsx";
@@ -63,8 +62,14 @@ import ProtectedRoute from "../routes/ProtectedRoute.jsx";
 // Styles
 import "./output.css";
 
-// Optional: real user metrics (INP, LCP, CLS)
-import { onINP, onLCP, onCLS } from "web-vitals";
+// === Safe requestIdleCallback polyfill ===
+const idle = (cb) => {
+  if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+    return window.requestIdleCallback(cb);
+  }
+  // Safari / iOS fallback
+  return setTimeout(() => cb({ timeRemaining: () => 0, didTimeout: false }), 1);
+};
 
 export default function App() {
   const location = useLocation();
@@ -75,7 +80,7 @@ export default function App() {
   const width = useWindowWidth();
   const [initialized, setInitialized] = useState(false);
 
-  // === Pre-memoized route visibility filters ===
+  /* === UI visibility filters === */
   const hideNavbarOn = useMemo(() => ["/admin-dashboard", "/dashboard", "/cart", "/payment"], []);
   const footerOn = useMemo(
     () => [
@@ -101,41 +106,40 @@ export default function App() {
 
   const showAdminFeatures = user?.role === "admin";
 
-  // === Initialize Auth + Cart lazily (after paint) ===
+  /* === Initialize Auth + Cart lazily (safe for Safari) === */
   useEffect(() => {
-    requestIdleCallback(async () => {
+    idle(async () => {
       try {
         await profile();
       } catch (err) {
-        console.warn("Profile load failed:", err.message);
+        console.warn("Profile load failed:", err?.message || err);
       } finally {
         try {
           await cartStore.initCart();
         } catch (err) {
-          console.warn("Cart init failed:", err.message);
+          console.warn("Cart init failed:", err?.message || err);
         }
         setInitialized(true);
       }
     });
   }, []);
 
-  // === Initialize Favorites lazily ===
+  /* === Initialize Favorites lazily === */
   useEffect(() => {
-    requestIdleCallback(async () => {
+    idle(async () => {
       try {
         if (user) await favoritesStore.loadFavorites?.();
         else favoritesStore.initGuestFavorites?.();
       } catch (err) {
-        console.warn("Favorites init failed:", err.message);
+        console.warn("Favorites init failed:", err?.message || err);
       }
     });
   }, [user]);
 
-  // === Apply Theme instantly ===
+  /* === Apply Theme instantly === */
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
-
 
   return (
     <>
@@ -149,8 +153,6 @@ export default function App() {
           <SocketListener />
         </>
       )}
-
-    
 
       {/* === Toast Notifications === */}
       <ToastContainer
