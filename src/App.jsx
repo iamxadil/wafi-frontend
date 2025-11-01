@@ -17,6 +17,7 @@ import BottomNavbar from "../components/main/BottomNavbar.jsx";
 import AppFooter from "../components/main/AppFooter.jsx";
 import NotificationToast from "../components/main/NotificationToast.jsx";
 import SocketListener from "../components/main/SocketListener.jsx";
+import VitalsTracker from '../components/main/VitalsTracker.jsx';
 
 // === Lazy-loaded Pages ===
 const Home = lazy(() => import("../pages/Home.jsx"));
@@ -143,6 +144,8 @@ export default function App() {
 
   return (
     <>
+
+
       {/* === Navbar === */}
       {showNavbar && <Navbar />}
 
@@ -154,6 +157,8 @@ export default function App() {
         </>
       )}
 
+      <VitalsTracker />
+      
       {/* === Toast Notifications === */}
       <ToastContainer
         position="top-right"

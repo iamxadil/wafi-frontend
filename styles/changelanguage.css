@@ -103,7 +103,7 @@
   will-change: clip-path, opacity;
   --ripple-x: 50vw;
   --ripple-y: 50vh;
-  animation: langRipple 2s cubic-bezier(0.6, 0.1, 0.3, 1) forwards;
+  animation: langRipple 2s cubic-bezier(2, 0.1, 3, 1) forwards;
 }
 
 .lang-transition-full.transparent {
