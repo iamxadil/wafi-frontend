@@ -43,7 +43,9 @@ const AccessoriesProducts = () => {
     <>
     <main id='pc-pr-container'>
       <header className='pr-header' >
-        <Link to="/accessories" style={{flexDirection: t.rowReverse}}><h1>{t("Accessories", "الأكسسوارات")}</h1> <Joystick size={25}/></Link>
+        <Link to="/accessories" style={{flexDirection: t.rowReverse}}>
+        <h1>{t("Accessories", "الأكسسوارات")}</h1> <p>{t("View More", "رؤية المزيد")}</p>
+        </Link>
         </header>
 
        <div className={width > 650 ? "pc-pr-cards" : "mob-pr-cards"}>

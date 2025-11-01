@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import HeaderDashboard from "./HeaderDashboard.jsx";
-import ProductFields from "../forms/ProductFields.jsx";
 import UserFormFields from "../forms/UserFormFields.jsx";
 import ApprovalFields from "../forms/ApprovalFields.jsx";
-import ProductModal from "../layouts/ProductModal.jsx";
-import OrderFields from '../forms/OrderFields.jsx';
-import ArchiveFields from '../forms/ArchiveFields.jsx';
 import UserModal from "./UserModal.jsx";
 import RoleModal from "./RoleModal.jsx";
 import useProductStore from "../../../stores/useProductStore.jsx";
@@ -13,8 +9,8 @@ import useUserStore from "../../../stores/useUserStore.jsx";
 import "../styles/formdashboard.css";
 import { toast } from "react-toastify";
 import useOrderStore from "../../../stores/useOrderStore.jsx";
-
-
+import '../styles/userfields.css';
+import '../styles/productfields.css';
 
 
 const FormDashboard = ({ page }) => {
@@ -334,31 +330,6 @@ useEffect(() => {
           onSort: (value) => handleOrderSort(value)
         };
 
-      case "archive":
-        return {
-          page: "order-status",
-          addText: "Approve",
-          deleteText: "Deny",
-          
-          stats: [
-            { label: "Total", value: 1, icon: "📥" },
-            { label: "Pending", value: 2, icon: "👤" },
-          ],
-          
-          filterOptions: [
-          ],
-
-          sortOptions: [
-            { value: "newest", label: "Newest" },
-            { value: "oldest", label: "Oldest" },
-          ],
-
-
-        };
-
-      default:
-        return {};
-
     }
   };
 
@@ -368,11 +339,6 @@ useEffect(() => {
     <section className="form-dashboard">
       {page && <HeaderDashboard {...headerProps} />}
 
-      <ProductModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        productToEdit={productToEdit}
-      />
       <UserModal
         isOpen={isUserModalOpen}
         onClose={() => setIsUserModalOpen(false)}
@@ -385,13 +351,8 @@ useEffect(() => {
       />
 
       <div className="form-dashboard-content">
-        {page === "products" && <ProductFields />}
         {page === "users" && <UserFormFields />}
         {page === "approvals" && <ApprovalFields />}
-        {page === "order-status" && <OrderFields handlePageChange={handlePageChange} pages={pages} 
-          currentPage={currentPage}/>}
-        {page === "archive" && <ArchiveFields />}
-
       </div>
     </section>
   );

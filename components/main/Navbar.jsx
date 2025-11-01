@@ -218,9 +218,10 @@ const Navbar = () => {
         </ul>
       </nav>
 
-      {isDropdown && (
+      {isDropdown && user && (
         <ProfileDropdown className="show" onClose={() => setDropdown(false)} />
       )}
+
       <Sidemenu isOpen={menuOpen} setIsOpen={setMenuOpen} />
       <div id="spacer" style={{ height: "80px" }}></div>
     </>

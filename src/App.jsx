@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useEffect, useMemo, Suspense, lazy } from "react";
+import React, { useEffect, useMemo, Suspense, lazy, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,6 +10,7 @@ import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useThemeStore from "../components/stores/useThemeStore.jsx";
 import useCartStore from "../components/stores/useCartStore.jsx";
 import useFavoritesStore from "../components/stores/useFavoritesStore.jsx";
+import VitalsTracker from "../components/main/VitalsTracker.jsx";
 
 // === Shared Layouts ===
 import Navbar from "../components/main/Navbar.jsx";
@@ -19,7 +20,6 @@ import NotificationToast from "../components/main/NotificationToast.jsx";
 import SocketListener from "../components/main/SocketListener.jsx";
 
 // === Lazy-loaded Pages ===
-// Home & Core
 const Home = lazy(() => import("../pages/Home.jsx"));
 const ProductDetails = lazy(() => import("../pages/ProductDetails.jsx"));
 const CategoryNavigation = lazy(() => import("../pages/CategoryNavigation.jsx"));
@@ -45,6 +45,11 @@ const Products = lazy(() => import("../components/pages/Admin/navs/Products.jsx"
 const Notifications = lazy(() => import("../components/pages/Admin/layouts/Notifications.jsx"));
 const PermissionFields = lazy(() => import("../components/pages/Admin/forms/PermissionFields.jsx"));
 const FormDashboard = lazy(() => import("../components/pages/Admin/layouts/FormDashboard.jsx"));
+const Orders = lazy(() => import("../components/pages/Admin/navs/Orders.jsx"));
+const Archive = lazy(() => import("../components/pages/Admin/navs/Archive.jsx"));
+const Analytics = lazy(() => import("../components/pages/Admin/navs/Analytics.jsx"));
+const Approvals = lazy(() => import("../components/pages/Admin/navs/Approvals.jsx"));
+const Vitals = lazy(() => import("../components/pages/Admin/navs/Vitals.jsx"));
 
 // Cart & Orders
 const Cart = lazy(() => import("../components/main/Cart.jsx"));
@@ -58,6 +63,9 @@ import ProtectedRoute from "../routes/ProtectedRoute.jsx";
 // Styles
 import "./output.css";
 
+// Optional: real user metrics (INP, LCP, CLS)
+import { onINP, onLCP, onCLS } from "web-vitals";
+
 export default function App() {
   const location = useLocation();
   const { user, profile } = useAuthStore.getState();
@@ -65,8 +73,9 @@ export default function App() {
   const cartStore = useCartStore.getState();
   const favoritesStore = useFavoritesStore.getState();
   const width = useWindowWidth();
+  const [initialized, setInitialized] = useState(false);
 
-  // === Route filters (memoized once) ===
+  // === Pre-memoized route visibility filters ===
   const hideNavbarOn = useMemo(() => ["/admin-dashboard", "/dashboard", "/cart", "/payment"], []);
   const footerOn = useMemo(
     () => [
@@ -82,45 +91,58 @@ export default function App() {
     []
   );
   const bottomNavbarOn = useMemo(() => ["/admin-dashboard", "/cart", "/payment"], []);
+  const path = location.pathname;
 
-  // === Initial App Bootstrap ===
+  const showNavbar = useMemo(() => !hideNavbarOn.some((p) => path.startsWith(p)), [path]);
+  const showBottomNavbar = useMemo(
+    () => !bottomNavbarOn.some((p) => path.startsWith(p)),
+    [path]
+  );
+
+  const showAdminFeatures = user?.role === "admin";
+
+  // === Initialize Auth + Cart lazily (after paint) ===
   useEffect(() => {
-    (async () => {
+    requestIdleCallback(async () => {
       try {
         await profile();
       } catch (err) {
         console.warn("Profile load failed:", err.message);
       } finally {
-        await cartStore.initCart();
+        try {
+          await cartStore.initCart();
+        } catch (err) {
+          console.warn("Cart init failed:", err.message);
+        }
+        setInitialized(true);
       }
-    })();
+    });
   }, []);
 
-  // === Initialize favorites ===
+  // === Initialize Favorites lazily ===
   useEffect(() => {
-    (async () => {
+    requestIdleCallback(async () => {
       try {
         if (user) await favoritesStore.loadFavorites?.();
         else favoritesStore.initGuestFavorites?.();
       } catch (err) {
         console.warn("Favorites init failed:", err.message);
       }
-    })();
+    });
   }, [user]);
 
-  // === Theme binding ===
+  // === Apply Theme instantly ===
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-  const showAdminFeatures = user?.role === "admin";
 
   return (
     <>
       {/* === Navbar === */}
-      {!hideNavbarOn.some((path) => location.pathname.startsWith(path)) && <Navbar />}
+      {showNavbar && <Navbar />}
 
-      {/* === Admin Socket & Notifications === */}
+      {/* === Admin-only Features === */}
       {showAdminFeatures && (
         <>
           <NotificationToast />
@@ -128,18 +150,20 @@ export default function App() {
         </>
       )}
 
-      {/* === Global Toast === */}
+      <VitalsTracker />
+
+      {/* === Toast Notifications === */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
         stacked={width > 480}
-        draggable
+        draggable={width > 480}
         closeOnClick
         transition={Zoom}
         limit={4}
       />
 
-      {/* === Lazy routes with fallback === */}
+      {/* === Routes === */}
       <Suspense
         fallback={
           <div className="global-loader">
@@ -205,19 +229,20 @@ export default function App() {
           >
             <Route index element={<AdminLandingPage />} />
             <Route path="products" element={<Products />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="archive" element={<Archive />} />
             <Route path="users" element={<FormDashboard page="users" />} />
-            <Route path="approvals" element={<FormDashboard page="approvals" />} />
+            <Route path="approvals" element={<Approvals />} />
             <Route path="notifications" element={<Notifications />} />
-            <Route path="order-status" element={<FormDashboard page="order-status" />} />
-            <Route path="archive" element={<FormDashboard page="archive" />} />
             <Route path="permissions" element={<PermissionFields />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="vitals" element={<Vitals />} />
           </Route>
         </Routes>
       </Suspense>
 
       {/* === Persistent Layouts === */}
-      {!bottomNavbarOn.some((path) => location.pathname.startsWith(path)) && <BottomNavbar />}
-     
+      {showBottomNavbar && <BottomNavbar />}
     </>
   );
 }

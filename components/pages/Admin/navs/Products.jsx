@@ -340,15 +340,7 @@ const Products = () => {
      MAIN RENDER
   ====================================================== */
   return (
-    <main
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        padding: "0 1rem",
-        gap: "2rem",
-      }}
-    >
+    <main className="adm-ct" >
       <AdminHeader
         title="Products"
         breadcrumb={["Dashboard", "Products"]}

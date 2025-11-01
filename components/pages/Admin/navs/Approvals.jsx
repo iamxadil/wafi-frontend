@@ -33,7 +33,7 @@ import "@mantine/carousel/styles.css";
 /* ==========================================================
    ✅ MAIN COMPONENT
 ========================================================== */
-const ApprovalFields = () => {
+const Approvals = () => {
   const width = useWindowWidth();
   const isMobile = width < 800;
 
@@ -411,4 +411,4 @@ const ApprovalFields = () => {
   );
 };
 
-export default ApprovalFields;
+export default Approvals;

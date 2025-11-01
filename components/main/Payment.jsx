@@ -28,6 +28,7 @@ const Payment = () => {
     "Nineveh", "Najaf", "Qadisya", "Salahu-Din", "Sulaymaniyah", "Wasit"
   ];
 
+  const [pickup, setPickup] = useState(false); // ✅ Pickup state
   const [phoneValid, setPhoneValid] = useState(true);
   const [shippingInfo, setShippingInfo] = useState({
     fullName: "",
@@ -35,6 +36,7 @@ const Payment = () => {
     city: "",
     postalCode: "",
     phone: "",
+    phone2: "",
     email: "",
   });
 
@@ -50,12 +52,14 @@ const Payment = () => {
   const verifyOrderOTP = useOrderStore((state) => state.verifyOrderOTP);
   const createOrder = useOrderStore((state) => state.createOrder);
 
-  // Send OTP
+  /* ==========================================================
+     📨 Send OTP
+  ========================================================== */
   const handleSendOTP = async () => {
-    const { email, fullName, address, city, postalCode, phone } = shippingInfo;
+    const { email, fullName, address, city, postalCode, phone, phone2 } = shippingInfo;
 
-    if (!email || !fullName || !address || !city || !postalCode || !phone) {
-      toast.warning(t("Please fill in all fields", "يرجى ملء جميع الحقول"));
+    if (!email || !fullName || (!pickup && (!address || !city || !postalCode)) || !phone || !phone2) {
+      toast.warning(t("Please fill in all required fields", "يرجى ملء جميع الحقول المطلوبة"));
       return;
     }
 
@@ -92,9 +96,11 @@ const Payment = () => {
     }
   };
 
-  // Verify OTP and place order
+  /* ==========================================================
+     🔐 Verify OTP & Create Order
+  ========================================================== */
   const handleVerifyOTP = async () => {
-    const { email, fullName, address, city, postalCode, phone } = shippingInfo;
+    const { email, fullName, address, city, postalCode, phone, phone2 } = shippingInfo;
 
     if (!otp) {
       setOtpError(t("Please enter the OTP", "يرجى إدخال رمز التحقق"));
@@ -114,11 +120,20 @@ const Payment = () => {
           quantity: item.qty,
           price: item.finalPrice || item.price,
         })),
-        shippingInfo: { fullName, address, city, postalCode, phone: `+964${phone}`, email },
+        shippingInfo: {
+          fullName,
+          address,
+          city,
+          postalCode,
+          phone: `+964${phone}`,
+          phone2: phone2 ? `+964${phone2}` : "",
+          email,
+        },
         itemsPrice: subtotal,
         shippingPrice: delivery,
         totalPrice: total,
         paymentMethod: "Cash",
+        pickup, // ✅ send pickup flag
         captchaToken,
       };
 
@@ -134,11 +149,15 @@ const Payment = () => {
     }
   };
 
+  /* ==========================================================
+     RENDER
+  ========================================================== */
   return (
     <main id="payment-page">
       {/* Form Section */}
       <section className="info-form">
         <form>
+          {/* Basic Info */}
           <div className="form-row">
             <div className="form-group">
               <label>{t("Full Name", "الاسم الكامل")}</label>
@@ -158,12 +177,27 @@ const Payment = () => {
             </div>
           </div>
 
+          {/* Pickup Option */}
+         <div className="pickup-option">
+            <label className="pickup-label">
+              <input
+                type="checkbox"
+                checked={pickup}
+                onChange={(e) => setPickup(e.target.checked)}
+              />
+              <span className="checkmark"></span>
+              {t("Pickup from store (no delivery)", "الاستلام من المتجر (بدون توصيل)")}
+            </label>
+          </div>
+
+          {/* Address Section (disabled if pickup) */}
           <div className="form-row">
             <div className="form-group">
               <label>{t("City", "المدينة")}</label>
               <select
                 value={shippingInfo.city}
                 onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
+                disabled={pickup}
               >
                 <option value="">{t("Select City", "اختر المدينة")}</option>
                 {cities.map((city) => (
@@ -179,6 +213,7 @@ const Payment = () => {
                 value={shippingInfo.address}
                 onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })}
                 placeholder={t("ex. Karada", "مثل: الكرادة")}
+                disabled={pickup}
               />
             </div>
 
@@ -188,37 +223,60 @@ const Payment = () => {
                 type="text"
                 value={shippingInfo.postalCode}
                 onChange={(e) => setShippingInfo({ ...shippingInfo, postalCode: e.target.value })}
-                placeholder={t("ex. Near Univerity of Technology", "مثل: قرب الجامعة التكنولوجية")}
+                placeholder={t("ex. Near University of Technology", "مثل: قرب الجامعة التكنولوجية")}
+                disabled={pickup}
               />
             </div>
           </div>
 
-          <div className="form-group">
-            <label>{t("Phone Number", "رقم الهاتف")}</label>
-            <div className={`phone-input ${!phoneValid ? "invalid" : ""}`}>
-              <span className="prefix">+964</span>
-              <input
-                type="tel"
-                value={shippingInfo.phone}
-                onChange={(e) => {
-                  let cleaned = e.target.value.replace(/\D/g, "");
-                  if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
-                  setShippingInfo({ ...shippingInfo, phone: cleaned });
-                  setPhoneValid(cleaned.length === 10);
-                }}
-              />
+          {/* Phones */}
+          <div className="form-row">
+            <div className="form-group">
+              <label>{t("Primary Phone", "رقم الهاتف الرئيسي")}</label>
+              <div className={`phone-input ${!phoneValid ? "invalid" : ""}`}>
+                <span className="prefix">+964</span>
+                <input
+                  type="tel"
+                  value={shippingInfo.phone}
+                  onChange={(e) => {
+                    let cleaned = e.target.value.replace(/\D/g, "");
+                    if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
+                    setShippingInfo({ ...shippingInfo, phone: cleaned });
+                    setPhoneValid(cleaned.length === 10);
+                  }}
+                  required
+                />
+              </div>
+              {!phoneValid && (
+                <small className="error-text">
+                  {t("Phone number must be 10 digits", "يجب أن يتكون رقم الهاتف من 10 أرقام")}
+                </small>
+              )}
             </div>
-            {!phoneValid && (
-              <small className="error-text">
-                {t("Phone number must be 10 digits", "يجب أن يتكون رقم الهاتف من 10 أرقام")}
-              </small>
-            )}
+
+            <div className="form-group">
+              <label>{t("Alternate Phone", "رقم الهاتف البديل")}</label>
+              <div className="phone-input">
+                <span className="prefix">+964</span>
+                <input
+                  type="tel"
+                  value={shippingInfo.phone2}
+                  onChange={(e) => {
+                    let cleaned = e.target.value.replace(/\D/g, "");
+                    if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
+                    setShippingInfo({ ...shippingInfo, phone2: cleaned });
+                  }}
+                 required
+                />
+              </div>
+            </div>
           </div>
 
+          {/* Delivery & Payment */}
           <div className="form-row">
             <div className="form-group">
               <label>{t("Delivery", "التوصيل")}</label>
-              <input type="text" value={`${delivery.toLocaleString()} IQD`} readOnly />
+              <input type="text" value={pickup ? t("Pickup", "استلام ذاتي") : `${delivery.toLocaleString()} IQD`} readOnly />
             </div>
             <div className="form-group">
               <label>{t("Payment Method", "طريقة الدفع")}</label>
@@ -232,6 +290,7 @@ const Payment = () => {
             ref={recaptchaRef}
           />
 
+          {/* OTP Button */}
           <button
             type="button"
             className="place-order-btn"
@@ -293,10 +352,10 @@ const Payment = () => {
             </div>
 
             <div className="cart-totals">
-              <h2 style={{display: "flex"}}>{t("Cart Totals", "مجموع السلة")}</h2>
+              <h2 style={{ display: "flex" }}>{t("Cart Totals", "مجموع السلة")}</h2>
               <div className="totals-row">
                 <span>{t("Delivery", "التوصيل")}</span>
-                <span>{delivery.toLocaleString()} IQD</span>
+                <span>{pickup ? t("Pickup", "استلام ذاتي") : `${delivery.toLocaleString()} IQD`}</span>
               </div>
               <div className="totals-row">
                 <span>{t("Subtotal", "المجموع")}</span>

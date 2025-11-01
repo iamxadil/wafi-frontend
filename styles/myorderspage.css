@@ -3,7 +3,7 @@
   font-family: 'Poppins', sans-serif;
   color: var(--text);
   padding: 3rem 2rem;
-  max-height: 100vh;
+  max-height: auto;
 }
 
 /* Header */
@@ -73,6 +73,7 @@
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  padding-bottom: 2rem;
 }
 
 /* Empty State */
@@ -141,17 +142,80 @@
 }
 
 .pr-order-status {
-  font-weight: 500;
+  font-weight: 600;
   padding: 0.25rem 0.8rem;
   border-radius: 1rem;
   font-size: 0.85rem;
   text-transform: capitalize;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.25s ease;
 }
 
-.pr-order-status.waiting { background: #f59e0b; color: #111; }
-.pr-order-status.on-the-way { background: #3b82f6; color: #fff; }
-.pr-order-status.delivered { background: #10b981; color: #fff; }
-.pr-order-status.cancelled { background: #ef4444; color: #fff; }
+/* 🟡 Waiting */
+.pr-order-status.waiting {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+/* 🟠 Packaging */
+.pr-order-status.packaging {
+  background: rgba(249, 115, 22, 0.2);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.35);
+}
+
+/* 🔵 On the Way */
+.pr-order-status.on-the-way {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+/* 🟢 Delivered */
+.pr-order-status.delivered {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* 🟣 Picked-Up (for store pickup) */
+.pr-order-status.picked-up {
+  background: rgba(99, 102, 241, 0.2);
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+/* 🔴 Canceled */
+.pr-order-status.canceled {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+/* 🟠 Refunded */
+.pr-order-status.refunded {
+  background: rgba(234, 179, 8, 0.2);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.35);
+}
+
+/* ⚫ Archived (if used) */
+.pr-order-status.archived {
+  background: rgba(107, 114, 128, 0.2);
+  color: #6b7280;
+  border: 1px solid rgba(107, 114, 128, 0.35);
+}
+
+/* Hover glow for active dashboards */
+.pr-order-status:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px currentColor;
+  opacity: 0.95;
+}
 
 /* Card Items */
 .pr-order-card-items {

@@ -1,0 +1,110 @@
+.vitals-grid-page {
+  padding: 2rem;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--background);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+/* --- HEADER --- */
+.vitals-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--button-bg);
+  border: 1px solid var(--line-clr);
+  border-radius: 16px;
+  padding: 1.2rem 1.8rem;
+  margin-bottom: 1.8rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+  min-height: 80px;
+}
+
+.vitals-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.vitals-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.refresh-btn {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.refresh-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.45);
+}
+
+.refresh-btn.pulse {
+  animation: pulseGlow 0.8s ease-out;
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(var(--accent-rgb), 0.6);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
+    transform: scale(1);
+  }
+}
+
+/* --- GRID --- */
+.vitals-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.grid-item {
+  background: var(--button-bg);
+  border: 1px solid var(--line-clr);
+  border-radius: 12px;
+  padding: 1.2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 220px;
+}
+
+.fixed-height {
+  height: 240px;
+}
+
+.grid-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.trend {
+  grid-column: span 2;
+}
+
+@media (max-width: 900px) {
+  .vitals-grid {
+    grid-template-columns: 1fr;
+  }
+  .trend {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 815px) {
+.vitals-header {
+  flex-direction: column;
+  gap: 2rem;
+}
+}

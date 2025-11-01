@@ -90,3 +90,109 @@
   --lang-bg: linear-gradient(145deg, rgba(28, 31, 39, 0.95), rgba(42, 46, 56, 0.9));
   --lang-border: #444;
 }
+
+.lang-transition-full {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+  will-change: clip-path, opacity;
+  --ripple-x: 50vw;
+  --ripple-y: 50vh;
+  animation: langRipple 2s cubic-bezier(0.6, 0.1, 0.3, 1) forwards;
+}
+
+.lang-transition-full.transparent {
+  background: radial-gradient(
+    circle at var(--ripple-x) var(--ripple-y),
+    rgba(255, 255, 255, 0.15),
+    rgba(0, 0, 0, 0.1),
+    transparent 80%
+  );
+  background: var(--background);
+  color: var(--text);
+}
+
+/* Centered content */
+.lang-transition-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* Glowing icon rotation */
+.lang-transition-icon {
+  opacity: 0;
+  transform: scale(0.8) rotate(0deg);
+  animation: langSpin 0.6s ease-out forwards;
+  filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 22px currentColor);
+}
+
+/* Floating text */
+.lang-transition-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 12px;
+  color: currentColor;
+  opacity: 0;
+  animation: langText 1.2s ease-in-out forwards 0.5s;
+}
+
+/* Animations */
+@keyframes langRipple {
+  0% {
+    clip-path: circle(0% at var(--ripple-x) var(--ripple-y));
+    opacity: 1;
+  }
+  40% {
+    clip-path: circle(120% at var(--ripple-x) var(--ripple-y));
+    opacity: 1;
+  }
+  100% {
+    clip-path: circle(150% at var(--ripple-x) var(--ripple-y));
+    opacity: 0;
+  }
+}
+
+@keyframes langSpin {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.05) rotate(720deg);
+    opacity: 1;
+  }
+}
+
+@keyframes langText {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+.lang-transition-full.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}

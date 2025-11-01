@@ -160,15 +160,23 @@ const MyOrdersPage = () => {
                   {t("Order", "الطلب")} #{order.orderNumber || order._id}
                 </span>
                 <span
-                  className={`pr-order-status ${order.status.toLowerCase()}`}
+                  className={`pr-order-status ${order.status.replace(/\s+/g, "-").toLowerCase()}`}
                 >
-                  {t(order.status, order.status === "Delivered"
-                    ? "تم التوصيل"
-                    : order.status === "Pending"
-                    ? "قيد الانتظار"
-                    : order.status === "Cancelled"
-                    ? "أُلغي"
-                    : order.status)}
+                  {(() => {
+                    const statusMap = {
+                      Waiting: "قيد الانتظار",
+                      Packaging: "قيد التحضير",
+                      "On the way": "في الطريق",
+                      Delivered: "تم التوصيل",
+                      "Picked-Up": "تم الاستلام",
+                      Canceled: "تم الالغاء",
+                      Refunded: "تم استرجاع المبلغ",
+                    };
+
+                    // fallback if not found
+                    const localized = statusMap[order.status] || order.status;
+                    return t(order.status, localized);
+                  })()}
                 </span>
               </div>
 

@@ -54,7 +54,9 @@ const LaptopProducts = () => {
     <main id="pc-pr-container">
       {/* Header */}
       <header className="pr-header">
-        <Link to="/laptops" style={{flexDirection: t.rowReverse}}><h1>{t("Laptops", "اللابتوبات")}</h1> <Laptop /></Link>
+        <Link to="/laptops" style={{flexDirection: t.rowReverse}}>
+        <h1>{t("Laptops", "اللابتوبات")}</h1> <p>{t("View More", "رؤية المزيد")}</p>
+        </Link>
       </header>
 
       {/* Products */}

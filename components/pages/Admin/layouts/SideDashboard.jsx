@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/sidedashboard.css';
-import DarkMode from '../../../main/Darkmode.jsx';
 
 import {
   RiHome2Line as HomeIcon,
@@ -13,6 +12,8 @@ import {
   RiDeviceLine as Device,
   RiArchive2Line as Arhive
 } from "react-icons/ri";
+
+import { Activity } from 'lucide-react';
 
 import { IoAnalyticsOutline as Analytics } from "react-icons/io5";
 import { TbLayoutSidebarRightExpand as Collapse, TbLayoutSidebarRightCollapse as Expand } from "react-icons/tb";
@@ -26,6 +27,7 @@ const SideDashboard = () => {
 
 
   return (
+    <>
     <aside className={`sidebar ${openSidebar ? "open" : ""}`}>
       <div id="sidebar-toggle" onClick={() => setOpenSidebar(!openSidebar)}>
         <span>{openSidebar ? "Dashboard" : ""}</span>
@@ -41,6 +43,7 @@ const SideDashboard = () => {
             </Link>
           </span>
         </li>
+       
 
         {/* Dashboard */}
         {(user?.role === "admin" || user?.permissions?.dashboard) && (
@@ -79,7 +82,7 @@ const SideDashboard = () => {
         {(user?.role === "admin" || user?.permissions?.orders) && (
           <li className="menu">
             <span className="menu-title">
-              <Link to="order-status">
+              <Link to="orders">
                 <OrdersIcon /> <span className='head-line'>Orders</span>
               </Link>
             </span>
@@ -101,7 +104,9 @@ const SideDashboard = () => {
         {(user?.role === "admin" || user?.permissions?.analytics) && (
           <li className="menu">
             <span className="menu-title">
-              <Analytics /> <span className='head-line'>Analytics</span>
+              <Link to="analytics">
+               <Analytics /> <span className='head-line'>Analytics</span>
+              </Link>
             </span>
           </li>
         )}
@@ -138,8 +143,18 @@ const SideDashboard = () => {
             </span>
           </li>
         )}
+
+         <li className="menu">
+          <span className="menu-title">
+            <Link to="vitals">
+              <Activity size={16}/> <span className='head-line'>Vitals</span>
+            </Link>
+          </span>
+        </li>
+
       </ul>
     </aside>
+    </>
   );
 };
 

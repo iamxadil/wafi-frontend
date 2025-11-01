@@ -288,9 +288,8 @@ background-color: var(--background);
 
 .user-container {
   display: flex;
-  gap: .2em;
-
-
+  gap: .5em;
+  margin-top: 4px;
 }
 
 @media (max-width: 1150px) {

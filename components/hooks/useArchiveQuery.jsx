@@ -36,6 +36,24 @@ export const useArchiveQuery = ({ page = 1, limit = 4, sort, search } = {}) => {
 };
 
 // ✅ Restore order mutation
+export const useUnarchiveOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (orderId) => {
+      console.log("Calling restore mutation for orderId:", orderId); // debug
+      return axios.patch(`${API_URL}/api/orders/${orderId}/unarchive`, {}, {withCredentials: true});
+    },
+    onSuccess: (res, orderId) => {
+      queryClient.invalidateQueries({ queryKey: ["archive"], exact: false });
+      toast.success("Order restored")
+    },
+    onError: (error, orderId) => {
+      toast.error("Failed to restore order")
+    },
+  });
+};
+
 export const useRestoreOrder = () => {
   const queryClient = useQueryClient();
 

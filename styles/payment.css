@@ -296,3 +296,59 @@
   font-size: 0.8rem;
   color: #f44336;
 }
+
+/* === Pickup Checkbox Styling === */
+.pickup-option {
+  margin: 1.4rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.pickup-label {
+  position: relative;
+  padding-left: 32px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text);
+  user-select: none;
+}
+
+.pickup-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.pickup-label .checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  width: 18px;
+  border: 2px solid var(--accent-clr);
+  border-radius: 4px;
+  transition: all 0.25s ease;
+}
+
+.pickup-label input:checked ~ .checkmark {
+  background-color: var(--accent-clr);
+  box-shadow: 0 0 8px var(--accent-clr);
+}
+
+.pickup-label .checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.pickup-label input:checked ~ .checkmark::after {
+  display: block;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
