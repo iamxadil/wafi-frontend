@@ -150,7 +150,7 @@ export default function App() {
         </>
       )}
 
-      <VitalsTracker />
+    
 
       {/* === Toast Notifications === */}
       <ToastContainer
