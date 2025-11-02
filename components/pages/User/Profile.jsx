@@ -1,22 +1,22 @@
-// src/components/profile/Profile.jsx
-import React, { useEffect, useState } from 'react';
-import '../../../styles/profilepage.css';
-import useAuthStore from '../../stores/useAuthStore';
-import { toast } from 'react-toastify';
-import ChangePassword from './ChangePassword';
-import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Sun, Moon } from "lucide-react";
-import useTranslate from '../../hooks/useTranslate';
+import React, { useEffect, useState } from "react";
+import "../../../styles/profilepage.css";
+import useAuthStore from "../../stores/useAuthStore";
+import { toast } from "react-toastify";
+import ChangePassword from "./ChangePassword";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Sun, Moon, CheckCircle2 } from "lucide-react";
+import useTranslate from "../../hooks/useTranslate";
 
 const Profile = () => {
   const { profile, user, updateProfile, logout } = useAuthStore();
-  const [isEdit, setIsEdit] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const t = useTranslate();
 
-  // Dynamic Greeting
+  const [isEdit, setIsEdit] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  // Greeting
   const [greeting, setGreeting] = useState("");
   const [Icon, setIcon] = useState(Sun);
 
@@ -37,10 +37,10 @@ const Profile = () => {
   const handleOpenModal = () => setShowModal(true);
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    currentPassword: '',
-    newPassword: '',
+    name: "",
+    email: "",
+    currentPassword: "",
+    newPassword: "",
   });
 
   useEffect(() => {
@@ -52,77 +52,106 @@ const Profile = () => {
       setFormData({
         name: user.name,
         email: user.email,
-        currentPassword: '',
-        newPassword: '',
+        currentPassword: "",
+        newPassword: "",
       });
     }
   }, [user]);
 
+  /* ==========================================================
+     📝 Handle Save (only allows name/password)
+  ========================================================== */
   const handleSave = async () => {
     try {
       await updateProfile({
         name: formData.name,
-        email: formData.email,
         ...(formData.currentPassword && formData.newPassword
-          ? { currentPassword: formData.currentPassword, newPassword: formData.newPassword }
+          ? {
+              currentPassword: formData.currentPassword,
+              newPassword: formData.newPassword,
+            }
           : {}),
       });
 
-      toast.success(t('Profile Updated Successfully', 'تم تحديث الملف الشخصي بنجاح'));
+      toast.success(
+        t("Profile Updated Successfully", "تم تحديث الملف الشخصي بنجاح")
+      );
       setIsEdit(false);
-      setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '' }));
+      setFormData((prev) => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+      }));
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error("Failed to update profile:", error);
       toast.error(
         error.response?.data?.message ||
-        t('Failed to update profile', 'فشل في تحديث الملف الشخصي')
+          t("Failed to update profile", "فشل في تحديث الملف الشخصي")
       );
     }
   };
 
   const handleLogout = () => logout(navigate);
 
-  // --- Not signed in ---
+  /* ==========================================================
+     🚫 Not signed in
+  ========================================================== */
   if (!user) {
     return (
-      <main id='not-signed-in-page' dir={t.language === "ar" ? "rtl" : "ltr"}>
+      <main id="not-signed-in-page" dir={t.language === "ar" ? "rtl" : "ltr"}>
         <motion.div
-          className='not-signed-in-glass'
+          className="not-signed-in-glass"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
           <h2>{t("Welcome!", "مرحباً!")}</h2>
-          <p>{t("You need to sign in or register to view your profile.", "يجب عليك تسجيل الدخول أو إنشاء حساب لعرض ملفك الشخصي.")}</p>
-          <div className='auth-buttons'>
-            <Link to='/signin' className='btn-login'>{t("Sign In", "تسجيل الدخول")}</Link>
-            <Link to='/register' className='btn-register'>{t("Register", "إنشاء حساب")}</Link>
+          <p>
+            {t(
+              "You need to sign in or register to view your profile.",
+              "يجب عليك تسجيل الدخول أو إنشاء حساب لعرض ملفك الشخصي."
+            )}
+          </p>
+          <div className="auth-buttons">
+            <Link to="/signin" className="btn-login">
+              {t("Sign In", "تسجيل الدخول")}
+            </Link>
+            <Link to="/register" className="btn-register">
+              {t("Register", "إنشاء حساب")}
+            </Link>
           </div>
         </motion.div>
       </main>
     );
   }
 
-  // --- Profile Page ---
+  /* ==========================================================
+     ✅ Profile Page
+  ========================================================== */
   return (
-    <main id='profile-page' dir={t.language === "ar" ? "rtl" : "ltr"}>
+    <main id="profile-page" dir={t.language === "ar" ? "rtl" : "ltr"}>
       {showModal && <ChangePassword onClose={() => setShowModal(false)} />}
 
-      <header id='welcome'>
+      <header id="welcome">
         <h1 style={{ textAlign: t.textAlign }}>
-          <span style={{ fontWeight: '200' }}>{t("Hello,", "مرحباً،")}</span> {formData.name || user?.name}
+          <span style={{ fontWeight: "200" }}>
+            {t("Hello,", "مرحباً،")}
+          </span>{" "}
+          {formData.name || user?.name}
         </h1>
         <p style={{ textAlign: t.textAlign }}>
           {greeting} <Icon size={18} />
         </p>
       </header>
 
-      <section id='main-page'>
-        <div id='user-info'>
-          <div id='user-info-header'>
-            <h1 style={{ textAlign: t.textAlign }}>{t("Personal Info", "المعلومات الشخصية")}</h1>
+      <section id="main-page">
+        <div id="user-info">
+          <div id="user-info-header">
+            <h1 style={{ textAlign: t.textAlign }}>
+              {t("Personal Info", "المعلومات الشخصية")}
+            </h1>
             {isEdit ? (
-              <button onClick={handleSave} className='save-info'>
+              <button onClick={handleSave} className="save-info">
                 {t("Save Profile", "حفظ الملف الشخصي")}
               </button>
             ) : (
@@ -132,15 +161,17 @@ const Profile = () => {
             )}
           </div>
 
-          <div id='edit-info' style={{ textAlign: t.textAlign }}>
+          <div id="edit-info" style={{ textAlign: t.textAlign }}>
             <h2>
-              {t("Name", "الاسم")}{' '}
+              {t("Name", "الاسم")}{" "}
               <span>
                 {isEdit ? (
                   <input
                     dir={t.language === "ar" ? "rtl" : "ltr"}
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                   />
                 ) : (
                   formData.name || user.name
@@ -148,26 +179,21 @@ const Profile = () => {
               </span>
             </h2>
 
-            <h2>
-              {t("Email", "البريد الإلكتروني")}{' '}
-              <span>
-                {isEdit ? (
-                  <input
-                    dir={t.language === "ar" ? "rtl" : "ltr"}
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  />
-                ) : (
-                  formData.email || user.email
-                )}
+            <h2 className="email-field">
+              {t("Email", "البريد الإلكتروني")}{" "}
+              <span className="locked-email">
+                {formData.email || user.email}
+                <span className="verify-badge verified">
+                  <CheckCircle2 size={14} /> {t("Verified", "تم التحقق")}
+                </span>
               </span>
             </h2>
 
-            <button className='change-password' onClick={handleOpenModal}>
+            <button className="change-password" onClick={handleOpenModal}>
               {t("Change Password", "تغيير كلمة المرور")}
             </button>
 
-            <button className='logout-btn' onClick={handleLogout}>
+            <button className="logout-btn" onClick={handleLogout}>
               {t("Logout", "تسجيل الخروج")}
             </button>
           </div>

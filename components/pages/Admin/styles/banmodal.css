@@ -1,0 +1,237 @@
+/* ===========================
+   BASE MODAL SHELL
+=========================== */
+.banmodal {
+  border-radius: 16px;
+  background: rgba(20, 20, 30, 0.88);
+  backdrop-filter: blur(16px) saturate(180%);
+  color: var(--text);
+  padding: 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* ===========================
+   HEADER
+=========================== */
+.banmodal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.header-left h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.iconbtn.close {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.4rem;
+  cursor: pointer;
+  color: #fff;
+  transition: 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.iconbtn.close:hover {
+  background: rgba(var(--accent-rgb), 0.25);
+  border-color: rgba(var(--accent-rgb), 0.5);
+}
+
+/* ===========================
+   ALERT / WARNING BOX
+=========================== */
+.banmodal__alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.4rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #f87171;
+}
+.banmodal__alert strong {
+  color: #fff;
+}
+
+/* ===========================
+   FORM FIELDS
+=========================== */
+.banmodal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.banmodal__content label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.banmodal__content textarea {
+  resize: none;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  padding: 0.8rem;
+  min-height: 90px;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  transition: border 0.25s, background 0.25s;
+}
+.banmodal__content textarea:focus {
+  outline: none;
+  border-color: var(--accent-clr);
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
+.banmodal__content .ban-input {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  transition: border 0.25s, background 0.25s;
+}
+.banmodal__content .ban-input:focus {
+  outline: none;
+  border-color: var(--accent-clr);
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
+.banmodal__content .ban-input::placeholder,
+.banmodal__content textarea::placeholder {
+  opacity: 0.6;
+  color: #aaa;
+}
+
+/* ===========================
+   PREVIEW BOX (live countdown)
+=========================== */
+.ban-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  color: var(--accent-clr);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  margin-top: 0.4rem;
+  animation: fadeUp 0.4s ease;
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   ACTION BUTTONS
+=========================== */
+.banmodal__actions {
+  margin-top: 1.6rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
+.banmodal__actions button {
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.banmodal__actions .mantine-Button-root {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.banmodal__actions .mantine-Button-root:hover {
+  transform: translateY(-2px);
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+=========================== */
+@media (max-width: 700px) {
+  .banmodal {
+    padding: 1.2rem;
+  }
+
+  .header-left h2 {
+    font-size: 1.05rem;
+  }
+
+  .banmodal__alert {
+    font-size: 0.85rem;
+  }
+
+  .banmodal__content label {
+    font-size: 0.85rem;
+  }
+
+  .banmodal__content textarea,
+  .banmodal__content .ban-input {
+    font-size: 0.85rem;
+    padding: 0.7rem;
+  }
+
+  .ban-preview {
+    font-size: 0.8rem;
+  }
+
+  .banmodal__actions button {
+    flex: 1;
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .banmodal {
+    padding: 1rem;
+  }
+  .banmodal__alert {
+    flex-direction: column;
+  }
+  .header-left h2 {
+    font-size: 1rem;
+  }
+  .banmodal__actions {
+    flex-direction: column;
+  }
+  .banmodal__actions button {
+    width: 100%;
+  }
+}

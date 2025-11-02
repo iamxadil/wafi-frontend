@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Textarea } from "@mantine/core";
 import {
   ClipboardCheck,
@@ -31,16 +31,24 @@ const statusOrder = ["Waiting", "Packaging", "On the way", "Delivered"];
 const StatusModal = ({ opened, onClose, order }) => {
   const updateStatus = useUpdateOrderStatus();
 
-  // ✅ always declare hooks first
   const [newStatus, setNewStatus] = useState(order?.status || "Waiting");
   const [note, setNote] = useState("");
 
-  // ✅ derive all booleans safely
   const isLocked = irreversibleStatuses.includes(order?.status ?? "");
   const isPickup = !!order?.pickup;
   const currentIndex = statusOrder.indexOf(order?.status ?? "Waiting");
 
-  // ✅ if no order, just render placeholder — but after hooks
+  // 🧩 Fix mobile scroll freeze issue
+  useEffect(() => {
+    const handleFocusOut = () => {
+      // Small scroll nudge to restore viewport after keyboard closes
+      window.scrollTo(0, document.body.scrollTop + 1);
+      setTimeout(() => window.scrollTo(0, document.body.scrollTop - 1), 80);
+    };
+    window.addEventListener("focusout", handleFocusOut);
+    return () => window.removeEventListener("focusout", handleFocusOut);
+  }, []);
+
   if (!order) {
     return (
       <Modal opened={opened} onClose={onClose} centered withCloseButton={false}>
@@ -63,7 +71,6 @@ const StatusModal = ({ opened, onClose, order }) => {
 
     const targetIndex = statusOrder.indexOf(target);
     if (targetIndex !== -1 && targetIndex <= currentIndex) return true;
-
     return false;
   };
 
@@ -96,6 +103,7 @@ const StatusModal = ({ opened, onClose, order }) => {
       withCloseButton={false}
       size="sm"
       yOffset="7vh"
+      scrollAreaComponent="div" // ✅ prevents mobile freeze
       classNames={{
         content: "statusmodal",
         body: "statusmodal__body",
@@ -151,8 +159,11 @@ const StatusModal = ({ opened, onClose, order }) => {
       {/* NOTE */}
       {!isLocked && (
         <div className="status-note">
+          <label htmlFor="adminNote" className="note-label">
+            Admin Note (optional)
+          </label>
           <Textarea
-            label="Admin Note (optional)"
+            id="adminNote"
             placeholder={
               isPickup
                 ? "Add pickup confirmation note (optional)..."

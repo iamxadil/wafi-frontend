@@ -35,6 +35,7 @@ import {
 } from "recharts";
 import { useDashboardStats } from "../../../hooks/useDashboardQuery.jsx";
 import "../styles/adminlandingpage.css";
+import Loading from '../../../main/Loading.jsx';
 
 const MotionCard = motion(Card);
 
@@ -43,8 +44,8 @@ const AdminLandingPage = () => {
 
   if (isLoading)
     return (
-      <Center h="80vh">
-        <Loader size="lg" color="violet" />
+      <Center h="80vh" w="100vw">
+        <Loading />
       </Center>
     );
 

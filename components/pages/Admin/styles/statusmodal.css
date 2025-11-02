@@ -247,3 +247,28 @@
   color: var(--text)  !important; 
   border: 1px solid var(--line-clr);
 }
+
+
+.note-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text, #222);
+}
+
+.note-textarea textarea {
+  width: 100%;
+  background: none;
+  border-radius: 8px !important;
+  border: 1px solid var(--border, #ccc) !important;
+  padding: 0.75rem !important;
+  font-size: 0.95rem !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: var(--text);
+}
+
+.note-textarea textarea:focus {
+  border-color: var(--accent, #007bff) !important;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+  outline: none;
+}

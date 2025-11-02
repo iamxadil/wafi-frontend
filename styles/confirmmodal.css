@@ -1,0 +1,83 @@
+.cmodal {
+  background: rgba(25, 25, 35, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5);
+  color: var(--text);
+  text-align: center;
+  padding: 1.8rem 1.4rem 1.6rem;
+}
+
+.cmodal__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cmodal__icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb), 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.4);
+}
+
+.cmodal__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #fff;
+}
+
+.cmodal__message {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+  color: #fff;
+}
+
+.cmodal__btn {
+  transition: all 0.25s ease;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.cmodal__btn.cancel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.cmodal__btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cmodal__btn.confirm {
+  background: linear-gradient(125deg, var(--accent-clr), #ff4b4b);
+  color: #fff;
+}
+
+.cmodal__btn.confirm:hover {
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .cmodal {
+    width: 90%;
+    padding: 1.4rem;
+  }
+  .cmodal__title {
+    font-size: 1.1rem;
+  }
+  .cmodal__message {
+    font-size: 0.85rem;
+  }
+}

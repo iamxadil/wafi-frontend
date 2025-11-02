@@ -35,7 +35,7 @@ const Offers = () => {
   return (
     <main id="pc-pr-container">
       <header className="pr-header">
-        <Link to="/offers" style={{flexDirection: t.rowReverse}}>
+        <Link style={{flexDirection: t.rowReverse}}>
           <h1>{t("Offers", "التخفيضات")}</h1>
           <Percent size={24} />
         </Link>

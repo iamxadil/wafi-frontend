@@ -25,13 +25,14 @@ const ProductDetails = lazy(() => import("../pages/ProductDetails.jsx"));
 const CategoryNavigation = lazy(() => import("../pages/CategoryNavigation.jsx"));
 const CatLaptops = lazy(() => import("../pages/CatLaptops.jsx"));
 const CatAccessories = lazy(() => import("../pages/CatAccessories.jsx"));
-
+const CatOthers = lazy(() => import ("../pages/CatOthers.jsx"));
 // Auth
 const Signin = lazy(() => import("../components/pages/Auth/Signin.jsx"));
 const Register = lazy(() => import("../components/pages/Auth/Register.jsx"));
 const ForgotPassword = lazy(() => import("../components/pages/Auth/ForgotPassword.jsx"));
 const VerifyEmail = lazy(() => import("../components/pages/Auth/VerifyEmail.jsx"));
 const ResetPassword = lazy(() => import("../components/pages/Auth/ResetPassword.jsx"));
+const EmailVerification= lazy(() => import("../components/pages/User/EmailVerification.jsx")) ;
 
 // User
 const Profile = lazy(() => import("../components/pages/User/Profile.jsx"));
@@ -44,8 +45,8 @@ const AdminLandingPage = lazy(() => import("../components/pages/Admin/layouts/Ad
 const Products = lazy(() => import("../components/pages/Admin/navs/Products.jsx"));
 const Notifications = lazy(() => import("../components/pages/Admin/layouts/Notifications.jsx"));
 const PermissionFields = lazy(() => import("../components/pages/Admin/forms/PermissionFields.jsx"));
-const FormDashboard = lazy(() => import("../components/pages/Admin/layouts/FormDashboard.jsx"));
 const Orders = lazy(() => import("../components/pages/Admin/navs/Orders.jsx"));
+const Users = lazy(() => import("../components/pages/Admin/navs/Users.jsx"));
 const Archive = lazy(() => import("../components/pages/Admin/navs/Archive.jsx"));
 const Analytics = lazy(() => import("../components/pages/Admin/navs/Analytics.jsx"));
 const Approvals = lazy(() => import("../components/pages/Admin/navs/Approvals.jsx"));
@@ -157,7 +158,6 @@ export default function App() {
         </>
       )}
 
-      <VitalsTracker />
       
       {/* === Toast Notifications === */}
       <ToastContainer
@@ -207,6 +207,7 @@ export default function App() {
           />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/verify-email/:token" element={<EmailVerification />} />
 
           {/* User */}
           <Route path="/settings" element={<Profile />} />
@@ -219,6 +220,7 @@ export default function App() {
           <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
           <Route path="/laptops" element={<CatLaptops />} />
           <Route path="/accessories" element={<CatAccessories />} />
+          <Route path="/others" element={<CatOthers />} />
 
           {/* Cart / Checkout */}
           <Route path="/cart" element={<Cart />} />
@@ -238,7 +240,7 @@ export default function App() {
             <Route path="products" element={<Products />} />
             <Route path="orders" element={<Orders />} />
             <Route path="archive" element={<Archive />} />
-            <Route path="users" element={<FormDashboard page="users" />} />
+            <Route path="users" element={<Users />} />
             <Route path="approvals" element={<Approvals />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="permissions" element={<PermissionFields />} />

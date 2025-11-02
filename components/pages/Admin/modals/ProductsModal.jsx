@@ -210,7 +210,11 @@ const handleDiscountPriceChange = (e) => {
               <option value="Mice">Mice</option>
               <option value="Keyboards">Keyboards</option>
               <option value="Bags">Bags</option>
-              <option value="Headphones">Headphones</option>
+              <option value="Adapters">Adapters</option>
+              <option value="Cables">Cables</option>
+              <option value="Hard Disks & SSDs">Hard Disks & SSDs</option>
+              <option value="Flash Drives">Flash Drives</option>
+              <option value="Routers">Routers</option>
             </select>
           </div>
 

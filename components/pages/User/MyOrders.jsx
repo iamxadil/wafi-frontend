@@ -1,17 +1,78 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import useOrderStore from "../../stores/useOrderStore.jsx";
-import "../../../styles/myorderspage.css";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import useAuthStore from "../../stores/useAuthStore.jsx";
+import useOrderStore from "../../stores/useOrderStore.jsx";
 import useTranslate from "../../hooks/useTranslate.jsx";
+import "../../../styles/myorderspage.css";
 
 const MyOrdersPage = () => {
   const t = useTranslate();
 
-  // User
+  // === Stores ===
   const user = useAuthStore((state) => state.user);
+  const fetchMyOrders = useOrderStore((state) => state.fetchMyOrders);
+  const myOrders = useOrderStore((state) => state.myOrders || []);
+  const attachedOrders = useOrderStore((state) => state.attachedOrders || {});
+  const loadingMyOrders = useOrderStore((state) => state.loadingMyOrders);
+  const attachOrderToUser = useOrderStore((state) => state.attachOrderToUser);
+  const attachLoading = useOrderStore((state) => state.attachLoading);
+  const attachErrorFromStore = useOrderStore((state) => state.attachError);
 
+  // === Local states ===
+  const [attachId, setAttachId] = useState("");
+  const [attachError, setAttachError] = useState(null);
+
+  // === Refs ===
+  const cardRefs = useRef([]);
+
+  // === Combine orders safely ===
+  const combinedOrders = useMemo(
+    () => [...Object.values(attachedOrders), ...myOrders],
+    [attachedOrders, myOrders]
+  );
+
+  // === Fetch user's orders on mount ===
+  useEffect(() => {
+    if (user) fetchMyOrders();
+  }, [user, fetchMyOrders]);
+
+  // === Animate cards on intersection ===
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("pr-order-card-visible");
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    cardRefs.current.forEach((card) => card && observer.observe(card));
+    return () => observer.disconnect();
+  }, [combinedOrders]);
+
+  // === Handle attach order ===
+  const handleAttachOrder = async () => {
+    if (!attachId.trim()) return;
+    setAttachError(null);
+
+    try {
+      await attachOrderToUser(attachId.trim());
+      setAttachId("");
+      fetchMyOrders(); // refresh orders after attaching
+    } catch (err) {
+      setAttachError(
+        err.response?.data?.message ||
+          err.message ||
+          t("Failed to attach order", "فشل في ربط الطلب")
+      );
+    }
+  };
+
+  // === Early return (after all hooks) ===
   if (!user) {
     return (
       <main id="not-signed-in-page" dir={t.language === "ar" ? "rtl" : "ltr"}>
@@ -41,70 +102,14 @@ const MyOrdersPage = () => {
     );
   }
 
-  const cardRefs = useRef([]);
-
-  // Fetching states
-  const fetchMyOrders = useOrderStore((state) => state.fetchMyOrders);
-  const myOrders = useOrderStore((state) => state.myOrders || []);
-  const attachedOrders = useOrderStore((state) => state.attachedOrders || {});
-  const loadingMyOrders = useOrderStore((state) => state.loadingMyOrders);
-
-  // Attach states
-  const attachOrderToUser = useOrderStore((state) => state.attachOrderToUser);
-  const attachLoading = useOrderStore((state) => state.attachLoading);
-  const attachErrorFromStore = useOrderStore((state) => state.attachError);
-
-  const [attachId, setAttachId] = useState("");
-  const [attachError, setAttachError] = useState(null);
-
-  // Combine myOrders and attachedOrders safely
-  const combinedOrders = useMemo(() => {
-    return [...Object.values(attachedOrders), ...myOrders];
-  }, [attachedOrders, myOrders]);
-
-  useEffect(() => {
-    fetchMyOrders();
-  }, [fetchMyOrders]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("pr-order-card-visible");
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    cardRefs.current.forEach((card) => card && observer.observe(card));
-    return () => observer.disconnect();
-  }, [combinedOrders]);
-
-  const handleAttachOrder = async () => {
-    if (!attachId.trim()) return;
-    setAttachError(null);
-
-    try {
-      await attachOrderToUser(attachId.trim());
-      setAttachId("");
-      fetchMyOrders(); // Refresh main orders
-    } catch (err) {
-      setAttachError(
-        err.response?.data?.message ||
-          err.message ||
-          t("Failed to attach order", "فشل في ربط الطلب")
-      );
-    }
-  };
-
+  // === Main render ===
   return (
     <main
       className="pr-orders-page"
       dir={t.language === "ar" ? "rtl" : "ltr"}
       style={{ textAlign: t.textAlign }}
     >
+      {/* Header */}
       <header className="pr-orders-page-header">
         <h1>{t("My Orders", "طلباتي")}</h1>
         <p style={{ marginTop: "20px" }}>
@@ -115,6 +120,7 @@ const MyOrdersPage = () => {
         </p>
       </header>
 
+      {/* Attach section */}
       <section className="pr-orders-attach">
         <input
           type="text"
@@ -135,6 +141,7 @@ const MyOrdersPage = () => {
         )}
       </section>
 
+      {/* Orders grid */}
       <section className="pr-orders-grid">
         {loadingMyOrders ? (
           <p>{t("Loading your orders...", "جارٍ تحميل طلباتك...")}</p>
@@ -152,15 +159,18 @@ const MyOrdersPage = () => {
           combinedOrders.map((order, idx) => (
             <div
               className="pr-order-card"
-              key={order._id}
+              key={order._id || idx}
               ref={(el) => (cardRefs.current[idx] = el)}
             >
+              {/* Header */}
               <div className="pr-order-card-header">
                 <span className="pr-order-id">
                   {t("Order", "الطلب")} #{order.orderNumber || order._id}
                 </span>
                 <span
-                  className={`pr-order-status ${order.status.replace(/\s+/g, "-").toLowerCase()}`}
+                  className={`pr-order-status ${order.status
+                    ?.replace(/\s+/g, "-")
+                    ?.toLowerCase()}`}
                 >
                   {(() => {
                     const statusMap = {
@@ -169,17 +179,16 @@ const MyOrdersPage = () => {
                       "On the way": "في الطريق",
                       Delivered: "تم التوصيل",
                       "Picked-Up": "تم الاستلام",
-                      Canceled: "تم الالغاء",
+                      Canceled: "تم الإلغاء",
                       Refunded: "تم استرجاع المبلغ",
                     };
-
-                    // fallback if not found
                     const localized = statusMap[order.status] || order.status;
                     return t(order.status, localized);
                   })()}
                 </span>
               </div>
 
+              {/* Items */}
               <div className="pr-order-card-items">
                 {order.items.map((item, i) => (
                   <div className="pr-order-item" key={i}>
@@ -187,6 +196,8 @@ const MyOrdersPage = () => {
                       src={item.image || "/placeholder.png"}
                       alt={item.name}
                       className="pr-item-img"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <span className="pr-item-name">{item.name}</span>
                     <span className="pr-item-qty">x{item.quantity}</span>
@@ -197,6 +208,7 @@ const MyOrdersPage = () => {
                 ))}
               </div>
 
+              {/* Footer */}
               <div className="pr-order-card-footer">
                 <span className="pr-order-date">
                   {new Date(order.createdAt).toLocaleDateString()}

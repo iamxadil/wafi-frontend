@@ -119,7 +119,7 @@ const Navbar = () => {
         onMouseEnter={() => setActiveMenu("others")}
         onMouseLeave={() => setActiveMenu(null)}
       >
-        <Link to="#">
+        <Link to="/others">
           <Shapes size={20} />
           <span>{t("Others", "اخرى")}</span>
         </Link>

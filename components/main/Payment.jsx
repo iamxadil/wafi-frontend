@@ -47,6 +47,7 @@ const Payment = () => {
   const [otpError, setOtpError] = useState("");
   const recaptchaRef = useRef(null);
   const [captchaToken, setCaptchaToken] = useState("");
+  const [samePhoneError, setSamePhoneError] = useState(false);
 
   const sendOrderOTP = useOrderStore((state) => state.sendOrderOTP);
   const verifyOrderOTP = useOrderStore((state) => state.verifyOrderOTP);
@@ -62,6 +63,13 @@ const Payment = () => {
       toast.warning(t("Please fill in all required fields", "يرجى ملء جميع الحقول المطلوبة"));
       return;
     }
+
+    if (shippingInfo.phone && shippingInfo.phone === shippingInfo.phone2) {
+      toast.error(t("Primary and backup numbers must be different", "يجب أن يكون رقم الهاتفين مختلفين"));
+      setSamePhoneError(true);
+      return;
+    }
+
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -108,6 +116,12 @@ const Payment = () => {
       return;
     } else setOtpError("");
 
+   if (shippingInfo.phone && shippingInfo.phone === shippingInfo.phone2) {
+      toast.error(t("Primary and backup numbers must be different", "يجب أن يكون رقم الهاتفين مختلفين"));
+      setSamePhoneError(true);
+      return;
+    }
+    
     setOtpLoading(true);
     try {
       await verifyOrderOTP(email, otp);
@@ -231,46 +245,55 @@ const Payment = () => {
 
           {/* Phones */}
           <div className="form-row">
-            <div className="form-group">
-              <label>{t("Primary Phone", "رقم الهاتف الرئيسي")}</label>
-              <div className={`phone-input ${!phoneValid ? "invalid" : ""}`}>
-                <span className="prefix">+964</span>
-                <input
-                  type="tel"
-                  value={shippingInfo.phone}
-                  onChange={(e) => {
-                    let cleaned = e.target.value.replace(/\D/g, "");
-                    if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
-                    setShippingInfo({ ...shippingInfo, phone: cleaned });
-                    setPhoneValid(cleaned.length === 10);
-                  }}
-                  required
-                />
+              {/* Primary phone */}
+              <div className="form-group">
+                <label>{t("Phone Number", "الهاتف الرئيسي")}</label>
+                <div className={`phone-input ${!phoneValid ? "invalid" : ""}`}>
+                  <span className="prefix">+964</span>
+                  <input
+                    type="tel"
+                    value={shippingInfo.phone}
+                    onChange={(e) => {
+                      let cleaned = e.target.value.replace(/\D/g, "");
+                      if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
+                      setShippingInfo({ ...shippingInfo, phone: cleaned });
+                      setPhoneValid(cleaned.length === 10);
+                      setSamePhoneError(cleaned === shippingInfo.phone2 && cleaned.length > 0);
+                    }}
+                    required
+                  />
+                </div>
+                {!phoneValid && (
+                  <small className="error-text">
+                    {t("Phone number must be 10 digits", "يجب أن يتكون رقم الهاتف من 10 أرقام")}
+                  </small>
+                )}
               </div>
-              {!phoneValid && (
-                <small className="error-text">
-                  {t("Phone number must be 10 digits", "يجب أن يتكون رقم الهاتف من 10 أرقام")}
-                </small>
-              )}
-            </div>
 
-            <div className="form-group">
-              <label>{t("Alternate Phone", "رقم الهاتف البديل")}</label>
-              <div className="phone-input">
-                <span className="prefix">+964</span>
-                <input
-                  type="tel"
-                  value={shippingInfo.phone2}
-                  onChange={(e) => {
-                    let cleaned = e.target.value.replace(/\D/g, "");
-                    if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
-                    setShippingInfo({ ...shippingInfo, phone2: cleaned });
-                  }}
-                 required
-                />
+              {/* Alternate phone */}
+              <div className="form-group">
+                <label>{t("Backup Number", "الهاتف البديل")}</label>
+                <div className={`phone-input ${samePhoneError ? "invalid" : ""}`}>
+                  <span className="prefix">+964</span>
+                  <input
+                    type="tel"
+                    value={shippingInfo.phone2}
+                    onChange={(e) => {
+                      let cleaned = e.target.value.replace(/\D/g, "");
+                      if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
+                      setShippingInfo({ ...shippingInfo, phone2: cleaned });
+                      setSamePhoneError(cleaned === shippingInfo.phone && cleaned.length > 0);
+                    }}
+                    required
+                  />
+                </div>
+                {samePhoneError && (
+                  <small className="error-text">
+                    {t("Primary and backup numbers must be different", "يجب أن يكون رقم الهاتفين مختلفين")}
+                  </small>
+                )}
               </div>
             </div>
-          </div>
 
           {/* Delivery & Payment */}
           <div className="form-row">

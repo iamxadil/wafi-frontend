@@ -1,0 +1,325 @@
+/* =========================================================
+   USER MANAGEMENT MODAL
+   Elegant, structured, and readable
+========================================================= */
+
+.umodal {
+  background: rgba(20, 20, 30, 0.92);
+  backdrop-filter: blur(16px) saturate(180%);
+  color: var(--text);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+
+/* BODY */
+.umodal__body {
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 1.8rem 1.6rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.5) transparent;
+}
+.umodal__body::-webkit-scrollbar {
+  width: 6px;
+}
+.umodal__body::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-rgb), 0.5);
+  border-radius: 6px;
+}
+
+/* HEADER */
+.umodal__header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: rgba(30, 30, 40, 0.85);
+  backdrop-filter: blur(10px);
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 10;
+  border-radius: 12px;
+}
+.umodal__header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+.umodal__header .meta {
+  font-size: 0.82rem;
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+  color: #fff;
+}
+.umodal__tools {
+  display: flex;
+  gap: 0.5rem;
+}
+.iconbtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.4rem;
+  cursor: pointer;
+  color: #fff;
+  transition: 0.25s;
+  display: flex;
+  align-items: center;
+}
+.iconbtn:hover {
+  background: rgba(var(--accent-rgb), 0.25);
+  border-color: rgba(var(--accent-rgb), 0.4);
+}
+
+/* NOTICE */
+.notice {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  margin: 1rem 0 1.4rem;
+  font-size: 0.9rem;
+}
+.notice.danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.notice.warning {
+  background: rgba(250, 204, 21, 0.1);
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  color: #facc15;
+}
+
+/* SECTIONS */
+.section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 1.3rem 1.2rem;
+  margin-bottom: 1.5rem;
+  transition: 0.25s;
+}
+.section:hover {
+  background: rgba(var(--accent-rgb), 0.05);
+}
+.section h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.9rem;
+}
+
+/* DETAILS GRID */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.8rem 1.2rem;
+}
+.details-grid span {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  color: #fff;
+}
+.details-grid div {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+/* =========================================================
+   INSIGHTS SECTION
+========================================================= */
+.section.insights {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 1.5rem 1.25rem;
+  margin-top: 1.8rem;
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.25);
+}
+.section.insights h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Summary cards */
+.summary-card {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  transition: 0.3s;
+  color: #fff;
+  min-height: 90px;
+}
+.summary-card:hover {
+  transform: translateY(-4px);
+  background: rgba(var(--accent-rgb), 0.08);
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.25);
+}
+
+/* Insights toggles */
+.insight-block {
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.75rem;
+}
+.insight-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.25rem;
+  border-radius: 8px;
+  transition: 0.25s ease;
+  cursor: pointer;
+}
+.insight-header:hover {
+  background: rgba(var(--accent-rgb), 0.08);
+  color: var(--accent-clr);
+}
+.insight-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
+  transition: 0.25s;
+}
+.insight-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.insight-item span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.mini-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Loader */
+.center-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+
+/* =========================================================
+   ADMIN ACTIONS
+========================================================= */
+.admin-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.btn {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.btn.modify {
+  background: linear-gradient(120deg, #3b82f6, #2563eb);
+}
+.btn.secondary {
+  background: linear-gradient(120deg, #8b5cf6, #7c3aed);
+}
+.btn.warning {
+  background: linear-gradient(120deg, #facc15, #eab308);
+  color: #222;
+}
+.btn.success {
+  background: linear-gradient(120deg, #22c55e, #16a34a);
+}
+.btn.danger {
+  background: linear-gradient(120deg, #ef4444, #dc2626);
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width: 768px) {
+  .umodal__body {
+    padding: 1.2rem;
+  }
+  .details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .summary-card {
+    min-height: 80px;
+    padding: 0.9rem;
+  }
+  .insight-item {
+    font-size: 0.85rem;
+  }
+  .admin-actions {
+    flex-direction: column;
+  }
+}
+
+/* Frosted ellipsis trigger */
+.dots-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.dots-ghost:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Frosted dropdown */
+.glass-menu {
+  background: rgba(20, 22, 30, 0.72);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 40px rgba(0,0,0,.45);
+  padding: 6px;
+  border-radius: 14px;
+}
+
+/* Better hit area and subtle hover */
+.glass-menu__item {
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: #fff;
+}
+.glass-menu__item:hover {
+  background: rgba(255,255,255,0.08);
+}
