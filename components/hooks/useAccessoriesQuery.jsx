@@ -3,20 +3,60 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-export const useAccessoriesQuery = ({ limit = 4, page = 1, search } = {}) => {
+/**
+ * 🧠 useAccessoriesQuery
+ * Handles dynamic fetching for Accessories — with search, filters, sort, pagination.
+ */
+export const useAccessoriesQuery = ({
+  limit = 4,
+  page = 1,
+  search = "",
+  sort = "newest",
+  ...filters // allow dynamic filter keys (e.g. brand, price range, tags)
+} = {}) => {
   return useQuery({
-    queryKey: ["accessories", limit, page, search],
+    queryKey: ["accessories", { limit, page, search, sort, filters }],
 
     queryFn: async () => {
-      // build query params dynamically
-      let query = `limit=${limit}&page=${page}`;
-      if (search && search.trim()) {
-        query += `&search=${encodeURIComponent(search.trim())}`;
+      const params = new URLSearchParams();
+
+      // Basic pagination
+      params.append("limit", limit);
+      params.append("page", page);
+
+      // Search text
+      if (search?.trim()) {
+        params.append("search", search.trim());
       }
 
-      const res = await axios.get(`${API_URL}/api/products/accessories?${query}`, {
-        withCredentials: true,
-      });
+      // Sorting
+      if (sort) {
+        params.append("sort", sort);
+      }
+
+      // Dynamic filters
+      if (filters) {
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value == null || value === "" || value?.length === 0) return;
+
+          // handle arrays (e.g. brand=["Razer","Logitech"])
+          if (Array.isArray(value)) {
+            params.append(key, value.join(","));
+          }
+          // handle price range object: { min: 100, max: 500 }
+          else if (typeof value === "object" && value.min != null && value.max != null) {
+            params.append(`min${key[0].toUpperCase() + key.slice(1)}`, value.min);
+            params.append(`max${key[0].toUpperCase() + key.slice(1)}`, value.max);
+          }
+          // handle simple scalar values
+          else {
+            params.append(key, value);
+          }
+        });
+      }
+
+      const url = `${API_URL}/api/products/accessories?${params.toString()}`;
+      const res = await axios.get(url, { withCredentials: true });
 
       const data = res.data || {};
       const products = Array.isArray(data.products) ? data.products : [];

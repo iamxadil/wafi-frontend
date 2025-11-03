@@ -1,60 +1,64 @@
-// src/components/stores/useLaptopsStore.jsx
+// ✅ src/components/stores/useLaptopsStore.jsx
 import { create } from "zustand";
 
 const useLaptopsStore = create((set) => ({
-  // 1. Laptop Page Parameters
-  laptopPageParams: {
-    page: 1,
-    limit: 6,
-    brands: [],
-    minPrice: null,
-    maxPrice: null,
-    sort: null,
-    search: "",
-  },
+  /* ================================================================
+     🧱 MAIN PAGE (for full laptop listing)
+  ================================================================ */
+  laptopPageParams: { page: 1, limit: 6 },
 
-  // 2. Main Page Parameters
-  mainPageParams: {
-    page: 1,
-    limit: 4,
-    brands: [],
-    minPrice: null,
-    maxPrice: null,
-    sort: null,
-    search: "",
-  },
-
-  // 3. Top Laptops Parameters (new)
-  topPageParams: {
-    page: 1,
-    limit: 3,
-    brands: [],
-    minPrice: null,
-    maxPrice: null,
-    sort: null,
-    search: "",
-  },
-
-  // 4. Functions to update parameters
   setLaptopPageParams: (params) =>
     set((state) => ({
       laptopPageParams: { ...state.laptopPageParams, ...params },
     })),
 
-  setMainPageParams: (params) =>
+  // 🧩 Main Filters + Sort
+  filters: {},
+  setFilters: (filterObj) =>
     set((state) => ({
-      mainPageParams: { ...state.mainPageParams, ...params },
+      filters: { ...state.filters, ...filterObj },
     })),
 
+  sort: "newest",
+  setSort: (sortValue) => set({ sort: sortValue }),
+
+  resetFilters: () => set({ filters: {}, sort: "newest" }),
+
+  /* ================================================================
+     🔍 LIVE SEARCH (for top search dropdown)
+  ================================================================ */
+  searchParam: "",
+  setSearchParam: (value) => set({ searchParam: value }),
+  clearSearchParam: () => set({ searchParam: "" }),
+
+  searchFilters: {},
+  setSearchFilters: (filterObj) =>
+    set((state) => ({
+      searchFilters: { ...state.searchFilters, ...filterObj },
+    })),
+
+  searchSort: "newest",
+  setSearchSort: (sortValue) => set({ searchSort: sortValue }),
+
+  resetSearchFilters: () => set({ searchFilters: {}, searchSort: "newest" }),
+
+  /* ================================================================
+     🧩 TOP PRODUCTS SECTION (optional — e.g. featured laptops)
+  ================================================================ */
+  topPageParams: { page: 1, limit: 3 },
   setTopPageParams: (params) =>
     set((state) => ({
       topPageParams: { ...state.topPageParams, ...params },
     })),
 
-  // 5. UI-only Search State (for dropdown)
-  searchParam: "",
-  setSearchParam: (value) => set({ searchParam: value }),
-  clearSearchParam: () => set({ searchParam: "" }),
+  /* ================================================================
+     🧮 EXTRA: MAIN PAGE (e.g. homepage laptop previews)
+  ================================================================ */
+  mainPageParams: { page: 1, limit: 4 },
+  setMainPageParams: (params) =>
+    set((state) => ({
+      mainPageParams: { ...state.mainPageParams, ...params },
+    })),
 }));
 
 export default useLaptopsStore;

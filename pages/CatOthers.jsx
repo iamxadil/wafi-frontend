@@ -1,57 +1,145 @@
-import React from "react";
-import "../styles/cataccessories.css"; // reuse same style file
+// src/pages/CatOthers.jsx
+import React, { useMemo } from "react";
+import "../styles/cataccessories.css"; // reuse same style
 import SearchDropdown from "../components/main/SearchDropdown.jsx";
 import useOthersStore from "../components/stores/useOthersStore.jsx";
 import { useOthersQuery } from "../components/hooks/useOthersQuery.jsx";
+import { useDynamicFilters } from "../components/hooks/useDynamicFilters.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import Pagination from "../components/main/Pagination.jsx";
 import Loading from "../components/main/Loading.jsx";
 import MobileCard from "../components/main/MobileCard.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx";
+import Filter from "../components/common/Filter.jsx";
+import Sort from "../components/common/Sort.jsx";
 import useTranslate from "../components/hooks/useTranslate.jsx";
 
 const CatOthers = () => {
   const width = useWindowWidth();
   const t = useTranslate();
 
-  // Zustand state
-  const params = useOthersStore((state) => state.othersPageParams);
-  const setParams = useOthersStore((state) => state.setOthersPageParams);
-  const searchParam = useOthersStore((state) => state.searchParam);
-  const setSearchParam = useOthersStore((state) => state.setSearchParam);
+  /* =============================================================
+     🧠 Zustand Store
+  ============================================================= */
+  const {
+    othersPageParams,
+    setOthersPageParams,
+    searchParam,
+    setSearchParam,
+    filters,
+    setFilters,
+    resetFilters,
+    sort,
+    setSort,
+    searchFilters,
+    setSearchFilters,
+    resetSearchFilters,
+    searchSort,
+    setSearchSort,
+  } = useOthersStore();
 
-  // Query for others (main data)
-  const { data: others, isLoading, isError } = useOthersQuery(params);
-  const products = others?.products || [];
-  const pagination = others?.pagination || { currentPage: 1, totalPages: 0 };
+  /* =============================================================
+     🔍 Queries
+  ============================================================= */
+  // 1️⃣ Main grid
+  const { data: others, isLoading, isError } = useOthersQuery({
+    ...othersPageParams,
+    ...filters,
+    sort,
+  });
 
-  // Query for search results
+  // 2️⃣ Dynamic filter sections
+  const { data: filtersData, isLoading: filtersLoading } = useDynamicFilters({
+    category: [
+      "Routers",
+      "Adapters",
+      "Flash Drives",
+      "Hard Disks & SSDs",
+      "Cables",
+      "Power Banks",
+      "USB Hubs",
+    ],
+  });
+
+  // 3️⃣ Live search
   const { data: searchData } = useOthersQuery({
-    ...params,
-    search: searchParam,
     page: 1,
     limit: 5,
+    search: searchParam,
+    sort: searchSort,
+    ...searchFilters,
   });
+
+  /* =============================================================
+     🧩 Derived Data
+  ============================================================= */
+  const products = others?.products || [];
+  const pagination = others?.pagination || { currentPage: 1, totalPages: 0 };
   const searchResults = searchData?.products || [];
 
-  // Handlers
+  /* =============================================================
+     ⚙️ Handlers
+  ============================================================= */
   const handlePageChange = (page) => {
-    if (page !== pagination.currentPage) setParams({ page });
+    if (page !== pagination.currentPage) setOthersPageParams({ page });
   };
 
   const handleSelectSearch = (product) => {
-    setParams({ search: product.name, page: 1 });
+    setOthersPageParams({ search: product.name, page: 1 });
     setSearchParam("");
   };
 
-  // Handle loading and error states
-  if (isLoading)
-    return (
-      <Loading
-        message={t("Loading products...", "جاري تحميل المنتجات...")}
-      />
-    );
+  const handleGridFilterChange = (updated) => {
+    setFilters(updated);
+    setOthersPageParams({ page: 1 });
+  };
 
+  const handleSearchFilterChange = (updated) => {
+    setSearchFilters(updated);
+  };
+
+  /* =============================================================
+     🧩 Dynamic Filter Sections
+  ============================================================= */
+  const dynamicFilters = useMemo(() => {
+    if (!filtersData) return [];
+    const { brands = [], tags = [], priceRange = {} } = filtersData;
+    const sections = [];
+
+    if (brands.length > 0)
+      sections.push({
+        id: "brand",
+        label: t("Brands", "العلامة التجارية"),
+        type: "checkbox",
+        options: brands.sort(),
+      });
+
+    if (tags.length > 0)
+      sections.push({
+        id: "tags",
+        label: t("Tags", "الوسوم"),
+        type: "checkbox",
+        options: tags.sort(),
+      });
+
+    if (priceRange.min !== undefined && priceRange.max !== undefined)
+      sections.push({
+        id: "price",
+        label: t("Price Range", "نطاق السعر"),
+        type: "range",
+        min: priceRange.min,
+        max: priceRange.max,
+        step: 5,
+      });
+
+    return sections;
+  }, [filtersData, t]);
+
+  /* =============================================================
+     🌀 Loading / Error
+  ============================================================= */
+  if (isLoading)
+    return <Loading message={t("Loading products...", "جاري تحميل المنتجات...")} />;
   if (isError)
     return (
       <p style={{ textAlign: "center" }}>
@@ -59,12 +147,14 @@ const CatOthers = () => {
       </p>
     );
 
+  /* =============================================================
+     🧩 Render
+  ============================================================= */
   return (
     <>
       {/* === HERO SECTION === */}
       <section className="accessories-hero">
         <div className="hero-content">
-          {/* Gradient glows behind text */}
           <div className="blur-shape blur-1"></div>
           <div className="blur-shape blur-2"></div>
 
@@ -76,12 +166,12 @@ const CatOthers = () => {
           <p className="hero-subtitle" style={{ marginTop: "2rem" }}>
             {t(
               "Find routers, drives, adapters, and cables that keep your tech world connected.",
-              "اكتشف أجهزة التوجيه التي تبقي عالمك التقني متصلاً."
+              "اكتشف أجهزة التوجيه والأقراص ومحولات الطاقة التي تبقي عالمك التقني متصلاً."
             )}
           </p>
         </div>
 
-        {/* Search Dropdown */}
+        {/* 🔍 Search Bar */}
         <div className="search-dropdown-wrapper">
           <SearchDropdown
             width={600}
@@ -91,14 +181,64 @@ const CatOthers = () => {
             onSelect={handleSelectSearch}
           />
         </div>
+
+        {/* 🧩 Search Filters + Sort */}
+        <div className="filter-sorts">
+          {filtersLoading ? (
+            <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
+              {t("Loading filters...", "جاري تحميل الفلاتر...")}
+            </p>
+          ) : (
+            <>
+              <Sort
+                title={t("Sort", "الترتيب")}
+                selected={searchSort}
+                onChange={setSearchSort}
+              />
+              <Filter
+                title={t("Search Filters", "فلاتر البحث")}
+                icon="SlidersHorizontal"
+                filters={dynamicFilters}
+                selected={searchFilters}
+                onChange={handleSearchFilterChange}
+                onClearAll={resetSearchFilters}
+              />
+            </>
+          )}
+        </div>
       </section>
 
-      {/* === MAIN CONTENT === */}
+      {/* === MAIN GRID === */}
       <main id="pc-pr-container">
-        <header className="pr-header" style={{ flexDirection: t.rowReverse }}>
-          <h1>{t("Other Tech Products", "منتجات تقنية أخرى")}</h1>
+        <header className="pr-header">
+          <h1>{t("Other Products", "منتجات أخرى")}</h1>
+
+          <div className="header-right">
+            {filtersLoading ? (
+              <p className="loading-filters-text">
+                {t("Loading filters...", "جاري تحميل الفلاتر...")}
+              </p>
+            ) : (
+              <>
+                <Filter
+                  title={width > 600 ? t("Filters", "الفلاتر") : ""}
+                  filters={dynamicFilters}
+                  selected={filters}
+                  onChange={handleGridFilterChange}
+                  onClearAll={resetFilters}
+                  width={350}
+                />
+                <Sort
+                  title={width > 600 ? t("Sort", "الترتيب") : ""}
+                  selected={sort}
+                  onChange={setSort}
+                />
+              </>
+            )}
+          </div>
         </header>
 
+        {/* 🧱 Products Grid */}
         <div
           className={
             width > 650
@@ -128,6 +268,7 @@ const CatOthers = () => {
           )}
         </div>
 
+        {/* 📄 Pagination */}
         {products.length > 0 && pagination.totalPages > 1 && (
           <Pagination
             currentPage={pagination.currentPage}

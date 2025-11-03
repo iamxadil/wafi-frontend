@@ -153,10 +153,7 @@
 [data-theme="dark"] #search-container {
   animation: floatSearch 6s ease-in-out infinite alternate;
 }
-@keyframes floatSearch {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-6px); }
-}
+
 
 /* Glowing gradient border (dark mode only) */
 [data-theme="dark"] .search-input-wrapper::before {

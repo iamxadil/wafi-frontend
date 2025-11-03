@@ -1,0 +1,323 @@
+/* === FILTER WRAPPER === */
+.filter-sorts {
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  border-radius: 12px;
+  position: relative;
+  gap: 1rem;
+}
+
+/* === CONTAINER === */
+.filter-container {
+  position: relative;
+  flex: 1 1 280px;
+  
+}
+
+/* === TOGGLE BUTTON === */
+.filter-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  border: 1px solid rgba(var(--accent-rgb, 94, 99, 255), 0.3);
+  background: var(--background);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+@media (max-width: 800px) {
+  .filter-toggle {
+    gap: 4px;
+    padding: 0.5rem;
+  }
+}
+
+.filter-toggle:hover {
+  background: rgba(var(--accent-rgb, 94, 99, 255), 0.08);
+}
+
+.filter-toggle .chevron {
+  transition: transform 0.3s ease;
+}
+.filter-toggle .chevron.open {
+  transform: rotate(180deg);
+}
+
+/* === FILTER BODY (dropdown) === */
+.filter-body {
+  position: absolute;
+  right: 0;
+  background: var(--background);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  margin-top: 0.5rem;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+
+}
+
+.filter-container.open .filter-body {
+  max-height: 600px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* === FILTER GROUP === */
+.filter-group {
+  padding: 0.6rem 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+.filter-group:first-child {
+  border-top: none;
+}
+.filter-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.filter-group-content {
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  max-height: 0;
+  opacity: 0;
+}
+.filter-group.open .filter-group-content {
+  max-height: 450px;
+  opacity: 1;
+  margin-top: 0.3rem;
+    overflow: visible;
+
+}
+
+/* === CHECKBOX === */
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.92rem;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0.25rem 0;
+  transition: color 0.25s ease;
+}
+.filter-option:hover {
+  color: var(--accent-clr, #5e63ff);
+}
+.filter-option input {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.8px solid rgba(var(--accent-rgb, 94, 99, 255), 0.6);
+  border-radius: 6px;
+  background: transparent;
+  display: grid;
+  place-content: center;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+.filter-option input::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 22%, 80% 0, 43% 62%);
+  transform: scale(0);
+  transform-origin: center;
+  background: var(--accent-clr, #5e63ff);
+  transition: transform 0.25s ease;
+}
+.filter-option input:checked::before {
+  transform: scale(1);
+}
+
+/* === RANGE INPUTS === */
+.filter-range {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.range-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.range-inputs input {
+  flex: 1;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--text);
+  background: var(--background);
+  color: var(--text);
+}
+
+.range-inputs input:focus {
+outline: none;
+}
+
+.price-display {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+/* === RANGE SLIDER === */
+.range-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  background: rgba(var(--accent-rgb, 94, 99, 255), 0.3);
+  border-radius: 5px;
+  outline: none;
+  margin-top: 0.5rem;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent-clr, #5e63ff);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.range-slider::-webkit-slider-thumb:hover {
+  background: rgba(var(--accent-rgb, 94, 99, 255), 0.8);
+}
+
+/* === CLEAR ALL BUTTON === */
+.filter-clear {
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.filter-clear button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--accent-clr, #5e63ff);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+.filter-clear button:hover {
+  color: var(--text);
+}
+
+/* === FILTER CHIPS BELOW (overlay, non-pushing) === */
+.filter-chips-floating {
+  position: absolute;
+  top: calc(100% + 0.5rem);      /* appear below filter button */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  z-index: 5;
+  pointer-events: auto;
+   background-color: #5e63ff4e;
+}
+
+/* === GROUPED CHIPS === */
+.filter-chip-group {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(var(--accent-rgb, 94, 99, 255), 0.08);
+  color: var(--accent-clr, #5e63ff);
+  border-radius: 18px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.82rem;
+  transition: background 0.25s ease;
+  white-space: nowrap;
+}
+
+.filter-chip-group .group-label {
+  font-weight: 600;
+}
+
+.filter-chip-group .group-values {
+  opacity: 0.85;
+}
+
+.filter-chip-group .remove-group {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.filter-chip-group .remove-group:hover {
+  opacity: 1;
+}
+
+/* === MINI CLEAR BUTTON === */
+.clear-all-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: crimson;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.clear-all-mini:hover {
+  color: red;
+}
+
+/* === Ensure parent context handles overlay safely === */
+.filter-container {
+  position: relative;
+  z-index: 10; /* ensure chips layer stays above background */
+}
+
+/* === MOBILE === */
+@media (max-width: 768px) {
+  .filter-chips-floating {
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.6rem;
+  }
+
+  .clear-all-mini {
+    margin: 0 auto;
+  }
+
+
+}
+
+@media (max-width: 363px) {
+
+
+ .filter-toggle {
+  padding: 5px;
+ }
+ 
+}

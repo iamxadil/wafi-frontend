@@ -401,3 +401,104 @@
   from { opacity: 0; transform: scale(0.97); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* ============================================================
+   🏷️ TAGS SECTION
+============================================================ */
+.tags-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+}
+
+.tags-input-container input {
+  flex: 1;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.15));
+  border-radius: 8px;
+  background: var(--background, #fff);
+  color: var(--text, #111);
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+[data-theme="dark"] .tags-input-container input {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #eee;
+}
+
+.tags-input-container input:focus {
+  border-color: var(--accent-clr, #5e63ff);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 94, 99, 255), 0.25);
+}
+
+.add-tag-btn {
+  background: var(--accent-clr, #5e63ff);
+  color: white;
+  border: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.add-tag-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(var(--accent-rgb, 94, 99, 255), 0.3);
+}
+
+/* === Tag List === */
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.tag-item {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-rgb, 94, 99, 255), 0.15),
+    rgba(var(--accent-rgb, 94, 99, 255), 0.3)
+  );
+  color: var(--accent-clr, #5e63ff);
+  padding: 0.35rem 0.65rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.tag-item:hover {
+  transform: scale(1.05);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-rgb, 94, 99, 255), 0.25),
+    rgba(var(--accent-rgb, 94, 99, 255), 0.4)
+  );
+}
+
+.remove-tag-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: 0.15s ease;
+}
+
+.remove-tag-btn:hover {
+  transform: scale(1.2);
+  color: rgba(var(--accent-rgb, 94, 99, 255), 0.8);
+}

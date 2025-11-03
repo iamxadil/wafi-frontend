@@ -1,3 +1,5 @@
+
+
 #pc-pr-container {
   display: flex;
   flex-direction: column;
@@ -21,6 +23,7 @@
   align-items: center;
   gap: 1rem;
   padding: 2rem 0;
+  z-index: 100;
 }
 
 
@@ -376,7 +379,6 @@ select.custom:disabled {
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-
   margin-left: -2rem;
   margin-right: -2rem;
 
@@ -548,31 +550,38 @@ select.custom:disabled {
 .pr-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   max-width: 75%;
   width: 100%;
   margin: 0 auto;
   padding: 3rem 0;
-  gap: 1rem;
+  gap: 1.5rem;
   position: relative;
-  overflow: hidden;
+
 }
 
-/* 🌫 Subtle moving gradient aura (elegant, not flashy) */
-.pr-header::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 160%;
-  height: 400%;
-
-  transform: translate(-50%, -50%) scale(0.9);
-  filter: blur(80px);
-  opacity: 0.12;
-  z-index: -1;
-  transition: opacity 0.6s ease, transform 0.6s ease;
+.header-right {
+  flex: 0 1 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  z-index: 8;
 }
+
+@media (max-width: 400px) {
+  .header-right {
+    flex: 0 1 50px;
+  }
+}
+
+@media (max-width: 363px) {
+ .pr-header {
+  flex-wrap: wrap;
+      justify-content: center !important;
+ }
+}
+
 
 .pr-header:hover::before {
   opacity: 0.22;

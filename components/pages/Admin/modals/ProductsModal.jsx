@@ -18,30 +18,6 @@ const ProductsModal = ({
   const { mutate: editProduct, isPending: isEditingRequest } =
     useEditProductMutation();
 
-
-  //Handlers
-  const handlePriceChange = (e) => {
-  const rawValue = e.target.value.replace(/,/g, ""); // remove commas
-  const num = parseFloat(rawValue);
-  if (!isNaN(num)) {
-    setFormData((prev) => ({ ...prev, price: num }));
-  } else if (rawValue === "") {
-    setFormData((prev) => ({ ...prev, price: "" }));
-  }
-};
-
-//
-const handleDiscountPriceChange = (e) => {
-  const rawValue = e.target.value.replace(/,/g, "");
-  const num = parseFloat(rawValue);
-  if (!isNaN(num)) {
-    setFormData((prev) => ({ ...prev, discountPrice: num }));
-  } else if (rawValue === "") {
-    setFormData((prev) => ({ ...prev, discountPrice: "" }));
-  }
-};
-
-
   // === Form states ===
   const [formData, setFormData] = useState({
     name: "",
@@ -57,6 +33,8 @@ const handleDiscountPriceChange = (e) => {
   const [specs, setSpecs] = useState({});
   const [images, setImages] = useState([]); // [{file, preview, existing}]
   const [deletedImages, setDeletedImages] = useState([]); // urls of removed existing images
+  const [tags, setTags] = useState([]); // 🏷️ new
+  const [tagInput, setTagInput] = useState("");
 
   // 🧠 Prefill when editing
   useEffect(() => {
@@ -73,6 +51,19 @@ const handleDiscountPriceChange = (e) => {
       });
 
       setSpecs(editData.specs || {});
+
+      // ✅ Always parse tags properly
+      if (typeof editData.tags === "string") {
+        try {
+          const parsed = JSON.parse(editData.tags);
+          setTags(Array.isArray(parsed) ? parsed : []);
+        } catch {
+          setTags([]);
+        }
+      } else {
+        setTags(Array.isArray(editData.tags) ? editData.tags : []);
+      }
+
       if (Array.isArray(editData.images)) {
         setImages(
           editData.images.map((url) => ({
@@ -99,6 +90,26 @@ const handleDiscountPriceChange = (e) => {
       ...prev,
       [id]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handlePriceChange = (e) => {
+    const rawValue = e.target.value.replace(/,/g, "");
+    const num = parseFloat(rawValue);
+    if (!isNaN(num)) {
+      setFormData((prev) => ({ ...prev, price: num }));
+    } else if (rawValue === "") {
+      setFormData((prev) => ({ ...prev, price: "" }));
+    }
+  };
+
+  const handleDiscountPriceChange = (e) => {
+    const rawValue = e.target.value.replace(/,/g, "");
+    const num = parseFloat(rawValue);
+    if (!isNaN(num)) {
+      setFormData((prev) => ({ ...prev, discountPrice: num }));
+    } else if (rawValue === "") {
+      setFormData((prev) => ({ ...prev, discountPrice: "" }));
+    }
   };
 
   // === Image Handling ===
@@ -134,6 +145,24 @@ const handleDiscountPriceChange = (e) => {
     });
   };
 
+  // === TAGS ===
+  const handleTagInputChange = (e) => {
+    setTagInput(e.target.value);
+  };
+
+  const handleAddTag = (e) => {
+    e.preventDefault();
+    const newTag = tagInput.trim().toLowerCase();
+    if (newTag && !tags.includes(newTag)) {
+      setTags((prev) => [...prev, newTag]);
+    }
+    setTagInput("");
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
+  };
+
   // === Submit ===
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -141,6 +170,7 @@ const handleDiscountPriceChange = (e) => {
     const form = new FormData();
     for (const key in formData) form.append(key, formData[key]);
     form.append("specs", JSON.stringify(specs));
+    form.append("tags", JSON.stringify(tags)); // ✅ always clean array
 
     // Attach new images only
     images.forEach((img) => {
@@ -218,7 +248,7 @@ const handleDiscountPriceChange = (e) => {
             </select>
           </div>
 
-         <div className="two-grid">
+          <div className="two-grid">
             <div className="static-field">
               <label htmlFor="price">Price *</label>
               <input
@@ -251,7 +281,6 @@ const handleDiscountPriceChange = (e) => {
             </div>
           </div>
 
-
           <div className="static-field">
             <label htmlFor="countInStock">Stock</label>
             <input
@@ -272,6 +301,47 @@ const handleDiscountPriceChange = (e) => {
               onChange={handleChange}
               placeholder="Enter product description"
             />
+          </div>
+
+          {/* === TAGS === */}
+          <div className="static-field">
+            <label>Tags</label>
+            <div className="tags-input-container">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={handleTagInputChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAddTag(e);
+                }}
+                placeholder="Type a tag and press Enter"
+              />
+              <button
+                type="button"
+                className="add-tag-btn"
+                onClick={handleAddTag}
+              >
+                Add
+              </button>
+            </div>
+
+            {tags.length > 0 && (
+              <div className="tags-list">
+                {tags.map((tag, i) => (
+                  <div key={i} className="tag-item">
+                    <span>{tag}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="remove-tag-btn"
+                      title="Remove tag"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* === IMAGE UPLOAD === */}
@@ -324,62 +394,58 @@ const handleDiscountPriceChange = (e) => {
           </div>
 
           {/* === SPECS === */}
-        {formData.category === "Laptops" && (
-  <div className="specs-section">
-    <h3 className="specs-title">Laptop Specifications</h3>
+          {formData.category === "Laptops" && (
+            <div className="specs-section">
+              <h3 className="specs-title">Laptop Specifications</h3>
+              <div className="specs-grid">
+                {[
+                  ["ram", "RAM", "e.g. 16GB DDR5"],
+                  ["cpu", "CPU", "e.g. Intel Core i7"],
+                  ["gpu", "GPU", "e.g. RTX 4060"],
+                  ["storage", "Storage", "e.g. 1TB SSD"],
+                  ["screenSize", "Screen Size", "e.g. 15.6\""],
+                  ["resolution", "Resolution", "e.g. 1920x1080"],
+                  ["os", "OS", "e.g. Windows 11"],
+                  ["battery", "Battery", "e.g. 75Wh"],
+                  ["weight", "Weight", "e.g. 1.8kg"],
+                  ["ports", "Ports", "e.g. HDMI, USB-C"],
+                  ["releaseYear", "Release Year", "e.g. 2024"],
+                  ["warranty", "Warranty", "e.g. 1 Year"],
+                  ["colorOptions", "Colors", "e.g. Black, Silver"],
+                ].map(([id, label, placeholder]) => (
+                  <div key={id}>
+                    <label htmlFor={id}>{label}</label>
+                    <input
+                      id={id}
+                      type={id === "releaseYear" ? "number" : "text"}
+                      value={specs[id] || ""}
+                      onChange={handleSpecsChange}
+                      placeholder={placeholder}
+                    />
+                  </div>
+                ))}
+              </div>
 
-    {/* === Text Inputs === */}
-    <div className="specs-grid">
-      {[
-        ["ram", "RAM", "e.g. 16GB DDR5"],
-        ["cpu", "CPU", "e.g. Intel Core i7"],
-        ["gpu", "GPU", "e.g. RTX 4060"],
-        ["storage", "Storage", "e.g. 1TB SSD"],
-        ["screenSize", "Screen Size", "e.g. 15.6\""],
-        ["resolution", "Resolution", "e.g. 1920x1080"],
-        ["os", "OS", "e.g. Windows 11"],
-        ["battery", "Battery", "e.g. 75Wh"],
-        ["weight", "Weight", "e.g. 1.8kg"],
-        ["ports", "Ports", "e.g. HDMI, USB-C"],
-        ["releaseYear", "Release Year", "e.g. 2024"],
-        ["warranty", "Warranty", "e.g. 1 Year"],
-        ["colorOptions", "Colors", "e.g. Black, Silver"],
-      ].map(([id, label, placeholder]) => (
-        <div key={id}>
-          <label htmlFor={id}>{label}</label>
-          <input
-            id={id}
-            type={id === "releaseYear" ? "number" : "text"}
-            value={specs[id] || ""}
-            onChange={handleSpecsChange}
-            placeholder={placeholder}
-          />
-        </div>
-      ))}
-    </div>
-
-    {/* === Feature Checkboxes with Icons === */}
-    <div className="specs-checkboxes">
-      {[
-        ["touchscreen", "Touch Screen", <MonitorSmartphone size={18} />],
-        ["faceId", "Face ID", <ScanFace size={18} />],
-        ["fingerPrint", "Fingerprint Sensor", <Fingerprint size={18} />],
-      ].map(([id, label, Icon]) => (
-        <label key={id} className="spec-checkbox">
-          <input
-            id={id}
-            type="checkbox"
-            checked={!!specs[id]}
-            onChange={handleSpecsChange}
-          />
-          <span className="checkbox-icon">{Icon}</span>
-          {label}
-        </label>
-      ))}
-    </div>
-  </div>
-)}
-
+              <div className="specs-checkboxes">
+                {[
+                  ["touchscreen", "Touch Screen", <MonitorSmartphone size={18} />],
+                  ["faceId", "Face ID", <ScanFace size={18} />],
+                  ["fingerPrint", "Fingerprint Sensor", <Fingerprint size={18} />],
+                ].map(([id, label, Icon]) => (
+                  <label key={id} className="spec-checkbox">
+                    <input
+                      id={id}
+                      type="checkbox"
+                      checked={!!specs[id]}
+                      onChange={handleSpecsChange}
+                    />
+                    <span className="checkbox-icon">{Icon}</span>
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* === ACTION BUTTONS === */}
           <div className="static-actions">

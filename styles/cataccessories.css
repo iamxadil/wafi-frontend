@@ -11,6 +11,7 @@
   justify-content: center;
   padding: 2rem 2rem 0 2rem;
   overflow: visible;
+  z-index: 200;
 }
 
 /* === HERO CONTENT === */
@@ -92,12 +93,13 @@
 /* === SEARCH BAR WRAPPER === */
 .search-dropdown-wrapper {
   position: relative;
-  z-index: 6000;
+  z-index: 500;
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 2rem;
   margin-top: 1rem;
-  
 }
 
 /* === TOP & BOTTOM FADES === */

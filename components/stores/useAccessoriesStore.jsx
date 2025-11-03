@@ -2,28 +2,59 @@ import { create } from 'zustand'
 
 const useAccessoriesStore = create((set)=>({
 
-   accessoriesParams: {
-    page: 1,
-    limit: 4,
-  },
+   accessoriesParams: { page: 1,limit: 4,},
 
   setAccessoriesParams: (params) =>
     set((state) => ({
       accessoriesParams: { ...state.accessoriesParams, ...params },
     })),
 
-   accessoriesPageParams: {
-    page: 1,
-    limit: 6,
-  },
 
-  setAccessoriesPageParams: (params) =>
+
+
+    //Main Page
+    accessoriesPageParams: { page: 1, limit: 6,}, 
+    setAccessoriesPageParams: (params) =>
+      set((state) => ({
+        accessoriesPageParams: { ...state.accessoriesPageParams, ...params },
+      })),
+
+    //Main Page Filter
+    filters: {},
+    setFilters: (filterObj) =>
     set((state) => ({
-      accessoriesPageParams: { ...state.accessoriesPageParams, ...params },
+      filters: { ...state.filters, ...filterObj },
     })),
 
+    //Main Page Sort
+    sort: "newest",
+    setSort: (sortValue) => set({ sort: sortValue }),
+
+
+    //Reset
+    resetFilters: () => set({ filters: {} }),               // ✅ optional
+
+
+
+    //Search
     searchParam: "",
     setSearchParam: (value) => set({ searchParam: value }),
+
+    //Search Filters
+    searchFilters: {},
+    setSearchFilters: (filterObj) =>
+    set((state) => ({
+      searchFilters: { ...state.searchFilters, ...filterObj },
+    })),
+
+    //Search Sorts
+    searchSort: "newest",
+    setSearchSort: (sortValue) => set({ searchSort: sortValue }),
+
+    //Reset
+    resetSearchFilters: () => set({ searchFilters: {} }),   
+
+    
 }))
 
 export default useAccessoriesStore;

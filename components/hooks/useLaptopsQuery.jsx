@@ -1,29 +1,54 @@
+// ✅ src/hooks/useLaptopsQuery.jsx
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-export const useLaptopsQuery = ({page = 1 ,limit = 4 ,brands = [] ,minPrice ,maxPrice ,sort ,search, isTopProduct} = {}) => {
-  
+export const useLaptopsQuery = ({
+  page = 1,
+  limit = 6,
+  search = "",
+  sort = "newest",
+  isTopProduct,
+  isOffer,
+  inStock,
+  ...filters // dynamic (brand, tags, price, etc.)
+} = {}) => {
   return useQuery({
-    queryKey: ["laptops", page, limit, brands, minPrice, maxPrice, sort, search, isTopProduct],
-    
-    queryFn: async () => {
-      let query = `category=Laptops&page=${page}&limit=${limit}`;
-      if (brands.length > 0) query += `&brand=${brands.join(",")}`;
-      if (minPrice != null) query += `&minPrice=${minPrice}`;
-      if (maxPrice != null) query += `&maxPrice=${maxPrice}`;
-      if (sort) query += `&sort=${sort}`;
-      if (search) query += `&search=${encodeURIComponent(search)}`;
-      if (isTopProduct) query += `&isTopProduct=true`;
+    queryKey: ["laptops", { page, limit, search, sort, isTopProduct, isOffer, inStock, filters }],
 
-      const res = await axios.get(`${API_URL}/api/products?${query}`, {
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.append("category", "Laptops");
+      params.append("page", page);
+      params.append("limit", limit);
+      if (search?.trim()) params.append("search", search.trim());
+      if (sort) params.append("sort", sort);
+      if (isTopProduct) params.append("isTopProduct", "true");
+      if (isOffer) params.append("isOffer", "true");
+      if (inStock) params.append("inStock", "true");
+
+      // Dynamic filters
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value == null || value === "" || value?.length === 0) return;
+        if (Array.isArray(value)) {
+          params.append(key, value.join(","));
+        } else if (typeof value === "object" && value.min != null && value.max != null) {
+          params.append(`min${key[0].toUpperCase() + key.slice(1)}`, value.min);
+          params.append(`max${key[0].toUpperCase() + key.slice(1)}`, value.max);
+        } else {
+          params.append(key, value);
+        }
+      });
+
+      const res = await axios.get(`${API_URL}/api/products?${params.toString()}`, {
         withCredentials: true,
       });
 
       const data = res.data || {};
-      const laptops = Array.isArray(data.products) ? data.products : [];
-      const normalized = laptops.map(p => ({
+      const products = Array.isArray(data.products) ? data.products : [];
+
+      const normalized = products.map((p) => ({
         ...p,
         finalPrice: Number(p.finalPrice ?? (p.price ?? 0) - (p.discountPrice ?? 0)),
       }));
@@ -37,7 +62,9 @@ export const useLaptopsQuery = ({page = 1 ,limit = 4 ,brands = [] ,minPrice ,max
         },
       };
     },
-    keepPreviousData: true, // keeps old page visible while fetching new
-    staleTime: 1000 * 60,   // cache for 1 minute
+
+    keepPreviousData: true,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
   });
 };

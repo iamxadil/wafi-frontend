@@ -1,13 +1,16 @@
 // src/pages/CatLaptops.jsx
-import React from "react";
+import React, { useMemo } from "react";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx";
 import MobileCard from "../components/main/MobileCard.jsx";
 import Pagination from "../components/main/Pagination.jsx";
 import useLaptopsStore from "../components/stores/useLaptopsStore.jsx";
 import { useLaptopsQuery } from "../components/hooks/useLaptopsQuery.jsx";
+import { useDynamicFilters } from "../components/hooks/useDynamicFilters.jsx";
 import Loading from "../components/main/Loading.jsx";
 import SearchDropdown from "../components/main/SearchDropdown.jsx";
+import Filter from "../components/common/Filter.jsx";
+import Sort from "../components/common/Sort.jsx";
 import useTranslate from "../components/hooks/useTranslate.jsx";
 import "../styles/catlaptops.css";
 
@@ -15,81 +18,188 @@ const CatLaptops = () => {
   const width = useWindowWidth();
   const t = useTranslate();
 
-  // Zustand states
-  const params = useLaptopsStore((s) => s.laptopPageParams);
-  const setParams = useLaptopsStore((s) => s.setLaptopPageParams);
-  const topParams = useLaptopsStore((s) => s.topPageParams);
-  const setTopParams = useLaptopsStore((s) => s.setTopPageParams);
-  const searchParam = useLaptopsStore((s) => s.searchParam);
-  const setSearchParam = useLaptopsStore((s) => s.setSearchParam);
+  /* =============================================================
+     🧠 Zustand Store
+  ============================================================= */
+  const {
+    // --- Live Search (hero)
+    searchParam,
+    setSearchParam,
+    searchFilters,
+    setSearchFilters,
+    resetSearchFilters,
+    searchSort,
+    setSearchSort,
 
-  // Queries
-  const { data, isLoading, isError } = useLaptopsQuery(params);
-  const products = data?.products || [];
-  const pagination = data?.pagination || { currentPage: 1, totalPages: 0 };
+    // --- Main Grid
+    laptopPageParams,
+    setLaptopPageParams,
+    filters,
+    setFilters,
+    resetFilters,
+    sort,
+    setSort,
 
-  const { data: topData, isTopLoading } = useLaptopsQuery({
-    ...topParams,
+    // --- Top Laptops
+    topPageParams,
+    setTopPageParams,
+  } = useLaptopsStore();
+
+  /* =============================================================
+     🔍 Queries
+  ============================================================= */
+  // 1️⃣ Main grid (filters + sort)
+  const { data: laptops, isLoading, isError } = useLaptopsQuery({
+    ...laptopPageParams,
+    ...filters,
+    sort,
+  });
+
+  // 2️⃣ Dynamic filters (based on category)
+  const { data: filtersData, isLoading: filtersLoading } = useDynamicFilters({
+    category: ["Laptops"],
+  });
+
+  
+  // 3️⃣ Live search query (top search)
+  const searchQueryParams = useMemo(
+    () => ({
+      search: searchParam,
+      page: 1,
+      limit: 5,
+      sort: searchSort,
+      ...searchFilters,
+    }),
+    [searchParam, searchFilters, searchSort]
+  );
+  const { data: searchData } = useLaptopsQuery(searchQueryParams);
+
+  // 4️⃣ Top laptops query
+  const { data: topData, isLoading: topLoading } = useLaptopsQuery({
+    ...topPageParams,
     isTopProduct: true,
   });
+
+  /* =============================================================
+     🧩 Derived Data
+  ============================================================= */
+  const products = laptops?.products || [];
+  const pagination = laptops?.pagination || { currentPage: 1, totalPages: 0 };
+  const searchResults = searchData?.products || [];
   const topProducts = topData?.products || [];
   const topPagination = topData?.pagination || {
-    currentPage: topParams.page,
+    currentPage: topPageParams.page,
     totalPages: 0,
   };
 
-  // Search dropdown
-  const { data: searchData } = useLaptopsQuery({
-    ...params,
-    search: searchParam,
-    page: 1,
-    limit: 5,
-  });
-  const searchResults = searchData?.products || [];
-
-  // Handlers
+  /* =============================================================
+     ⚙️ Handlers
+  ============================================================= */
   const handlePageChange = (page) => {
-    if (page !== pagination.currentPage) setParams({ page });
+    if (page !== pagination.currentPage) setLaptopPageParams({ page });
   };
-  const handleTopPageChange = (page) => {
-    if (page !== topPagination.currentPage) setTopParams({ page });
-  };
+
   const handleSelectSearch = (product) => {
-    setParams({ search: product.name, page: 1 });
+    setLaptopPageParams({ search: product.name, page: 1 });
     setSearchParam("");
   };
 
-  // Loading / Error
-  if (isLoading || isTopLoading) {
+  const handleSearchFilterChange = (updatedFilters) => {
+    setSearchFilters(updatedFilters);
+  };
+
+  const handleGridFilterChange = (updatedFilters) => {
+    setFilters(updatedFilters);
+    setLaptopPageParams({ page: 1 });
+  };
+
+  const handleTopPageChange = (page) => {
+    if (page !== topPagination.currentPage) setTopPageParams({ page });
+  };
+
+  /* =============================================================
+     ⚙️ Dynamic Filter Sections
+  ============================================================= */
+  const dynamicFilters = useMemo(() => {
+    if (!filtersData) return [];
+
+    const { brands = [], tags = [], specs = {}, priceRange = {} } = filtersData;
+    const sections = [];
+
+    if (brands.length > 0) {
+      sections.push({
+        id: "brand",
+        label: t("Brands", "العلامة التجارية"),
+        type: "checkbox",
+        options: brands.sort(),
+      });
+    }
+
+    if (tags.length > 0) {
+      sections.push({
+        id: "tags",
+        label: t("Tags", "الوسوم"),
+        type: "checkbox",
+        options: tags.sort(),
+      });
+    }
+
+    // ✅ Only show laptop-related specs dynamically
+    Object.entries(specs).forEach(([key, values]) => {
+      if (values.length > 0) {
+        sections.push({
+          id: key,
+          label: key.toUpperCase(),
+          type: "checkbox",
+          options: values.sort(),
+        });
+      }
+    });
+
+    if (priceRange.min !== undefined && priceRange.max !== undefined) {
+      sections.push({
+        id: "price",
+        label: t("Price Range", "نطاق السعر"),
+        type: "range",
+        min: priceRange.min,
+        max: priceRange.max,
+        step: 10,
+      });
+    }
+
+    return sections;
+  }, [filtersData, t]);
+
+  /* =============================================================
+     🌀 Loading & Error
+  ============================================================= */
+  if (isLoading || topLoading)
     return (
-      <main
-        id="cat-laptops-page"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "1200px",
-        }}
-      >
-        <Loading message={t("Loading laptops...", "جاري تحميل اللابتوبات...")} />
-      </main>
+      <Loading
+        message={t("Loading laptops...", "جاري تحميل اللابتوبات...")}
+      />
     );
-  }
-
   if (isError)
-    return <p style={{ textAlign: "center" }}>{t("Failed to load laptops.", "فشل تحميل اللابتوبات.")}</p>;
+    return (
+      <p style={{ textAlign: "center" }}>
+        {t("Failed to load laptops.", "فشل تحميل اللابتوبات.")}
+      </p>
+    );
 
+  /* =============================================================
+     🧩 Render
+  ============================================================= */
   return (
     <>
       {/* === HERO SECTION === */}
       <section className="laptops-hero">
         <div className="hero-content">
-          {/* Glows behind text */}
           <div className="blur-shape blur-1"></div>
           <div className="blur-shape blur-2"></div>
 
           <h1 className="hero-title">
-            {t("Explore the", "استكشف")} <span>{t("Laptop Universe", "عالم اللابتوبات")}</span>
+            {t("Explore the", "استكشف")}{" "}
+            <span>{t("Laptop Universe", "عالم اللابتوبات")}</span>
           </h1>
           <p className="hero-subtitle">
             {t(
@@ -99,43 +209,99 @@ const CatLaptops = () => {
           </p>
         </div>
 
-        {/* Search Bar */}
+        {/* 🔍 Search Bar */}
         <div className="search-dropdown-wrapper">
           <SearchDropdown
-            width={550}
+            width={600}
             products={searchResults}
             value={searchParam}
             onChange={(e) => setSearchParam(e.target.value)}
             onSelect={handleSelectSearch}
           />
         </div>
+
+        {/* 🧩 Search Filters + Sort */}
+        <div className="filter-sorts">
+          {filtersLoading ? (
+            <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
+              {t("Loading filters...", "جاري تحميل الفلاتر...")}
+            </p>
+          ) : (
+            <>
+              <Sort
+                title={t("Sort", "الترتيب")}
+                selected={searchSort}
+                onChange={setSearchSort}
+              />
+              <Filter
+                title={t("Search Filters", "فلاتر البحث")}
+                icon="SlidersHorizontal"
+                filters={dynamicFilters}
+                selected={searchFilters}
+                onChange={handleSearchFilterChange}
+                onClearAll={resetSearchFilters}
+              />
+            </>
+          )}
+        </div>
       </section>
 
-      {/* === MAIN CONTENT === */}
+      {/* === MAIN GRID === */}
       <main id="pc-pr-container">
-        {/* All Laptops */}
-        <header className="pr-header" style={{flexDirection: t.rowReverse}}>
+        <header className="pr-header">
           <h1>{t("Laptops", "اللابتوبات")}</h1>
+
+          <div className="header-right">
+            {filtersLoading ? (
+              <p className="loading-filters-text">
+                {t("Loading filters...", "جاري تحميل الفلاتر...")}
+              </p>
+            ) : (
+              <>
+                <Filter
+                  title={width > 600 ? t("Filters", "الفلاتر") : ""}
+                  filters={dynamicFilters}
+                  selected={filters}
+                  onChange={handleGridFilterChange}
+                  onClearAll={resetFilters}
+                  width={350}
+                />
+                <Sort
+                  title={width > 600 ? t("Sort", "الترتيب") : ""}
+                  selected={sort}
+                  onChange={setSort}
+                />
+              </>
+            )}
+          </div>
         </header>
 
-        <div className={width > 650 ? "products-grid-container cat-grid" : "mob-pr-cards"}>
+        {/* 🧱 Products Grid */}
+        <div
+          className={
+            width > 650 ? "products-grid-container cat-grid" : "mob-pr-cards"
+          }
+        >
           {products.length > 0 ? (
-            products.map((product, index) =>
+            products.map((product, i) =>
               width > 650 ? (
                 <ProductGrid key={product._id || product.id} product={product} />
               ) : (
                 <MobileCard
                   key={product._id || product.id}
                   product={product}
-                  customDelay={index * 0.08}
+                  customDelay={i * 0.08}
                 />
               )
             )
           ) : (
-            <p style={{ textAlign: "center" }}>{t("No laptops found.", "لم يتم العثور على لابتوبات.")}</p>
+            <p style={{ textAlign: "center" }}>
+              {t("No laptops found.", "لم يتم العثور على لابتوبات.")}
+            </p>
           )}
         </div>
 
+        {/* 📄 Pagination */}
         {products.length > 0 && pagination.totalPages > 1 && (
           <Pagination
             currentPage={pagination.currentPage}
@@ -144,21 +310,25 @@ const CatLaptops = () => {
           />
         )}
 
-        {/* Top Laptops */}
-        <header className="pr-header" style={{flexDirection: t.rowReverse}}>
-          <h1>{t("Top Laptops", "لابتوبات مُميزة")}</h1>
+        {/* === TOP LAPTOPS SECTION === */}
+        <header className="pr-header" style={{ flexDirection: t.rowReverse }}>
+          <h1>{t("Top Laptops", "لابتوبات مميزة")}</h1>
         </header>
 
-        <div className={width > 650 ? "products-grid-container cat-grid" : "mob-pr-cards"}>
+        <div
+          className={
+            width > 650 ? "products-grid-container cat-grid" : "mob-pr-cards"
+          }
+        >
           {topProducts.length > 0 ? (
-            topProducts.map((product, index) =>
+            topProducts.map((product, i) =>
               width > 650 ? (
                 <ProductGrid key={product._id || product.id} product={product} />
               ) : (
                 <MobileCard
                   key={product._id || product.id}
                   product={product}
-                  customDelay={index * 0.08}
+                  customDelay={i * 0.08}
                 />
               )
             )
@@ -169,6 +339,7 @@ const CatLaptops = () => {
           )}
         </div>
 
+        {/* 📄 Top Laptops Pagination */}
         {topProducts.length > 0 && topPagination.totalPages > 1 && (
           <Pagination
             currentPage={topPagination.currentPage}
