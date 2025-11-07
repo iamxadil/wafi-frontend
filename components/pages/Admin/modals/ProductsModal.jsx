@@ -239,6 +239,7 @@ const ProductsModal = ({
               <option value="Laptops">Laptops</option>
               <option value="Mice">Mice</option>
               <option value="Keyboards">Keyboards</option>
+              <option value="Headphones">Headphones</option>
               <option value="Bags">Bags</option>
               <option value="Adapters">Adapters</option>
               <option value="Cables">Cables</option>
