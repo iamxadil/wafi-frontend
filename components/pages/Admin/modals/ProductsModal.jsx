@@ -413,6 +413,8 @@ const ProductsModal = ({
                   ["releaseYear", "Release Year", "e.g. 2024"],
                   ["warranty", "Warranty", "e.g. 1 Year"],
                   ["colorOptions", "Colors", "e.g. Black, Silver"],
+                  ["accessories", "Included Accessories", "e.g. Charger, Stylus, Bag"],
+
                 ].map(([id, label, placeholder]) => (
                   <div key={id}>
                     <label htmlFor={id}>{label}</label>

@@ -13,15 +13,10 @@ import {
 } from "react-icons/si";
 
 import { FiChevronDown, FiShare2, FiTrash2 } from "react-icons/fi";
-
 import { TiPlus as Plus, TiMinus as Minus } from "react-icons/ti";
-
 import React, { useEffect, useState } from "react";
-
 import { useParams, useNavigate } from "react-router-dom";
-
 import { Card, Button, Rate, Divider, Carousel, Spin } from "antd";
-
 import {
   Cpu,
   Gpu,
@@ -42,20 +37,17 @@ import {
   CalendarCheck2,
   Disc3 ,
   ScanFace,
-  MonitorSmartphone
+  MonitorSmartphone,
+  PackagePlus 
 } from "lucide-react";
 
 import { toast } from "react-toastify";
-
 import useProductStore from "../components/stores/useProductStore.jsx";
-
 import useCartStore from "../components/stores/useCartStore.jsx";
-
 import useAuthStore from "../components/stores/useAuthStore.jsx";
-
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
-
 import useTranslate from "../components/hooks/useTranslate.jsx";
+
 
 const keywordIcons = {
   GPU: <Gpu />,
@@ -95,7 +87,8 @@ const keywordIcons = {
   RESOLUTION: <Expand />,
 
   RELEASEYEAR: <CalendarCheck2 />,
-  OS: <Disc3 />
+  OS: <Disc3 />,
+  ACCESSORIES: <PackagePlus />
 };
 
 const keywordLabels = {
@@ -136,8 +129,8 @@ const keywordLabels = {
   PORTS: { en: "Ports", ar: "المنافذ" },
 
   RESOLUTION: { en: "Resolution", ar: "الدقة" },
-
   RELEASEYEAR: { en: "Release Year", ar: "سنة الإصدار" },
+  ACCESSORIES: { en: "Accessories", ar: "الاكسسوارات" },
 };
 
 const ProductDetails = () => {
@@ -407,27 +400,38 @@ const specOrder = [
   "touchscreen",
   "fingerPrint",
   "faceId",
+  "accessories",
 ];
 
 const specsList = specOrder
   .map((key) => {
     const value = selectedProduct.specs?.[key];
-    if (value === null || value === undefined || value === "") return null;
+
+    // ✅ Skip all "empty" cases:
+    if (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      value === "0" ||
+      value === 0 ||
+      value === false ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
+      return null;
+    }
 
     const label = t(
       keywordLabels[key.toUpperCase()]?.en || key,
       keywordLabels[key.toUpperCase()]?.ar || key
     );
-
     const icon = keywordIcons[key.toUpperCase()] || <Brackets />;
 
     let formattedValue = value;
-    if (typeof value === "boolean") {
+    if (Array.isArray(value)) formattedValue = value.join(", ");
+    else if (typeof value === "boolean") {
       formattedValue = value
         ? t("Included", "متوفر")
         : t("Not Included", "غير متوفر");
-    } else if (Array.isArray(value)) {
-      formattedValue = value.join(", ");
     }
 
     return (
@@ -449,6 +453,7 @@ const specsList = specOrder
     );
   })
   .filter(Boolean);
+
 
 
   const descriptionLines = selectedProduct.description

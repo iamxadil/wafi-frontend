@@ -838,7 +838,7 @@
   overflow: hidden;
   cursor: zoom-in;
   background-repeat: no-repeat;
-  background-size: 220%; /* zoom level */
+  background-size: 200%; /* zoom level */
   transition: background-size 0.25s ease;
 }
 
@@ -847,7 +847,7 @@
 }
 
 .magnifier:hover {
-  background-size: 250%; /* stronger zoom on hover */
+  background-size: 200%; /* stronger zoom on hover */
 }
 
 .magnifier::after {
