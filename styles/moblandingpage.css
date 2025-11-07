@@ -80,7 +80,7 @@ position: absolute;
   top: 100%;
   left: 0;
   width: 100%;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(4px);
   border: 1px solid #ddd;
   border-radius: 10px;
   z-index: 1000;
@@ -227,7 +227,7 @@ position: absolute;
   top: 110%;
   right: 0;
   width: 160px;
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(2px);
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.1);
@@ -309,25 +309,7 @@ position: absolute;
 
 
 
-/* Dropdown container */
-.filter-dropdown {
-  position: absolute;
-  top: 110%;
-  right: 0;
-  width: 160px;
-  backdrop-filter: blur(16px);
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  padding: 0.5rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  z-index: 5000;
-  opacity: 0;
-  transform: translateY(-10px);
-  animation: dropdown-fade 0.25s forwards;
-}
+
 
 /* Dropdown animation */
 @keyframes dropdown-fade {

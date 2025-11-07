@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx";
 import MobileCard from "../components/main/MobileCard.jsx";
+import ProductBlock from "../components/main/ProductBlock.jsx";
 import Pagination from "../components/main/Pagination.jsx";
 import { Spin } from "antd";
 
@@ -161,9 +162,9 @@ useEffect(() => {
       {/* ---------- Mobile Layout ---------- */}
       {isMobile && (
         <main className="mob-pr-container">
-          <div className="mob-pr-cards">
+          <div className="mobile-grid">
             {displayedProducts.length > 0 ? (
-              displayedProducts.map(p => <MobileCard key={p._id} product={p} />)
+              displayedProducts.map(p => <ProductBlock key={p._id} product={p} />)
             ) : (
               <div className="mob-loading">{t("No Products Found", "لا توجد منتجات")}</div>
             )}
@@ -177,9 +178,9 @@ useEffect(() => {
           <header id="offers-header">
             <h1>Offers for {brandName || categoryName || "Products"}</h1>
           </header>
-          <div className="mob-pr-cards">
+          <div className="mobile-grid">
             {displayedOffers.length > 0 ? (
-              displayedOffers.map(p => <MobileCard key={p._id} product={p} />)
+              displayedOffers.map(p => <ProductBlock key={p._id} product={p} />)
             ) : (
               <div className="mob-loading">{t("No Offers Found", "لا توجد عروض")}</div>
             )}

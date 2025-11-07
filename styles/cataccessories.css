@@ -1,17 +1,16 @@
 /* === HERO BASE === */
 .accessories-hero {
-  position: relative;
+  position: relative; /* important for pseudo-elements */
   width: 100%;
-  height: 80vh;
-  background: var(--background);
-  color: var(--text);
+  min-height: 75vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem 2rem 0 2rem;
-  overflow: visible;
-  z-index: 200;
+  color: var(--text);
+  background: var(--background);
+  z-index: 200; /* 🔽 ensures it stays under modals, filters, etc. */
 }
 
 /* === HERO CONTENT === */
@@ -20,8 +19,7 @@
   z-index: 2;
   text-align: center;
   max-width: 850px;
-  animation: fadeUp 1.4s ease forwards;
-  overflow: visible;
+  animation: fadeUp 1.2s ease forwards;
 }
 
 /* === GRADIENT BLOBS === */
@@ -30,12 +28,13 @@
   width: 420px;
   height: 420px;
   border-radius: 50%;
-  filter: blur(130px);
-  opacity: 0.55;
-  z-index: -1;
+  filter: blur(120px);
+  opacity: 0.45;
   mix-blend-mode: lighten;
+  pointer-events: none;
   animation: float 14s ease-in-out infinite alternate;
   will-change: transform;
+  z-index: 400;
 }
 
 /* Left glow */
@@ -54,13 +53,13 @@
   animation-delay: 4s;
 }
 
-/* Floating subtle animation */
+/* === Floating animation === */
 @keyframes float {
   0% {
     transform: translateY(0) translateX(0) scale(1);
   }
   50% {
-    transform: translateY(-20px) translateX(15px) scale(1.05);
+    transform: translateY(-18px) translateX(10px) scale(1.05);
   }
   100% {
     transform: translateY(0) translateX(0) scale(1);
@@ -81,6 +80,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
 .hero-subtitle {
   font-size: 1.1rem;
   opacity: 0.85;
@@ -93,13 +93,14 @@
 /* === SEARCH BAR WRAPPER === */
 .search-dropdown-wrapper {
   position: relative;
-  z-index: 500;
+  z-index: inherit; /* ✅ ensures dropdown shows above gradients but below filter */
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
   margin-top: 1rem;
+  pointer-events: auto;
+  z-index: 10;
 }
 
 /* === TOP & BOTTOM FADES === */
@@ -109,7 +110,7 @@
   position: absolute;
   left: 0;
   width: 100%;
-  height: 160px;
+  height: 140px;
   pointer-events: none;
   z-index: 1;
 }
@@ -130,11 +131,11 @@
   background: linear-gradient(to top, rgba(255, 255, 255, 1) 10%, rgba(255, 255, 255, 0) 100%);
 }
 
-/* === ANIMATIONS === */
+/* === Fade Up Animation === */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -144,9 +145,9 @@
 
 /* === RESPONSIVE === */
 @media (max-width: 890px) {
-
   .accessories-hero {
-    height: 50vh;
+    min-height: 55vh;
+    padding-top: 3rem;
   }
   .hero-title {
     font-size: clamp(2rem, 7vw, 3.5rem);
@@ -158,9 +159,6 @@
   .hero-content .blur-shape {
     width: 280px;
     height: 280px;
-    filter: blur(100px);
+    filter: blur(90px);
   }
 }
-
-/* === SCROLL REACTIVITY === */
-

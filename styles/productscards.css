@@ -24,6 +24,7 @@
   gap: 1rem;
   padding: 2rem 0;
   z-index: 100;
+  
 }
 
 
@@ -60,8 +61,8 @@
     rgba(255, 255, 255, 0.05)
   );
   border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 
   /* Depth */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -189,15 +190,15 @@
 
  .badge.in-stock {
   background: rgba(0, 128, 0, 0.54);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(4px);
 }
 .badge.out-of-stock {
   background: rgba(255, 0, 0, 0.23);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(4px);
 }
  .badge.top-product {
   background: orange;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(4px);
 }
 
 .badge.offer {
@@ -207,7 +208,7 @@
   border-radius: 6px;
   font-size: 0.75rem;
   color: white;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(4px);
   background: #7200b071;
 
 }
@@ -336,7 +337,7 @@ select.custom:disabled {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   border: 1px solid #ccc;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(4px);
   font-size: 1rem;
   appearance: none; /* remove default arrow in some browsers */
   -webkit-appearance: none;
@@ -551,22 +552,20 @@ select.custom:disabled {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  max-width: 75%;
+  max-width: 100%;
   width: 100%;
   margin: 0 auto;
-  padding: 3rem 0;
-  gap: 1.5rem;
+  padding: 3rem 3rem;
+  gap: 2rem;
   position: relative;
-
 }
 
 .header-right {
-  flex: 0 1 150px;
+  flex: 0 1 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  z-index: 8;
+  gap: 0.5rem; 
 }
 
 @media (max-width: 400px) {
@@ -665,4 +664,66 @@ select.custom:disabled {
     width: 22px;
     height: 22px;
   }
+}
+
+
+/* ============================================================
+   🌟 View More — AL-WAFI Elegant Section
+============================================================ */
+.viewmore-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.viewmore-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--accent-clr);
+  transition: color 0.25s ease;
+}
+
+.viewmore-link svg {
+  transition: transform 0.25s ease;
+}
+
+.viewmore-link:hover {
+  color: var(--accent-hover, #7c4dff);
+}
+
+.viewmore-link:hover svg {
+  transform: translateX(3px);
+}
+
+/* Footer button */
+.viewmore-footer {
+  display: flex;
+  justify-content: center;
+  margin: 2.5rem 0;
+}
+
+.viewmore-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.8rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  box-shadow: 0 3px 10px rgba(var(--accent-rgb), 0.25);
+  transition: all 0.35s ease;
+  text-decoration: none;
+}
+
+.viewmore-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(var(--accent-rgb), 0.35);
 }

@@ -164,9 +164,7 @@ const Land = () => {
 
   return (
     <section id="feature-section" {...handlers} style={{ alignItems: t.flexAlign }}>
-      {/* === Background Blur Layers === */}
-      <div className="blur-spot spot1"></div>
-      <div className="blur-spot spot2"></div>
+   
 
       {/* === Hero Header === */}
       <header className="feature-header">

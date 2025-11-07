@@ -25,7 +25,6 @@ const Home = () => {
       <Laptops />
       <AccessoriesProducts />
       <Offers />
-      <TrendingProducts />
     </Suspense>
   );
 };

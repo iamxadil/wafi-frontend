@@ -8,39 +8,62 @@ export const useLaptopsQuery = ({
   page = 1,
   limit = 6,
   search = "",
-  sort = "newest",
+  sort = "date-desc",
   isTopProduct,
   isOffer,
   inStock,
-  ...filters // dynamic (brand, tags, price, etc.)
+  ...filters // dynamic filters: brand, cpu, ram, etc.
 } = {}) => {
   return useQuery({
     queryKey: ["laptops", { page, limit, search, sort, isTopProduct, isOffer, inStock, filters }],
 
     queryFn: async () => {
       const params = new URLSearchParams();
+
+      // ✅ Always fetch laptop category
       params.append("category", "Laptops");
       params.append("page", page);
       params.append("limit", limit);
+
       if (search?.trim()) params.append("search", search.trim());
       if (sort) params.append("sort", sort);
       if (isTopProduct) params.append("isTopProduct", "true");
       if (isOffer) params.append("isOffer", "true");
       if (inStock) params.append("inStock", "true");
 
-      // Dynamic filters
+      /* =======================================================
+         🧩 Dynamic filters (brand, cpu, ram, gpu, storage, etc.)
+      ======================================================= */
       Object.entries(filters).forEach(([key, value]) => {
         if (value == null || value === "" || value?.length === 0) return;
+
+        // 🧠 Handle array filters (e.g. multiple brands or CPUs)
         if (Array.isArray(value)) {
           params.append(key, value.join(","));
-        } else if (typeof value === "object" && value.min != null && value.max != null) {
-          params.append(`min${key[0].toUpperCase() + key.slice(1)}`, value.min);
-          params.append(`max${key[0].toUpperCase() + key.slice(1)}`, value.max);
-        } else {
+        }
+
+        // 💰 Handle price range only
+        else if (
+          typeof value === "object" &&
+          value.min != null &&
+          value.max != null &&
+          key.toLowerCase() === "price"
+        ) {
+          params.append("minPrice", value.min);
+          params.append("maxPrice", value.max);
+        }
+
+        // 🧱 Fallback for single filter values
+        else {
           params.append(key, value);
         }
       });
 
+      console.log("🧠 Params sent to backend:", Object.fromEntries(params));
+
+      /* =======================================================
+         📦 Fetch Data
+      ======================================================= */
       const res = await axios.get(`${API_URL}/api/products?${params.toString()}`, {
         withCredentials: true,
       });
@@ -48,23 +71,28 @@ export const useLaptopsQuery = ({
       const data = res.data || {};
       const products = Array.isArray(data.products) ? data.products : [];
 
+      // 🧮 Calculate final price
       const normalized = products.map((p) => ({
         ...p,
-        finalPrice: Number(p.finalPrice ?? (p.price ?? 0) - (p.discountPrice ?? 0)),
+        finalPrice:
+          p.discountPrice && p.discountPrice > 0
+            ? p.price - p.discountPrice
+            : p.price,
       }));
 
       return {
         products: normalized,
         pagination: {
-          currentPage: data.page ?? page,
-          totalPages: data.pages ?? 0,
-          totalItems: data.totalItems ?? data.total ?? 0,
+          currentPage: data.pagination?.currentPage ?? page,
+          totalPages: data.pagination?.totalPages ?? 0,
+          totalItems: data.pagination?.totalItems ?? 0,
+          limit: data.pagination?.limit ?? limit,
         },
       };
     },
 
     keepPreviousData: true,
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60, // 1 minute cache
     refetchOnWindowFocus: false,
   });
 };

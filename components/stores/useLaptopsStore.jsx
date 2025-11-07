@@ -54,7 +54,7 @@ const useLaptopsStore = create((set) => ({
   /* ================================================================
      🧮 EXTRA: MAIN PAGE (e.g. homepage laptop previews)
   ================================================================ */
-  mainPageParams: { page: 1, limit: 4 },
+  mainPageParams: { page: 1, limit: 6 },
   setMainPageParams: (params) =>
     set((state) => ({
       mainPageParams: { ...state.mainPageParams, ...params },

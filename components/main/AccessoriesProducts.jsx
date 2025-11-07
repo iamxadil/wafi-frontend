@@ -1,22 +1,18 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Joystick } from 'lucide-react';
-import ProductCard from './ProductCard.jsx'
-import MobileCard from './MobileCard.jsx'
-import Pagination from './Pagination.jsx'
-import useWindowWidth from '../hooks/useWindowWidth.jsx'
-import useAccessoriesStore from '../stores/useAccessoriesStore.jsx'
-import { useAccessoriesQuery } from '../hooks/useAccessoriesQuery.jsx'
-import Loading from './Loading.jsx'
-import useTranslate from '../hooks/useTranslate.jsx';
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import ProductGrid from "./ProductGrid.jsx";
+import MobileCard from "./MobileCard.jsx";
+import Pagination from "./Pagination.jsx";
+import useWindowWidth from "../hooks/useWindowWidth.jsx";
+import useAccessoriesStore from "../stores/useAccessoriesStore.jsx";
+import { useAccessoriesQuery } from "../hooks/useAccessoriesQuery.jsx";
+import Loading from "./Loading.jsx";
+import useTranslate from "../hooks/useTranslate.jsx";
+import "../../styles/productscards.css";
 
 const AccessoriesProducts = () => {
-
-
-  //Setup
   const width = useWindowWidth();
- 
-  //Language Setup
   const t = useTranslate();
 
   // Zustand state
@@ -27,57 +23,78 @@ const AccessoriesProducts = () => {
   const { data, isLoading, isError } = useAccessoriesQuery(params);
   const products = data?.products || [];
   const pagination = data?.pagination || { currentPage: 1, totalPages: 0 };
-  const maxPages = 2;
-  const totalPages = Math.min(pagination.totalPages, maxPages);
+  const totalPages = Math.min(pagination.totalPages, 1);
 
-  //States
-   const handlePageChange = (page) => {
+  // Pagination handler
+  const handlePageChange = (page) => {
     if (page !== pagination.currentPage) setParams({ page });
   };
 
-  //Handle Errors
-  if (isLoading) return <Loading message="Loading Accessories..." />;
-  if (isError) return <p style={{ textAlign: "center" }}>Failed to load laptops.</p>;
+  // States
+  if (isLoading)
+    return <Loading message={t("Loading accessories...", "جاري تحميل الإكسسوارات...")} />;
+  if (isError)
+    return <p style={{ textAlign: "center" }}>{t("Failed to load accessories.", "فشل تحميل الإكسسوارات.")}</p>;
 
   return (
-    <>
-    <main id='pc-pr-container'>
-      <header className='pr-header' >
-        <Link to="/accessories" style={{flexDirection: t.rowReverse}}>
-        <h1>{t("Accessories", "الأكسسوارات")}</h1> <p>{t("View More", "رؤية المزيد")}</p>
+    <main id="pc-pr-container">
+      {/* === Header === */}
+      <header className="pr-header" style={{ justifyContent: t.flexAlign }}>
+        <Link to="/accessories" className="viewmore-header" style={{ flexDirection: t.rowReverse }}>
+          <h1>{t("Accessories", "الإكسسوارات")}</h1>
+          <span className="viewmore-link">
+            {t("View More", "رؤية المزيد")}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </span>
         </Link>
-        </header>
+      </header>
 
-       <div className={width > 650 ? "pc-pr-cards" : "mob-pr-cards"}>
+      {/* === Products Grid === */}
+      <div
+        style={{ maxWidth: "100%" }}
+        className={width > 650 ? "products-grid-container" : "mob-pr-cards"}
+      >
         {products.length > 0 ? (
           products.map((product, i) =>
             width > 650 ? (
-              <ProductCard key={product._id || product.id} product={product} />
+              <ProductGrid key={product._id || i} product={product} />
             ) : (
-              <MobileCard
-                key={product._id || product.id}
-                product={product}
-                customDelay={i * 0.08}
-              />
+              <MobileCard key={product._id || i} product={product} customDelay={i * 0.08} />
             )
           )
         ) : (
-          <p style={{ textAlign: "center" }}>{t("No Accessories Found", "لا توجد اكسسوارات")}</p>
+          <p style={{ textAlign: "center" }}>
+            {t("No Accessories Found", "لا توجد إكسسوارات")}
+          </p>
         )}
       </div>
 
-
-      {products.length > 0 && totalPages > 1 && (
-        <Pagination
-          currentPage={pagination.currentPage}
-          totalPages={totalPages}   
-          onPageChange={handlePageChange}
-        />
-      )}
-
+      {/* === Animated View More Footer === */}
+      <motion.div
+        className="viewmore-footer"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        <Link to="/accessories" className="viewmore-button">
+          {t("View All Accessories", "عرض كل الإكسسوارات")}
+        </Link>
+      </motion.div>
     </main>
-    </>
-  )
-}
+  );
+};
 
-export default AccessoriesProducts
+export default AccessoriesProducts;

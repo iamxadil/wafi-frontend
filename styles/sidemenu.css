@@ -3,7 +3,7 @@
   inset: 0;
   z-index: 5000;
   background-color: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(10px); /* Safari */
 }
 
@@ -17,9 +17,7 @@
   padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(12px);
-
- 
+  backdrop-filter: blur(8px); 
 }
 
 .sidemenu-close {

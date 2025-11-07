@@ -54,6 +54,17 @@ const useAccessoriesStore = create((set)=>({
     //Reset
     resetSearchFilters: () => set({ searchFilters: {} }),   
 
+
+
+     //Gaming Accessories
+    gamingAccessories: { page: 1, limit: 6,}, 
+    setGamingAccessories: (params) =>
+      set((state) => ({
+        gamingAccessories: { ...state.gamingAccessories, ...params },
+      })),
+    gamingFilters: {},
+
+
     
 }))
 

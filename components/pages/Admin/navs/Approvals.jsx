@@ -20,6 +20,7 @@ import {
   PackageOpen,
   Tag,
   Layers,
+  BookCheck
 } from "lucide-react";
 import Pagination from "../../../main/Pagination.jsx";
 import AdminHeader from "../AdminHeader.jsx";
@@ -52,14 +53,16 @@ const Approvals = () => {
   const [params, setParams] = useState({ page: 1, limit: 8 });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      await fetchProducts("", "", {}, params.page, params.limit, "true");
-      setLoading(false);
-    };
-    load();
-  }, [params.page, params.limit, fetchProducts]);
+useEffect(() => {
+  const load = async () => {
+    setLoading(true);
+-   await fetchProducts("", "", {}, params.page, params.limit, "true");
++   await fetchProducts("", "", {}, params.page, params.limit, "false");
+    setLoading(false);
+  };
+  load();
+}, [params.page, params.limit, fetchProducts]);
+
 
   const pendingProducts = products.filter((p) => !p.approved);
   const totalPages = Math.ceil(pendingProducts.length / params.limit);
@@ -309,7 +312,7 @@ const Approvals = () => {
       <AdminHeader
         title="Pending Approvals"
         breadcrumb={["Dashboard", "Approvals"]}
-        Icon={PackageOpen}
+        Icon={BookCheck}
         totalCount={pendingProducts.length}
         selectedCount={selectedProducts.length}
         onSelectAll={selectAll}

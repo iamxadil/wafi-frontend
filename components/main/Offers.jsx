@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Percent } from 'lucide-react';
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import ProductCard from "./ProductCard.jsx";
+import ProductGrid from "./ProductGrid.jsx";
 import MobileCard from "./MobileCard.jsx";
 import Pagination from "./Pagination.jsx";
 import { useOffersQuery } from "../hooks/useOffersQuery.jsx";
@@ -34,7 +35,7 @@ const Offers = () => {
 
   return (
     <main id="pc-pr-container">
-      <header className="pr-header">
+      <header className="pr-header" style={{justifyContent: t.flexAlign}}>
         <Link style={{flexDirection: t.rowReverse}}>
           <h1>{t("Offers", "التخفيضات")}</h1>
           <Percent size={24} />
@@ -42,11 +43,11 @@ const Offers = () => {
       </header>
 
       {/* Cards */}
-      <div className={width > 650 ? "pc-pr-cards" : "mob-pr-cards"}>
+      <div style={{maxWidth: "100%"}} className={width > 650 ? "products-grid-container" : "mob-pr-cards"}>
         {products.length ? (
           products.map((product, i) =>
             width > 650 ? (
-              <ProductCard key={product._id || product.id} product={product} />
+              <ProductGrid key={product._id || product.id} product={product} />
             ) : (
               <MobileCard
                 key={product._id || product.id}

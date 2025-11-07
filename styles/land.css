@@ -1,29 +1,4 @@
-/* ============================= */
-/* 🎇 Decorative Blur Spots */
-/* ============================= */
-.blur-spot {
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.5;
-  z-index: 0;
-  pointer-events: none;
-}
 
-.spot1 {
-  top: 10%;
-  left: 10%;
-  background: var(--gradient-blur);
-}
-
-.spot2 {
-  bottom: 2%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--gradient-blur);
-}
 
 /* ============================= */
 /*   🎬 Feature Section Layout   */
@@ -235,7 +210,6 @@
   text-transform: uppercase;
   font-weight: 600;
   transition: all 0.3s ease;
-  backdrop-filter: blur(12px) saturate(140%);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
 }
 
@@ -268,7 +242,6 @@
   align-items: center;
   padding: 0.6rem 1rem;
   border-radius: 40px;
-  backdrop-filter: blur(16px) saturate(160%);
   background: rgba(255, 255, 255, 0.06);
   z-index: 2;
   position: relative;
@@ -280,7 +253,6 @@
   align-items: center;
   gap: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.25);
-  background: var(--gradient-blur);
   color: var(--text);
   padding: 0.45rem 1rem;
   border-radius: 30px;
@@ -288,7 +260,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(12px) saturate(140%);
 }
 
 .indicator-dot {
@@ -349,7 +320,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(12px);
 }
 
 .indicator-icon {
@@ -391,7 +361,6 @@
   cursor: pointer;
   font-weight: 600;
   transition: all 0.35s ease;
-  backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
 }
