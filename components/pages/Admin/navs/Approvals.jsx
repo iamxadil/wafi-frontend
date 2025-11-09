@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Table,
   ScrollArea,
@@ -11,25 +11,27 @@ import {
   Group,
   Image,
   Card,
+  Modal,
 } from "@mantine/core";
 import {
   CheckCircle2,
   MoreHorizontal,
   Trash2,
   Eye,
-  PackageOpen,
-  Tag,
-  Layers,
-  BookCheck
+  BookCheck,
 } from "lucide-react";
 import Pagination from "../../../main/Pagination.jsx";
 import AdminHeader from "../AdminHeader.jsx";
 import useWindowWidth from "../../../hooks/useWindowWidth.jsx";
-import useProductStore from "../../../stores/useProductStore.jsx";
 import { useDisclosure } from "@mantine/hooks";
-import { Modal } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import "@mantine/carousel/styles.css";
+
+import {
+  useApprovalsQuery,
+  useSetApprove,
+} from "../../../hooks/useApprovalsQuery.jsx";
+import useApprovalsStore from "../../../stores/useApprovalsStore.jsx";
 
 /* ==========================================================
    ✅ MAIN COMPONENT
@@ -38,49 +40,40 @@ const Approvals = () => {
   const width = useWindowWidth();
   const isMobile = width < 800;
 
-  const {
-    products,
-    fetchProducts,
-    setProductApproval,
-    deleteSingleProduct,
-  } = useProductStore();
+  const { params, setParams, selected, setSelected, clearSelected } =
+    useApprovalsStore();
 
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [approvingId, setApprovingId] = useState(null);
   const [opened, { open, close }] = useDisclosure(false);
 
-  const [params, setParams] = useState({ page: 1, limit: 8 });
-  const [loading, setLoading] = useState(false);
+  // ✅ Fetch unapproved products
+  const {
+    data: pendingProducts = [],
+    isLoading,
+    isError,
+  } = useApprovalsQuery();
 
-useEffect(() => {
-  const load = async () => {
-    setLoading(true);
--   await fetchProducts("", "", {}, params.page, params.limit, "true");
-+   await fetchProducts("", "", {}, params.page, params.limit, "false");
-    setLoading(false);
-  };
-  load();
-}, [params.page, params.limit, fetchProducts]);
+  // ✅ Single mutation for both approve/delete
+  const { mutate: handleProductAction, isPending } = useSetApprove();
 
+  // ✅ Pagination calculation
+  const paginatedProducts = useMemo(() => {
+    const start = (params.page - 1) * params.limit;
+    const end = params.page * params.limit;
+    return pendingProducts.slice(start, end);
+  }, [pendingProducts, params.page, params.limit]);
 
-  const pendingProducts = products.filter((p) => !p.approved);
   const totalPages = Math.ceil(pendingProducts.length / params.limit);
 
-  const handleApprove = async (id) => {
-    try {
-      setApprovingId(id);
-      await setProductApproval(id, "approve");
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setApprovingId(null);
-    }
-  };
+  /* ==========================================================
+     🧠 ACTION HANDLERS
+  ========================================================== */
+  const handleApprove = (id) =>
+    handleProductAction({ id, action: "approve" });
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      deleteSingleProduct(id);
+      handleProductAction({ id, action: "delete" });
     }
   };
 
@@ -90,17 +83,16 @@ useEffect(() => {
   };
 
   const toggleSelect = (id) => {
-    setSelectedProducts((prev) =>
+    setSelected((prev) =>
       prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
     );
   };
 
-  const selectAll = () =>
-    setSelectedProducts(pendingProducts.map((p) => p.id));
-  const deselectAll = () => setSelectedProducts([]);
+  const selectAll = () => setSelected(pendingProducts.map((p) => p._id));
+  const deselectAll = () => clearSelected();
+
   const allSelected =
-    pendingProducts.length > 0 &&
-    selectedProducts.length === pendingProducts.length;
+    pendingProducts.length > 0 && selected.length === pendingProducts.length;
 
   /* ==========================================================
      🖥️ TABLE VIEW
@@ -134,105 +126,103 @@ useEffect(() => {
         </Table.Thead>
 
         <Table.Tbody>
-          {pendingProducts
-            .slice(
-              (params.page - 1) * params.limit,
-              params.page * params.limit
-            )
-            .map((p) => {
-              const isSelected = selectedProducts.includes(p.id);
-              return (
-                <Table.Tr
-                  key={p.id}
-                  style={{
-                    background: isSelected
-                      ? "rgba(var(--accent-rgb),0.08)"
-                      : "transparent",
-                    transition: "background 0.25s ease",
-                  }}
-                >
-                  <Table.Td>
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => toggleSelect(p.id)}
+          {paginatedProducts.map((p) => {
+            const isSelected = selected.includes(p._id);
+            return (
+              <Table.Tr
+                key={p._id}
+                style={{
+                  background: isSelected
+                    ? "rgba(var(--accent-rgb),0.08)"
+                    : "transparent",
+                  transition: "background 0.25s ease",
+                }}
+              >
+                <Table.Td>
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleSelect(p._id)}
+                  />
+                </Table.Td>
+
+                <Table.Td>
+                  {p.images?.[0] ? (
+                    <Image
+                      src={p.images[0]}
+                      alt={p.name}
+                      width={50}
+                      height={50}
+                      radius="sm"
+                      fit="contain"
                     />
-                  </Table.Td>
-                  <Table.Td>
-                    {p.images?.[0] ? (
-                      <Image
-                        src={p.images[0]}
-                        alt={p.name}
-                        width={50}
-                        height={50}
-                        radius="sm"
-                        fit="contain"
-                      />
-                    ) : (
-                      <Text size="xs" color="dimmed">
-                        No Image
-                      </Text>
-                    )}
-                  </Table.Td>
-                  <Table.Td>
-                    <Text fw={500}>{p.name}</Text>
-                  </Table.Td>
-                  <Table.Td>
-                    <Badge color="blue" variant="light">
-                      {p.category}
-                    </Badge>
-                  </Table.Td>
-                  <Table.Td>
-                    <Badge color="violet" variant="light">
-                      {p.brand}
-                    </Badge>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text fw={600} color="var(--accent-clr)">
-                      {p.price.toLocaleString()} IQD
+                  ) : (
+                    <Text size="xs" c="dimmed">
+                      No Image
                     </Text>
-                  </Table.Td>
+                  )}
+                </Table.Td>
 
-                  <Table.Td style={{ textAlign: "center" }}>
-                    <Menu shadow="md" width={160}>
-                      <Menu.Target>
-                        <ActionIcon
-                          variant="subtle"
-                          color="gray"
-                          radius="xl"
-                          aria-label="Actions"
-                        >
-                          <MoreHorizontal size={18} />
-                        </ActionIcon>
-                      </Menu.Target>
+                <Table.Td>
+                  <Text fw={500}>{p.name}</Text>
+                </Table.Td>
 
-                      <Menu.Dropdown>
-                        <Menu.Item
-                          icon={<CheckCircle2 size={14} />}
-                          onClick={() => handleApprove(p.id)}
-                          disabled={approvingId === p.id}
-                        >
-                          Approve
-                        </Menu.Item>
-                        <Menu.Item
-                          icon={<Eye size={14} />}
-                          onClick={() => handleOpenModal(p)}
-                        >
-                          View
-                        </Menu.Item>
-                        <Menu.Item
-                          icon={<Trash2 size={14} />}
-                          color="red"
-                          onClick={() => handleDelete(p.id)}
-                        >
-                          Delete
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
-                  </Table.Td>
-                </Table.Tr>
-              );
-            })}
+                <Table.Td>
+                  <Badge color="blue" variant="light">
+                    {p.category}
+                  </Badge>
+                </Table.Td>
+
+                <Table.Td>
+                  <Badge color="violet" variant="light">
+                    {p.brand}
+                  </Badge>
+                </Table.Td>
+
+                <Table.Td>
+                  <Text fw={600} c="var(--accent-clr)">
+                    {p.price?.toLocaleString()} IQD
+                  </Text>
+                </Table.Td>
+
+                <Table.Td style={{ textAlign: "center" }}>
+                  <Menu shadow="md" width={160}>
+                    <Menu.Target>
+                      <ActionIcon variant="subtle" color="gray" radius="xl">
+                        <MoreHorizontal size={18} />
+                      </ActionIcon>
+                    </Menu.Target>
+
+                    <Menu.Dropdown>
+                      <Menu.Item
+                        icon={<CheckCircle2 size={14} />}
+                        onClick={() => handleApprove(p._id)}
+                        disabled={isPending}
+                      >
+                        Approve
+                      </Menu.Item>
+
+                      <Menu.Item
+                        icon={<Eye size={14} />}
+                        onClick={() => handleOpenModal(p)}
+                      >
+                        View
+                      </Menu.Item>
+
+                      <Menu.Item
+                        icon={<Trash2 size={14} />}
+                        color="red"
+                        onClick={() => handleDelete(p._id)}
+                        disabled={isPending}
+                      >
+                        Delete
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
+                </Table.Td>
+              </Table.Tr>
+            );
+          })}
         </Table.Tbody>
       </Table>
     </ScrollArea>
@@ -243,64 +233,60 @@ useEffect(() => {
   ========================================================== */
   const renderMobileCards = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      {pendingProducts
-        .slice((params.page - 1) * params.limit, params.page * params.limit)
-        .map((p) => (
-          <Card
-            key={p.id}
-            withBorder
-            shadow="sm"
-            radius="md"
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.1)",
-            }}
-          >
-            <Group justify="space-between" mb="xs">
-              <Text fw={600}>{p.name}</Text>
-              <Badge color="blue" variant="filled">
-                {p.category}
-              </Badge>
-            </Group>
-            <Image
-              src={p.images?.[0]}
-              alt={p.name}
-              height={180}
-              fit="contain"
-            />
-            <Group mt="sm" justify="space-between">
-              <Text fw={600} color="var(--accent-clr)">
-                {p.price.toLocaleString()} IQD
-              </Text>
-              <Badge color="violet">{p.brand}</Badge>
-            </Group>
+      {paginatedProducts.map((p) => (
+        <Card
+          key={p._id}
+          withBorder
+          shadow="sm"
+          radius="md"
+          style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
+        >
+          <Group justify="space-between" mb="xs">
+            <Text fw={600}>{p.name}</Text>
+            <Badge color="blue" variant="filled">
+              {p.category}
+            </Badge>
+          </Group>
 
-            <Group justify="flex-end" mt="sm" gap="xs">
-              <ActionIcon
-                color="blue"
-                variant="subtle"
-                onClick={() => handleApprove(p.id)}
-                loading={approvingId === p.id}
-              >
-                <CheckCircle2 size={16} />
-              </ActionIcon>
-              <ActionIcon
-                variant="subtle"
-                color="gray"
-                onClick={() => handleOpenModal(p)}
-              >
-                <Eye size={16} />
-              </ActionIcon>
-              <ActionIcon
-                color="red"
-                variant="subtle"
-                onClick={() => handleDelete(p.id)}
-              >
-                <Trash2 size={16} />
-              </ActionIcon>
-            </Group>
-          </Card>
-        ))}
+          <Image src={p.images?.[0]} alt={p.name} height={180} fit="contain" />
+
+          <Group mt="sm" justify="space-between">
+            <Text fw={600} c="var(--accent-clr)">
+              {p.price?.toLocaleString()} IQD
+            </Text>
+            <Badge color="violet">{p.brand}</Badge>
+          </Group>
+
+          <Group justify="flex-end" mt="sm" gap="xs">
+            <ActionIcon
+              color="blue"
+              variant="subtle"
+              onClick={() => handleApprove(p._id)}
+              loading={isPending}
+            >
+              <CheckCircle2 size={16} />
+            </ActionIcon>
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              onClick={() => handleOpenModal(p)}
+            >
+              <Eye size={16} />
+            </ActionIcon>
+            <ActionIcon
+              color="red"
+              variant="subtle"
+              onClick={() => handleDelete(p._id)}
+              loading={isPending}
+            >
+              <Trash2 size={16} />
+            </ActionIcon>
+          </Group>
+        </Card>
+      ))}
     </div>
   );
 
@@ -314,7 +300,7 @@ useEffect(() => {
         breadcrumb={["Dashboard", "Approvals"]}
         Icon={BookCheck}
         totalCount={pendingProducts.length}
-        selectedCount={selectedProducts.length}
+        selectedCount={selected.length}
         onSelectAll={selectAll}
         onDeselectAll={deselectAll}
         onSearch={(val) => console.log("search", val)}
@@ -331,18 +317,12 @@ useEffect(() => {
           borderRadius: "16px",
         }}
       >
-        {loading ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "2rem",
-            }}
-          >
-            <Loader color="blue" />
-          </div>
+        {isLoading ? (
+          <CenterLoader />
+        ) : isError ? (
+          <ErrorMessage />
         ) : pendingProducts.length === 0 ? (
-          <Text align="center" color="dimmed">
+          <Text align="center" c="dimmed">
             No pending approvals 🎉
           </Text>
         ) : isMobile ? (
@@ -357,12 +337,12 @@ useEffect(() => {
           <Pagination
             currentPage={params.page}
             totalPages={totalPages}
-            onPageChange={(page) => setParams((p) => ({ ...p, page }))}
+            onPageChange={(page) => setParams({ page })}
           />
         </div>
       )}
 
-      {/* 🔍 Modal View */}
+      {/* 🔍 Modal */}
       <Modal
         opened={opened}
         onClose={close}
@@ -370,7 +350,10 @@ useEffect(() => {
         size="lg"
         centered
         styles={{
-          content: { backgroundColor: "var(--background)", color: "var(--text)" },
+          content: {
+            backgroundColor: "var(--background)",
+            color: "var(--text)",
+          },
           header: { backgroundColor: "var(--background)" },
           title: { color: "var(--text)" },
         }}
@@ -413,5 +396,18 @@ useEffect(() => {
     </main>
   );
 };
+
+/* Small helper subcomponents for cleaner code */
+const CenterLoader = () => (
+  <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+    <Loader color="blue" />
+  </div>
+);
+
+const ErrorMessage = () => (
+  <Text align="center" color="red">
+    Failed to load pending approvals ❌
+  </Text>
+);
 
 export default Approvals;

@@ -217,8 +217,8 @@ export default function App() {
           <Route path="/favorites" element={<Favorites />} />
 
           {/* Test */}
-          <Route path="/test" element={<Test />} />
-          <Route path="/lappy" element={<Laptops />} />
+          {/*<Route path="/test" element={<Test />} />*/}
+        
 
           {/* Product / Category */}
           <Route path="/product/:id" element={<ProductDetails />} />

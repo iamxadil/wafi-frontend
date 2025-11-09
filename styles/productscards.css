@@ -560,6 +560,13 @@ select.custom:disabled {
   position: relative;
 }
 
+.main-header {
+  margin-top: 2rem;
+  display: flex;
+  width: 100%;
+  justify-content: center !important;
+}
+
 .header-right {
   flex: 0 1 auto;
   display: flex;
@@ -582,13 +589,13 @@ select.custom:disabled {
 }
 
 
-.pr-header:hover::before {
+.pr-header:hover::before, .main-header:hover::before {
   opacity: 0.22;
   transform: translate(-50%, -50%) scale(1);
 }
 
 /* === Link === */
-.pr-header a {
+.pr-header a, .main-header a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -600,12 +607,12 @@ select.custom:disabled {
 }
 
 /* gentle float hover */
-.pr-header a:hover {
+.pr-header a:hover, .main-header a:hover {
   transform: translateY(-2px);
 }
 
 /* === Title === */
-.pr-header h1 {
+.pr-header h1, .main-header h1 {
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -615,7 +622,7 @@ select.custom:disabled {
 }
 
 /* 🌈 minimalist underline animation */
-.pr-header h1::after {
+.pr-header h1::after, .main-header h1::after {
   content: "";
   position: absolute;
   bottom: -5px;
@@ -627,7 +634,7 @@ select.custom:disabled {
   transition: width 0.4s ease;
 }
 
-.pr-header a:hover h1::after {
+.pr-header a:hover h1::after, .main-header a:hover h1::after {
   width: 100%;
 }
 

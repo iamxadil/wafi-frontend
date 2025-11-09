@@ -850,18 +850,7 @@
   background-size: 200%; /* stronger zoom on hover */
 }
 
-.magnifier::after {
-  content: "";
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15), transparent 70%);
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.2s ease;
-}
+
 
 .magnifier:hover::after {
   opacity: 1;

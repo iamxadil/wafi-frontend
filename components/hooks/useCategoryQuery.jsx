@@ -19,10 +19,10 @@ export const useCategoryQuery = (params) => {
         products: normalized,
         
         pagination: {
-          currentPage: data.page ?? 1,
-          totalPages: data.pages ?? 0,
-          totalItems: data.total ?? data.totalItems ?? 0,
-        }
+          currentPage: data.pagination?.currentPage ?? page,
+          totalPages: data.pagination?.totalPages ?? 0,
+          totalItems: data.pagination?.totalItems ?? 0,
+        },
       };
     },
     keepPreviousData: true,

@@ -12,72 +12,61 @@ export const useLaptopsQuery = ({
   isTopProduct,
   isOffer,
   inStock,
-  ...filters // dynamic filters: brand, cpu, ram, etc.
+  ...filters // dynamic filters: brand, cpu, ram, gpu, etc.
 } = {}) => {
   return useQuery({
     queryKey: ["laptops", { page, limit, search, sort, isTopProduct, isOffer, inStock, filters }],
 
     queryFn: async () => {
-      const params = new URLSearchParams();
-
-      // ✅ Always fetch laptop category
-      params.append("category", "Laptops");
-      params.append("page", page);
-      params.append("limit", limit);
-
-      if (search?.trim()) params.append("search", search.trim());
-      if (sort) params.append("sort", sort);
-      if (isTopProduct) params.append("isTopProduct", "true");
-      if (isOffer) params.append("isOffer", "true");
-      if (inStock) params.append("inStock", "true");
-
-      /* =======================================================
-         🧩 Dynamic filters (brand, cpu, ram, gpu, storage, etc.)
-      ======================================================= */
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value == null || value === "" || value?.length === 0) return;
-
-        // 🧠 Handle array filters (e.g. multiple brands or CPUs)
-        if (Array.isArray(value)) {
-          params.append(key, value.join(","));
-        }
-
-        // 💰 Handle price range only
-        else if (
-          typeof value === "object" &&
-          value.min != null &&
-          value.max != null &&
-          key.toLowerCase() === "price"
-        ) {
-          params.append("minPrice", value.min);
-          params.append("maxPrice", value.max);
-        }
-
-        // 🧱 Fallback for single filter values
-        else {
-          params.append(key, value);
-        }
+      const params = new URLSearchParams({
+        category: "Laptops",
+        page,
+        limit,
+        sort,
       });
 
-      console.log("🧠 Params sent to backend:", Object.fromEntries(params));
+      if (search?.trim()) params.set("search", search.trim());
+      if (isTopProduct) params.set("isTopProduct", "true");
+      if (isOffer) params.set("isOffer", "true");
+      if (inStock) params.set("inStock", "true");
 
       /* =======================================================
-         📦 Fetch Data
+         🧩 Dynamic filters (auto-encode arrays & complex filters)
       ======================================================= */
-      const res = await axios.get(`${API_URL}/api/products?${params.toString()}`, {
+      for (const [key, val] of Object.entries(filters)) {
+        if (val == null || val === "" || (Array.isArray(val) && !val.length)) continue;
+
+        // 🧠 Array filters (e.g., multiple brands or CPUs)
+        if (Array.isArray(val)) {
+          params.set(key, val.join(","));
+          continue;
+        }
+
+        // 💰 Range object (price, etc.)
+        if (typeof val === "object" && ("min" in val || "max" in val)) {
+          if (val.min != null) params.set("minPrice", val.min);
+          if (val.max != null) params.set("maxPrice", val.max);
+          continue;
+        }
+
+        // 🎯 Basic single value (string, number, combo)
+        params.set(key, String(val).trim());
+      }
+
+      console.log("🧠 Query params sent:", Object.fromEntries(params));
+
+      /* =======================================================
+         📦 Fetch
+      ======================================================= */
+      const { data } = await axios.get(`${API_URL}/api/products?${params.toString()}`, {
         withCredentials: true,
       });
 
-      const data = res.data || {};
-      const products = Array.isArray(data.products) ? data.products : [];
+      const products = data?.products || [];
 
-      // 🧮 Calculate final price
       const normalized = products.map((p) => ({
         ...p,
-        finalPrice:
-          p.discountPrice && p.discountPrice > 0
-            ? p.price - p.discountPrice
-            : p.price,
+        finalPrice: p.discountPrice > 0 ? p.price - p.discountPrice : p.price,
       }));
 
       return {
@@ -92,7 +81,7 @@ export const useLaptopsQuery = ({
     },
 
     keepPreviousData: true,
-    staleTime: 1000 * 60, // 1 minute cache
+    staleTime: 1000 * 60, // 1 minute
     refetchOnWindowFocus: false,
   });
 };

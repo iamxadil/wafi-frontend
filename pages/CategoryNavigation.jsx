@@ -80,6 +80,7 @@ useEffect(() => {
    
   });
 
+
   // Filter products/offers for pagination
   const displayedProducts = (productsData?.products || []).filter(
     p => !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())

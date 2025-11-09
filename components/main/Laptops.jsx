@@ -33,25 +33,9 @@ const LaptopProducts = () => {
   return (
     <main id="pc-pr-container">
       {/* Header */}
-      <header className="pr-header" style={{ justifyContent: t.flexAlign }}>
+      <header className={ width > 650 ? "main-header" : "pr-header"} style={{ justifyContent: t.flexAlign }}>
         <Link to="/laptops" className="viewmore-header" style={{ flexDirection: t.rowReverse }}>
           <h1>{t("Laptops", "اللابتوبات")}</h1>
-          <span className="viewmore-link">
-            {t("View More", "رؤية المزيد")}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </span>
         </Link>
       </header>
 

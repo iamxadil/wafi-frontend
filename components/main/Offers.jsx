@@ -35,7 +35,7 @@ const Offers = () => {
 
   return (
     <main id="pc-pr-container">
-      <header className="pr-header" style={{justifyContent: t.flexAlign}}>
+      <header className={ width > 650 ? "main-header" : "pr-header"} style={{justifyContent: t.flexAlign}}>
         <Link style={{flexDirection: t.rowReverse}}>
           <h1>{t("Offers", "التخفيضات")}</h1>
           <Percent size={24} />
