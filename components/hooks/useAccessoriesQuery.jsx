@@ -57,7 +57,6 @@ export const useAccessoriesQuery = ({
 
       const url = `${API_URL}/api/products/accessories?${params.toString()}`;
       const res = await axios.get(url, { withCredentials: true });
-      console.log("🔍 Accessories Query URL:", url);
 
       const data = res.data || {};
       const products = Array.isArray(data.products) ? data.products : [];

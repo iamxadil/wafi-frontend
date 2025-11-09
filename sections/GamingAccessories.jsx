@@ -36,9 +36,6 @@ const GamingAccessories = () => {
     if (page !== pagination.currentPage) setGamingAccessories({ page });
   };
 
-  //Debug 
-  console.log(products);
-  console.log(pagination);
 
 
 if (isLoading)

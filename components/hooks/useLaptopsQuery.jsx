@@ -53,8 +53,6 @@ export const useLaptopsQuery = ({
         params.set(key, String(val).trim());
       }
 
-      console.log("🧠 Query params sent:", Object.fromEntries(params));
-
       /* =======================================================
          📦 Fetch
       ======================================================= */

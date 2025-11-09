@@ -41,7 +41,6 @@ export const useUnarchiveOrder = () => {
 
   return useMutation({
     mutationFn: (orderId) => {
-      console.log("Calling restore mutation for orderId:", orderId); // debug
       return axios.patch(`${API_URL}/api/orders/${orderId}/unarchive`, {}, {withCredentials: true});
     },
     onSuccess: (res, orderId) => {
@@ -59,7 +58,6 @@ export const useRestoreOrder = () => {
 
   return useMutation({
     mutationFn: (orderId) => {
-      console.log("Calling restore mutation for orderId:", orderId); // debug
       return axios.patch(`${API_URL}/api/orders/${orderId}/unarchive`, {}, {withCredentials: true});
     },
     onSuccess: (res, orderId) => {
