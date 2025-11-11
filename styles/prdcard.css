@@ -1,0 +1,324 @@
+/* ============================================================
+   ✨ Product Card (with vertical overflow image, smooth wrapper)
+   ============================================================ */
+.prd-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 320px;
+  height: 420px;
+  margin-top: 2.5rem;
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  overflow: visible;
+  cursor: pointer;
+
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.prd-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* ============================================================
+   🖼️ Product Image (smooth wrapper animation)
+   ============================================================ */
+.prd-img-wrap {
+  position: relative;
+  width: 240px;
+  height: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -60px;
+  overflow: visible;
+  z-index: 1;
+
+  transform: translateY(0);
+  transition:
+    transform 0.65s cubic-bezier(0.25, 1, 0.5, 1) 0.05s,
+    filter 0.4s ease-in-out 0.05s;
+}
+
+.prd-card:hover .prd-img-wrap {
+  transform: translateY(-8px);
+  filter: brightness(1.05);
+}
+
+.prd-img {
+  width: 260px;
+  height: 220px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ============================================================
+   📦 Product Details
+   ============================================================ */
+.prd-details {
+  text-align: center;
+  flex: 1 1 100%;
+  padding: 1.2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 2;
+}
+
+.prd-brand {
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+.prd-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text);
+  min-height: 40px;
+}
+
+.prd-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.prd-old {
+  text-decoration: line-through;
+  opacity: 0.7;
+  font-size: 0.95rem;
+}
+
+.prd-new {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--accent, #3f82f7);
+}
+
+/* ============================================================
+   🛒 Add To Cart
+   ============================================================ */
+.prd-cart {
+  width: 100%;
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+}
+
+.prd-cart button {
+  width: 100%;
+  height: 100%;
+  font-weight: 600;
+  border: none;
+  border-top: 1px solid var(--text);
+  border-radius: 0 0 14px 14px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+}
+
+.prd-cart button:hover {
+  background: var(--accent-hover, #609eff);
+  color: #1d1d1f;
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   🏷️ Badges
+   ============================================================ */
+.prd-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  z-index: 3;
+  opacity: 0.95;
+  transition: all 0.45s ease-in-out;
+}
+
+.prd-card:hover .prd-badge {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.prd-badge.in {
+  background: rgba(0, 128, 0, 0.55);
+}
+
+.prd-badge.out {
+  background: rgba(255, 0, 0, 0.35);
+}
+
+.prd-badge.offer {
+  top: 44px;
+  background: #7200b071;
+}
+
+/* ============================================================
+   ❤️ Favorite (Heart)
+   ============================================================ */
+.prd-heart {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.45s ease-in-out;
+  z-index: 3;
+}
+
+.prd-heart:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   📱 Responsive (Medium devices)
+   ============================================================ */
+@media (max-width: 768px) {
+  .prd-card {
+    width: 270px;
+    height: 380px;
+  }
+
+  .prd-img {
+    width: 220px;
+    height: 190px;
+  }
+
+  .prd-img-wrap {
+    margin-top: -50px;
+  }
+
+  .prd-name {
+    font-size: 1.1rem;
+  }
+}
+
+/* ============================================================
+   📱 Creative Small Tablet / Large Phone
+   ============================================================ */
+@media (max-width: 690px) {
+  .prd-card {
+    width: 240px;
+    height: 340px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  }
+
+  .prd-img-wrap {
+    width: 200px;
+    height: 130px;
+    margin-top: -50px;
+    transform: translateY(0);
+  }
+
+  .prd-card:hover .prd-img-wrap {
+    transform: translateY(-6px);
+  }
+
+  .prd-img {
+    width: 210px;
+    height: 180px;
+  }
+
+  .prd-details {
+    padding: 0.9rem 0.8rem;
+    gap: 0.7rem;
+  }
+
+  .prd-brand {
+    font-size: 0.8rem;
+  }
+
+  .prd-name {
+    font-size: 1rem;
+    min-height: 30px;
+  }
+
+  .prd-price {
+    gap: 4px;
+  }
+
+  .prd-old {
+    font-size: 0.85rem;
+  }
+
+  .prd-new {
+    font-size: 0.95rem;
+  }
+
+  .prd-cart {
+    height: 38px;
+  }
+
+  .prd-cart button {
+    font-size: 0.9rem;
+  }
+
+  .prd-heart {
+    width: 28px;
+    height: 28px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .prd-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .prd-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  }
+}
+
+/* ============================================================
+   🎨 Theming
+   ============================================================ */
+:root {
+  --text: #1d1d1f;
+  --accent: #3f82f7;
+  --accent-hover: #609eff;
+}
+
+[data-theme="dark"] {
+  --text: #f5f5f5;
+  --accent: #6ee7b7;
+  --accent-hover: #9fffd6;
+}

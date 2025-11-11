@@ -27,8 +27,12 @@ const menuData = [
     items: [
       { label: { en: "All Accessories", ar: "جميع الإكسسوارات" }, path: "/accessories" },
       { label: "Headphones", path: "/category/Headphones" },
+      { label: "Speakers", path: "/category/Speakers" },
       { label: "Mice", path: "/category/Mice" },
       { label: "Keyboards", path: "/category/Keyboards" },
+      { label: "Combo Kb & M", path: "/category/Combo Kb & M" },
+      { label: "Cooling Pads", path: "/category/Cooling Pads" },
+      { label: "Mousepads & Deskpads", path: "/category/Mousepads & Deskpads" },
     ],
   },
   {
@@ -39,6 +43,8 @@ const menuData = [
       { label: "Routers", path: "/category/Routers" },
       { label: "Cables", path: "/category/Cables" },
       { label: "Adapters", path: "/category/Adapters" },
+      { label: "Flash Drives", path: "/category/Flash Drives" },
+      { label: "Hard Disks & SSDs", path: "/category/Hard Disks & SSDs" },
     ],
   },
 ];

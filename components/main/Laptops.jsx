@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
+import ProductCard from './ProductCard.jsx';
 import ProductGrid from "./ProductGrid.jsx";
 import MobileCard from "./MobileCard.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
@@ -42,12 +43,12 @@ const LaptopProducts = () => {
       {/* Products */}
       <div
         style={{ maxWidth: "100%" }}
-        className={width > 650 ? "products-grid-container" : "mob-pr-cards"}
+        className={width > 650 ? "pc-pr-cards" : "mob-pr-cards"}
       >
         {products.length > 0 ? (
           products.map((product, i) =>
             width > 650 ? (
-              <ProductGrid key={product._id || product.id} product={product} />
+              <ProductCard key={product._id || product.id} product={product} />
             ) : (
               <MobileCard
                 key={product._id || product.id}

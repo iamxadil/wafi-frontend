@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProductGrid from "./ProductGrid.jsx";
 import MobileCard from "./MobileCard.jsx";
+import ProductCard from "./ProductCard.jsx";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import useAccessoriesStore from "../stores/useAccessoriesStore.jsx";
 import { useAccessoriesQuery } from "../hooks/useAccessoriesQuery.jsx";
@@ -47,12 +48,12 @@ const AccessoriesProducts = () => {
       {/* === Products Grid === */}
       <div
         style={{ maxWidth: "100%" }}
-        className={width > 650 ? "products-grid-container" : "mob-pr-cards"}
+        className={width > 650 ? "pc-pr-cards" : "mob-pr-cards"}
       >
         {products.length > 0 ? (
           products.map((product, i) =>
             width > 650 ? (
-              <ProductGrid key={product._id || i} product={product} />
+              <ProductCard key={product._id || i} product={product} />
             ) : (
               <MobileCard key={product._id || i} product={product} customDelay={i * 0.08} />
             )

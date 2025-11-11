@@ -1,3 +1,11 @@
+html, body {
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
 
 :root {
   --base-clr: #11121a;

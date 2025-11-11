@@ -26,7 +26,7 @@ import useTranslate from "../hooks/useTranslate.jsx";
 
 // ✅ Pre-memoize static menu data
 const LAPTOP_BRANDS = ["Asus", "Acer", "Apple", "Lenovo", "HP", "MSI", "Microsoft", "Dell"];
-const ACCESSORIES = ["Keyboards", "Mice", "Headphones", "Bags"];
+const ACCESSORIES = ["Keyboards", "Mice", "Combo Kb & M", "Headphones", "Speakers", "Bags", "Cooling Pads", "Mousepads & Deskpads"];
 const OTHERS = ["Routers", "Cables", "Adapters", "Flash Drives", "Hard Disks & SSDs"];
 
 const Logo = memo(() => (

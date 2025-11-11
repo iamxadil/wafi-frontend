@@ -28,8 +28,6 @@
 }
 
 
-
-
 #pc-pr-header h1 {
   margin-top: 1rem;
 }
@@ -42,7 +40,6 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 2rem;
-
 }
 
 .pc-pr-card {
@@ -53,7 +50,6 @@
   width: 300px;
   height: 380px;
   border-radius: 12px;
-
   /* Glass effect */
   background: linear-gradient(
     135deg,
@@ -79,10 +75,11 @@
 
 .pc-image-wrapper {
   width: 200px;
-  height: 100px;
+  height: 120px;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: visible;
   
 }
 

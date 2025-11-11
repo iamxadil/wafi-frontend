@@ -43,11 +43,11 @@ const Offers = () => {
       </header>
 
       {/* Cards */}
-      <div style={{maxWidth: "100%"}} className={width > 650 ? "products-grid-container" : "mob-pr-cards"}>
+      <div style={{maxWidth: "100%"}} className={width > 650 ? "pc-pr-cards" : "mob-pr-cards"}>
         {products.length ? (
           products.map((product, i) =>
             width > 650 ? (
-              <ProductGrid key={product._id || product.id} product={product} />
+              <ProductCard key={product._id || product.id} product={product} />
             ) : (
               <MobileCard
                 key={product._id || product.id}

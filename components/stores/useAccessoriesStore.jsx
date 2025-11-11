@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 const useAccessoriesStore = create((set)=>({
 
-   accessoriesParams: { page: 1,limit: 6,},
+   accessoriesParams: { page: 1,limit: 4,},
 
   setAccessoriesParams: (params) =>
     set((state) => ({
