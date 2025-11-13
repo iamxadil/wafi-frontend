@@ -256,7 +256,6 @@ export default function App() {
       </Suspense>
 
       {/* === Persistent Layouts === */}
-      <AppFooter />
       {showBottomNavbar && <BottomNavbar />}
     </>
   );
