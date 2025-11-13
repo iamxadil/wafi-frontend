@@ -444,10 +444,11 @@ const specsList = specOrder
           alignItems: t.flexAlign,
         }}
       >
+        <span className="spec-div">
         <span className="spec-icon">{icon}</span>
-        <span className="spec-key" style={{ justifyContent: t.flexAlign }}>
-          {label}
+        <span className="spec-key" style={{ justifyContent: t.flexAlign }}>{label} </span>
         </span>
+
         <span className="spec-value">{formattedValue}</span>
       </li>
     );

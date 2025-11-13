@@ -54,7 +54,6 @@
   transition: opacity 0.25s ease, max-height 0.35s ease;
   pointer-events: none;
   z-index: 1;
-  right: 0;
 }
 
 .sort-container.open .sort-dropdown {

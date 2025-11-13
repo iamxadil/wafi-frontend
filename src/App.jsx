@@ -217,7 +217,7 @@ export default function App() {
           <Route path="/favorites" element={<Favorites />} />
 
           {/* Test */}
-          {/*<Route path="/test" element={<Test />} />*/}
+          <Route path="/test" element={<Test />} />
         
 
           {/* Product / Category */}

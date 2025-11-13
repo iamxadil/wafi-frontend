@@ -12,59 +12,72 @@ export const useLaptopsQuery = ({
   isTopProduct,
   isOffer,
   inStock,
-  ...filters // dynamic filters: brand, cpu, ram, gpu, etc.
+  category = "Laptops",
+  ...filters
 } = {}) => {
   return useQuery({
-    queryKey: ["laptops", { page, limit, search, sort, isTopProduct, isOffer, inStock, filters }],
+    queryKey: [
+      "laptops",
+      {
+        page,
+        limit,
+        search,
+        sort,
+        isTopProduct,
+        isOffer,
+        inStock,
+        filters, // dynamic filters
+      },
+    ],
 
     queryFn: async () => {
       const params = new URLSearchParams({
-        category: "Laptops",
+        category,
         page,
         limit,
         sort,
       });
 
-      if (search?.trim()) params.set("search", search.trim());
+      if (search.trim()) params.set("search", search.trim());
       if (isTopProduct) params.set("isTopProduct", "true");
       if (isOffer) params.set("isOffer", "true");
       if (inStock) params.set("inStock", "true");
 
       /* =======================================================
-         🧩 Dynamic filters (auto-encode arrays & complex filters)
+         🧩 Dynamic Filters
       ======================================================= */
       for (const [key, val] of Object.entries(filters)) {
-        if (val == null || val === "" || (Array.isArray(val) && !val.length)) continue;
+        if (val == null) continue;
 
-        // 🧠 Array filters (e.g., multiple brands or CPUs)
+        // Arrays (brands, cpuModel, gpuFamily, ramSize...)
         if (Array.isArray(val)) {
-          params.set(key, val.join(","));
+          if (val.length > 0) params.set(key, val.join(","));
           continue;
         }
 
-        // 💰 Range object (price, etc.)
+        // Range object
         if (typeof val === "object" && ("min" in val || "max" in val)) {
           if (val.min != null) params.set("minPrice", val.min);
           if (val.max != null) params.set("maxPrice", val.max);
           continue;
         }
 
-        // 🎯 Basic single value (string, number, combo)
-        params.set(key, String(val).trim());
+        // Single values
+        params.set(key, String(val));
       }
 
       /* =======================================================
-         📦 Fetch
+         📡 Fetch
       ======================================================= */
-      const { data } = await axios.get(`${API_URL}/api/products?${params.toString()}`, {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(
+        `${API_URL}/api/products?${params.toString()}`,
+        { withCredentials: true }
+      );
 
-      const products = data?.products || [];
-
-      const normalized = products.map((p) => ({
+      const normalized = (data?.products || []).map((p) => ({
         ...p,
-        finalPrice: p.discountPrice > 0 ? p.price - p.discountPrice : p.price,
+        finalPrice:
+          p.discountPrice > 0 ? p.price - p.discountPrice : p.price,
       }));
 
       return {
@@ -79,7 +92,7 @@ export const useLaptopsQuery = ({
     },
 
     keepPreviousData: true,
-    staleTime: 1000 * 60, // 1 minute
+    staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
   });
 };

@@ -31,6 +31,7 @@ import {
   useApprovalsQuery,
   useSetApprove,
 } from "../../../hooks/useApprovalsQuery.jsx";
+
 import useApprovalsStore from "../../../stores/useApprovalsStore.jsx";
 
 /* ==========================================================
@@ -40,8 +41,8 @@ const Approvals = () => {
   const width = useWindowWidth();
   const isMobile = width < 800;
 
-  const { params, setParams, selected, setSelected, clearSelected } =
-    useApprovalsStore();
+  // ⛔ Removed: selected, setSelected, clearSelected
+  const { params, setParams } = useApprovalsStore();
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [opened, { open, close }] = useDisclosure(false);
@@ -53,10 +54,10 @@ const Approvals = () => {
     isError,
   } = useApprovalsQuery();
 
-  // ✅ Single mutation for both approve/delete
+  // ✅ Single mutation for approve/delete
   const { mutate: handleProductAction, isPending } = useSetApprove();
 
-  // ✅ Pagination calculation
+  // ✅ Pagination logic
   const paginatedProducts = useMemo(() => {
     const start = (params.page - 1) * params.limit;
     const end = params.page * params.limit;
@@ -82,18 +83,6 @@ const Approvals = () => {
     open();
   };
 
-  const toggleSelect = (id) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
-    );
-  };
-
-  const selectAll = () => setSelected(pendingProducts.map((p) => p._id));
-  const deselectAll = () => clearSelected();
-
-  const allSelected =
-    pendingProducts.length > 0 && selected.length === pendingProducts.length;
-
   /* ==========================================================
      🖥️ TABLE VIEW
   ========================================================== */
@@ -107,15 +96,7 @@ const Approvals = () => {
       >
         <Table.Thead>
           <Table.Tr>
-            <Table.Th style={{ width: "40px" }}>
-              <input
-                type="checkbox"
-                checked={allSelected}
-                onChange={(e) =>
-                  e.target.checked ? selectAll() : deselectAll()
-                }
-              />
-            </Table.Th>
+            {/* ❌ Removed checkbox column */}
             <Table.Th>Image</Table.Th>
             <Table.Th>Name</Table.Th>
             <Table.Th>Category</Table.Th>
@@ -126,103 +107,92 @@ const Approvals = () => {
         </Table.Thead>
 
         <Table.Tbody>
-          {paginatedProducts.map((p) => {
-            const isSelected = selected.includes(p._id);
-            return (
-              <Table.Tr
-                key={p._id}
-                style={{
-                  background: isSelected
-                    ? "rgba(var(--accent-rgb),0.08)"
-                    : "transparent",
-                  transition: "background 0.25s ease",
-                }}
-              >
-                <Table.Td>
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => toggleSelect(p._id)}
+          {paginatedProducts.map((p) => (
+            <Table.Tr
+              key={p._id}
+              style={{
+                background: "transparent", // cleaned
+                transition: "background 0.25s ease",
+              }}
+            >
+              {/* ❌ Removed checkbox cell */}
+
+              <Table.Td>
+                {p.images?.[0] ? (
+                  <Image
+                    src={p.images[0]}
+                    alt={p.name}
+                    width={50}
+                    height={50}
+                    radius="sm"
+                    fit="contain"
                   />
-                </Table.Td>
-
-                <Table.Td>
-                  {p.images?.[0] ? (
-                    <Image
-                      src={p.images[0]}
-                      alt={p.name}
-                      width={50}
-                      height={50}
-                      radius="sm"
-                      fit="contain"
-                    />
-                  ) : (
-                    <Text size="xs" c="dimmed">
-                      No Image
-                    </Text>
-                  )}
-                </Table.Td>
-
-                <Table.Td>
-                  <Text fw={500}>{p.name}</Text>
-                </Table.Td>
-
-                <Table.Td>
-                  <Badge color="blue" variant="light">
-                    {p.category}
-                  </Badge>
-                </Table.Td>
-
-                <Table.Td>
-                  <Badge color="violet" variant="light">
-                    {p.brand}
-                  </Badge>
-                </Table.Td>
-
-                <Table.Td>
-                  <Text fw={600} c="var(--accent-clr)">
-                    {p.price?.toLocaleString()} IQD
+                ) : (
+                  <Text size="xs" c="dimmed">
+                    No Image
                   </Text>
-                </Table.Td>
+                )}
+              </Table.Td>
 
-                <Table.Td style={{ textAlign: "center" }}>
-                  <Menu shadow="md" width={160}>
-                    <Menu.Target>
-                      <ActionIcon variant="subtle" color="gray" radius="xl">
-                        <MoreHorizontal size={18} />
-                      </ActionIcon>
-                    </Menu.Target>
+              <Table.Td>
+                <Text fw={500}>{p.name}</Text>
+              </Table.Td>
 
-                    <Menu.Dropdown>
-                      <Menu.Item
-                        icon={<CheckCircle2 size={14} />}
-                        onClick={() => handleApprove(p._id)}
-                        disabled={isPending}
-                      >
-                        Approve
-                      </Menu.Item>
+              <Table.Td>
+                <Badge color="blue" variant="light">
+                  {p.category}
+                </Badge>
+              </Table.Td>
 
-                      <Menu.Item
-                        icon={<Eye size={14} />}
-                        onClick={() => handleOpenModal(p)}
-                      >
-                        View
-                      </Menu.Item>
+              <Table.Td>
+                <Badge color="violet" variant="light">
+                  {p.brand}
+                </Badge>
+              </Table.Td>
 
-                      <Menu.Item
-                        icon={<Trash2 size={14} />}
-                        color="red"
-                        onClick={() => handleDelete(p._id)}
-                        disabled={isPending}
-                      >
-                        Delete
-                      </Menu.Item>
-                    </Menu.Dropdown>
-                  </Menu>
-                </Table.Td>
-              </Table.Tr>
-            );
-          })}
+              <Table.Td>
+                <Text fw={600} c="var(--accent-clr)">
+                  {p.price?.toLocaleString()} IQD
+                </Text>
+              </Table.Td>
+
+              <Table.Td style={{ textAlign: "center" }}>
+                <Menu shadow="md" width={160}>
+                  <Menu.Target>
+                    <ActionIcon variant="subtle" color="gray" radius="xl">
+                      <MoreHorizontal size={18} />
+                    </ActionIcon>
+                  </Menu.Target>
+
+                  <Menu.Dropdown>
+                    <Menu.Item
+                      icon={<CheckCircle2 size={14} />}
+                      onClick={() => handleApprove(p._id)}
+                      disabled={isPending}
+                    >
+                      Approve
+                    </Menu.Item>
+
+                    <Menu.Item
+                      icon={<Eye size={14} />}
+                      onClick={() => handleOpenModal(p)}
+                    >
+                      View
+                    </Menu.Item>
+
+                    <Menu.Item
+                      icon={<Trash2 size={14} />}
+                      color="red"
+                      onClick={() => handleDelete(p._id)}
+                      disabled={isPending}
+                    >
+                      Delete
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              </Table.Td>
+            </Table.Tr>
+          ))}
         </Table.Tbody>
       </Table>
     </ScrollArea>
@@ -269,6 +239,7 @@ const Approvals = () => {
             >
               <CheckCircle2 size={16} />
             </ActionIcon>
+
             <ActionIcon
               variant="subtle"
               color="gray"
@@ -276,6 +247,7 @@ const Approvals = () => {
             >
               <Eye size={16} />
             </ActionIcon>
+
             <ActionIcon
               color="red"
               variant="subtle"
@@ -300,9 +272,6 @@ const Approvals = () => {
         breadcrumb={["Dashboard", "Approvals"]}
         Icon={BookCheck}
         totalCount={pendingProducts.length}
-        selectedCount={selected.length}
-        onSelectAll={selectAll}
-        onDeselectAll={deselectAll}
         onSearch={(val) => console.log("search", val)}
         sortOptions={["Default", "Newest", "Oldest", "Price High", "Price Low"]}
       />
@@ -378,14 +347,17 @@ const Approvals = () => {
             <Text mt="md">
               <strong>Description:</strong> {selectedProduct.description}
             </Text>
+
             <Group mt="sm">
               <Text fw={500}>Stock:</Text>
               <Badge color="pink">{selectedProduct.countInStock}</Badge>
             </Group>
+
             <Group mt="sm">
               <Text fw={500}>Brand:</Text>
               <Badge color="violet">{selectedProduct.brand}</Badge>
             </Group>
+
             <Group mt="sm">
               <Text fw={500}>SKU:</Text>
               <Badge color="blue">{selectedProduct.sku}</Badge>
@@ -397,7 +369,7 @@ const Approvals = () => {
   );
 };
 
-/* Small helper subcomponents for cleaner code */
+/* Small helper components */
 const CenterLoader = () => (
   <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
     <Loader color="blue" />
