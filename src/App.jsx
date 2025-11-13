@@ -52,7 +52,6 @@ const Analytics = lazy(() => import("../components/pages/Admin/navs/Analytics.js
 const Approvals = lazy(() => import("../components/pages/Admin/navs/Approvals.jsx"));
 const Vitals = lazy(() => import("../components/pages/Admin/navs/Vitals.jsx"));
 const Test = lazy(() => import ("../sections/Test.jsx"));
-const Laptops = lazy(() => import ("../sections/AllLaptops.jsx"));
 
 // Cart & Orders
 const Cart = lazy(() => import("../components/main/Cart.jsx"));
@@ -257,6 +256,7 @@ export default function App() {
       </Suspense>
 
       {/* === Persistent Layouts === */}
+      <AppFooter />
       {showBottomNavbar && <BottomNavbar />}
     </>
   );

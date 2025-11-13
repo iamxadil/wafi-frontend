@@ -1,66 +1,64 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import "../../styles/remodal.css";
 
 const backdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
+  hidden: { opacity: 0, pointerEvents: "none" },
+  visible: { opacity: 1, pointerEvents: "auto" }
 };
 
 const modalVariants = {
-  hidden: { opacity: 0, y: 50, scale: 0.95 },
-  visible: { opacity: 1, y: 0, scale: 1 },
-  exit: { opacity: 0, y: 50, scale: 0.95 },
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  visible: { opacity: 1, y: 0, scale: 1 }
 };
 
 const ReModal = ({ isOpen, onClose, title, children }) => {
-
- useEffect(() => {
+  // Prevent scroll ON THE WRAPPER, not on <body>
+  useEffect(() => {
+    const html = document.documentElement;
     if (isOpen) {
-      // Prevent scrolling
-      document.body.style.overflow = "hidden";
+      html.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "";
+      html.style.overflow = "";
     }
 
-    // Clean up on unmount
     return () => {
-      document.body.style.overflow = "";
+      html.style.overflow = "";
     };
   }, [isOpen]);
-  
 
-  if (!isOpen) return null;
-
-  
-
+  // Always mounted -> zero CLS
   return createPortal(
     <AnimatePresence>
-      <motion.div
-        className="remodal-overlay"
-        variants={backdropVariants}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        onClick={onClose}
-      >
+      {isOpen && (
         <motion.div
-          className="remodal-content"
-          variants={modalVariants}
+          className="remodal-overlay"
+          variants={backdropVariants}
           initial="hidden"
           animate="visible"
-          exit="exit"
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          onClick={(e) => e.stopPropagation()}
+          exit="hidden"
+          transition={{ duration: 0.25 }}
+          onClick={onClose}
         >
-          {title && <h2 className="remodal-title">{title}</h2>}
-          <div className="remodal-body">{children}</div>
-          <button className="remodal-close" onClick={onClose}>
-            ×
-          </button>
+          <motion.div
+            className="remodal-content"
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {title && <h2 className="remodal-title">{title}</h2>}
+            <div className="remodal-body">{children}</div>
+
+            <button className="remodal-close" onClick={onClose}>
+              ×
+            </button>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
     </AnimatePresence>,
     document.body
   );

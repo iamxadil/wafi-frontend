@@ -145,18 +145,51 @@ signin: async (email, password, navigate, rememberMe) => {
   // -------------------
   // Fetch Profile
   // -------------------
-  profile: async () => {
-    set({ isProfileLoading: true });
-    try {
-      const response = await axios.get(`${API_URL}/api/users/profile`, { withCredentials: true });
-      set({ user: response.data, loggedOut: false, isProfileLoading: false });
-      return response.data;
-    } catch (error) {
-      console.error("Profile fetch failed:", error);
-      set({ loggedOut: true, isProfileLoading: false, user: null });
-      return null;
+profile: async () => {
+  set({ isProfileLoading: true });
+
+  try {
+    const res = await axios.get(`${API_URL}/api/users/profile`, {
+      withCredentials: true,
+    });
+
+    const { user, loggedIn } = res.data;
+
+    // 🔵 Logged out (silent)
+    if (!loggedIn || !user) {
+      set({
+        user: null,
+        loggedOut: true,
+        isProfileLoading: false,
+      });
+
+      return { user: null, loggedIn: false };
     }
-  },
+
+    // 🟢 Logged in
+    set({
+      user,
+      loggedOut: false,
+      isProfileLoading: false,
+    });
+
+    return { user, loggedIn: true };
+
+  } catch (error) {
+    // Only unexpected server errors should reach here
+    console.error("Unexpected profile error:", error);
+
+    set({
+      user: null,
+      loggedOut: true,
+      isProfileLoading: false,
+    });
+
+    return { user: null, loggedIn: false };
+  }
+},
+
+
 
   // -------------------
   // Forgot Password

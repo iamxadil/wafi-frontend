@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { Layout, Row, Col, Typography, Space } from "antd";
-import { FaFacebookF as Facebook, FaInstagram as Instagram, FaWhatsapp as Whatsapp } from "react-icons/fa";
-import ReModal from "../main/ReModal.jsx";
+import {
+  FaFacebookF as Facebook,
+  FaInstagram as Instagram,
+  FaWhatsapp as Whatsapp,
+} from "react-icons/fa";
 import useTranslate from "../hooks/useTranslate.jsx";
 import "../../styles/appfooter.css";
 import { useNavigate } from "react-router-dom";
 
 const { Footer } = Layout;
 const { Title, Text } = Typography;
+
+// Lazy-loaded modal bundle
+const FooterModals = lazy(() => import("../utils/footerModals.jsx"));
 
 const LogoTitle = ({ t }) => (
   <Space align="center" size={10} style={{ display: "flex", flexDirection: "row" }}>
@@ -19,12 +25,12 @@ const LogoTitle = ({ t }) => (
   </Space>
 );
 
-const AppFooter = () => {
+export default function AppFooter() {
   const [modalType, setModalType] = useState(null);
   const t = useTranslate();
   const navigate = useNavigate();
 
-  // === Multilingual Static Content ===
+  // === ORIGINAL STATIC CONTENT (must remain unchanged) ===
   const ABOUT_US_CONTENT = {
     title: t("About Us", "من نحن"),
     paragraphs: [
@@ -91,7 +97,9 @@ const AppFooter = () => {
       {
         heading: t("Delivery & Packaging", "خدمة التوصيل والتغليف"),
         text: t(
-          `Safe and secure delivery system and service with warranty in case any customer encounters a bad packaging provided from the deilvery companies.`, "خدمة توصيل آمنة وسريعة مع تأمين كامل على الطلبات وتغليف مُميز وآمن وعدم تحمُل الزبون اي ضرر او تكاليف في حال حدث خطأ من شركات التوصيل" ),
+          `Safe and secure delivery system and service with warranty in case any customer encounters a bad packaging provided from the deilvery companies.`,
+          "خدمة توصيل آمنة وسريعة مع تأمين كامل على الطلبات وتغليف مُميز وآمن وعدم تحمُل الزبون اي ضرر او تكاليف في حال حدث خطأ من شركات التوصيل"
+        ),
       },
     ],
   };
@@ -137,118 +145,104 @@ const AppFooter = () => {
     ],
   };
 
+  // === RETURN FOOTER LAYOUT (NO CLS VERSION) ===
   return (
-    <Footer
-      style={{
-        background: "none",
-        color: "var(--text)",
-        padding: "0px 50px",
-        paddingTop: "100px",
-        paddingBottom: "40px",
-        backdropFilter: "blur(6px)",
-        WebkitBackdropFilter: "blur(6px)",
-      }}
-    >
-      <Row gutter={[40, 40]} justify="space-between">
-        {/* Logo & About */}
-        <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
-          <Space direction="vertical" size={15} style={{ alignItems: t.flexAlign }}>
-            <LogoTitle t={t} />
-            <Text style={{ color: "var(--text)" }}>
-              {t(
-                "A pioneer in Baghdad’s computer industry since 1993.",
-                "من اقدم مكاتب الحاسِبات في بغداد، تأسسَ في عام 1993"
-              )}
-            </Text>
-          </Space>
-        </Col>
-
-        {/* Quick Links */}
-        <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
-          <Space direction="vertical" size={10} style={{ textAlign: t.textAlign }}>
-            <Title level={5} style={{ color: "var(--text)", marginBottom: 10 }}>
-              {t("Quick Links", "روابط سريعة")}
-            </Title>
-            <Text style={{ color: "var(--text)", cursor: "pointer" }} onClick={() => navigate("/")}>
-              {t("Home", "الرئيسية")}
-            </Text>
-            <Text style={{ color: "var(--text)", cursor: "pointer" }} onClick={() => setModalType("about")}>
-              {t("About Us", "من نحن")}
-            </Text>
-            <Text style={{ color: "var(--text)", cursor: "pointer" }} onClick={() => setModalType("services")}>
-              {t("Services", "الخدمات")}
-            </Text>
-            <Text style={{ color: "var(--text)", cursor: "pointer" }} onClick={() => setModalType("faq")}>
-              {t("FAQ", "الأسئلة الشائعة")}
-            </Text>
-          </Space>
-        </Col>
-
-        {/* Contact Info */}
-        <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
-          <Space direction="vertical" size={10}>
-            <Title level={5} style={{ color: "var(--text)", marginBottom: 10 }}>
-              {t("Contact Info", "معلومات التواصل")}
-            </Title>
-            <Text style={{ color: "var(--text)" }}>{t("Al Senaha St. - Baghdad - Iraq", "شارع الصناعة - بغداد - العراق")}</Text>
-            <Text style={{ color: "var(--text)" }}>support@alwafi.net</Text>
-            <Text style={{ color: "var(--text)" }}>+964 784 497 0384</Text>
-          </Space>
-        </Col>
-
-        {/* Social Media */}
-        <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
-          <Space direction="vertical" size={15} style={{ textAlign: t.textAlign }}>
-            <Title level={5} style={{ color: "var(--text)", marginBottom: 10 }}>
-              {t("Get In Touch", "تواصل معنا")}
-            </Title>
-            <Space size="middle">
-              <a href="https://www.facebook.com/alwafi.co1" target="_blank" rel="noopener noreferrer">
-                <Facebook size={25} color="var(--text)" />
-              </a>
-              <a href="https://www.instagram.com/alwafi.co1/" target="_blank" rel="noopener noreferrer">
-                <Instagram size={25} color="var(--text)" />
-              </a>
-              <a href="https://wa.me/9647844970384" target="_blank" rel="noopener noreferrer">
-                <Whatsapp size={25} color="var(--text)" />
-              </a>
+    <>
+      <Footer
+        style={{
+          width: "100%",
+          background: "none",
+          color: "var(--text)",
+          padding: "50px 50px 30px",
+        }}
+      >
+        <Row gutter={[40, 40]} justify="space-between">
+          {/* Logo & info */}
+          <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
+            <Space direction="vertical" size={15} style={{ alignItems: t.flexAlign }}>
+              <LogoTitle t={t} />
+              <Text style={{ color: "var(--text)" }}>
+                {t(
+                  "A pioneer in Baghdad’s computer industry since 1993.",
+                  "من اقدم مكاتب الحاسِبات في بغداد، تأسسَ في عام 1993"
+                )}
+              </Text>
             </Space>
-            <Text style={{ color: "var(--text)", marginTop: 20, display: "block" }}>
-              © 2025 {t("AL-WAFI. All rights reserved.", "الوافي. جميع الحقوق محفوظة.")}
-            </Text>
-          </Space>
-        </Col>
-      </Row>
+          </Col>
 
-      {/* === Modals === */}
-      <ReModal isOpen={modalType === "about"} onClose={() => setModalType(null)} title={ABOUT_US_CONTENT.title}>
-        {ABOUT_US_CONTENT.paragraphs.map((p, i) => (
-          <div key={i} style={{ marginBottom: "1rem", textAlign: t.textAlign }}>
-            {p.heading && <h3 style={{ color: "#6ee7b7", marginBottom: "0.5rem" }}>{p.heading}</h3>}
-            <p style={{ lineHeight: 1.6 }}>{p.text}</p>
-          </div>
-        ))}
-      </ReModal>
+          {/* Quick Links */}
+          <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
+            <Space direction="vertical" size={10}>
+              <Title level={5} style={{ color: "var(--text)", marginBottom: 10 }}>
+                {t("Quick Links", "روابط سريعة")}
+              </Title>
+              <Text onClick={() => navigate("/")} style={{ cursor: "pointer", color: "var(--text)" }}>
+                {t("Home", "الرئيسية")}
+              </Text>
+              <Text onClick={() => setModalType("about")} style={{ cursor: "pointer", color: "var(--text)" }}>
+                {t("About Us", "من نحن")}
+              </Text>
+              <Text onClick={() => setModalType("services")} style={{ cursor: "pointer", color: "var(--text)" }}>
+                {t("Services", "الخدمات")}
+              </Text>
+              <Text onClick={() => setModalType("faq")} style={{ cursor: "pointer", color: "var(--text)" }}>
+                {t("FAQ", "الأسئلة الشائعة")}
+              </Text>
+            </Space>
+          </Col>
 
-      <ReModal isOpen={modalType === "services"} onClose={() => setModalType(null)} title={SERVICES_CONTENT.title}>
-        {SERVICES_CONTENT.paragraphs.map((p, i) => (
-          <div key={i} style={{ marginBottom: "1rem", textAlign: t.textAlign }}>
-            {p.heading && <h3 style={{ color: "#6ee7b7", marginBottom: "0.5rem" }}>{p.heading}</h3>}
-            <p style={{ lineHeight: 1.6 }}>{p.text}</p>
-          </div>
-        ))}
-      </ReModal>
+          {/* Contact */}
+          <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
+            <Space direction="vertical" size={10}>
+              <Title level={5} style={{ color: "var(--text)", marginBottom: 10 }}>
+                {t("Contact Info", "معلومات التواصل")}
+              </Title>
+              <Text style={{ color: "var(--text)" }}>
+                {t("Al Senaha St. - Baghdad - Iraq", "شارع الصناعة - بغداد - العراق")}
+              </Text>
+              <Text style={{ color: "var(--text)" }}>support@alwafi.net</Text>
+              <Text style={{ color: "var(--text)" }}>+964 784 497 0384</Text>
+            </Space>
+          </Col>
 
-      <ReModal isOpen={modalType === "faq"} onClose={() => setModalType(null)} title={FAQ_CONTENT.title}>
-        {FAQ_CONTENT.items.map((item, i) => (
-          <div key={i} style={{ marginBottom: "1rem", textAlign: t.textAlign }}>
-            <h3 style={{ color: "#6ee7b7", marginBottom: "0.3rem" }}>{item.question}</h3>
-            <p style={{ lineHeight: 1.6 }}>{item.answer}</p>
-          </div>
-        ))}
-      </ReModal>
-    </Footer>
+          {/* Social */}
+          <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
+            <Space direction="vertical" size={15}>
+              <Title level={5} style={{ color: "var(--text)" }}>
+                {t("Get In Touch", "تواصل معنا")}
+              </Title>
+
+              <Space size="middle">
+                <a href="https://www.facebook.com/alwafi.co1" target="_blank">
+                  <Facebook size={25} color="var(--text)" />
+                </a>
+                <a href="https://www.instagram.com/alwafi.co1/" target="_blank">
+                  <Instagram size={25} color="var(--text)" />
+                </a>
+                <a href="https://wa.me/9647844970384" target="_blank">
+                  <Whatsapp size={25} color="var(--text)" />
+                </a>
+              </Space>
+
+              <Text style={{ color: "var(--text)", marginTop: 20 }}>
+                © 2025 {t("AL-WAFI. All rights reserved.", "الوافي. جميع الحقوق محفوظة.")}
+              </Text>
+            </Space>
+          </Col>
+        </Row>
+      </Footer>
+
+      {/* === Lazy-loaded Modals (Zero CLS) === */}
+      <Suspense fallback={null}>
+        <FooterModals
+          modalType={modalType}
+          ABOUT_US_CONTENT={ABOUT_US_CONTENT}
+          SERVICES_CONTENT={SERVICES_CONTENT}
+          FAQ_CONTENT={FAQ_CONTENT}
+          onClose={() => setModalType(null)}
+          t={t}
+        />
+      </Suspense>
+    </>
   );
-};
-
-export default AppFooter;
+}
