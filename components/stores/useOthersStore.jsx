@@ -14,7 +14,7 @@ const useOthersStore = create((set) => ({
   /* =============================================================
      🧩 2️⃣ Main Category Page Params (like CatOthers.jsx)
   ============================================================= */
-  othersPageParams: { page: 1, limit: 6 },
+  othersPageParams: { page: 1, limit: 8 },
   setOthersPageParams: (params) =>
     set((state) => ({
       othersPageParams: { ...state.othersPageParams, ...params },

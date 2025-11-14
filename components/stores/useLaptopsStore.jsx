@@ -5,7 +5,7 @@ const useLaptopsStore = create((set) => ({
   /* ================================================================
      🧱 MAIN PAGE (for full laptop listing)
   ================================================================ */
-  laptopPageParams: { page: 1, limit: 6 },
+  laptopPageParams: { page: 1, limit: 8 },
 
   setLaptopPageParams: (params) =>
     set((state) => ({

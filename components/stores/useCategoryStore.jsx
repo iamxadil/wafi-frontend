@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const useCategoryStore = create((set) => ({
   // 1️⃣ Regular products
-  productsParams: { page: 1, limit: 6, category: "", brand: "", search: "" },
+  productsParams: { page: 1, limit: 8, category: "", brand: "", search: "" },
   setProductsParams: (params) => set(state => ({
     productsParams: { ...state.productsParams, ...params }
   })),

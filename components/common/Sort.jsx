@@ -71,7 +71,7 @@ const Sort = ({
       </button>
 
       {/* === DROPDOWN === */}
-      <div className="sort-dropdown" style={{[t.positionAlign]: "-120px", background: "red"}}>
+      <div className="sort-dropdown" style={{[t.positionAlign]: "-120px"}}>
         {sortOptions.map((opt) => (
           <button
             key={opt.value}

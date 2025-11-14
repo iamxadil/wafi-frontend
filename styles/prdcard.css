@@ -322,3 +322,72 @@
   --accent: #6ee7b7;
   --accent-hover: #9fffd6;
 }
+
+
+/* ============================================================
+   📱 Medium-Small Screens (870px and below)
+   ============================================================ */
+@media (max-width: 870px) {
+  .prd-card {
+    width: 250px;
+    height: 350px;
+    border-radius: 12px;
+  }
+
+  .prd-img-wrap {
+    width: 220px;
+    height: 135px;
+    margin-top: -55px;
+  }
+
+  .prd-img {
+    width: 230px;
+    height: 200px;
+  }
+
+  .prd-details {
+    padding: 1rem 0.9rem;
+    gap: 0.8rem;
+  }
+
+  .prd-brand {
+    font-size: 0.88rem;
+  }
+
+  .prd-name {
+    font-size: 1.15rem;
+    min-height: 34px;
+  }
+
+  .prd-price {
+    gap: 5px;
+  }
+
+  .prd-old {
+    font-size: 0.9rem;
+  }
+
+  .prd-new {
+    font-size: 1rem;
+  }
+
+  .prd-cart {
+    height: 40px;
+  }
+
+  .prd-cart button {
+    font-size: 0.95rem;
+  }
+
+  .prd-heart {
+    width: 30px;
+    height: 30px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .prd-badge {
+    font-size: 0.75rem;
+    padding: 0.28rem 0.55rem;
+  }
+}

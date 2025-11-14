@@ -1,13 +1,17 @@
 import React from 'react';
 import useFavoritesStore from '../../stores/useFavoritesStore.jsx';
 import ProductGrid from '../../main/ProductGrid.jsx';
+import ProductBlock from '../../main/ProductBlock.jsx';
+import ProductCard from '../../main/ProductCard.jsx';
 import '../../../styles/favorites.css';
 import { Link } from 'react-router-dom';
 import useTranslate from '../../hooks/useTranslate.jsx';
+import useWindowWidth from '../../hooks/useWindowWidth.jsx';
 
 const Favorites = () => {
   const { favorites } = useFavoritesStore();
   const t = useTranslate();
+  const width = useWindowWidth();
 
   return (
     <>
@@ -37,14 +41,19 @@ const Favorites = () => {
           </p>
         </main>
       ) : (
-        <main
-          className='products-grid-container'
+       <div
+          className={width > 650 ? "pc-pr-cards" : "mobile-grid"}
           style={{ textAlign: t.textAlign }}
         >
-          {favorites.map((fav) => (
-            <ProductGrid key={fav.id || fav._id} product={fav} />
+          {favorites.map((fav, i) => (
+            width > 650 ? (
+              <ProductCard key={fav._id || i} product={fav} />
+            ) : (
+              <ProductBlock key={fav._id || i} product={fav} />
+            )
           ))}
-        </main>
+        </div>
+
       )}
     </>
   );

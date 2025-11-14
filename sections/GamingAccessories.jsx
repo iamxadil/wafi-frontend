@@ -7,6 +7,7 @@ import useWindowWidth from '../components/hooks/useWindowWidth.jsx';
 import useTranslate from '../components/hooks/useTranslate.jsx';
 //Components
 import MobileCard from '../components/main/MobileCard.jsx';
+import ProductCard from '../components/main/ProductCard.jsx';
 import ProductGrid from '../components/main/ProductGrid.jsx';
 import Pagination from '../components/main/Pagination.jsx';
 import Loading from '../components/main/Loading.jsx';
@@ -54,14 +55,16 @@ if (isLoading)
 
   return (
     <section id='pc-pr-container'>
-        <header className='pr-header'><h1>Gaming</h1></header>
+        <header className='pr-header' style={{flexDirection: t.rowReverse}}>
+          <h1>{t("Gaming", "اكسسوارات الالعاب")}</h1>
+        </header>
 
 
-     <div className={width > 650 ? "products-grid-container " : "mobile-grid"}>
+     <div className={width > 650 ? "pc-pr-cards " : "mobile-grid"}>
       {products.length > 0 ? (
         products.map((product, i) =>
           width > 650 ? (
-            <ProductGrid key={product._id || product.id} product={product} />
+            <ProductCard key={product._id || product.id} product={product} />
           ) : (
             <ProductBlock
               key={product._id || product.id}

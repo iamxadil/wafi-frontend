@@ -5,6 +5,7 @@ import Filter from "../components/common/Filter.jsx";
 import Sort from "../components/common/Sort.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx";
 import ProductBlock from "../components/main/ProductBlock.jsx";
+import ProductCard from '../components/main/ProductCard.jsx';
 import Pagination from "../components/main/Pagination.jsx";
 import Loading from "../components/main/Loading.jsx";
 
@@ -125,11 +126,11 @@ const AllLaptops = () => {
       </header>
 
       {/* Products Grid */}
-      <div className={width > 650 ? "products-grid-container" : "mobile-grid"}>
+      <div className={width > 650 ? "pc-pr-cards" : "mobile-grid"}>
         {laptops.length ? (
           laptops.map((product, i) =>
             width > 650 ? (
-              <ProductGrid key={product._id || i} product={product} />
+              <ProductCard key={product._id || i} product={product} />
             ) : (
               <ProductBlock
                 key={product._id || i}

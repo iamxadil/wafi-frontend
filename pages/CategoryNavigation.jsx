@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx";
 import MobileCard from "../components/main/MobileCard.jsx";
+import ProductCard from '../components/main/ProductCard.jsx';
 import ProductBlock from "../components/main/ProductBlock.jsx";
 import Pagination from "../components/main/Pagination.jsx";
 import { Spin } from "antd";
@@ -110,7 +111,7 @@ useEffect(() => {
       {!isMobile && (
         <>
           <main id="cat-container">
-            <div className="products-grid-container cat-grid">
+            <div className="pc-pr-cards" style={{justifyContent: "flex-start", padding: "0"}}>
               {loadingProducts ? (
                 <div className="loading-container">
                   <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -118,7 +119,7 @@ useEffect(() => {
                   </h2>
                 </div>
               ) : displayedProducts.length > 0 ? (
-                displayedProducts.map(p => <ProductGrid key={p._id} product={p} />)
+                displayedProducts.map(p => <ProductCard key={p._id} product={p} />)
               ) : (
                 <div style={{ textAlign: "center" }}>{t("No Products Found", "لا توجد منتجات")}</div>
               )}
@@ -136,7 +137,7 @@ useEffect(() => {
             <header>
               <h1>{brandName || categoryName} {t("Offers", "عروض")}</h1>
             </header>
-            <div className="products-grid-container cat-grid">
+            <div className="pc-pr-cards" style={{justifyContent: "flex-start", marginTop: "4rem",  padding: "0"}}>
               {loadingOffers ? (
                 <div className="loading-container">
                   <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -144,7 +145,7 @@ useEffect(() => {
                   </h2>
                 </div>
               ) : displayedOffers.length > 0 ? (
-                displayedOffers.map(p => <ProductGrid key={p._id} product={p} />)
+                displayedOffers.map(p => <ProductCard key={p._id} product={p} />)
               ) : (
                 <div style={{ textAlign: "center" }}>{t("No Offers Found", "لا توجد عروض")}</div>
               )}

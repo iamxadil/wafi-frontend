@@ -102,6 +102,7 @@ export default function App() {
   const path = location.pathname;
 
   const showNavbar = useMemo(() => !hideNavbarOn.some((p) => path.startsWith(p)), [path]);
+  const showFooter = useMemo(() => !footerOn.some((p) => path.startsWith(p)), [path]);
   const showBottomNavbar = useMemo(
     () => !bottomNavbarOn.some((p) => path.startsWith(p)),
     [path]
@@ -256,6 +257,7 @@ export default function App() {
       </Suspense>
 
       {/* === Persistent Layouts === */}
+      {showFooter && <AppFooter />}
       {showBottomNavbar && <BottomNavbar />}
     </>
   );

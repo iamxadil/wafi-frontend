@@ -13,7 +13,7 @@ const useAccessoriesStore = create((set)=>({
 
 
     //Main Page
-    accessoriesPageParams: { page: 1, limit: 6,}, 
+    accessoriesPageParams: { page: 1, limit: 8,}, 
     setAccessoriesPageParams: (params) =>
       set((state) => ({
         accessoriesPageParams: { ...state.accessoriesPageParams, ...params },
@@ -57,7 +57,7 @@ const useAccessoriesStore = create((set)=>({
 
 
      //Gaming Accessories
-    gamingAccessories: { page: 1, limit: 6,}, 
+    gamingAccessories: { page: 1, limit: 8,}, 
     setGamingAccessories: (params) =>
       set((state) => ({
         gamingAccessories: { ...state.gamingAccessories, ...params },
