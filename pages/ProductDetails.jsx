@@ -15,7 +15,7 @@ import {
 import { FiChevronDown, FiShare2, FiTrash2 } from "react-icons/fi";
 import { TiPlus as Plus, TiMinus as Minus } from "react-icons/ti";
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, Button, Rate, Divider, Carousel, Spin } from "antd";
 import {
   Cpu,
@@ -133,6 +133,13 @@ const ProductDetails = () => {
       setMainImage(selectedProduct.images[0]);
   }, [selectedProduct]);
 
+  useEffect(() => {
+  // Only convert /product/:id → /preview/:id
+  if (location.pathname.startsWith("/product/")) {
+    window.history.replaceState({}, "", `/preview/${id}`);
+  }
+  }, [id, location.pathname]);
+
   if (!selectedProduct) return <Spin fullscreen />;
 
   const brandIcons = {
@@ -179,7 +186,11 @@ const ProductDetails = () => {
   };
 
 const handleShare = async () => {
-  const shareUrl = `${API_URL}/api/products/preview/${id}`;
+  const isDev = import.meta.env.DEV;
+
+  const shareUrl = isDev
+    ? `${API_URL}/api/products/preview/${id}`                 // 🔹 dev: hit backend directly
+    : `${window.location.origin}/preview/${id}`;              // 🔹 prod: alwafi.net/preview/:id
 
   if (navigator.share) {
     try {
