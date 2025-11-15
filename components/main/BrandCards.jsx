@@ -15,10 +15,13 @@ import { TiVendorMicrosoft as Microsoft} from "react-icons/ti";
 
 import { useNavigate } from "react-router-dom";
 import useTranslate from "../hooks/useTranslate";
+import useWindowWidth from '../hooks/useWindowWidth.jsx';
 
 const BrandCards = () => {
+
   const navigate = useNavigate();
   const t = useTranslate();
+  const width = useWindowWidth();
 
   const cards = [
     { name: "Asus", icon: <SiAsus /> },
@@ -33,7 +36,7 @@ const BrandCards = () => {
 
   return (
     <main id="brand-cards-container">
-      <header className="brand-header" style={{ alignItems: t.flexAlign }}>
+      <header className={ width > 650 ? "brand-header" : "mob-brand-header"}  style={{ alignItems: t.flexAlign }}>
         <h1>{t("Our Brands", "علاماتُنا التجارية")}</h1>
         <p>
           {t(

@@ -24,7 +24,6 @@
   gap: 1rem;
   padding: 2rem 0;
   z-index: 100;
-  
 }
 
 
@@ -549,13 +548,14 @@ select.custom:disabled {
 .pr-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
   padding: 3rem 3rem;
   gap: 2rem;
   position: relative;
+
 }
 
 .main-header {
