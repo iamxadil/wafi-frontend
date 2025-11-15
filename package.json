@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "postbuild": "cpy _redirects dist/",
+    "postbuild": "cp _redirects dist/",
     "frontend": "npm run dev --prefix frontend"
   },
   "dependencies": {
