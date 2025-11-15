@@ -111,7 +111,7 @@ useEffect(() => {
       {!isMobile && (
         <>
           <main id="cat-container">
-            <div className="pc-pr-cards" style={{justifyContent: "flex-start", padding: "0"}}>
+            <div className="pc-pr-cards" style={{justifyContent: "center", padding: "0"}}>
               {loadingProducts ? (
                 <div className="loading-container">
                   <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -137,7 +137,7 @@ useEffect(() => {
             <header>
               <h1>{brandName || categoryName} {t("Offers", "عروض")}</h1>
             </header>
-            <div className="pc-pr-cards" style={{justifyContent: "flex-start", marginTop: "4rem",  padding: "0"}}>
+            <div className="pc-pr-cards" style={{justifyContent: "center", marginTop: "4rem",  padding: "0"}}>
               {loadingOffers ? (
                 <div className="loading-container">
                   <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
