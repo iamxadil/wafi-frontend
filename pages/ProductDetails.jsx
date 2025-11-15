@@ -48,6 +48,9 @@ import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import useTranslate from "../components/hooks/useTranslate.jsx";
 
+
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const keywordIcons = {
   GPU: <Gpu />,
   CPU: <Cpu />,
@@ -176,7 +179,7 @@ const ProductDetails = () => {
   };
 
 const handleShare = async () => {
-  const shareUrl = `${window.location.origin}/product/${id}/preview`;
+  const shareUrl = `${API_URL}/api/products/preview/${id}`;
 
   if (navigator.share) {
     try {
@@ -193,7 +196,6 @@ const handleShare = async () => {
     alert("Product link copied to clipboard!");
   }
 };
-
 
   const handleMagnify = (e) => {
     const container = e.currentTarget;
