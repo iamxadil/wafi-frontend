@@ -186,12 +186,7 @@ const ProductDetails = () => {
   };
 
 const handleShare = async () => {
-  const isDev = import.meta.env.DEV;
-
-  const shareUrl = isDev
-    ? `${API_URL}/api/products/preview/${id}`                 // 🔹 dev: hit backend directly
-    : `${window.location.origin}/preview/${id}`;              // 🔹 prod: alwafi.net/preview/:id
-
+  const shareUrl = `${window.location.origin}/preview/${id}`;
   if (navigator.share) {
     try {
       await navigator.share({
