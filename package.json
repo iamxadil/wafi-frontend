@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "postbuild": "cp _redirects dist/",
-    "frontend": "npm run dev --prefix frontend"
-  },
+  "dev": "vite",
+  "build": "vite build",
+  "postbuild": "cp public/_redirects dist/",
+  "lint": "eslint .",
+  "preview": "vite preview",
+  "frontend": "npm run dev --prefix frontend"
+},
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
