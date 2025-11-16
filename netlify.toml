@@ -1,4 +1,3 @@
-npm 
 [[edge_functions]]
 path = "/product/*"
 function = "bot-redirect"
