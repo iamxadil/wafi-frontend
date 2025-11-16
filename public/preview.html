@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Default tags shown before JS runs -->
+    <title>Loading preview…</title>
+    <meta name="description" content="Loading product preview…" />
+
+    <!-- These get replaced dynamically for crawlers -->
+    <meta property="og:title" content="Loading…" />
+    <meta property="og:description" content="Loading product…" />
+    <meta property="og:image" content="" />
+    <meta property="og:type" content="product" />
+    <meta property="og:url" content="" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Loading…" />
+    <meta name="twitter:description" content="Loading…" />
+    <meta name="twitter:image" content="" />
+
+    <style>
+      body {
+        background: #0f0f0f;
+        margin: 0;
+        padding: 0;
+        color: white;
+        font-family: Arial, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+      }
+    </style>
+
+    <script>
+      // ============================
+      // 1) Extract ID from URL
+      // ============================
+      const pathParts = window.location.pathname.split("/");
+      const id = pathParts[pathParts.length - 1];
+
+      // ============================
+      // 2) Detect crawler
+      // ============================
+      const UA = navigator.userAgent.toLowerCase();
+      const isBot =
+        UA.includes("facebookexternalhit") ||
+        UA.includes("twitterbot") ||
+        UA.includes("linkedinbot") ||
+        UA.includes("whatsapp") ||
+        UA.includes("telegram") ||
+        UA.includes("discord") ||
+        UA.includes("crawler") ||
+        UA.includes("bot");
+
+      // Your backend URL (Render)
+      const API = "https://api.alwafi.net/api/products/preview/" + id;
+
+      async function loadPreview() {
+        try {
+          // Crawler: fetch dynamic HTML with OG tags
+          if (isBot) {
+            const html = await fetch(API, { method: "GET" }).then((res) =>
+              res.text()
+            );
+
+            // Replace entire document with backend OG HTML
+            document.open();
+            document.write(html);
+            document.close();
+            return;
+          }
+
+          // Human: redirect to real product page
+          window.location.href = "/product/" + id;
+        } catch (err) {
+          console.error("Preview error:", err);
+          document.body.innerHTML = "<h2>Preview loading failed</h2>";
+        }
+      }
+
+      window.onload = loadPreview;
+    </script>
+  </head>
+
+  <body>
+    <h2>Loading product preview…</h2>
+  </body>
+</html>
