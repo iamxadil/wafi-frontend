@@ -1,2 +1,2 @@
 /preview/*  https://api.alwafi.net/api/products/preview/:splat  200
-/*           /index.html                                        200
+/*          /index.html  200
