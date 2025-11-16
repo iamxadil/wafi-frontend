@@ -1,2 +1,2 @@
-
-/* /index.html 200
+/preview/*    http://localhost:5000/api/products/preview/:splat    200
+/*            /index.html                                          200

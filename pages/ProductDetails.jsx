@@ -133,12 +133,6 @@ const ProductDetails = () => {
       setMainImage(selectedProduct.images[0]);
   }, [selectedProduct]);
 
-  useEffect(() => {
-  // Only convert /product/:id → /preview/:id
-  if (location.pathname.startsWith("/product/")) {
-    window.history.replaceState({}, "", `/preview/${id}`);
-  }
-  }, [id, location.pathname]);
 
   if (!selectedProduct) return <Spin fullscreen />;
 

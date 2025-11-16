@@ -221,8 +221,9 @@ export default function App() {
         
 
           {/* Product / Category */}
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/preview/:id" element={<ProductDetails />} />
+         <Route path="/product/:id" element={<ProductDetails />} />
+
+
           <Route path="/category/:categoryName" element={<CategoryNavigation />} />
           <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
           <Route path="/laptops" element={<CatLaptops />} />
