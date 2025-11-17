@@ -1,6 +1,7 @@
 import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { MantineProvider, createTheme } from "@mantine/core";
 import "@mantine/core/styles.css"; 
 import App from "./App.jsx";
@@ -32,14 +33,15 @@ import '../styles/bottomnavbar.css';
     }, []);
 
   return (
+  <HelmetProvider>
     <Router>
-      
       <MantineProvider theme={theme}>
        <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>
       </MantineProvider>
     </Router>
+  </HelmetProvider>
   );
 }
 

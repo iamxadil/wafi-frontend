@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-  "dev": "vite",
-  "build": "vite build && cp public/_redirects dist/",
-  "lint": "eslint .",
-  "preview": "vite preview",
-  "frontend": "npm run dev --prefix frontend"
-},
+    "dev": "vite",
+    "build": "vite build && cp public/_redirects dist/",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "frontend": "npm run dev --prefix frontend"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -36,6 +36,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-google-recaptcha": "3.1.0",
+    "react-helmet": "^6.1.0",
+    "react-helmet-async": "^2.0.5",
     "react-icons": "5.5.0",
     "react-router-dom": "7.9.3",
     "react-swipeable": "^7.0.2",

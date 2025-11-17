@@ -1,5 +1,6 @@
 import "../styles/productdetails.css";
 import { useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   SiAsus,
   SiApple,
@@ -401,10 +402,115 @@ const handleShare = async () => {
       selectedProduct.reviews.length
     : 0;
 
+
+            // Clean product title
+        function buildCleanTitle(product) {
+          const brand = product.brand || "";
+          const name = product.name || "";
+
+          return name.toLowerCase().startsWith(brand.toLowerCase())
+            ? name
+            : `${brand} ${name}`;
+        }
+
+        // Short description
+        function buildDescription(product) {
+          if (!product.description) return "View full specifications and details.";
+
+          const clean = product.description.replace(/\n+/g, " ").trim();
+          return clean.length > 160 ? clean.slice(0, 160) + "…" : clean;
+        }
+
+        // Format price
+        function formatPriceIQD(num) {
+          return new Intl.NumberFormat("en-IQ").format(num);
+        }
+
+        // Build JSON-LD (rich results)
+        function buildJsonLd(product) {
+          const price = product.discountPrice || product.price;
+
+          return {
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            name: product.name,
+            image: product.images,
+            description: buildDescription(product),
+            sku: product.sku,
+            brand: {
+              "@type": "Brand",
+              name: product.brand,
+            },
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "IQD",
+              price: price.toString(),
+              availability:
+                product.countInStock > 0
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/OutOfStock",
+              url: `https://alwafi.net/product/${product._id}`,
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: product.rating || 5,
+              reviewCount: product.numReviews || 1,
+            },
+          };
+        }
+
+
   return (
     <>
-      {/* Desktop */}
+      <Helmet>
+       <title>{buildCleanTitle(selectedProduct)} | Al-Wafi Computers</title>
+          <meta
+            name="description"
+            content={buildDescription(selectedProduct)}
+          />
 
+          {/* Canonical URL */}
+          <link
+            rel="canonical"
+            href={`https://alwafi.net/product/${selectedProduct._id}`}
+          />
+
+          {/* Language support */}
+          <meta name="language" content="en, ar" />
+          <meta httpEquiv="Content-Language" content="en" />
+          <meta property="og:locale" content="en_US" />
+          <meta property="og:locale:alternate" content="ar_IQ" />
+
+          {/* OG preview */}
+          <meta property="og:title" content={buildCleanTitle(selectedProduct)} />
+          <meta
+            property="og:description"
+            content={buildDescription(selectedProduct)}
+          />
+          <meta property="og:image" content={selectedProduct.images[0]} />
+          <meta
+            property="og:url"
+            content={`https://alwafi.net/product/${selectedProduct._id}`}
+          />
+          <meta property="og:type" content="product" />
+
+          {/* Twitter */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={buildCleanTitle(selectedProduct)} />
+          <meta
+            name="twitter:description"
+            content={buildDescription(selectedProduct)}
+          />
+          <meta name="twitter:image" content={selectedProduct.images[0]} />
+
+          {/* Google Rich Results */}
+          <script type="application/ld+json">
+            {JSON.stringify(buildJsonLd(selectedProduct))}
+          </script>
+      </Helmet>
+
+
+      {/* Desktop */}
       {width > 950 && (
         <div className="dt-container">
           <main id="product-card">
