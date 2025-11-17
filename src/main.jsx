@@ -5,7 +5,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { MantineProvider, createTheme } from "@mantine/core";
 import "@mantine/core/styles.css"; 
 import App from "./App.jsx";
-import favicon from "../assets/svg/wafi-logo-outline.svg";
+import favicon from "../assets/svg/wafi-logo-filled-white.svg";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import '../styles/landingpage.css';
 import '../styles/productscards.css';

@@ -21,7 +21,7 @@ const Home = () => {
       {/* ⭐ SEO Head Tags */}
       <Helmet>
         {/* Title */}
-        <title>Al-Wafi for Computers | Laptops, Accessories & Gaming in Iraq</title>
+        <title>Al-Wafi for Computers</title>
 
         {/* Description */}
         <meta
@@ -60,7 +60,7 @@ const Home = () => {
         />
         <meta 
           name="twitter:image" 
-          content="https://alwafi.net/home-banner.png" 
+          content="https://alwafi.net/og-banner.png" 
         />
 
         {/* Organization Schema */}
@@ -70,7 +70,7 @@ const Home = () => {
             "@type": "Organization",
             name: "Al-Wafi Computers",
             url: "https://alwafi.net",
-            logo: "https://alwafi.net/logo.png",
+            logo: "https://alwafi.net/favicon.svg",
             sameAs: [
               "https://www.facebook.com/alwafi",
               "https://www.instagram.com/alwafi",
