@@ -58,7 +58,10 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "jspdf-font": "^1.0.7",
+    "minimist": "^1.2.8",
     "rollup-plugin-visualizer": "^6.0.5",
-    "vite": "^7.0.4"
+    "vite": "^7.0.4",
+    "vite-plugin-svgr": "^4.5.0"
   }
 }

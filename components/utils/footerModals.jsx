@@ -36,6 +36,8 @@ export default function FooterModals({
           <div key={i} style={{ marginBottom: "1rem", textAlign: t.textAlign }}>
             <h3 style={{ color: "#6ee7b7", marginBottom: "0.3rem" }}>{item.question}</h3>
             <p style={{ lineHeight: 1.6 }}>{item.answer}</p>
+            <p style={{marginTop: "6px", fontWeight: "800"}}>{item?.answer2}</p>
+            <p style={{marginTop: "6px", fontWeight: "800"}}>{item?.answer3}</p>
           </div>
         ))}
       </ReModal>

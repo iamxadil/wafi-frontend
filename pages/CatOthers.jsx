@@ -44,6 +44,7 @@ const CatOthers = () => {
       "Cables",
       "Power Banks",
       "USB Hubs",
+      "Others"
     ],
   });
 
@@ -69,7 +70,7 @@ const CatOthers = () => {
   if (isLoading || filtersLoading)
     return (
       <Loading
-        message={t("Loading accessories...", "جاري تحميل الإكسسوارات...")}
+        message={t("Loading accessories...", "جاري تحميل الإكسسوارات.")}
       />
     );
 

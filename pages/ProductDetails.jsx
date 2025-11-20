@@ -1,8 +1,7 @@
 import "../styles/productdetails.css";
 import { useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import {
-  SiAsus,
+import { SiAsus,
   SiApple,
   SiLenovo,
   SiHp,
@@ -11,7 +10,32 @@ import {
   SiRazer,
   SiRedragon,
   SiMsibusiness as SiMsi,
+  SiSamsung,
+  SiSony,
+  SiCorsair,
+  SiSteelseries 
 } from "react-icons/si";
+import { TiVendorMicrosoft as Microsoft } from "react-icons/ti";
+import AulaIcon from "../assets/brands/aula.svg?react";
+import RapooIcon from "../assets/brands/rapoo.svg?react";
+import HavitIcon from "../assets/brands/havit.svg?react";
+import WiwuIcon from "../assets/brands/wiwu.svg?react";
+import FantechIcon from "../assets/brands/fantech.svg?react";
+import SandiskIcon from "../assets/brands/sandisk.svg?react";
+import WDIcon from "../assets/brands/wd.svg?react";
+import LexarIcon from "../assets/brands/lexar.svg?react";
+import HisenseIcon from "../assets/brands/hisense.svg?react";
+import AcefastIcon from "../assets/brands/acefast.svg?react";
+import TranscendIcon from "../assets/brands/transcend.svg?react";
+import AnkerIcon from "../assets/brands/anker.svg?react";
+import TPlinkIcon from "../assets/brands/tplink.svg?react";
+import OricoIcon from "../assets/brands/orico.svg?react";
+import McdodoIcon from "../assets/brands/mcdodo.svg?react";
+import HocoIcon from "../assets/brands/hoco.svg?react";
+import GigabyteIcon from "../assets/brands/gigabyte.svg?react";
+import GloriousIcon from "../assets/brands/glorious.svg?react";
+import AttackSharkIcon from "../assets/brands/attackshark.svg?react";
+
 
 import { FiChevronDown, FiShare2, FiTrash2 } from "react-icons/fi";
 import { TiPlus as Plus, TiMinus as Minus } from "react-icons/ti";
@@ -51,7 +75,6 @@ import useTranslate from "../components/hooks/useTranslate.jsx";
 
 
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const keywordIcons = {
   GPU: <Gpu />,
   CPU: <Cpu />,
@@ -137,17 +160,52 @@ const ProductDetails = () => {
 
   if (!selectedProduct) return <Spin fullscreen />;
 
-  const brandIcons = {
-    Asus: SiAsus,
-    Apple: SiApple,
-    Lenovo: SiLenovo,
-    HP: SiHp,
-    Acer: SiAcer,
-    Logitech: SiLogitech,
-    Razer: SiRazer,
-    MSI: SiMsi,
-    Redragon: SiRedragon,
-  };
+
+  function normalizeBrand(name) {
+    return name
+      ?.trim()
+      .toLowerCase()
+      .replace(/[\s-]/g, ""); // remove spaces and dashes
+  }
+
+
+  
+const brandIcons = {
+  asus: SiAsus,
+  apple: SiApple,
+  lenovo: SiLenovo,
+  hp: SiHp,
+  acer: SiAcer,
+  logitech: SiLogitech,
+  razer: SiRazer,
+  msi: SiMsi,
+  redragon: SiRedragon,
+  microsoft: Microsoft,
+  sony: SiSony,
+  corsair: SiCorsair,
+  samsung: SiSamsung,
+  steelseries: SiSteelseries,
+
+  aula: AulaIcon,
+  rapoo: RapooIcon,
+  havit: HavitIcon,
+  wiwu: WiwuIcon,
+  fantech: FantechIcon,
+  sandisk: SandiskIcon,
+  wd: WDIcon,
+  lexar: LexarIcon,
+  hisense: HisenseIcon,
+  acefast: AcefastIcon,
+  transcend: TranscendIcon,
+  anker: AnkerIcon,
+  tplink: TPlinkIcon,
+  orico: OricoIcon,
+  mcdodo: McdodoIcon,
+  hoco: HocoIcon,
+  gigabyte: GigabyteIcon,
+  glorious: GloriousIcon,
+  attackshark: AttackSharkIcon,
+};
 
   const getFinalPrice = (p) =>
     p.discountPrice > 0 ? p.price - p.discountPrice : p.price;
@@ -514,12 +572,15 @@ const handleShare = async () => {
       {width > 950 && (
         <div className="dt-container">
           <main id="product-card">
-            <div className="dt-brand">
-              {selectedProduct.brand &&
-                React.createElement(
-                  brandIcons[selectedProduct.brand] || Brackets
-                )}
-            </div>
+          <div className="dt-brand">
+          {selectedProduct.brand && (() => {
+            const brandKey = normalizeBrand(selectedProduct.brand);
+            const Icon = brandIcons[brandKey] || Brackets;
+            return <Icon className="brand-icon" size={28} color="var(--text)" />;
+          })()}
+        </div>
+
+
 
             {/* Image & Thumbnails */}
 
@@ -735,14 +796,13 @@ const handleShare = async () => {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  {selectedProduct.brand &&
-                    React.createElement(
-                      brandIcons[selectedProduct.brand] || Brackets,
-                      {
-                        size: 25,
-                        color: "var(--text)",
-                      }
-                    )}
+                {selectedProduct.brand && (() => {
+                  const brandKey = normalizeBrand(selectedProduct.brand);
+                  const Icon = brandIcons[brandKey] || Brackets;
+                  return <Icon size={25} color="var(--text)" className="brand-icon" />;
+                })()}
+
+
                   <span
                     style={{ color: "var(--secondary-text-clr)", fontSize: 14 }}
                   >

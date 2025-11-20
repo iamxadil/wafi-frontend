@@ -35,40 +35,8 @@ export default function AppFooter() {
     title: t("About Us", "من نحن"),
     paragraphs: [
       {
-        heading: t("Our Story", "قصتنا"),
-        text: t(
-          `Founded in 1993, AL-WAFI began as a small vision to deliver innovative and elegant tech solutions to a growing digital world. 
-          Over the decades, we have evolved with technology, adapting to every new challenge while staying true to our core values: quality, integrity, and creativity.`,
-          `تأسست شركة الوافي عام 1993 برؤية صغيرة لتقديم حلول تقنية مبتكرة وأنيقة للعالم الرقمي المتنامي. 
-          وعلى مر العقود، تطورنا مع التكنولوجيا وتكيفنا مع كل تحدٍ جديد مع الحفاظ على قيمنا الأساسية: الجودة، النزاهة، والإبداع.`
-        ),
-      },
-      {
-        heading: t("Our Mission", "مهمتنا"),
-        text: t(
-          `We aim to empower businesses and individuals through reliable and cutting-edge technology. 
-          Our mission is to make digital experiences seamless, intuitive, and meaningful, bridging the gap between innovation and accessibility.`,
-          `نهدف إلى تمكين الأفراد والشركات من خلال التكنولوجيا الموثوقة والمتطورة. 
-          تتمثل مهمتنا في جعل التجارب الرقمية سلسة وبديهية وذات معنى، لنجسر الفجوة بين الابتكار وسهولة الوصول.`
-        ),
-      },
-      {
-        heading: t("Our Vision", "رؤيتنا"),
-        text: t(
-          `To become a recognized leader in providing elegant, high-quality tech solutions that transform how people interact with technology. 
-          We aspire to set the standard in every sector we touch, combining design, efficiency, and reliability.`,
-          `أن نكون رائدين في تقديم حلول تقنية أنيقة وعالية الجودة تُحدث تحولاً في طريقة تفاعل الناس مع التكنولوجيا. 
-          نطمح إلى وضع المعايير في كل مجال نعمل فيه، من خلال الجمع بين التصميم والكفاءة والموثوقية.`
-        ),
-      },
-      {
-        heading: t("Our Values", "قيمنا"),
-        text: t(
-          `Innovation, commitment, and trust are the pillars of AL-WAFI. 
-          Every solution we deliver reflects our dedication to excellence and our promise to our customers.`,
-          `الابتكار، الالتزام، والثقة هي ركائز الوافي. 
-          كل حل نقدمه يعكس التزامنا بالتميز ووعدنا لعملائنا.`
-        ),
+        text: t("Al-Wafi was founded with a rich legacy of technological expertise to save you time and effort of decision-making. We don’t just sell products; we build technological partnerships that guides your way to the best solution. We also offer our clients original products supported by certified Guarantees.",
+          "نحن لسنا مجرد بائعين للحواسيب بل شريكك في اختيار الحل التقني الامثل . تأسس الوافي على قاعدة من الخبرة الطويلة في قطاع التكنلوجيا لتوفر عليك عناء البحث و التفكير.  كما  نقدم لك منتجات اصلية مدعومة بضمانات معتمدة ")
       },
     ],
   };
@@ -78,28 +46,15 @@ export default function AppFooter() {
     paragraphs: [
       {
         heading: t("Laptops Store", "متجر اللابتوبات"),
-        text: t(
-          `We offer a wide range of laptops for personal, professional, and gaming needs. 
-          Each device is carefully selected to ensure quality, performance, and style, catering to beginners and tech enthusiasts alike.`,
-          `نقدم مجموعة واسعة من اللابتوبات لتلبية الاحتياجات الشخصية والمهنية وألعاب الفيديو. 
-          يتم اختيار كل جهاز بعناية لضمان الجودة والأداء والأناقة، ليناسب المبتدئين ومحبي التكنولوجيا على حد سواء.`
-        ),
+        text: t(`We offer wide range of laptops to suit all needs of personal use, professional tasks, engineering applications, and video gaming.
+              Each device is handpicked to guarantee outstanding quality, powerful performance and sleek design, meeting the expectations of all technology lovers`, 
+            `نقدم مجموعة واسعة من اللابتوبات لتلبية الاحتياجات الشخصية والمهنية  و الهندسية وألعاب الفيديو. يتم اختيار كل جهاز بعناية لضمان الجودة والأداء والأناقة، ليناسب  جميع محبي التكنولوجيا على حد سواء`),
       },
       {
-        heading: t("Computer Components", "مكونات الكمبيوتر"),
-        text: t(
-          `From high-performance CPUs to graphics cards, motherboards, and memory, we provide all the components needed to build, upgrade, or repair your PC. 
-          Our selection ensures compatibility, reliability, and future-proofing for your setups.`,
-          `من المعالجات عالية الأداء إلى بطاقات الرسوميات، اللوحات الأم، والذواكر، نقدم جميع المكونات اللازمة لبناء أو ترقية أو صيانة جهازك الشخصي. 
-          مجموعتنا تضمن التوافق والموثوقية والاستعداد لمستقبل التكنولوجيا.`
-        ),
-      },
-      {
-        heading: t("Delivery & Packaging", "خدمة التوصيل والتغليف"),
-        text: t(
-          `Safe and secure delivery system and service with warranty in case any customer encounters a bad packaging provided from the deilvery companies.`,
-          "خدمة توصيل آمنة وسريعة مع تأمين كامل على الطلبات وتغليف مُميز وآمن وعدم تحمُل الزبون اي ضرر او تكاليف في حال حدث خطأ من شركات التوصيل"
-        ),
+        heading: t("Packaging & Delivery", "خدمة التغليف والتوصيل"),
+        text: t(`	Since product quality is our commitment, we offer fast and secured delivery complemented by distinctive and unique packaging that will guarantees your order’s safe arrival.
+                Moreover you are fully protected from any additional coasts if anything unlikely happened during shipping.`
+              , `نحن مسؤولون عن جودة منتجاتنا لذلك نقدم لك خدمة توصيل آمنة و سريعة، مصحوبة بتغليفنا المميز و الفريد الذي يضمن وصول طلبك بسلامة، و نتحمل اي تكاليف في حال حدوث اي ضرر أثناء عملية الشحن `)
       },
     ],
   };
@@ -108,38 +63,28 @@ export default function AppFooter() {
     title: t("Frequently Asked Questions", "الأسئلة الشائعة"),
     items: [
       {
-        question: t("What is AL-WAFI?", "ما هي شركة الوافي؟"),
-        answer: t(
-          `AL-WAFI is a technology solutions company established in 1993, specializing in laptops, computer components, networking equipment, and expert tech support.`,
-          `الوافي هي شركة حلول تقنية تأسست عام 1993، متخصصة في اللابتوبات، مكونات الكمبيوتر، معدات الشبكات، والدعم الفني المتخصص.`
+        question: t(`What is your address?`, "اين موقعكم؟"),
+        answer: t(`Iraq- Baghdad- Al-Senaha St., Near the University of Technology roundabout`, "العراق - بغداد - شارع الصناعة، قرب دورة الجامعة التكنولوجية"),
+        answer2: t(`support@alwafi.net`, "support@alwafi.net"),
+        answer3: t(`Number: +964 784 497 0384`, "+964 784 497 0384"),
+      },
+      {
+        question: t("Do you offer guarantees on products?", "هل تقدمون ضماناً على المنتجات؟"),
+        answer: t(`Yes! All products come with manufacturer warranties,
+                  and as Al-Wafi team we also offer our own after-sales service and advice to all our clients.`
+                , `نعم! جميع المنتجات تأتي مع ضمان من الوكالة، و كذلك يوفر فريق الوافي الدعم و الحلول و خدمات ما بعد البيع  لجميع عملائنا `),
+      },
+      {
+        question: t("What are your business hours?", "ماهي اوقات الدوام داخل المتجر؟"),
+        answer: t(`The Store is open daily except for Friday Our business hours are from 9:00 am to 4:00 pm`
+                  , `يفتح المتجر كل يوم عدا يوم الجمعة،  و اوقات الدوام تبدأ من الساعة التاسعة صباحا حتى الرابعة عصرا`
         ),
       },
       {
-        question: t("Do you provide warranties on products?", "هل تقدمون ضماناً على المنتجات؟"),
+        question: t("How can I track my order?", "كيف يمكنني تتبع طلبي؟ "),
         answer: t(
-          `Yes! All products come with manufacturer warranties, and we also offer our own support and service guarantees to ensure satisfaction.`,
-          `نعم! جميع المنتجات تأتي مع ضمان من الشركة المصنعة، كما نقدم ضمانات دعم وخدمة خاصة بنا لضمان رضا العملاء.`
-        ),
-      },
-      {
-        question: t("Can I request a custom PC build?", "هل يمكنني طلب تجميع كمبيوتر مخصص؟"),
-        answer: t(
-          `Absolutely. We help customers design and assemble custom PCs tailored to their specific performance, aesthetic, and budget requirements.`,
-          `بكل تأكيد. نساعد عملاءنا في تصميم وتجميع أجهزة كمبيوتر مخصصة تلبي متطلباتهم من حيث الأداء والمظهر والميزانية.`
-        ),
-      },
-      {
-        question: t("How do I contact support?", "كيف يمكنني التواصل مع الدعم الفني؟"),
-        answer: t(
-          `You can reach our support team via email, phone, or live chat on our website.`,
-          `يمكنك التواصل مع فريق الدعم الفني عبر البريد الإلكتروني أو الهاتف أو الدردشة المباشرة على موقعنا الإلكتروني.`
-        ),
-      },
-      {
-        question: t("Is the deilvery service secure?", "هل خدمة التوصيل آمنة؟"),
-        answer: t(
-          `Yes, we provide a secure delivery service with speical subscriptions with the delivery companies for proper packaging of the orders.`,
-          `نعم آمنة، مع توصيل سريع واشتراكات خاصة للتوصيل مع شركات التوصيل للحفاظ على الطلبات `
+          `You can track your order by clicking on orders inside the website to check the order status, or you can check your email and we will be very responsive for anything our customers need. `,
+          `تستطيع تتبع الطلب عن طريق الذهاب الى صفحة الطلبات داخل الموقع لمعرفة حالة الطلب او تستطيع الذهاب الى اشعارات الايميل الخاص بك و سنكون على تواصل معك خطوة بخطوة لمعرفة حالة طلبك.`
         ),
       },
     ],
@@ -163,8 +108,8 @@ export default function AppFooter() {
               <LogoTitle t={t} />
               <Text style={{ color: "var(--text)" }}>
                 {t(
-                  "A pioneer in Baghdad’s computer industry since 1993.",
-                  "من اقدم مكاتب الحاسِبات في بغداد، تأسسَ في عام 1993"
+                  "Three decades of experience in your hands, since 1993.",
+                  "من اقدم مكاتب الحاسِبات في بغداد، تأسسَ في عام منذ عام 1993، خبرة ثلاثة عقود بين يديك"
                 )}
               </Text>
             </Space>
@@ -209,7 +154,7 @@ export default function AppFooter() {
           <Col xs={24} sm={12} md={6} style={{ textAlign: t.textAlign }}>
             <Space direction="vertical" size={15}>
               <Title level={5} style={{ color: "var(--text)" }}>
-                {t("Get In Touch", "تواصل معنا")}
+                {t("Social Links", "مواقع التواصل الاجتماعي")}
               </Title>
 
               <Space size="middle">

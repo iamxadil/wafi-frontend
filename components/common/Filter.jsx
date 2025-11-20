@@ -279,28 +279,35 @@ const Filter = ({
                   <div className="f-range">
                     
                     {/* Inputs */}
-                    <div className="f-range-inputs">
-                      <div className="f-input-w">
-                        <span className="f-innr-lbl">Min</span>
-                        <input
-                          inputMode="numeric"
-                          value={formattedValues[filter.id]?.min || ""}
-                          onChange={(e) => handleRangeChange(filter.id, "min", e.target.value)}
-                        />
-                      </div>
-
-                      <span className="f-dash">–</span>
-
-                      <div className="f-input-w">
-                        <span className="f-innr-lbl">Max</span>
-                        <input
-                          inputMode="numeric"
-                          value={formattedValues[filter.id]?.max || ""}
-                          onChange={(e) => handleRangeChange(filter.id, "max", e.target.value)}
-                        />
-                      </div>
+                  <div className="f-range-inputs">
+                    <div className="f-input-w">
+                      <span className="f-innr-lbl">Min</span>
+                      <input
+                        inputMode="numeric"
+                        value={
+                          formattedValues[filter.id]?.min ??
+                          selected[filter.id]?.min ??
+                          filter.min
+                        }
+                        onChange={(e) => handleRangeChange(filter.id, "min", e.target.value)}
+                      />
                     </div>
 
+                    <span className="f-dash">–</span>
+
+                    <div className="f-input-w">
+                      <span className="f-innr-lbl">Max</span>
+                      <input
+                        inputMode="numeric"
+                        value={
+                          formattedValues[filter.id]?.max ??
+                          selected[filter.id]?.max ??
+                          filter.max
+                        }
+                        onChange={(e) => handleRangeChange(filter.id, "max", e.target.value)}
+                      />
+                    </div>
+                  </div>
                     {/* Dual slider */}
                     <div className="f-range-sliders">
                       <input

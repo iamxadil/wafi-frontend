@@ -3,18 +3,22 @@ import React, { useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "../../styles/orderconfirmation.css";
 import useOrderStore from "../stores/useOrderStore";
+import useAuthStore from "../stores/useAuthStore";
+import useTranslate from "../hooks/useTranslate";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from '../../assets/img/wafi-logo-outline.png';
 import QRCode from "qrcode";
+import { AlertTriangle, PackageSearch } from "lucide-react";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const { selectedOrder, fetchOrderById, setSelectedOrder, loading } = useOrderStore();
-
   const initialOrder = location.state?.order;
+  const { user } = useAuthStore();
+  const t = useTranslate();
 
   useEffect(() => {
     if (initialOrder) {
@@ -112,36 +116,80 @@ const OrderConfirmation = () => {
   };
 
   return (
-    <main className="order-confirmation-page">
-      <section className="confirmation-card">
-        <h1>🎉 Thank you for your order!</h1>
-        <p>Your order number is <strong>#{selectedOrder.orderNumber}</strong></p>
+  <main className="order-confirmation-page">
+    <section className="confirmation-card">
 
-        <h2>Order Summary</h2>
-        <ul className="order-items">
-          {orderItems.map((item, index) => (
-            <li key={index}>
-              {item.quantity} x {item.name} — {item.price.toLocaleString()} IQD
-            </li>
-          ))}
-        </ul>
+      <h1>
+        🎉 {t("Thank you for your order!", "شكراً لطلبك!")}
+      </h1>
 
-        <h3>Total: {selectedOrder.totalPrice.toLocaleString()} IQD</h3>
+      <p>
+        {t("Your order number is", "رقم طلبك هو")} 
+        <strong> #{selectedOrder.orderNumber}</strong>
+      </p>
 
-        <h2>Shipping Info</h2>
-        <p>{selectedOrder.shippingInfo.fullName}</p>
-        <p>{selectedOrder.shippingInfo.address}, {selectedOrder.shippingInfo.city}</p>
-        <p>Phone: {selectedOrder.shippingInfo.phone}</p>
-        <p>Email: {selectedOrder.shippingInfo.email}</p>
+      {/* ✅ Show order ID */}
+      <p style={{ opacity: 0.7 }}>
+        ID: <strong>{selectedOrder._id}</strong>
+      </p>
 
-        <div className="confirmation-actions">
-          <button onClick={handleGoHome}>Go to Home</button>
-          {/**<button onClick={handleViewOrders}>View My Orders</button>**/}
-          <button onClick={handleDownloadPDF}>Download PDF</button>
-        </div>
-      </section>
-    </main>
-  );
+      <h2>{t("Order Summary", "ملخص الطلب")}</h2>
+      <ul className="order-items">
+        {orderItems.map((item, index) => (
+          <li key={index}>
+            {item.quantity} × {item.name} — {item.price.toLocaleString()} IQD
+          </li>
+        ))}
+      </ul>
+
+      <h3>
+        {t("Total", "المجموع")}: {selectedOrder.totalPrice.toLocaleString()} IQD
+      </h3>
+
+      <h2>{t("Shipping Info", "معلومات الشحن")}</h2>
+      <p>{selectedOrder.shippingInfo.fullName}</p>
+      <p>{selectedOrder.shippingInfo.address}, {selectedOrder?.shippingInfo?.city === "N/A" ? "Alwafi" : selectedOrder.shippingInfo.city}</p>
+      <p>{t("Phone", "الهاتف")}: {selectedOrder.shippingInfo.phone}</p>
+      <p>{t("Email", "البريد الإلكتروني")}: {selectedOrder.shippingInfo.email}</p>
+
+      {/* 🚨 If user NOT signed in */}
+      {/* ================================ */}
+    {!user && (
+      <div className="signin-warning">
+        <div className="warn-icon"><AlertTriangle size={24} /></div>
+        <p style={{fontWeight: "500"}}>
+          {t("To track your orders, please sign in and visit", "لمتابعة طلباتك، يرجى تسجيل الدخول والذهاب إلى")}
+          <strong style={{fontWeight: "800"}}> {t("My Orders", "صفحة الطلبات")}</strong>
+        </p>
+
+        <button onClick={() => navigate("/signin")}>
+          {t("Sign In", "تسجيل الدخول")}
+        </button>
+      </div>
+    )}
+
+
+
+      {/* ================================ */}
+      {/* ✔ If user logged in */}
+      {/* ================================ */}
+        {user && (
+            <button className="view-orders-btn" onClick={handleViewOrders}>
+              <span className="orders-icon"><PackageSearch size={20} /></span>
+              {t("View My Orders", "متابعة الطلبات")}
+            </button>
+          )}
+
+
+      <div className="confirmation-actions">
+        <button onClick={handleGoHome}>
+          {t("Go to Home", "الصفحة الرئيسية")}
+        </button>
+      </div>
+    </section>
+  </main>
+);
+
 };
 
 export default OrderConfirmation;

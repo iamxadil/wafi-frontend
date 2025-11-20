@@ -8,13 +8,33 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
    📦 Fetch All Products (with pagination)
 ------------------------------------------------ */
 export const useProductsQuery = (
-  params = { limit: 7, page: 1 },
+  params = {
+    page: 1,
+    limit: 10,
+    search: "",
+    sort: "date-desc",
+    category: "",
+    brand: "",
+    inStock: "",
+    isOffer: "",
+    isTopProduct: "",
+  },
   normalizeProducts
 ) => {
   return useQuery({
     queryKey: ["products", params],
+
     queryFn: async () => {
-      const query = new URLSearchParams(params).toString();
+      const filteredParams = {};
+
+      // remove empty params
+      Object.entries(params).forEach(([key, val]) => {
+        if (val !== "" && val !== undefined && val !== null) {
+          filteredParams[key] = val;
+        }
+      });
+
+      const query = new URLSearchParams(filteredParams).toString();
 
       const res = await axios.get(`${API_URL}/api/products?${query}`, {
         withCredentials: true,
@@ -23,13 +43,11 @@ export const useProductsQuery = (
       const data = res.data || {};
       const products = Array.isArray(data.products) ? data.products : [];
 
-      // ✅ Normalize pagination
       const pagination = {
-        page: data.pagination?.currentPage ?? data.page ?? params.page ?? 1,
-        totalPages: data.pagination?.totalPages ?? data.pages ?? 1,
-        totalItems:
-          data.pagination?.totalItems ?? data.totalItems ?? products.length,
-        limit: data.pagination?.limit ?? params.limit ?? 8,
+        page: data.pagination?.currentPage ?? params.page ?? 1,
+        totalPages: data.pagination?.totalPages ?? 1,
+        totalItems: data.pagination?.totalItems ?? 0,
+        limit: data.pagination?.limit ?? params.limit ?? 10,
       };
 
       return {
@@ -39,13 +57,8 @@ export const useProductsQuery = (
     },
 
     keepPreviousData: true,
-    staleTime: 60_000,
+    staleTime: 60000,
     retry: 1,
-
-    onError: (err) => {
-      console.error("❌ Error fetching products:", err.response?.data || err.message);
-      toast.error(err.response?.data?.message || "Failed to load products");
-    },
   });
 };
 

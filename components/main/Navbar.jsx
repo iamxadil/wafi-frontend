@@ -115,24 +115,13 @@ const Navbar = () => {
         </ul>
       </li>
 
-      <li
-        onMouseEnter={() => setActiveMenu("others")}
-        onMouseLeave={() => setActiveMenu(null)}
-      >
-        <Link to="/others">
-          <Shapes size={20} />
-          <span>{t("Others", "اخرى")}</span>
-        </Link>
-        <ul className={`submenu glassy ${activeMenu === "others" ? "show" : ""}`}>
-          <div className="submenu-group">
-            {OTHERS.map((cat) => (
-              <li key={cat}>
-                <Link to={`/category/${cat}`}>{cat}</Link>
-              </li>
-            ))}
-          </div>
-        </ul>
-      </li>
+      <li>
+          <Link to="/others">
+            <Shapes size={20} />
+            <span>{t("Others", "اخرى")}</span>
+          </Link>
+        </li>
+
     </ul>
   ));
 

@@ -41,8 +41,9 @@ const Products = () => {
   const { mutate: deleteProduct, isPending: isDeleting } = useDeleteProductMutation();
 
   const products = data?.products || [];
+  const totalItems = data?.pagination?.totalItems || 0;
   const pagination = data?.pagination || {};
-
+  
   // ✅ Select all checkbox handler
   const handleSelectAll = () => {
     if (selectedProducts.length === products.length) deselectAllProducts();
@@ -82,6 +83,7 @@ const Products = () => {
       },
     });
   };
+
 
   const width = useWindowWidth();
 
@@ -345,9 +347,9 @@ const Products = () => {
         title="Products"
         breadcrumb={["Dashboard", "Products"]}
         Icon={Package}
-        totalCount={products?.length || 0}
+        totalCount={totalItems || 0}
         selectedCount={selectedProducts.length}
-        onSearch={(q) => console.log("Search:", q)}
+        onSearch={(value) => {setParams({...params, search: value, page: 1})}}
         onAdd={() => {
           setEditData(null);
           setIsModalOpen(true);
@@ -357,9 +359,10 @@ const Products = () => {
         onSelectAll={() => selectAllProducts(products.map((p) => p._id))}
         onDeselectAll={() => deselectAllProducts()}
         onFilterChange={(v) => console.log("Filter:", v)}
-        onSortChange={(v) => console.log("Sort:", v)}
-        filterOptions={["All", "Active", "Archived", "Top"]}
-        sortOptions={["Default", "Price", "Date Added", "Name"]}
+        onSortChange={(sort) => setParams((prev) => ({ ...prev, sort, page: 1 }))}
+        filterOptions={["All Products","In Stock","Out of Stock","Top Products","Archived",]}
+        sortOptions={["Newest First","Oldest First","Price: Low → High","Price: High → Low","Name: A → Z","Name: Z → A",]}
+
       />
 
       <Paper

@@ -250,6 +250,7 @@ const ProductsModal = ({
               <option value="Hard Disks & SSDs">Hard Disks & SSDs</option>
               <option value="Flash Drives">Flash Drives</option>
               <option value="Routers">Routers</option>
+              <option value="Others">Others</option>
             </select>
           </div>
 

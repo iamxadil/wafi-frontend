@@ -37,24 +37,24 @@ const baseCards = Object.freeze([
 const CarouselCard = memo(({ card, active, onActivate, onNavigate, t }) => {
   const translations = {
     1: {
-      title: t("Ultra thin, Maximum efficiency.", "نحافة قصوى، كفاءة لا مثيل لها."),
+      title: t("Best power efficiency", "كفاءة لا مثيل لها"),
       text: t(
-        "Interact with your laptop through natural, responsive hand movements.",
-        "تفاعل مع حاسوبك المحمول بحركات يد طبيعية وسريعة الاستجابة."
+        "Ultimate choices that mirrors your aspirations",
+        "اختيار مثالي يحاكي طموحك"
       ),
     },
     2: {
-      title: t("Gaming Mode.", "وضع الألعاب."),
+      title: t("Pro-Level Control", "تحكُم إحترافي"),
       text: t(
-        "Turn any surface into your personal display — seamless and adaptive.",
-        "حوّل أي سطح إلى شاشتك الخاصة — تجربة سلسة ومتجاوبة."
+        "Effortless control for exceptional experience",
+        "تحكم سهل يجعل المهمة استثنائية"
       ),
     },
     3: {
-      title: t("Boosted Performance.", "أداء معزز."),
+      title: t("Boosted Performance.", "اداء مُعزز"),
       text: t(
-        "Ultra-fast sensors for dynamic depth and motion accuracy.",
-        "حساسات فائقة السرعة لدقة عالية في الحركة والعمق."
+        "Supercharched, highly secured with advanced technology.",
+        "سرعة فائقة و امان عالي و تقنية متقدمة"
       ),
     },
     4: {
@@ -170,14 +170,14 @@ const Land = () => {
       <header className="feature-header">
         <h1 style={{ textAlign: t.textAlign }}>
           {t(
-            "Experience the Future of Interaction",
-            "استمتع بتجربة تفاعلية مستقبلية تتجاوز الحدود"
+            "Al-Wafi for Computers.",
+          "الوافي للحاسبات "
           )}
         </h1>
         <p style={{ textAlign: t.textAlign }}>
           {t(
-            "Explore the evolution of digital precision — a seamless blend of motion, clarity, and immersive response.",
-            "استكشف تطوّر الدقة الرقمية — مزيج سلس من الحركة والوضوح والاستجابة الغامرة."
+            "Techno–Power that fuels your Ambition — Expertise Guides you to the Ultimate Choice.",
+            ".طاقة تقنية تدعم طموحاتك, خبرة تقودك الى الاختيار الافضل"
           )}
         </p>
 
@@ -218,8 +218,8 @@ const Land = () => {
             <span className="indicator-icon">{card.icon}</span>
             <span className="indicator-text">
               {t(
-                { 1: "Power", 2: "Sense", 3: "Performance", 4: "Audio" }[card.id],
-                { 1: "الطاقة", 2: "الإحساس", 3: "الأداء", 4: "الصوت" }[card.id]
+                { 1: "Power", 2: "Control", 3: "Performance", 4: "Audio" }[card.id],
+                { 1: "الطاقة", 2: "التحكم", 3: "الأداء", 4: "الصوت" }[card.id]
               )}
             </span>
           </button>
