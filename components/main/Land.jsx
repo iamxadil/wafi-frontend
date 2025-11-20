@@ -132,7 +132,7 @@ const Land = () => {
   const searchParam = useAllProductsStore((s) => s.searchParam);
   const setSearchParam = useAllProductsStore((s) => s.setSearchParam);
   const { data: searchData } = useAllProductsQuery({
-    limit: 5,
+    limit: 10,
     page: 1,
     search: searchParam,
     refetchOnWindowFocus: false,

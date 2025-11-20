@@ -80,6 +80,7 @@
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  scroll-behavior: smooth;
 }
 
 /* Scrollbar (webkit) */
@@ -246,4 +247,37 @@
 }
 [data-theme="light"] {
   --accent-rgb: 94, 99, 255;
+}
+
+
+/* ============================= */
+/* 🔥 ACTIVE (Keyboard Selected) */
+/* ============================= */
+.search-result-item.active {
+  background: rgba(var(--accent-rgb), 0.12);
+  transform: translateX(4px);
+}
+
+.search-result-item.active .search-result-img {
+  transform: scale(1.06);
+}
+
+.search-result-item.active .search-result-name {
+  color: var(--accent-clr);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .search-result-item.active {
+  background: rgba(var(--accent-rgb), 0.18);
+  box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.35);
+}
+
+.search-result-item.active {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-rgb), 0.25),
+    rgba(var(--accent-rgb), 0.15)
+  );
+  transform: translateX(6px);
+  border-left: 3px solid var(--accent-clr);
 }

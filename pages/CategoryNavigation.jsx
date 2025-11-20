@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
-import ProductGrid from "../components/main/ProductGrid.jsx";
-import MobileCard from "../components/main/MobileCard.jsx";
+
 import ProductCard from '../components/main/ProductCard.jsx';
 import ProductBlock from "../components/main/ProductBlock.jsx";
 import Pagination from "../components/main/Pagination.jsx";
@@ -91,111 +90,138 @@ useEffect(() => {
     p => !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
+    const nothingAtAll =
+      !loadingProducts &&
+      !loadingOffers &&
+      displayedProducts.length === 0 &&
+      displayedOffers.length === 0;
+
+
+      
   return (
-    <div className="category-page">
-      {/* Header */}
-      <header className="cat-header">
-        <h1>{brandName || categoryName || "Products"} {t("Products", "منتجات")}</h1>
-        <div className="search-cat">
-          <Search />
-          <input
-            type="search"
-            placeholder="Search Products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </header>
+  <div className="category-page">
 
-      {/* ---------- Desktop Layout ---------- */}
-      {!isMobile && (
-        <>
-          <main id="cat-container">
-            <div className="pc-pr-cards" style={{justifyContent: "center", padding: "0"}}>
-              {loadingProducts ? (
-                <div className="loading-container">
-                  <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    Loading <Spin />
-                  </h2>
-                </div>
-              ) : displayedProducts.length > 0 ? (
-                displayedProducts.map(p => <ProductCard key={p._id} product={p} />)
+    {/* 🌟 If nothing at all → show only Coming Soon */}
+    {nothingAtAll ? (
+      <div className="coming-soon">
+        <h1>{t("Coming Soon...", "..يتوفر قريباً")}</h1>
+      </div>
+    ) : (
+      <>
+        {/* ===== YOUR FULL ORIGINAL UI GOES HERE ===== */}
+        {/* Header */}
+        <header className="cat-header">
+          <h1>{brandName || categoryName || "Products"} {t("Products", "منتجات")}</h1>
+          <div className="search-cat">
+            <Search />
+            <input
+              type="search"
+              placeholder="Search Products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </header>
+
+        {/* Desktop + Mobile layouts exactly as you had them */}
+        {/* -------------------------------------------------- */}
+        {!isMobile && (
+          <>
+            {/* DESKTOP PRODUCTS */}
+            <main id="cat-container">
+              <div className="pc-pr-cards" style={{ justifyContent: "center", padding: "0" }}>
+                {loadingProducts ? (
+                  <div className="loading-container">
+                    <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      Loading <Spin />
+                    </h2>
+                  </div>
+                ) : displayedProducts.length > 0 ? (
+                  displayedProducts.map(p => <ProductCard key={p._id} product={p} />)
+                ) : (
+                  <div style={{ textAlign: "center" }}>{t("No Products Found", "لا توجد منتجات")}</div>
+                )}
+              </div>
+
+              {productsData?.pagination.totalPages > 1 && (
+                <Pagination
+                  currentPage={productsData.pagination.currentPage}
+                  totalPages={productsData.pagination.totalPages}
+                  onPageChange={(page) => setProductsParams({ page })}
+                />
+              )}
+            </main>
+
+            {/* DESKTOP OFFERS */}
+            <main id="cat-container">
+              <header>
+                <h1>{brandName || categoryName} {t("Offers", "عروض")}</h1>
+              </header>
+              <div className="pc-pr-cards" style={{ justifyContent: "center", marginTop: "4rem", padding: "0" }}>
+                {loadingOffers ? (
+                  <div className="loading-container">
+                    <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      Loading <Spin />
+                    </h2>
+                  </div>
+                ) : displayedOffers.length > 0 ? (
+                  displayedOffers.map(p => <ProductCard key={p._id} product={p} />)
+                ) : (
+                  <div style={{ textAlign: "center" }}>{t("No Offers Found", "لا توجد عروض")}</div>
+                )}
+              </div>
+
+              {offersData?.pagination.totalPages > 1 && (
+                <Pagination
+                  currentPage={offersData.pagination.currentPage}
+                  totalPages={offersData.pagination.totalPages}
+                  onPageChange={(page) => setOffersParams({ page })}
+                />
+              )}
+            </main>
+          </>
+        )}
+
+        {/* MOBILE */}
+        {isMobile && (
+          <main className="mob-pr-container">
+            <div className="mobile-grid">
+              {displayedProducts.length > 0 ? (
+                displayedProducts.map(p => <ProductBlock key={p._id} product={p} />)
               ) : (
-                <div style={{ textAlign: "center" }}>{t("No Products Found", "لا توجد منتجات")}</div>
+                <div className="mob-loading">{t("No Products Found", "لا توجد منتجات")}</div>
               )}
             </div>
-            {productsData?.pagination.totalPages > 1 && (
-              <Pagination
-                currentPage={productsData.pagination.currentPage}
-                totalPages={productsData.pagination.totalPages}
-                onPageChange={(page) => setProductsParams({ page })}
-              />
-            )}
-          </main>
 
-          <main id="cat-container">
-            <header>
-              <h1>{brandName || categoryName} {t("Offers", "عروض")}</h1>
+            <Pagination
+              currentPage={productsData?.pagination.currentPage || 1}
+              totalPages={productsData?.pagination.totalPages || 1}
+              onPageChange={(page) => setProductsParams({ page })}
+            />
+
+            <header id="offers-header">
+              <h1>Offers for {brandName || categoryName || "Products"}</h1>
             </header>
-            <div className="pc-pr-cards" style={{justifyContent: "center", marginTop: "4rem",  padding: "0"}}>
-              {loadingOffers ? (
-                <div className="loading-container">
-                  <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    Loading <Spin />
-                  </h2>
-                </div>
-              ) : displayedOffers.length > 0 ? (
-                displayedOffers.map(p => <ProductCard key={p._id} product={p} />)
+
+            <div className="mobile-grid">
+              {displayedOffers.length > 0 ? (
+                displayedOffers.map(p => <ProductBlock key={p._id} product={p} />)
               ) : (
-                <div style={{ textAlign: "center" }}>{t("No Offers Found", "لا توجد عروض")}</div>
+                <div className="mob-loading">{t("No Offers Found", "لا توجد عروض")}</div>
               )}
             </div>
-            {offersData?.pagination.totalPages > 1 && (
-              <Pagination
-                currentPage={offersData.pagination.currentPage}
-                totalPages={offersData.pagination.totalPages}
-                onPageChange={(page) => setOffersParams({ page })}
-              />
-            )}
+
+            <Pagination
+              currentPage={offersData?.pagination.currentPage || 1}
+              totalPages={offersData?.pagination.totalPages || 1}
+              onPageChange={(page) => setOffersParams({ page })}
+            />
           </main>
-        </>
-      )}
-
-      {/* ---------- Mobile Layout ---------- */}
-      {isMobile && (
-        <main className="mob-pr-container">
-          <div className="mobile-grid">
-            {displayedProducts.length > 0 ? (
-              displayedProducts.map(p => <ProductBlock key={p._id} product={p} />)
-            ) : (
-              <div className="mob-loading">{t("No Products Found", "لا توجد منتجات")}</div>
-            )}
-          </div>
-          <Pagination
-            currentPage={productsData?.pagination.currentPage || 1}
-            totalPages={productsData?.pagination.totalPages || 1}
-            onPageChange={(page) => setProductsParams({ page })}
-          />
-
-          <header id="offers-header">
-            <h1>Offers for {brandName || categoryName || "Products"}</h1>
-          </header>
-          <div className="mobile-grid">
-            {displayedOffers.length > 0 ? (
-              displayedOffers.map(p => <ProductBlock key={p._id} product={p} />)
-            ) : (
-              <div className="mob-loading">{t("No Offers Found", "لا توجد عروض")}</div>
-            )}
-          </div>
-          <Pagination
-            currentPage={offersData?.pagination.currentPage || 1}
-            totalPages={offersData?.pagination.totalPages || 1}
-            onPageChange={(page) => setOffersParams({ page })}
-          />
-        </main>
-      )}
-    </div>
-  );
+        )}
+      </>
+    )}
+  </div>
+);
 };
 
 export default CategoryNavigation;

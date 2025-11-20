@@ -98,8 +98,8 @@ const MobLandingPage = () => {
     <main id="mob-landing-page">
       {/* ======= Title ======= */}
       <div className="mob-title" style={{ textAlign: t.textAlign }}>
-        <h2>{t("Start your journey here", "ابدأ رحلتك الآن")}</h2>
-        <h4>{t("Make your first order", "قم بطلبك الأول")}</h4>
+        <h2>{t("Al-Wafi for Computers", "الوافي للحاسبات")}</h2>
+        <h4>{t("Expertise that guides you to the ultimate choice", "خبرة تقودك إلى الاختيار الافضل")}</h4>
       </div>
 
       {/* ======= Search + Filter ======= */}
