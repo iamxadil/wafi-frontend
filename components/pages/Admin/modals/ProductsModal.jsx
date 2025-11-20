@@ -10,13 +10,17 @@ const ProductsModal = ({
   setIsModalOpen,
   editData = null,
   isEditing = false,
+  allProducts = [], 
 }) => {
   const fileInputRef = useRef(null);
 
+
+const [uploadProgress, setUploadProgress] = useState(0);
+
   // === Mutations ===
-  const { mutate: addProduct, isPending: isAdding } = useAddProductMutation();
-  const { mutate: editProduct, isPending: isEditingRequest } =
-    useEditProductMutation();
+const {mutate: addProduct, isPending: isAdding} = useAddProductMutation(null, setUploadProgress);
+const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutation(null, setUploadProgress);
+
 
   // === Form states ===
   const [formData, setFormData] = useState({
@@ -28,6 +32,7 @@ const ProductsModal = ({
     countInStock: "",
     description: "",
     isTopProduct: false,
+    priority: 0,
   });
 
   const [specs, setSpecs] = useState({});
@@ -35,6 +40,32 @@ const ProductsModal = ({
   const [deletedImages, setDeletedImages] = useState([]); // urls of removed existing images
   const [tags, setTags] = useState([]); // 🏷️ new
   const [tagInput, setTagInput] = useState("");
+  const [priorityError, setPriorityError] = useState("");
+
+  const validatePriority = (value) => {
+  if (!value || value === "") {
+    setPriorityError("");
+    return;
+  }
+
+  const num = Number(value);
+  if (isNaN(num)) {
+    setPriorityError("Priority must be a number");
+    return;
+  }
+
+  // Ignore current product's own priority when editing
+  const conflict = allProducts.find(
+    (p) => p.priority === num && p._id !== editData?._id
+  );
+
+  if (conflict) {
+    setPriorityError(`Priority ${num} is already used by: ${conflict.name}`);
+  } else {
+    setPriorityError("");
+  }
+};
+
 
   // 🧠 Prefill when editing
   useEffect(() => {
@@ -48,6 +79,7 @@ const ProductsModal = ({
         countInStock: editData.countInStock || "",
         description: editData.description || "",
         isTopProduct: !!editData.isTopProduct,
+        priority: editData?.priority || 0,
       });
 
       setSpecs(editData.specs || {});
@@ -122,6 +154,7 @@ const ProductsModal = ({
       file,
       preview: URL.createObjectURL(file),
       existing: false,
+      
     }));
 
     setImages((prev) => [...prev, ...mapped]);
@@ -254,6 +287,27 @@ const ProductsModal = ({
             </select>
           </div>
 
+              <div className="static-field">
+              <label htmlFor="priority">Priority</label>
+              <input
+                id="priority"
+                type="number"
+                value={formData.priority ?? 0}
+                onChange={(e) => {
+                  handleChange(e);
+                  validatePriority(e.target.value);
+                }}
+                className={priorityError ? "input-error" : ""}
+                placeholder="Higher number appears first"
+              />
+
+              {priorityError && (
+                <p className="error-text">{priorityError}</p>
+              )}
+            </div>
+
+
+
           <div className="two-grid">
             <div className="static-field">
               <label htmlFor="price">Price *</label>
@@ -383,6 +437,19 @@ const ProductsModal = ({
                   >
                     ×
                   </button>
+
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                    <div className="upload-overlay">
+                      <div className="progress-bar">
+                        <div
+                          className="progress-fill"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                      <p>{uploadProgress}%</p>
+                    </div>
+                  )}
+
                 </div>
               ))}
             </div>
@@ -464,7 +531,11 @@ const ProductsModal = ({
             >
               Cancel
             </button>
-            <button type="submit" className="btn save" disabled={isPending}>
+           <button
+              type="submit"
+              className="btn save"
+              disabled={isPending || priorityError}
+            >
               {isPending
                 ? isEditing
                   ? "Saving..."
@@ -473,6 +544,7 @@ const ProductsModal = ({
                 ? "Save Changes"
                 : "Add Product"}
             </button>
+
           </div>
         </form>
       </div>

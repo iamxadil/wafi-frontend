@@ -65,7 +65,7 @@ export const useProductsQuery = (
 /* -----------------------------------------------
    ➕ Add Product
 ------------------------------------------------ */
-export const useAddProductMutation = (normalizeProduct) => {
+export const useAddProductMutation = (normalizeProduct, setUploadProgress) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -73,12 +73,15 @@ export const useAddProductMutation = (normalizeProduct) => {
       const res = await axios.post(`${API_URL}/api/products`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (event) => {
+          const percent = Math.round((event.loaded / event.total) * 100);
+          setUploadProgress(percent);   // 🔥 live number
+        },
       });
 
-      const product = res.data.product || res.data;
-      if (!product) throw new Error("No product returned from server");
-
-      return normalizeProduct ? normalizeProduct(product) : product;
+      return normalizeProduct
+        ? normalizeProduct(res.data.product)
+        : res.data.product;
     },
 
     onSuccess: () => {
@@ -87,53 +90,45 @@ export const useAddProductMutation = (normalizeProduct) => {
     },
 
     onError: (err) => {
-      console.error("❌ Error adding product:", err.response?.data || err.message);
       toast.error(err.response?.data?.message || "Failed to add product");
     },
   });
 };
 
+
 /* -----------------------------------------------
    ✏️ Edit Product
 ------------------------------------------------ */
-export const useEditProductMutation = (normalizeProduct) => {
+export const useEditProductMutation = (normalizeProduct, setUploadProgress) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ id, formData }) => {
-      if (!id) throw new Error("Missing product ID");
-
       const res = await axios.put(`${API_URL}/api/products/${id}`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (event) => {
+          const percent = Math.round((event.loaded / event.total) * 100);
+          setUploadProgress(percent);
+        },
       });
 
-      const updated = res.data.product || res.data;
-      if (!updated) throw new Error("No updated product returned from server");
-
-      return normalizeProduct ? normalizeProduct(updated) : updated;
+      return normalizeProduct
+        ? normalizeProduct(res.data.product)
+        : res.data.product;
     },
 
     onSuccess: (updatedProduct) => {
       toast.success("✏️ Product updated successfully!");
-      queryClient.setQueryData(["products"], (oldData) => {
-        if (!oldData || !oldData.products) return oldData;
-        return {
-          ...oldData,
-          products: oldData.products.map((p) =>
-            p._id === updatedProduct._id ? updatedProduct : p
-          ),
-        };
-      });
       queryClient.invalidateQueries(["products"]);
     },
 
     onError: (err) => {
-      console.error("❌ Error updating product:", err.response?.data || err.message);
       toast.error(err.response?.data?.message || "Failed to update product");
     },
   });
 };
+
 
 /* -----------------------------------------------
    🗑️ Delete Product (single or multiple)

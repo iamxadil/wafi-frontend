@@ -502,3 +502,28 @@
   transform: scale(1.2);
   color: rgba(var(--accent-rgb, 94, 99, 255), 0.8);
 }
+
+.input-error {
+  border: 1px solid #ff4b4b !important;
+  background: rgba(255, 0, 0, 0.06);
+}
+
+.error-text {
+  color: #ff4b4b;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.progress-bar {
+  width: 85%;
+  height: 8px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent-clr, #5e63ff);
+  transition: width 0.2s ease;
+}

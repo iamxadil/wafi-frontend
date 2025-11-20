@@ -404,6 +404,7 @@ const Products = () => {
           setIsModalOpen={setIsModalOpen}
           editData={editData}
           isEditing={!!editData}
+          allProducts={products}
         />
       )}
     </main>

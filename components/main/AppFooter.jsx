@@ -36,7 +36,7 @@ export default function AppFooter() {
     paragraphs: [
       {
         text: t("Al-Wafi was founded with a rich legacy of technological expertise to save you time and effort of decision-making. We don’t just sell products; we build technological partnerships that guides your way to the best solution. We also offer our clients original products supported by certified Guarantees.",
-          "نحن لسنا مجرد بائعين للحواسيب بل شريكك في اختيار الحل التقني الامثل . تأسس الوافي على قاعدة من الخبرة الطويلة في قطاع التكنلوجيا لتوفر عليك عناء البحث و التفكير.  كما  نقدم لك منتجات اصلية مدعومة بضمانات معتمدة ")
+          "نحن لسنا مجرد بائعين للحواسيب بل شريكك في اختيار الحل التقني الامثل . تأسس الوافي على قاعدة من الخبرة الطويلة في قطاع التكنولوجيا لتوفر عليك عناء البحث و التفكير.  كما  نقدم لك منتجات اصلية مدعومة بضمانات معتمدة ")
       },
     ],
   };
