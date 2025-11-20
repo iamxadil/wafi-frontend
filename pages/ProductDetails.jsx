@@ -239,7 +239,7 @@ const brandIcons = {
   };
 
 const handleShare = async () => {
-  const shareUrl = `${window.location.origin}/preview/${id}`;
+  const shareUrl = `${window.location.origin}/product/${id}`;
   if (navigator.share) {
     try {
       await navigator.share({
@@ -412,14 +412,14 @@ const handleShare = async () => {
 
       return (
         <li key={key} className="spec-line" style={{ textAlign: t.flexAlign, flexDirection: t.rowReverse,alignItems: t.flexAlign}} >
-          <span className="spec-div" style={{ flexDirection: t.rowReverse }}>
             <span className="spec-icon">{icon}</span>
-            <span className="spec-key" style={{ justifyContent: t.flexAlign }}>
-              {label}{" "}
-            </span>
-          </span>
 
+            <span className="spec-div">
+           <span className="spec-key" style={{ justifyContent: t.flexAlign }}>
+              {label}{" "}
+          </span>
           <span className="spec-value">{formattedValue}</span>
+            </span>
         </li>
       );
     })

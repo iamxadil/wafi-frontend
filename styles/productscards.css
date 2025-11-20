@@ -395,7 +395,7 @@ select.custom:disabled {
   position: relative;
   flex: 0 0 auto;
   min-height: 320px;
-  max-height: 400px;
+  max-height: 420px;
   width: 180px;
   border: 1px solid var(--text);
   border-radius: 10px;
@@ -434,9 +434,10 @@ select.custom:disabled {
 
 
 .mob-pr-details h2 {
-  font-size: 0.95rem;
+  font-size: 14px;
   font-weight: bold;
   line-height: 20px;
+
 }
 
 
@@ -447,6 +448,7 @@ select.custom:disabled {
   height: 100%;
   display: flex;
   align-items: flex-end;
+  font-size: 0.85rem;
 }
 
 .mob-pr-buttons {

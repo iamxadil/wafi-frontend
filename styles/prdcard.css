@@ -88,11 +88,20 @@
 }
 
 .prd-name {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.5;
   color: var(--text);
   min-height: 40px;
+}
+
+
+.prd-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;       /* limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .prd-price {
