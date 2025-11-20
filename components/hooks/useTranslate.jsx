@@ -1,9 +1,5 @@
 import useLanguageStore from "../stores/useLanguageStore.jsx";
 
-/**
- * useTranslate hook
- * Simple bilingual switcher with text, flex, and absolute positioning alignment.
- */
 export default function useTranslate() {
   const { language } = useLanguageStore();
 
@@ -14,14 +10,23 @@ export default function useTranslate() {
   const textAlign = language === "ar" ? "right" : "left";
   const flexAlign = language === "ar" ? "flex-end" : "flex-start";
   const positionAlign = language === "ar" ? "right" : "left";
-  const rowReverse = language === "ar" ? "row-reverse" : "row"
+  const rowReverse = language === "ar" ? "row-reverse" : "row";
 
-  // All helpers + language state
+  // ⭐ NEW — inline text direction for mixed Arabic/English
+  const inlineDirection = language === "ar" ? "rtl" : "ltr";
+
+  // ⭐ NEW — prevents wrapping problems with mixed direction text
+  const bidiMode = "plaintext"; // always needed for Arabic/English mixes
+
   return Object.assign(t, {
     language,
     textAlign,
     flexAlign,
     rowReverse,
     positionAlign,
+
+    // NEW
+    inlineDirection,
+    bidiMode,
   });
 }

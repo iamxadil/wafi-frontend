@@ -109,7 +109,7 @@ export default function AppFooter() {
               <Text style={{ color: "var(--text)" }}>
                 {t(
                   "Three decades of experience in your hands, since 1993.",
-                  "من اقدم مكاتب الحاسِبات في بغداد، تأسسَ في عام منذ عام 1993، خبرة ثلاثة عقود بين يديك"
+                  "من اقدم مكاتب الحاسِبات في بغداد، خبرة ثلاثة عقود بين يديك"
                 )}
               </Text>
             </Space>

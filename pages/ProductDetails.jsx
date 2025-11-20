@@ -107,19 +107,19 @@ const keywordLabels = {
   STORAGE: { en: "Storage", ar: "التخزين" },
   RAM: { en: "RAM", ar: "الذاكرة" },
   COLOR: { en: "Color", ar: "اللون" },
-  COLOROPTIONS: { en: "Color Options", ar: "خيارات الألوان" },
+  COLOROPTIONS: { en: "Color Options", ar: "الألوان" },
   SIZE: { en: "Size", ar: "الحجم" },
   WEIGHT: { en: "Weight", ar: "الوزن" },
   BATTERY: { en: "Battery", ar: "البطارية" },
-  OS: { en: "Operating System", ar: "نظام التشغيل" },
+  OS: { en: "Operating System", ar: "النظام" },
   WARRANTY: { en: "Warranty", ar: "الضمان" },
-  TOUCHSCREEN: { en: "Touchscreen", ar: "شاشة اللمس" },
-  FINGERPRINT: { en: "Fingerprint Sensor", ar: "مستشعر البصمة" },
-  FACEID: { en: "Face ID", ar: "التعرف على الوجه" },
-  PEN: { en: "Stylus / Pen Support", ar: "دعم القلم" },
+  TOUCHSCREEN: { en: "Touchscreen", ar: "اللمس" },
+  FINGERPRINT: { en: "Fingerprint Sensor", ar: "البصمة" },
+  FACEID: { en: "Face ID", ar: "تعرف الوجه" },
+  PEN: { en: "Stylus / Pen Support", ar: "القلم" },
   PORTS: { en: "Ports", ar: "المنافذ" },
   RESOLUTION: { en: "Resolution", ar: "الدقة" },
-  RELEASEYEAR: { en: "Release Year", ar: "سنة الإصدار" },
+  RELEASEYEAR: { en: "Release Year", ar: "الإصدار" },
   ACCESSORIES: { en: "Accessories", ar: "الاكسسوارات" },
 };
 
@@ -411,16 +411,16 @@ const handleShare = async () => {
       }
 
       return (
-        <li key={key} className="spec-line" style={{ textAlign: t.flexAlign, flexDirection: t.rowReverse,alignItems: t.flexAlign}} >
-            <span className="spec-icon">{icon}</span>
+      <li className="spec-line" key={label} style={{flexDirection: t.rowReverse}}>
+      <span className="spec-icon">{icon}</span>
 
-            <span className="spec-div">
-           <span className="spec-key" style={{ justifyContent: t.flexAlign }}>
-              {label}{" "}
-          </span>
+        <span className="spec-text" 
+        style={{direction: "t.inlineDirection", unicodeBidi: t.bidiMode, alignItems: t.flexAlign, textAlign: t.textAlign}} >
+          <span className="spec-key">{label}: </span>
           <span className="spec-value">{formattedValue}</span>
-            </span>
-        </li>
+        </span>
+      </li>
+
       );
     })
     .filter(Boolean);
