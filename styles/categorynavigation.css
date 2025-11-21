@@ -237,7 +237,6 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
   padding: 2rem;
   box-sizing: border-box;
 
@@ -253,8 +252,7 @@
 
   /* Centering */
   margin: 4rem auto 2rem;
-  max-width: 900px;
-
+  max-width: 80%;
   /* Animation */
   opacity: 0;
   transform: translateY(20px);
