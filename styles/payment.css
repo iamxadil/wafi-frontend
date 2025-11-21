@@ -16,7 +16,6 @@
   padding: 2rem;
   background-color: var(--background);
   margin-top: 4rem;
-
 }
 
 /* Left side: Form */
@@ -151,8 +150,18 @@
 }
 
 .cart-item-details h3 {
-  font-size: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+
+  white-space: nowrap;        /* one line only */
+  overflow: hidden;           /* hide overflow */
+  text-overflow: ellipsis;    /* show ... */
+
+  max-width: 140px;           /* adjust as you like */
+  display: block;             /* ensures ellipsis works on all browsers */
 }
+
 
 .cart-item-price {
   font-weight: 600;

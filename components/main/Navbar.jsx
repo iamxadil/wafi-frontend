@@ -122,6 +122,18 @@ const Navbar = () => {
           </Link>
         </li>
 
+       <li className="bf-nav-item">
+      <Link to="/black-friday">
+        <span className="bf-badge">
+          <span className="bf-live-dot"></span>
+          <span className="bf-text">{t("Black Friday", "الجمعة السوداء")}</span>
+          <span className="bf-glint"></span>
+        </span>
+      </Link>
+    </li>
+
+
+
     </ul>
   ));
 

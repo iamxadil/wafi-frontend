@@ -13,6 +13,7 @@ import Pagination from "../components/main/Pagination.jsx";
 import Loading from "../components/main/Loading.jsx";
 
 // Hooks
+import { motion } from "framer-motion";
 import { useDynamicFilters } from "../components/hooks/useDynamicFilters.jsx";
 import { useOthersQuery } from "../components/hooks/useOthersQuery.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
@@ -24,6 +25,7 @@ import useOthersStore from "../components/stores/useOthersStore.jsx";
 const AllOthers = () => {
   const t = useTranslate();
   const width = useWindowWidth();
+  const isMobile = width <= 650;
 
   const {
     othersPageParams,
@@ -35,12 +37,9 @@ const AllOthers = () => {
     resetFilters,
   } = useOthersStore();
 
-  /* ===========================================================
-     🧠 Local “pending” filters (so user can pick before applying)
-  =========================================================== */
   const [tempFilters, setTempFilters] = useState(filters);
 
-  // 🧩 Fetch others data
+  // Fetch Data
   const { data: allOthers, isLoading } = useOthersQuery({
     ...othersPageParams,
     ...filters,
@@ -48,9 +47,12 @@ const AllOthers = () => {
   });
 
   const others = allOthers?.products || [];
-  const pagination = allOthers?.pagination || { currentPage: 1, totalPages: 1 };
+  const pagination = allOthers?.pagination || {
+    currentPage: 1,
+    totalPages: 1,
+  };
 
-  // 🧩 Fetch dynamic filter metadata
+  // Dynamic Filters
   const { data: filtersData, isLoading: filtersLoading } = useDynamicFilters({
     category: [
       "Routers",
@@ -63,16 +65,14 @@ const AllOthers = () => {
     ],
   });
 
-  // 🧱 Build structured filters for Filter.jsx
-  const dynamicFilters = useMemo(() => buildFilters(filtersData, t), [filtersData, t]);
+  const dynamicFilters = useMemo(
+    () => buildFilters(filtersData, t),
+    [filtersData, t]
+  );
 
-  /* ===========================================================
-     🧭 Handlers
-  =========================================================== */
+  // Handlers
   const handlePageChange = (newPage) =>
     setOthersPageParams({ ...othersPageParams, page: newPage });
-
-  const handleFilterChange = (updated) => setTempFilters(updated);
 
   const handleApplyFilters = (selected) => {
     setFilters(selected);
@@ -84,29 +84,38 @@ const AllOthers = () => {
     setTempFilters({});
   };
 
-  /* ===========================================================
-     🌀 Loading State
-  =========================================================== */
+  /* ============================================================
+     📱 MOBILE — SWIPE PAGINATION
+  ============================================================ */
+  const handleSwipeEnd = (e, info) => {
+    const x = info.offset.x;
+    const current = pagination.currentPage;
+    const total = pagination.totalPages;
+
+    if (x < -120 && current < total) handlePageChange(current + 1);
+    if (x > 120 && current > 1) handlePageChange(current - 1);
+  };
+
   if (isLoading || filtersLoading) {
-    return <Loading message={t("Loading accessories...", "جاري تحميل الإكسسوارات...")} />;
+    return (
+      <Loading
+        message={t("Loading accessories...", "جاري تحميل الإكسسوارات...")}
+      />
+    );
   }
 
-  /* ===========================================================
-     🧩 Render
-  =========================================================== */
   return (
     <div id="pc-pr-container">
-      {/* === Header === */}
+      {/* Header */}
       <header className="pr-header" style={{ flexDirection: t.rowReverse }}>
         <h1>{t("Tech & Others", "معدات تقنية")}</h1>
 
-        {/* === Filters & Sort === */}
         <div className="header-right">
           <Filter
             title={width > 650 && t("Filters", "الفلاتر")}
             filters={dynamicFilters}
             selected={tempFilters}
-            onChange={handleFilterChange}
+            onChange={setTempFilters}
             onClearAll={handleClearAll}
             onApply={handleApplyFilters}
           />
@@ -119,24 +128,57 @@ const AllOthers = () => {
         </div>
       </header>
 
-      {/* === Products Grid === */}
-      <div className={width > 650 ? "pc-pr-cards" : "mobile-grid"}>
-        {others.length > 0 ? (
-          others.map((product, i) =>
-            width > 650 ? (
+      {/* ============================================================
+          🖥 DESKTOP GRID
+      ============================================================ */}
+      {!isMobile && (
+        <div className="pc-pr-cards">
+          {others.length ? (
+            others.map((product, i) => (
               <ProductCard key={product._id || i} product={product} />
-            ) : (
-              <ProductBlock key={product._id || i} product={product} customDelay={i * 0.08} />
-            )
-          )
-        ) : (
-          <p style={{ textAlign: "center" }}>
-            {t("No products found.", "لم يتم العثور على منتجات.")}
-          </p>
-        )}
-      </div>
+            ))
+          ) : (
+            <p style={{ textAlign: "center" }}>
+              {t("No products found.", "لم يتم العثور على منتجات.")}
+            </p>
+          )}
+        </div>
+      )}
 
-      {/* === Pagination === */}
+      {/* ============================================================
+          📱 MOBILE — SWIPE GRID
+      ============================================================ */}
+      {isMobile && (
+        <div className="swipe-lock">
+          <motion.div
+            className="swipe-mobile"
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.18}
+            dragMomentum={false}
+            dragPropagation={false}
+            onDragEnd={handleSwipeEnd}
+          >
+            <div className="mobile-grid">
+              {others.length ? (
+                others.map((product, i) => (
+                  <ProductBlock
+                    key={product._id || i}
+                    product={product}
+                    customDelay={i * 0.08}
+                  />
+                ))
+              ) : (
+                <p style={{ textAlign: "center" }}>
+                  {t("No products found.", "لم يتم العثور على منتجات.")}
+                </p>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Pagination */}
       {pagination.totalPages > 1 && (
         <Pagination
           currentPage={pagination.currentPage}

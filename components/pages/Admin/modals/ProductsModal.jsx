@@ -33,6 +33,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
     description: "",
     isTopProduct: false,
     priority: 0,
+    isBlackFriday: false, 
   });
 
   const [specs, setSpecs] = useState({});
@@ -80,6 +81,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
         description: editData.description || "",
         isTopProduct: !!editData.isTopProduct,
         priority: editData?.priority || 0,
+        isBlackFriday: !!editData.isBlackFriday,
       });
 
       setSpecs(editData.specs || {});
@@ -465,6 +467,18 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             />
             <label htmlFor="isTopProduct">Mark as Top Product</label>
           </div>
+
+          <div className="checkbox-row">
+            
+          <input
+            id="isBlackFriday"
+            type="checkbox"
+            checked={formData.isBlackFriday}
+            onChange={handleChange}
+          />
+          <label htmlFor="isBlackFriday">Black Friday Product</label>
+        </div>
+
 
           {/* === SPECS === */}
           {formData.category === "Laptops" && (

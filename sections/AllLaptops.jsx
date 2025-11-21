@@ -5,11 +5,12 @@ import Filter from "../components/common/Filter.jsx";
 import Sort from "../components/common/Sort.jsx";
 import ProductGrid from "../components/main/ProductGrid.jsx";
 import ProductBlock from "../components/main/ProductBlock.jsx";
-import ProductCard from '../components/main/ProductCard.jsx';
+import ProductCard from "../components/main/ProductCard.jsx";
 import Pagination from "../components/main/Pagination.jsx";
 import Loading from "../components/main/Loading.jsx";
 
 // Hooks
+import { motion } from "framer-motion";
 import { useLaptopsDynamicFilters } from "../components/query/useLaptopsDynamicFilters.jsx";
 import { useLaptopsQuery } from "../components/hooks/useLaptopsQuery.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
@@ -24,60 +25,50 @@ import useLaptopsStore from "../components/stores/useLaptopsStore.jsx";
 const AllLaptops = () => {
   const t = useTranslate();
   const width = useWindowWidth();
+  const isMobile = width <= 650;
 
   const {
     laptopPageParams,
     setLaptopPageParams,
-    filters,        // committed filters (applied)
-    setFilters,     
+    filters,
+    setFilters,
     sort,
     setSort,
-    resetFilters
+    resetFilters,
   } = useLaptopsStore();
 
-  /* ============================================================
-     🧠 Local temp filters (before Apply)
-  ============================================================= */
   const [tempFilters, setTempFilters] = useState(filters);
 
-  /* ============================================================
-     🧮 Fetch laptops with committed filters
-  ============================================================= */
+  /* ===============================
+     📡 Fetch laptops
+  =============================== */
   const { data: allLaptops, isLoading: laptopsLoading } = useLaptopsQuery({
     ...laptopPageParams,
     ...filters,
     sort,
-    category: "Laptops"
+    category: "Laptops",
   });
 
   const laptops = allLaptops?.products || [];
-  const pagination = allLaptops?.pagination || {
-    currentPage: 1,
-    totalPages: 1,
-  };
+  const pagination = allLaptops?.pagination || { currentPage: 1, totalPages: 1 };
 
-  /* ============================================================
-     🏗  Fetch dynamic filter metadata (CPU/GPU/RAM/etc)
-  ============================================================= */
-  const {
-    data: dynamicData,
-    isLoading: filtersLoading
-  } = useLaptopsDynamicFilters(); // NEW ONE
+  /* ===============================
+     📡 Fetch dynamic filter data
+  =============================== */
+  const { data: dynamicData, isLoading: filtersLoading } =
+    useLaptopsDynamicFilters();
 
-  // Filter definitions ready for Filter.jsx
   const dynamicFilters = dynamicData?.filters || [];
 
-  /* ============================================================
+  /* ===============================
      📌 Handlers
-  ============================================================= */
+  =============================== */
   const handlePageChange = (page) =>
     setLaptopPageParams({ ...laptopPageParams, page });
 
-  const handleFilterChange = (updated) => setTempFilters(updated);
-
   const handleApplyFilters = (selected) => {
-    setFilters(selected);               // commit them
-    setLaptopPageParams({ page: 1 });   // reset page to 1
+    setFilters(selected);
+    setLaptopPageParams({ page: 1 });
   };
 
   const handleClearAll = () => {
@@ -85,9 +76,20 @@ const AllLaptops = () => {
     setTempFilters({});
   };
 
-  /* ============================================================
-     ⏳ Loading
-  ============================================================= */
+  /* ===============================
+     🔥 MOBILE SWIPE PAGINATION
+  =============================== */
+  const handleSwipeEnd = (e, info) => {
+    const current = pagination.currentPage;
+    const total = pagination.totalPages;
+
+    if (info.offset.x < -120 && current < total) handlePageChange(current + 1);
+    if (info.offset.x > 120 && current > 1) handlePageChange(current - 1);
+  };
+
+  /* ===============================
+     ⌛ Loading
+  =============================== */
   if (laptopsLoading || filtersLoading) {
     return (
       <Loading
@@ -96,9 +98,9 @@ const AllLaptops = () => {
     );
   }
 
-  /* ============================================================
+  /* ===============================
      🎨 Render
-  ============================================================= */
+  =============================== */
   return (
     <div id="pc-pr-container">
       {/* Header */}
@@ -106,17 +108,15 @@ const AllLaptops = () => {
         <h1>{t("Laptops", "اللابتوبات")}</h1>
 
         <div className="header-right">
-          {/* Filter Component */}
           <Filter
             title={width > 650 && t("Filters", "الفلاتر")}
             filters={dynamicFilters}
             selected={tempFilters}
-            onChange={handleFilterChange}
+            onChange={setTempFilters}
             onClearAll={handleClearAll}
             onApply={handleApplyFilters}
           />
 
-          {/* Sort Component */}
           <Sort
             title={width > 650 && t("Sort", "الترتيب")}
             selected={sort}
@@ -125,28 +125,59 @@ const AllLaptops = () => {
         </div>
       </header>
 
-      {/* Products Grid */}
-      <div className={width > 650 ? "pc-pr-cards" : "mobile-grid"}>
-        {laptops.length ? (
-          laptops.map((product, i) =>
-            width > 650 ? (
+      {/* ============================ */}
+      {/* 🖥 DESKTOP GRID */}
+      {/* ============================ */}
+      {!isMobile && (
+        <div className="pc-pr-cards">
+          {laptops.length ? (
+            laptops.map((product, i) => (
               <ProductCard key={product._id || i} product={product} />
-            ) : (
-              <ProductBlock
-                key={product._id || i}
-                product={product}
-                customDelay={i * 0.08}
-              />
-            )
-          )
-        ) : (
-          <p style={{ textAlign: "center" }}>
-            {t("No laptops found.", "لم يتم العثور على لابتوبات.")}
-          </p>
-        )}
-      </div>
+            ))
+          ) : (
+            <p style={{ textAlign: "center" }}>
+              {t("No laptops found.", "لم يتم العثور على لابتوبات.")}
+            </p>
+          )}
+        </div>
+      )}
 
-      {/* Pagination */}
+      {/* ============================ */}
+      {/* 📱 MOBILE — SWIPE */}
+      {/* ============================ */}
+      {isMobile && (
+        <div className="swipe-lock">
+          <motion.div
+            className="swipe-mobile"
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.18}
+            dragMomentum={false}
+            dragPropagation={false}
+            onDragEnd={handleSwipeEnd}
+          >
+            <div className="mobile-grid">
+              {laptops.length ? (
+                laptops.map((product, i) => (
+                  <ProductBlock
+                    key={product._id || i}
+                    product={product}
+                    customDelay={i * 0.08}
+                  />
+                ))
+              ) : (
+                <p style={{ textAlign: "center" }}>
+                  {t("No laptops found.", "لم يتم العثور على لابتوبات.")}
+                </p>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* ============================ */}
+      {/* 📌 PAGINATION FOOTER */}
+      {/* ============================ */}
       {pagination.totalPages > 1 && (
         <Pagination
           currentPage={pagination.currentPage}

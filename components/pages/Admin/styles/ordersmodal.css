@@ -429,3 +429,34 @@
   margin-top: 0.6rem;
   
 }
+
+/* FIX SCROLL JUMP */
+.omodal {
+  max-height: 90vh !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.omodal__body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: none !important;
+}
+
+/* FIX HEADER FLICKER */
+.omodal__header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+/* DISABLE MANTINE BODY SHIFT */
+body {
+  padding-right: 0 !important;
+}
+
+html {
+  scrollbar-gutter: stable;
+}

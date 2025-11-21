@@ -1,12 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Laptop, Mouse, Blend, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  X,
+  Laptop,
+  Mouse,
+  Blend,
+  ChevronDown,
+  ChevronUp,
+  ShoppingBag,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/sidemenu.css";
 import useTranslate from "../hooks/useTranslate.jsx";
 
 const menuData = [
+  {
+    titleKey: { en: "Black Friday", ar: "الجمعة السوداء" },
+    icon: <ShoppingBag size={25} />,
+    type: "single",
+    path: "/black-friday",
+    special: true, // ⭐ premium styling
+  },
+
   {
     titleKey: { en: "Laptops", ar: "لابتوبات" },
     icon: <Laptop size={25} />,
@@ -75,7 +91,6 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
             onClick={() => setIsOpen(false)}
           />
 
@@ -94,10 +109,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
               x: t.language === "ar" ? 260 : -260,
               opacity: 0,
             }}
-            transition={{
-              duration: 0.28,
-              ease: "easeOut",
-            }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
             dir={t.language === "ar" ? "rtl" : "ltr"}
           >
             {/* Header */}
@@ -115,15 +127,17 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
             <ul className="sidemenu-list">
               {menuData.map((menu, i) => (
                 <li key={i}>
-                  
-                  {/* SINGLE ITEM */}
+                  {/* SINGLE ITEM (normal + Black Friday special) */}
                   {menu.type === "single" && (
                     <motion.button
-                      className="sidemenu-main-btn single"
+                      className={`sidemenu-main-btn single ${
+                        menu.special ? "bf-special" : ""
+                      }`}
                       onClick={() => handleNavigate(menu.path)}
                       whileTap={{ scale: 0.97 }}
                     >
                       <span className="sidemenu-icon">{menu.icon}</span>
+
                       <span className="sidemenu-title">
                         {t(menu.titleKey.en, menu.titleKey.ar)}
                       </span>
@@ -139,9 +153,11 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                         whileTap={{ scale: 0.97 }}
                       >
                         <span className="sidemenu-icon">{menu.icon}</span>
+
                         <span className="sidemenu-title">
                           {t(menu.titleKey.en, menu.titleKey.ar)}
                         </span>
+
                         <span className="sidemenu-arrow">
                           {openIndex === i ? <ChevronUp /> : <ChevronDown />}
                         </span>
@@ -154,10 +170,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                             initial={{ opacity: 0, scaleY: 0 }}
                             animate={{ opacity: 1, scaleY: 1 }}
                             exit={{ opacity: 0, scaleY: 0 }}
-                            transition={{
-                              duration: 0.22,
-                              ease: "easeOut",
-                            }}
+                            transition={{ duration: 0.22 }}
                             style={{ originY: 0 }}
                           >
                             {menu.items.map((item, j) => (
@@ -183,7 +196,6 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                       </AnimatePresence>
                     </>
                   )}
-
                 </li>
               ))}
             </ul>

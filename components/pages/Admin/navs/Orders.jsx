@@ -458,6 +458,7 @@ const handleSort = (label) => {
         opened={detailsOpened}
         onClose={handleCloseModal}
         order={activeOrder}
+        
       />
 
       {/* ⚙️ Status Change Modal */}

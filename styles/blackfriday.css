@@ -1,0 +1,117 @@
+/* ============================================
+   BLACK FRIDAY — CALM, MINIMAL & UNIQUE
+============================================ */
+
+.bf-hero {
+  padding: 3rem 1rem;
+  width: 85%;
+  margin: 3rem auto;
+  text-align: center;
+
+  /* Soft, elegant subtle background */
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-rgb), 0.04),
+    rgba(var(--accent-rgb), 0.07)
+  );
+
+  border-radius: 26px;
+
+  /* Premium mist effect */
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+
+  /* Soft shadow for luxury feeling */
+
+  color: var(--text);
+  transition: 0.3s ease;
+}
+
+/* Calm title */
+.bf-hero h1 {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700; /* lower weight = calmer */
+
+  background: linear-gradient(
+    90deg,
+    rgba(var(--accent-rgb), 1),
+    rgba(var(--accent-rgb), 0.4)
+  );
+
+  -webkit-background-clip: text;
+  color: transparent;
+
+  opacity: 0.95; /* calmer */
+}
+
+/* Description */
+.bf-hero p {
+  font-size: 1rem;
+  margin-top: 0.7rem;
+  opacity: 0.75;
+  line-height: 1.6;
+}
+
+/* Countdown container */
+.bf-countdown {
+  display: flex;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-top: 1.4rem;
+
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Countdown box — soft glass */
+.bf-count-box {
+  padding: 0.55rem 0.85rem;
+  min-width: 50px;
+
+  background: rgba(var(--accent-rgb), 0.08);
+  border-radius: 14px;
+
+  border: 1px solid rgba(var(--accent-rgb), 0.15);
+  backdrop-filter: blur(8px) saturate(150%);
+
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Calm CTA button */
+.bf-btn {
+  margin-top: 2rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 40px;
+
+  background: rgba(var(--accent-rgb), 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.15);
+
+  color: var(--text);
+  font-size: 0.95rem;
+
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.bf-btn:hover {
+  background: rgba(var(--accent-rgb), 0.18);
+  transform: translateY(-2px);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .bf-hero {
+    width: 85%;
+    padding: 2rem 1rem;
+  }
+
+  .bf-countdown {
+    gap: 0.5rem;
+  }
+
+  .bf-count-box {
+    padding: 0.45rem 0.7rem;
+    min-width: 42px;
+  }
+}

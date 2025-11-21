@@ -108,12 +108,18 @@ const Cart = () => {
 
                     <span className="cu-qty-num">{item.qty}</span>
 
-                    <button
-                      className="cu-qty-btn"
-                      onClick={() => update(item._id, Math.max(1, item.qty - 1))}
-                    >
-                      <Minus size={15} />
-                    </button>
+                  <button
+                        className="cu-qty-btn"
+                        onClick={() => {
+                          if (item.qty - 1 <= 0) {
+                            remove(item._id); 
+                          } else {
+                            update(item._id, item.qty - 1);
+                          }
+                        }}
+                      >
+                        <Minus size={15} />
+                      </button>
                   </div>
 
                   {/* Price desktop + delete */}

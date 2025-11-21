@@ -63,7 +63,6 @@ const ProductBlock = ({ product }) => {
       className="essence-card motion-card"
       onClick={handleView}
       whileTap={{ scale: 0.97 }}
-      whileHover={{ y: -4, transition: { duration: 0.3 } }}
       layout
     >
       {/* === IMAGE === */}

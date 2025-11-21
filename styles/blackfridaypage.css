@@ -1,0 +1,176 @@
+/* ================================================================
+ 🔥 ULTRA PREMIUM BLACK FRIDAY HERO
+ Smooth spotlight | Gold shimmer | Light-mode brilliance
+================================================================ */
+
+
+.bf-grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.bf-hero-butter {
+  width: 85%;
+  margin: 2rem auto 3rem;
+  padding: 3rem 1.2rem;
+  border-radius: 26px;
+
+  /* 🌗 Dynamic backgrounds for light/dark */
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-rgb), 0.06),
+    rgba(var(--accent-rgb), 0.12) 40%,
+    rgba(var(--accent-rgb), 0.05)
+  );
+
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
+
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+
+  animation: bfFadeIn 0.9s ease forwards;
+  opacity: 0;
+}
+
+/* Fade in */
+@keyframes bfFadeIn {
+  from { opacity: 0; transform: translateY(14px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ✨ buttery smooth spotlight */
+.bf-hero-butter::before {
+  content: "";
+  position: absolute;
+  width: 380px;
+  height: 380px;
+
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 120, 0.35),
+    rgba(255, 215, 120, 0.08) 55%,
+    transparent 75%
+  );
+
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+
+  transition:
+    left 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    top 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bf-butter-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+}
+
+/* 🔱 Gold shimmer (stronger for light mode) */
+.bf-butter-content h1 {
+  font-size: clamp(2.3rem, 6vw, 3rem);
+  font-weight: 800;
+
+  background: linear-gradient(90deg,
+      #ffdf8a,
+      #fff2c7,
+      #ffd97a);
+
+  -webkit-background-clip: text;
+  color: transparent;
+
+  animation: goldShimmer 4s ease-in-out infinite;
+}
+
+@keyframes goldShimmer {
+  0%, 100% { filter: brightness(1); }
+  40%      { filter: brightness(1.3); }
+  50%      { filter: brightness(1.55); }
+  60%      { filter: brightness(1.3); }
+}
+
+/* Calm, soft text */
+.bf-butter-content p {
+  margin-top: 0.5rem;
+  font-size: 1.05rem;
+  opacity: 0.72;
+  color: var(--text);
+}
+
+/* Countdown */
+.bf-butter-countdown {
+  margin-top: 1.6rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.1rem;
+}
+
+.bf-butter-countdown div {
+  padding: 0.55rem 0.85rem;
+  min-width: 65px;
+
+  background: rgba(255, 220, 150, 0.15);
+  border: 1px solid rgba(255, 220, 150, 0.28);
+  border-radius: 14px;
+
+  box-shadow: 0 4px 12px rgba(255, 190, 120, 0.15),
+              inset 0 0 10px rgba(255, 225, 180, 0.06);
+
+  backdrop-filter: blur(7px);
+  text-align: center;
+}
+
+.bf-butter-countdown span {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.bf-butter-countdown label {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.62;
+}
+
+/* ✨ Floating particles — smoother, more premium */
+.bf-butter-particle {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: rgba(255, 240, 200, 0.7);
+  border-radius: 50%;
+  opacity: 0.65;
+
+  animation: floatUp 7s ease-in-out infinite;
+  filter: blur(1.2px);
+
+  box-shadow: 0 0 8px rgba(255, 220, 160, 0.8);
+}
+
+@keyframes floatUp {
+  0%   { transform: translateY(40px) scale(0.7); opacity: 0.25; }
+  40%  { opacity: 0.9; }
+  100% { transform: translateY(-120px) scale(1.15); opacity: 0; }
+}
+
+.p1 { left: 18%; bottom: -10px; animation-delay: 0.4s; }
+.p2 { left: 50%; bottom: -12px; animation-delay: 1.6s; }
+.p3 { left: 74%; bottom: -14px; animation-delay: 2.8s; }
+
+/* 📱 Mobile polish */
+@media (max-width: 600px) {
+  .bf-hero-butter {
+    padding: 2.2rem 1rem;
+  }
+  .bf-butter-countdown {
+    gap: 0.65rem;
+  }
+}

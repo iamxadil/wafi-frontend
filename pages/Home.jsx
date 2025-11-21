@@ -10,6 +10,7 @@ const Offers = lazy(() => import("../components/main/Offers.jsx"));
 const TrendingProducts = lazy(() => import("../components/main/TrendingProducts.jsx"));
 const AccessoriesProducts = lazy(() => import("../components/main/AccessoriesProducts.jsx"));
 const MobLandingPage = lazy(() => import("../components/main/MobLandingPage.jsx"));
+const BlackFridayHero = lazy(() => import("../components/main/BlackFridayHero.jsx"));
 
 const Loader = () => <div style={{ textAlign: "center", padding: "2rem" }}>Loading...</div>;
 
@@ -99,6 +100,7 @@ const Home = () => {
       <Suspense fallback={<Loader />}>
         {width > 650 ? <Land /> : <MobLandingPage />}
         <BrandCards />
+        <BlackFridayHero />
         <Laptops />
         <AccessoriesProducts />
         <Offers />

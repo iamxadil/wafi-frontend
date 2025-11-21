@@ -61,7 +61,20 @@ const OrdersModal = ({ opened, onClose, order }) => {
 
   if (!order)
     return (
-      <Modal opened={opened} onClose={onClose} centered withCloseButton={false}>
+      <Modal
+            opened={opened}
+            onClose={onClose}
+            centered
+            withCloseButton={false}
+            lockScroll={false}
+            size="lg"
+            classNames={{
+              content: "omodal",
+              body: "omodal__body",
+            }}
+            scrollAreaComponent="div"   // ⭐ THIS FIXES SCROLL-JUMP
+          >
+
         <div style={{ padding: "2rem", textAlign: "center" }}>
           <p>No order selected</p>
         </div>

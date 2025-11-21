@@ -1,9 +1,10 @@
 import React from 'react'
-import { useLaptopsDynamicFilters } from '../components/query/useLaptopsDynamicFilters';
+import { useBlackFridayQuery } from '../components/hooks/useBlackFridayQuery';
 
 const Test = () => {
 
-  const { data, isLoading, isError } = useLaptopsDynamicFilters();
+  const {data, isLoading} = useBlackFridayQuery();
+
   console.log(data);
   return (
     <div>Test</div>

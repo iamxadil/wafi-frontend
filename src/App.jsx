@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, Suspense, lazy, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import '../styles/swipe.css';
 
 // === Hooks & Stores ===
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
@@ -26,6 +27,8 @@ const CategoryNavigation = lazy(() => import("../pages/CategoryNavigation.jsx"))
 const CatLaptops = lazy(() => import("../pages/CatLaptops.jsx"));
 const CatAccessories = lazy(() => import("../pages/CatAccessories.jsx"));
 const CatOthers = lazy(() => import ("../pages/CatOthers.jsx"));
+const BlackFridayPage = lazy(() => import ("../pages/BlackFridayPage.jsx"));
+
 // Auth
 const Signin = lazy(() => import("../components/pages/Auth/Signin.jsx"));
 const Register = lazy(() => import("../components/pages/Auth/Register.jsx"));
@@ -229,6 +232,7 @@ export default function App() {
           <Route path="/laptops" element={<CatLaptops />} />
           <Route path="/accessories" element={<CatAccessories />} />
           <Route path="/others" element={<CatOthers />} />
+          <Route path="/black-friday" element={<BlackFridayPage />} />
 
           {/* Cart / Checkout */}
           <Route path="/cart" element={<Cart />} />

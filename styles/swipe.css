@@ -1,0 +1,79 @@
+/* ----------------------------------------------------------
+   🚫 DO NOT TOUCH html/body (navbar shifting issue)
+   Just remove your global overflow-x rule completely.
+----------------------------------------------------------- */
+
+
+/* ----------------------------------------------------------
+   🟦 SWIPE CONTAINER — Motion wrapper
+   Prevents layout stretching or overflow.
+----------------------------------------------------------- */
+.swipe-mobile {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+
+  /* Allow vertical scroll, disable horizontal scroll */
+  touch-action: pan-y;
+
+  /* Blocks rubber-band (side bounce) */
+  overscroll-behavior-x: contain;
+
+  cursor: grab;
+  -webkit-user-drag: none;
+  user-select: none;
+  will-change: transform;
+
+  position: relative;
+}
+
+
+/* ----------------------------------------------------------
+   🟩 The inner GRID
+   Ensures no horizontal expansion
+----------------------------------------------------------- */
+.swipe-mobile .mobile-grid {
+  width: 100%;
+  max-width: 100%;
+
+  /* Your existing grid layout remains intact */
+  display: grid;
+  overflow: hidden;
+}
+
+
+/* ----------------------------------------------------------
+   🟧 Prevent Framer Motion drag from stretching children
+----------------------------------------------------------- */
+.swipe-mobile .mobile-grid > * {
+  width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+
+/* ----------------------------------------------------------
+   🟪 Avoid broken text inside dragged cards
+----------------------------------------------------------- */
+.swipe-mobile p,
+.swipe-mobile h3 {
+  overflow-wrap: break-word;
+}
+
+
+/* ----------------------------------------------------------
+   🍏 iOS no-bounce + no momentum scroll
+----------------------------------------------------------- */
+@supports (-webkit-touch-callout: none) {
+  .swipe-mobile {
+    -webkit-overflow-scrolling: auto;
+  }
+}
+
+.swipe-lock {
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y !important;   /* 🚫 BLOCK horizontal pan */
+  overscroll-behavior-x: none !important; /* 🚫 STOP page pull */
+  position: relative;
+}

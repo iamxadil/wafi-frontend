@@ -13,6 +13,7 @@
   /* ✅ The key parts */
   backdrop-filter: blur(4px) saturate(180%);
   -webkit-backdrop-filter: blur(4px) saturate(180%);
+  margin: 0 auto !important;
 }
 
 
@@ -579,3 +580,142 @@ background-color: var(--background);
   }
 }
 
+
+
+/* ======================================================
+   ⭐ ULTRA PREMIUM BLACK FRIDAY BADGE
+   Glint sweep • Live dot • No break • Accent-driven
+====================================================== */
+
+.bf-nav-item a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Badge container */
+.bf-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  padding: 0.22rem 0.65rem;
+  border-radius: 10px;
+
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap; /* 🚫 No wrapping EVER */
+
+  background: rgba(var(--accent-rgb), 0.14);
+  color: var(--accent);
+
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+
+  box-shadow:
+    0 0 6px rgba(var(--accent-rgb), 0.35),
+    inset 0 0 6px rgba(var(--accent-rgb), 0.15);
+
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+
+  animation: bfPulse 3s ease-in-out infinite;
+  transition: 0.25s ease;
+}
+
+/* Hover animation */
+.bf-nav-item:hover .bf-badge {
+  transform: translateY(-2px) scale(1.03);
+  background: rgba(var(--accent-rgb), 0.22);
+  box-shadow:
+    0 0 12px rgba(var(--accent-rgb), 0.55),
+    inset 0 0 10px rgba(var(--accent-rgb), 0.22);
+  filter: brightness(1.05);
+}
+
+/* Premium breathing glow */
+@keyframes bfPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 6px rgba(var(--accent-rgb), 0.3),
+      inset 0 0 6px rgba(var(--accent-rgb), 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 10px rgba(var(--accent-rgb), 0.55),
+      inset 0 0 8px rgba(var(--accent-rgb), 0.25);
+  }
+}
+
+/* ======================================================
+   🔴 Live glowing dot
+====================================================== */
+.bf-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.8);
+  animation: livePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50%      { transform: scale(1.4); opacity: 1; }
+}
+
+/* ======================================================
+   ✨ Glint sweep (micro effect)
+====================================================== */
+.bf-glint {
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(var(--accent-rgb), 0.25) 50%,
+    transparent 100%
+  );
+
+  opacity: 0;
+  transform: skewX(-20deg);
+  animation: glintSweep 4.5s ease-in-out infinite;
+}
+
+@keyframes glintSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  45% {
+    opacity: 0;
+  }
+  55% {
+    opacity: 0.5;
+  }
+  70% {
+    opacity: 0;
+    transform: translateX(220%) skewX(-20deg);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Dark mode adjustment */
+[data-theme="dark"] .bf-badge {
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent);
+}
+
+/* Mobile sizing */
+@media (max-width: 650px) {
+  .bf-badge {
+    padding: 0.28rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
