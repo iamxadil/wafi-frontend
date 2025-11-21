@@ -1,168 +1,172 @@
 import React from "react";
 import "../../styles/cart.css";
-import { TbArrowNarrowLeftDashed as ArrowLeft } from "react-icons/tb";
-import { TiPlus as Increase, TiMinus as Decrease } from "react-icons/ti";
+import { TbArrowNarrowLeft as Back } from "react-icons/tb";
+import { TiPlus as Plus, TiMinus as Minus } from "react-icons/ti";
 import { RiDeleteBinLine as Delete } from "react-icons/ri";
-import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import { useNavigate } from "react-router-dom";
+
 import useCartStore from "../stores/useCartStore.jsx";
+import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
 
 const Cart = () => {
-  const width = useWindowWidth();
   const navigate = useNavigate();
   const t = useTranslate();
+  const width = useWindowWidth();
 
-  const cartItems = useCartStore((state) => state.cart);
-  const addToCart = useCartStore((state) => state.addToCart);
-  const updateQty = useCartStore((state) => state.updateQty);
-  const removeFromCart = useCartStore((state) => state.removeFromCart);
-  const clearCart = useCartStore((state) => state.clearCart);
+  const cart = useCartStore((s) => s.cart);
+  const add = useCartStore((s) => s.addToCart);
+  const update = useCartStore((s) => s.updateQty);
+  const remove = useCartStore((s) => s.removeFromCart);
+  const clear = useCartStore((s) => s.clearCart);
 
-  // Totals
-  const subtotal = cartItems.reduce(
+  const subtotal = cart.reduce(
     (sum, item) => sum + (item.finalPrice || item.price) * item.qty,
     0
   );
-  const delivery = 0;
+
+  const isEmpty = cart.length === 0;
 
   return (
-    <main id="cart-page">
+    <main id="cart-ultra">
       {/* Header */}
-      <section id="cart-header">
-        <h1
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate(-1)}
-          title={t("Go Back", "العودة")}
-        >
-          <ArrowLeft />
-        </h1>
-        <h2>
-          {cartItems.length}{" "}
+      <header className="cu-header">
+        <button className="cu-back" onClick={() => navigate(-1)}>
+          <Back size={22} />
+        </button>
+        <h2 className="cu-count">
+          {cart.length}{" "}
           {t(
-            `Item${cartItems.length !== 1 ? "s" : ""}`,
-            `${cartItems.length > 1 ? "عناصر" : "عنصر"}`
+            `Item${cart.length !== 1 ? "s" : ""}`,
+            cart.length > 1 ? "عناصر" : "عنصر"
           )}
         </h2>
-      </section>
+      </header>
 
-      {/* Labels */}
-      {cartItems.length > 0 && (
-        <section id="cart-labels">
-          <label>{t("Product", "المنتج")}</label>
-          <label>{t("Quantity", "الكمية")}</label>
-          {width > 850 && <label>{t("Actions", "الإجراءات")}</label>}
-        </section>
+      {/* Empty */}
+      {isEmpty && (
+        <div className="cu-empty">
+          <div className="cu-empty-icon">🛒</div>
+          <p>{t("Your cart is empty.", "سلة التسوق فارغة.")}</p>
+        </div>
       )}
 
       {/* Content */}
-      <section id="cart-content">
-        {cartItems.length === 0 ? (
-          <p style={{ padding: "2rem" }}>
-            {t("Your cart is empty.", "سلة التسوق فارغة.")}
-          </p>
-        ) : (
-          cartItems.map((item) => {
-            const hasDiscount = item.discountPrice && item.discountPrice > 0;
-            const finalPrice = hasDiscount ? item.finalPrice : item.price;
+      {!isEmpty && (
+        <>
+          {/* Labels */}
+          {width > 650 && (
+            <div className="cu-labels">
+              <span>{t("Product", "المنتج")}</span>
+              <span className="center">{t("Quantity", "الكمية")}</span>
+              <span className="end">{t("Price", "السعر")}</span>
+            </div>
+          )}
 
-            return (
-              <div className="cart-product" key={item._id}>
-                <div className="cart-info">
-                  {/* Product Details */}
-                  <div className="cart-details">
-                    <div className="cart-image">
-                      <img
-                        src={item?.images?.[0] || "https://placehold.co/100"}
-                        alt={item.name}
-                      />
+          {/* List */}
+          <section className="cu-list">
+            {cart.map((item) => {
+              const hasDiscount = item.discountPrice > 0;
+              const finalPrice = hasDiscount ? item.finalPrice : item.price;
+
+              return (
+                <article className="cu-row" key={item._id}>
+                  {/* Product block */}
+                  <div className="cu-product">
+                    <div className="cu-img">
+                      <img src={item.images?.[0]} alt={item.name} />
                     </div>
 
-                    <div className="details-container">
-                      <p>{item.brand || t("Unknown", "غير معروف")}</p>
-                      <h2>{item.name || t("Unnamed Product", "منتج بدون اسم")}</h2>
+                    <div className="cu-info">
+                      <p className="cu-brand">{item.brand}</p>
+                      <h3 className="cu-name">{item.name}</h3>
 
-                      <p>
-                        {hasDiscount ? (
-                          <>
-                            <span className="original-price">
+                      {/* Price on mobile only */}
+                      {width <= 650 && (
+                        <div className="cu-mobile-price">
+                          {hasDiscount && (
+                            <span className="cu-old">
                               {item.price.toLocaleString()} IQD
                             </span>
-                            <br />
-                            <span className="final-price">
-                              {finalPrice.toLocaleString()} IQD
-                            </span>
-                          </>
-                        ) : (
-                          <span className="final-price">
+                          )}
+                          <span className="cu-new">
                             {finalPrice.toLocaleString()} IQD
                           </span>
-                        )}
-                      </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Quantity Controller */}
-                  <div className="qty-controller">
-                    <button className="inc-qty" onClick={() => addToCart(item)}>
-                      <Increase />
-                    </button>
-                    <span className="qty">{item.qty}</span>
+                  {/* Quantity */}
+                  <div className="cu-qty">
                     <button
-                      className="dec-qty"
-                      onClick={() => updateQty(item._id, item.qty - 1)}
+                      className="cu-qty-btn"
+                      onClick={() => add(item)}
                     >
-                      <Decrease />
+                      <Plus size={15} />
+                    </button>
+
+                    <span className="cu-qty-num">{item.qty}</span>
+
+                    <button
+                      className="cu-qty-btn"
+                      onClick={() => update(item._id, Math.max(1, item.qty - 1))}
+                    >
+                      <Minus size={15} />
                     </button>
                   </div>
 
-                  {/* Actions */}
-                  {width > 850 && (
-                    <div className="action-product">
-                      <button
-                        className="delete-btn"
-                        onClick={() => removeFromCart(item._id)}
-                      >
-                        <Delete />
-                      </button>
+                  {/* Price desktop + delete */}
+                  {/* Price desktop + delete */}
+                <div className="cu-side">
+                  {width > 650 && (
+                    <div className="cu-desktop-price">
+                      {hasDiscount && (
+                        <span className="cu-old">
+                          {item.price.toLocaleString()} IQD
+                        </span>
+                      )}
+                      <span className="cu-new">
+                        {finalPrice.toLocaleString()} IQD
+                      </span>
                     </div>
                   )}
-                </div>
-              </div>
-            );
-          })
-        )}
-      </section>
 
-      {/* Totals */}
-      {cartItems.length > 0 && (
-        <>
-          <section id="totals">
-            {width > 850 && <hr />}
-            <h2 style={{flexDirection: t.rowReverse}}>
-              {t("Delivery:", ":التوصيل")}{" "}
-              <span>{delivery.toLocaleString()} IQD</span>
-            </h2>
-            <h2 style={{flexDirection: t.rowReverse}}>
-              {t("Subtotal:", ":المجموع")}{" "}
-              <span>{subtotal.toLocaleString()} IQD</span>
-            </h2>
-            <h2 style={{flexDirection: t.rowReverse}}>
-              {t("Total:", ":الإجمالي")}{" "}
-              <span>{(subtotal + delivery).toLocaleString()} IQD</span>
-            </h2>
+                  <button className="cu-delete" onClick={() => remove(item._id)}>
+                    <Delete size={15} />
+                  </button>
+                </div>
+
+                </article>
+              );
+            })}
           </section>
 
-          {/* Footer Buttons */}
-          <footer id="cart-action-btns">
+          {/* Totals */}
+          <section className="cu-totals">
+            <div className="cu-trow">
+              <span>{t("Subtotal", "المجموع")}</span>
+              <span>{subtotal.toLocaleString()} IQD</span>
+            </div>
+            <div className="cu-trow">
+              <span>{t("Delivery", "التوصيل")}</span>
+              <span>0 IQD</span>
+            </div>
+            <div className="cu-trow cu-main-total">
+              <span>{t("Total", "الإجمالي")}</span>
+              <span>{subtotal.toLocaleString()} IQD</span>
+            </div>
+          </section>
+
+          {/* Actions */}
+          <footer className="cu-actions">
             <button
-              id="proceed-btn"
+              className="cu-btn primary"
               onClick={() => navigate("/payment")}
-              disabled={cartItems.length === 0}
             >
               {t("Proceed to Payment", "المتابعة إلى الدفع")}
             </button>
-            <button id="clear-btn" onClick={() => clearCart()}>
+            <button className="cu-btn secondary" onClick={clear}>
               {t("Clear Cart", "مسح السلة")}
             </button>
           </footer>
