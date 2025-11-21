@@ -64,7 +64,7 @@ export default function AppFooter() {
     items: [
       {
         question: t(`What is your address?`, "اين موقعكم؟"),
-        answer: t(`Iraq- Baghdad- Al-Senaha St., Near the University of Technology roundabout`, "العراق - بغداد - شارع الصناعة، قرب دورة الجامعة التكنولوجية"),
+        answer: t(`Iraq- Baghdad- Al-Senaha St., Near the University of Technology roundabout`, "العراق - بغداد - شارع الصناعة، قرب فلكة الجامعة التكنولوجية"),
         answer2: t(`support@alwafi.net`, "support@alwafi.net"),
         answer3: t(`Number: +964 784 497 0384`, "+964 784 497 0384"),
       },
