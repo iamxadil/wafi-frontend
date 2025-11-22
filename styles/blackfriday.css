@@ -115,3 +115,19 @@
     min-width: 42px;
   }
 }
+
+/* ============================================================
+   🌓 LIGHT MODE FIX — Darker Calm Title (NOT Accent Color)
+   ============================================================ */
+
+[data-theme="light"] .bf-hero h1 {
+  background: linear-gradient(
+    90deg,
+    #1a1a1a,
+    #2d2d2d,
+    #000000
+  );
+  -webkit-background-clip: text;
+  color: transparent;
+  opacity: 0.9; /* calm */
+}

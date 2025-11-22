@@ -49,3 +49,18 @@
   min-height: 320px;  /* stable height */
   box-sizing: border-box;
 }
+
+.ar-ruqaa {
+  font-family: "Aref Ruqaa", serif !important;
+  font-size: 1.45rem;
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+.ar-ruqaa2 {
+  font-family: "Aref Ruqaa", serif !important;
+  letter-spacing: 0; /* Arabic decorative fonts look better without spacing */
+  font-weight: 700;
+  font-size: 1rem;
+
+}

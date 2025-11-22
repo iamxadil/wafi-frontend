@@ -20,7 +20,13 @@ const LogoTitle = ({ t }) => (
     <div className="logo-div" />
     <span style={{ color: "var(--text)" }}>|</span>
     <Title level={4} style={{ color: "var(--text)", margin: 0, marginLeft: "6px" }}>
-      {t("Al-Wafi For Computers", "الوافي للحاسبات")}
+      {t(
+        "Al-Wafi For Computers",
+      <span className="ar-ruqaa">
+        الوافي للحاسبات<br />
+        <span className="ar-ruqaa2">مُنذ ١٩٩٣</span>
+      </span>
+      )}
     </Title>
   </Space>
 );
@@ -107,11 +113,11 @@ export default function AppFooter() {
             <Space direction="vertical" size={15} style={{ alignItems: t.flexAlign }}>
               <LogoTitle t={t} />
               <Text style={{ color: "var(--text)" }}>
-                {t(
-                  "Three decades of experience in your hands, since 1993.",
-                  "مُنذ عام 1993، خبرة ثلاثة عقود بين يديك"
-                )}
-              </Text>
+                  {t(
+                    "Three decades of experience in your hands, since 1993.",
+                    "خبرة ثلاثة عقود بين يديك"
+                  )}
+                </Text>
             </Space>
           </Col>
 

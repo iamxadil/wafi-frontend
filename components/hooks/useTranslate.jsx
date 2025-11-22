@@ -12,11 +12,21 @@ export default function useTranslate() {
   const positionAlign = language === "ar" ? "right" : "left";
   const rowReverse = language === "ar" ? "row-reverse" : "row";
 
-  // ⭐ NEW — inline text direction for mixed Arabic/English
+  // Direction helpers
   const inlineDirection = language === "ar" ? "rtl" : "ltr";
+  const bidiMode = "plaintext";
 
-  // ⭐ NEW — prevents wrapping problems with mixed direction text
-  const bidiMode = "plaintext"; // always needed for Arabic/English mixes
+  /* ================================================== */
+  /* ⭐ NEW — Arabic Font Helpers                       */
+  /* ================================================== */
+
+  // Your preferred Arabic font (editable)
+  const arFont = `"Aref Ruqaa", serif`;
+
+  // Auto-applied only when language === "ar"
+  const arStyle = language === "ar"
+    ? { fontFamily: arFont }
+    : {};
 
   return Object.assign(t, {
     language,
@@ -25,8 +35,11 @@ export default function useTranslate() {
     rowReverse,
     positionAlign,
 
-    // NEW
     inlineDirection,
     bidiMode,
+
+    // ⭐ New exports
+    arFont,
+    arStyle,
   });
 }
