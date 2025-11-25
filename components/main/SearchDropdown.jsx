@@ -166,6 +166,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
 
                     <div className="search-result-info">
                       <span className="search-result-name">{product.name}</span>
+                      <span className="search-result-price">{product.finalPrice.toLocaleString()} IQD</span>
                       <span className="search-result-brand">
                         {product.brand}
                       </span>

@@ -81,6 +81,7 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
   scroll-behavior: smooth;
+  backdrop-filter: blur(12px) !important;
 }
 
 /* Scrollbar (webkit) */
@@ -136,6 +137,9 @@
   font-size: 0.8rem;
   opacity: 0.75;
   color: var(--text);
+}
+.search-result-price {
+  font-weight: bold;
 }
 
 /* No Results */

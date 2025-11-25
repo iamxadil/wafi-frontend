@@ -5,7 +5,7 @@ import useNotificationsStore from "../stores/useNotificationsStore.jsx";
 import PlayNotSound from "../effects/PlayNotSound.jsx";
 
 // 🔌 Connect to backend socket
-const API_URL = import.meta.env.VITE_API_URL || "http://192.168.100.116:5000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const socket = io(API_URL, {
   withCredentials: true, // needed if using cookies for auth

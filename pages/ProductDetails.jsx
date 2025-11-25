@@ -3,7 +3,6 @@ import { useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { SiAsus,
   SiApple,
-  SiLenovo,
   SiHp,
   SiAcer,
   SiLogitech,
@@ -35,6 +34,7 @@ import HocoIcon from "../assets/brands/hoco.svg?react";
 import GigabyteIcon from "../assets/brands/gigabyte.svg?react";
 import GloriousIcon from "../assets/brands/glorious.svg?react";
 import AttackSharkIcon from "../assets/brands/attackshark.svg?react";
+import LenovoIcon from "../assets/brands/lenovo.svg?react";
 
 
 import { FiChevronDown, FiShare2, FiTrash2 } from "react-icons/fi";
@@ -173,7 +173,6 @@ const ProductDetails = () => {
 const brandIcons = {
   asus: SiAsus,
   apple: SiApple,
-  lenovo: SiLenovo,
   hp: SiHp,
   acer: SiAcer,
   logitech: SiLogitech,
@@ -185,7 +184,7 @@ const brandIcons = {
   corsair: SiCorsair,
   samsung: SiSamsung,
   steelseries: SiSteelseries,
-
+  lenovo: LenovoIcon,
   aula: AulaIcon,
   rapoo: RapooIcon,
   havit: HavitIcon,
@@ -576,7 +575,7 @@ const handleShare = async () => {
           {selectedProduct.brand && (() => {
             const brandKey = normalizeBrand(selectedProduct.brand);
             const Icon = brandIcons[brandKey] || Brackets;
-            return <Icon className="brand-icon" size={28} color="var(--text)" />;
+            return <Icon className="brand-icon" style={{width: "45px", height: "45px"}} size={35} color="var(--text)" />;
           })()}
         </div>
 
@@ -803,13 +802,20 @@ const handleShare = async () => {
                 })()}
 
 
-                  <span
-                    style={{ color: "var(--secondary-text-clr)", fontSize: 14 }}
+                 <span
+                    style={{
+                      fontSize: 14,
+                      color:
+                        selectedProduct.countInStock > 0
+                          ? "green"      // Green
+                          : "red",     // Red
+                    }}
                   >
                     {selectedProduct.countInStock > 0
                       ? t("In Stock", "متوفر")
                       : t("Out of Stock", "غير متوفر")}
                   </span>
+
                 </div>
                 <span
                   style={{

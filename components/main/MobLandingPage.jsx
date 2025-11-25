@@ -187,7 +187,7 @@ const MobLandingPage = () => {
                     />
                     <div className="mob-result-info">
                       <span>{item.name}</span>
-                      <span>{item.price?.toLocaleString()} IQD</span>
+                      <span style={{color: "var(--accent)", fontWeight: "bold"}}>{item.finalPrice?.toLocaleString()} IQD</span>
                     </div>
                   </div>
                 ))

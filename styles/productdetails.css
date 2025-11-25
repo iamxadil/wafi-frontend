@@ -158,11 +158,11 @@
 }
 
 .brand-icon {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   color: var(--text);
   fill: var(--text);
-  object-fit: contain;
+
 }
 
 [data-theme="dark"] .brand-icon {
