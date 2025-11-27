@@ -9,6 +9,7 @@ import {
   ChevronDown,
   ChevronUp,
   ShoppingBag,
+  Monitor
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/sidemenu.css";
@@ -47,12 +48,21 @@ const menuData = [
       { label: { en: "All Accessories", ar: "جميع الإكسسوارات" }, path: "/accessories" },
       { label: "Headphones", path: "/category/Headphones" },
       { label: "Speakers", path: "/category/Speakers" },
+      { label: "Bags", path: "/category/Bags" },
       { label: "Mice", path: "/category/Mice" },
       { label: "Keyboards", path: "/category/Keyboards" },
       { label: "Combo Kb & M", path: "/category/Combo Kb & M" },
       { label: "Cooling Pads", path: "/category/Cooling Pads" },
       { label: "Mousepads & Deskpads", path: "/category/Mousepads & Deskpads" },
+      
     ],
+  },
+
+    {
+    titleKey: { en: "Monitors", ar: "شاشات" },
+    icon: <Monitor size={25} />,
+    type: "single",
+    path: "/monitors",
   },
 
   {
@@ -61,6 +71,7 @@ const menuData = [
     type: "single",
     path: "/others",
   },
+
 ];
 
 const Sidemenu = ({ isOpen, setIsOpen }) => {

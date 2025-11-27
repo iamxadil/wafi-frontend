@@ -34,7 +34,8 @@
   color: var(--text);
   box-sizing: border-box;
   transition: all 0.3s ease;
-   z-index: 10; 
+  z-index: 10; 
+   top: 0;
 }
 
 /* Thin neon accent line */
@@ -647,4 +648,15 @@
   padding: 0 1rem;
   gap: 1rem;
   margin-bottom: 4rem;
+}
+
+.multi-select .check-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+}
+
+.multi-select input[type="checkbox"] {
+  transform: scale(1.1);
 }

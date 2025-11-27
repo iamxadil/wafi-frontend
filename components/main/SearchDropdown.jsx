@@ -14,23 +14,23 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
   const t = useTranslate();
 
   /* -------------------------------------------------------
-      🔥 KEYBOARD NAVIGATION — FIXED & SMOOTH
+      🔥 KEYBOARD NAVIGATION
   ------------------------------------------------------- */
   const handleKeyDown = (e) => {
     if (!isOpen) return;
 
     const count = products.length;
-    if (count === 0) return;
 
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        setActiveIndex((prev) => (prev + 1) % count);
+        if (count > 0) setActiveIndex((prev) => (prev + 1) % count);
         break;
 
       case "ArrowUp":
         e.preventDefault();
-        setActiveIndex((prev) => (prev - 1 + count) % count);
+        if (count > 0)
+          setActiveIndex((prev) => (prev - 1 + count) % count);
         break;
 
       case "Enter":
@@ -44,47 +44,24 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
         break;
 
       case "Escape":
-        e.preventDefault();
-        setIsOpen(false);
         inputRef.current.blur();
-        break;
-
-      default:
         break;
     }
   };
 
   /* -------------------------------------------------------
-      🔥 AUTO-SCROLL ACTIVE ITEM (fixed delay)
+      🔥 AUTO SCROLL ACTIVE
   ------------------------------------------------------- */
   useEffect(() => {
-    if (activeIndex < 0) return;
-
     const container = resultsRef.current;
-    if (!container) return;
+    const item = container?.querySelector(`[data-index="${activeIndex}"]`);
 
-    const item = container.querySelector(`[data-index="${activeIndex}"]`);
-    if (!item) return;
-
-    // Delay ensures animation finishes (fix for Framer Motion)
-    setTimeout(() => {
-      item.scrollIntoView({
-        block: "nearest",
-        behavior: "smooth",
-      });
-    }, 50);
+    if (item) {
+      setTimeout(() => {
+        item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }, 50);
+    }
   }, [activeIndex]);
-
-  /* -------------------------------------------------------
-      🔥 Mouse Glow Effect
-  ------------------------------------------------------- */
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    e.currentTarget.style.setProperty("--x", `${x}%`);
-    e.currentTarget.style.setProperty("--y", `${y}%`);
-  };
 
   return (
     <motion.div
@@ -95,7 +72,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
       {/* ---------------------------------- */}
-      {/* 🔍 Search Input */}
+      {/* 🔍 INPUT */}
       {/* ---------------------------------- */}
       <div className="search-input-wrapper">
         <SearchIcon className="search-icon" />
@@ -104,13 +81,15 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
           type="search"
           ref={inputRef}
           value={value}
-          onChange={onChange}
+          onChange={(e) => {
+            onChange(e);
+            setIsOpen(e.target.value.length > 0);   // ONLY OPEN WHEN NOT EMPTY
+          }}
           onKeyDown={handleKeyDown}
           onFocus={() => {
-            setIsOpen(true);
+            if (value.length > 0) setIsOpen(true);
             setActiveIndex(-1);
           }}
-          onBlur={() => setTimeout(() => setIsOpen(false), 120)}
           placeholder={t("Search for products...", "ابحث عن المنتجات")}
           dir={t.language === "ar" ? "rtl" : "ltr"}
           style={{ textAlign: t.textAlign }}
@@ -118,7 +97,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
       </div>
 
       {/* ---------------------------------- */}
-      {/* 🔽 Results Dropdown */}
+      {/* 🔽 DROPDOWN */}
       {/* ---------------------------------- */}
       <AnimatePresence>
         {isOpen && value && (
@@ -130,7 +109,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
           >
-            {products.length > 0 ? (
+            {products.length ? (
               <motion.div
                 initial="hidden"
                 animate="visible"
@@ -143,7 +122,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
                 {products.map((product, index) => (
                   <motion.div
                     key={product._id}
-                    data-index={index}       // 🔥 REQUIRED for scroll fix
+                    data-index={index}
                     variants={{
                       hidden: { opacity: 0, y: 8 },
                       visible: { opacity: 1, y: 0 },
@@ -153,10 +132,9 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
                       activeIndex === index ? "active" : ""
                     }`}
                     onMouseEnter={() => setActiveIndex(index)}
-                    onMouseMove={handleMouseMove}
                     onMouseDown={() => {
                       navigate(`/product/${product._id}`);
-                      setIsOpen(false);
+                      setIsOpen(false); // ONLY CLOSE ON SELECT
                     }}
                   >
                     <img
@@ -165,8 +143,12 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
                     />
 
                     <div className="search-result-info">
-                      <span className="search-result-name">{product.name}</span>
-                      <span className="search-result-price">{product.finalPrice.toLocaleString()} IQD</span>
+                      <span className="search-result-name">
+                        {product.name}
+                      </span>
+                      <span className="search-result-price">
+                        {product.finalPrice.toLocaleString()} IQD
+                      </span>
                       <span className="search-result-brand">
                         {product.brand}
                       </span>

@@ -274,6 +274,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
               <option value="Laptops">Laptops</option>
               <option value="Mice">Mice</option>
               <option value="Keyboards">Keyboards</option>
+              <option value="Monitors">Monitors</option>
               <option value="Combo Kb & M">Combo Kb & M</option>
               <option value="Headphones">Headphones</option>
               <option value="Speakers">Speakers</option>

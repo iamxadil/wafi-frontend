@@ -8,8 +8,10 @@ import {
   Boxes,
   CheckSquare,
   Edit,
+  ListFilter,
 } from "lucide-react";
 import "./styles/adminheader.css";
+import { position } from "stylis";
 
 const AdminHeader = ({
   title = "Dashboard",
@@ -23,18 +25,26 @@ const AdminHeader = ({
   onDelete,
   filterOptions = [],
   sortOptions = [],
+  optFilterOptions = [],        
+  optFilterTitle = "Filter",    
+  onOptFilterChange,            
   totalCount,
   selectedCount,
   onSelectAll,
   onDeselectAll,
+  isSticky = false
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [showSort, setShowSort] = useState(false);
+  const [showOptFilter, setShowOptFilter] = useState(false); // ⭐ NEW DROPDOWN
+
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedSort, setSelectedSort] = useState("Default");
+  const [selectedOptFilters, setSelectedOptFilters] = useState([]); // ⭐ ARRAY
 
   const filterRef = useRef(null);
   const sortRef = useRef(null);
+  const optFilterRef = useRef(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -43,6 +53,8 @@ const AdminHeader = ({
         setShowFilter(false);
       if (sortRef.current && !sortRef.current.contains(e.target))
         setShowSort(false);
+      if (optFilterRef.current && !optFilterRef.current.contains(e.target))
+        setShowOptFilter(false); // ⭐ CLOSE MULTI FILTER
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -50,20 +62,33 @@ const AdminHeader = ({
 
   // Handlers
   const handleSearch = (e) => onSearch?.(e.target.value);
+
   const handleFilterSelect = (opt) => {
     setSelectedFilter(opt);
     setShowFilter(false);
     onFilterChange?.(opt);
   };
+
   const handleSortSelect = (opt) => {
     setSelectedSort(opt);
     setShowSort(false);
     onSortChange?.(opt);
   };
 
+  // ⭐ Multi-select handler
+  const handleOptFilterToggle = (opt) => {
+    let updated;
+    if (selectedOptFilters.includes(opt)) {
+      updated = selectedOptFilters.filter((item) => item !== opt);
+    } else {
+      updated = [...selectedOptFilters, opt];
+    }
+    setSelectedOptFilters(updated);
+    onOptFilterChange?.(updated); // return full list
+  };
+
   return (
-    <header className="admin-header">
-      
+    <header className="admin-header" style={ {position: isSticky && "sticky"}}>
       {/* === LEFT === */}
       <div className="admin-left">
         <div className="admin-title">
@@ -83,17 +108,15 @@ const AdminHeader = ({
 
       {/* === CENTER === */}
       <div className="admin-center">
+        {/* Search */}
         {onSearch && (
           <div className="admin-search">
             <Search size={18} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search..."
-              onChange={handleSearch}
-            />
+            <input type="text" placeholder="Search..." onChange={handleSearch} />
           </div>
         )}
 
+        {/* SINGLE FILTER */}
         {filterOptions.length > 0 && (
           <div className="dropdown" ref={filterRef}>
             <button
@@ -119,6 +142,35 @@ const AdminHeader = ({
           </div>
         )}
 
+        {/* ⭐ MULTI-FILTER */}
+        {optFilterOptions.length > 0 && (
+          <div className="dropdown" ref={optFilterRef}>
+            <button
+              className="dropdown-btn"
+              onClick={() => setShowOptFilter((p) => !p)}
+            >
+              <ListFilter size={16} />
+              <span>{optFilterTitle}</span>
+            </button>
+
+            {showOptFilter && (
+              <div className="dropdown-menu multi-select">
+                {optFilterOptions.map((opt) => (
+                  <label key={opt} className="dropdown-item check-item">
+                    <input
+                      type="checkbox"
+                      checked={selectedOptFilters.includes(opt)}
+                      onChange={() => handleOptFilterToggle(opt)}
+                    />
+                    {opt}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* SORT */}
         {sortOptions.length > 0 && (
           <div className="dropdown" ref={sortRef}>
             <button

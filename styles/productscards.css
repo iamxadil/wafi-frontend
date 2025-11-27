@@ -556,8 +556,6 @@ select.custom:disabled {
   margin: 0 auto;
   padding: 3rem 3rem;
   gap: 2rem;
-  position: relative;
-
 }
 
 .main-header {

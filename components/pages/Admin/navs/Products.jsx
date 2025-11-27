@@ -26,19 +26,21 @@ import useWindowWidth from "../../../hooks/useWindowWidth.jsx";
 const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
+  const isProductSticky = true;
 
   const {
     selectedProducts,
     selectProduct,
     selectAllProducts,
     deselectAllProducts,
+    deleteProduct, // ✅ Added from store
     params,
     setParams,
   } = useManageProductsStore();
 
   // ✅ Queries & Mutations
   const { data, isLoading, isError } = useProductsQuery(params);
-  const { mutate: deleteProduct, isPending: isDeleting } = useDeleteProductMutation();
+  const { mutate: deleteProductAPI, isPending: isDeleting } = useDeleteProductMutation();
 
   const products = data?.products || [];
   const totalItems = data?.pagination?.totalItems || 0;
@@ -72,8 +74,11 @@ const Products = () => {
     if (!window.confirm(`Delete ${idList.length} product${idList.length > 1 ? "s" : ""}?`))
       return;
 
-    deleteProduct(idList, {
+    deleteProductAPI(idList, {
       onSuccess: () => {
+        // ✅ Remove deleted products from selectedProducts in store
+        idList.forEach(id => deleteProduct(id));
+        
         toast.success(
           `${idList.length > 1 ? `${idList.length} products` : "Product"} deleted successfully!`
         );
@@ -84,6 +89,21 @@ const Products = () => {
     });
   };
 
+  // ✅ Single product delete handler (for individual delete buttons)
+  const handleDeleteSingle = (id) => {
+    if (!window.confirm("Delete this product?")) return;
+
+    deleteProductAPI([id], {
+      onSuccess: () => {
+        // ✅ Remove single product from selectedProducts in store
+        deleteProduct(id);
+        toast.success("Product deleted successfully!");
+      },
+      onError: (err) => {
+        toast.error(err.response?.data?.message || "Failed to delete product.");
+      },
+    });
+  };
 
   const width = useWindowWidth();
 
@@ -211,7 +231,7 @@ const Products = () => {
             <ActionIcon
               variant="light"
               color="red"
-              onClick={() => handleDelete(p._id)}
+              onClick={() => handleDeleteSingle(p._id)} // ✅ Updated to use single delete
               disabled={isDeleting}
               title="Delete Product"
             >
@@ -259,6 +279,7 @@ const Products = () => {
             <Table.Th>Price</Table.Th>
             <Table.Th>Discount</Table.Th>
             <Table.Th>Status</Table.Th>
+            <Table.Th>Priority</Table.Th>
             <Table.Th style={{ width: "60px", textAlign: "center" }}>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>
@@ -300,12 +321,15 @@ const Products = () => {
                 )}
               </Table.Td>
               <Table.Td>
-                <Badge
-                  color={p.countInStock > 0 ? "green" : "red"}
-                  variant="light"
-                >
+                <Badge color={p.countInStock > 0 ? "green" : "red"} variant="light" >
                   {p.countInStock > 0 ? "In Stock" : "Out of Stock"}
                 </Badge>
+              </Table.Td>
+
+              <Table.Td>
+                <Text variant="light" >
+                  {p.priority}
+                </Text>
               </Table.Td>
 
               {/* Quick Actions */}
@@ -323,7 +347,7 @@ const Products = () => {
                     <Menu.Item
                       icon={<Trash2 size={14} />}
                       color="red"
-                      onClick={() => handleDelete(p._id)}
+                      onClick={() => handleDeleteSingle(p._id)} // ✅ Updated to use single delete
                       disabled={isDeleting}
                     >
                       Delete
@@ -355,14 +379,14 @@ const Products = () => {
           setIsModalOpen(true);
         }}
         onEdit={() => handleEdit()}
-        onDelete={() => handleDelete()}
+        onDelete={() => handleDelete()} 
         onSelectAll={() => selectAllProducts(products.map((p) => p._id))}
         onDeselectAll={() => deselectAllProducts()}
         onFilterChange={(v) => console.log("Filter:", v)}
         onSortChange={(sort) => setParams((prev) => ({ ...prev, sort, page: 1 }))}
-        filterOptions={["All Products","In Stock","Out of Stock","Top Products","Archived",]}
-        sortOptions={["Newest First","Oldest First","Price: Low → High","Price: High → Low","Name: A → Z","Name: Z → A",]}
-
+        filterOptions={["Laptops","Keyboards","Mice","Monitors", "Speakers", "Bags", "Cooling Pads", "Mousepads & Deskpads"]}
+        optFilterOptions={["In Stock", "Out of Stock", "Low Stock" ]}
+        isSticky = {isProductSticky}
       />
 
       <Paper

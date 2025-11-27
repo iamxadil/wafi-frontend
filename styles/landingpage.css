@@ -9,6 +9,7 @@
   perspective: 1200px;
   transform-style: preserve-3d;
   overflow: visible;
+  z-index: 200;
 }
 
 /* Input Wrapper */
@@ -19,6 +20,7 @@
   width: 100%;
   overflow: hidden;
   border-radius: 14px;
+
 }
 
 /* Input */
@@ -72,16 +74,15 @@
   margin-top: 0.5rem;
   border-radius: 14px;
   border: 1px solid var(--line-clr);
-  background: var(--background);
   color: var(--text);
   padding: 0.4rem 0;
-  z-index: 9999;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
   scroll-behavior: smooth;
-  backdrop-filter: blur(12px) !important;
+  background-color: var(--background) !important;
+  z-index: 200;
 }
 
 /* Scrollbar (webkit) */
@@ -285,3 +286,5 @@
   transform: translateX(6px);
   border-left: 3px solid var(--accent-clr);
 }
+
+

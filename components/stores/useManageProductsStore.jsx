@@ -18,10 +18,16 @@ export const useManageProductsStore = create((set) => ({
   // ✅ Deselect all
   deselectAllProducts: () => set(() => ({ selectedProducts: [] })),
 
+  // ✅ Delete single product
+  deleteProduct: (id) =>
+    set((state) => ({
+      selectedProducts: state.selectedProducts.filter((pid) => pid !== id),
+    })),
+
   // ✅ Params (pagination, filters, etc.)
   params: {
     page: 1,
-    limit: 6,
+    limit: 20,
   },
 
   // ✅ Update params safely

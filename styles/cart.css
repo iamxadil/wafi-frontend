@@ -416,3 +416,65 @@
 }
 
 
+/* ============================================================
+   SMART SUGGESTION BANNER
+============================================================ */
+
+.smart-suggestion {
+  margin: 1.4rem 0;
+  padding: 1rem;
+  border-radius: 14px;
+  background: rgba(var(--accent-rgb, 94, 99, 255), 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  backdrop-filter: blur(12px);
+}
+
+.ss-title {
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.9;
+}
+
+.ss-box {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.ss-box img {
+  width: 62px;
+  height: 62px;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.ss-info {
+  flex: 1;
+}
+
+.ss-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ss-price {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-top: 3px;
+}
+
+.ss-btn {
+  padding: 0.45rem 0.9rem;
+  background: rgba(var(--accent-rgb), 1);
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.ss-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(var(--accent-rgb), 0.9);
+}

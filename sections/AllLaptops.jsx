@@ -3,7 +3,6 @@ import React, { useMemo, useState } from "react";
 // Components
 import Filter from "../components/common/Filter.jsx";
 import Sort from "../components/common/Sort.jsx";
-import ProductGrid from "../components/main/ProductGrid.jsx";
 import ProductBlock from "../components/main/ProductBlock.jsx";
 import ProductCard from "../components/main/ProductCard.jsx";
 import Pagination from "../components/main/Pagination.jsx";
@@ -93,7 +92,7 @@ const AllLaptops = () => {
   if (laptopsLoading || filtersLoading) {
     return (
       <Loading
-        message={t("Loading laptops...", "جاري تحميل اللابتوبات...")}
+        message={t("Loading laptops...", "جاري تحميل اللابتوبات.")}
       />
     );
   }

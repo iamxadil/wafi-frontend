@@ -27,6 +27,7 @@ const CategoryNavigation = lazy(() => import("../pages/CategoryNavigation.jsx"))
 const CatLaptops = lazy(() => import("../pages/CatLaptops.jsx"));
 const CatAccessories = lazy(() => import("../pages/CatAccessories.jsx"));
 const CatOthers = lazy(() => import ("../pages/CatOthers.jsx"));
+const CatMonitors = lazy(() => import ("../pages/CatMonitors.jsx"));
 const BlackFridayPage = lazy(() => import ("../pages/BlackFridayPage.jsx"));
 
 // Auth
@@ -54,7 +55,7 @@ const Archive = lazy(() => import("../components/pages/Admin/navs/Archive.jsx"))
 const Analytics = lazy(() => import("../components/pages/Admin/navs/Analytics.jsx"));
 const Approvals = lazy(() => import("../components/pages/Admin/navs/Approvals.jsx"));
 const Vitals = lazy(() => import("../components/pages/Admin/navs/Vitals.jsx"));
-const Test = lazy(() => import ("../sections/Test.jsx"));
+import Test from "../sections/Test.jsx";
 
 // Cart & Orders
 const Cart = lazy(() => import("../components/main/Cart.jsx"));
@@ -231,6 +232,7 @@ export default function App() {
           <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
           <Route path="/laptops" element={<CatLaptops />} />
           <Route path="/accessories" element={<CatAccessories />} />
+          <Route path="/monitors" element={<CatMonitors />} />
           <Route path="/others" element={<CatOthers />} />
           <Route path="/black-friday" element={<BlackFridayPage />} />
 

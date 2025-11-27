@@ -25,7 +25,7 @@ export const useManageUsersStore = create((set) => ({
   ============================================================ */
   params: {
     page: 1,
-    limit: 6,
+    limit: 20,
     search: "",
     active: "", // can be true/false/"" (for All)
     sort: "default",

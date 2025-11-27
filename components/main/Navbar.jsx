@@ -9,6 +9,7 @@ import {
   Heart,
   UserCircle,
   GaugeCircle,
+  Monitor
 } from "lucide-react";
 import { CgMenuRightAlt as Menu } from "react-icons/cg";
 import { Link } from "react-router-dom";
@@ -119,6 +120,13 @@ const Navbar = () => {
           <Link to="/others">
             <Shapes size={20} />
             <span>{t("Others", "اخرى")}</span>
+          </Link>
+        </li>
+
+      <li>
+          <Link to="/monitors">
+            <Monitor size={20} />
+            <span>{t("Monitors", "شاشات")}</span>
           </Link>
         </li>
 

@@ -25,7 +25,7 @@ export const useManageOrdersStore = create((set) => ({
   // ===============================
   params: {
     page: 1,
-    limit: 6,
+    limit: 20,
     search: "",
     status: "",
     sort: "default",
