@@ -154,19 +154,55 @@ const OrderConfirmation = () => {
 
       {/* 🚨 If user NOT signed in */}
       {/* ================================ */}
-    {!user && (
-      <div className="signin-warning">
-        <div className="warn-icon"><AlertTriangle size={24} /></div>
-        <p style={{fontWeight: "500"}}>
-          {t("To track your orders, please sign in and visit", "لمتابعة طلباتك، يرجى تسجيل الدخول والذهاب إلى")}
-          <strong style={{fontWeight: "800"}}> {t("My Orders", "صفحة الطلبات")}</strong>
-        </p>
+  {/* 🚨 If user NOT signed in — Show instructions */}
+{!user && (
+  <div className="signin-instructions">
 
-        <button onClick={() => navigate("/signin")}>
+    <h3 className="instruction-title">
+      {t("How to access your order?", "كيفية الوصول إلى طلبك؟")}
+    </h3>
+
+    <ol className="instruction-list">
+      <li>
+        <strong>{t("Step 1:", "الخطوة ١:")}</strong>  
+        {t("Sign in to your account.", "قم بتسجيل الدخول إلى حسابك.")}
+        <button className="instruction-btn" onClick={() => navigate("/signin")}>
           {t("Sign In", "تسجيل الدخول")}
         </button>
-      </div>
-    )}
+      </li>
+
+      <li>
+        <strong>{t("Step 2:", "الخطوة ٢:")}</strong>  
+        {t("Copy your Order ID:", "انسخ معرّف الطلب:")}  
+        <code className="order-id-box">{selectedOrder._id}</code>
+      </li>
+
+      <li>
+        <strong>{t("Step 3:", "الخطوة ٣:")}</strong>  
+        {t("Go to the My Orders page:", "اذهب إلى صفحة الطلبات:")}
+        <button className="instruction-btn" onClick={() => navigate("/my-orders")}>
+          {t("My Orders", "صفحة الطلبات")}
+        </button>
+      </li>
+
+      <li>
+        <strong>{t("Step 4:", "الخطوة ٤:")}</strong>  
+        {t(
+          "Paste the Order ID to attach your order to your account.",
+          "قم بلصق معرّف الطلب لربط الطلب بحسابك."
+        )}
+      </li>
+    </ol>
+
+    <p className="instruction-note">
+      {t(
+        "This helps you track your order, download invoices, and receive updates.",
+        "يساعدك هذا في متابعة طلبك، وتحميل الفواتير، واستلام التحديثات."
+      )}
+    </p>
+
+  </div>
+)}
 
 
 

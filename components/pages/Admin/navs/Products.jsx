@@ -16,100 +16,160 @@ import {
 } from "@mantine/core";
 import { Package, Edit3, Trash2, MoreHorizontal } from "lucide-react";
 import { toast } from "react-toastify";
+
 import AdminHeader from "../AdminHeader";
 import ProductsModal from "../modals/ProductsModal";
+
 import { useProductsQuery, useDeleteProductMutation } from "../../../hooks/useManageProducts";
 import { useManageProductsStore } from "../../../stores/useManageProductsStore";
 import Pagination from "../../../main/Pagination.jsx";
 import useWindowWidth from "../../../hooks/useWindowWidth.jsx";
 
+/* ============================================================
+   FRONTEND → BACKEND MAPPINGS
+============================================================ */
+const CATEGORY_MAP = {
+  "All Products": "",
+  Laptops: "Laptops",
+  Keyboards: "Keyboards",
+  Mice: "Mice",
+  Monitors: "Monitors",
+  Speakers: "Speakers",
+  Bags: "Bags",
+  "Cooling Pads": "Cooling Pads",
+  "Mousepads & Deskpads": "Mousepads & Deskpads",
+};
+
+const SORT_MAP = {
+  Default: "date-desc",
+  Newest: "date-desc",
+  Oldest: "date-asc",
+  "A → Z": "alpha-asc",
+  "Z → A": "alpha-desc",
+  "Price ↑": "price-asc",
+  "Price ↓": "price-desc",
+};
+
+const OPT_FILTER_MAP = {
+  "In Stock": { inStock: "true" },
+  "Out of Stock": { inStock: "false" },
+  "Low Stock": { lowStock: "true" },
+};
+
+/* ============================================================
+   MAIN COMPONENT
+============================================================ */
 const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
-  const isProductSticky = true;
 
   const {
     selectedProducts,
     selectProduct,
     selectAllProducts,
     deselectAllProducts,
-    deleteProduct, // ✅ Added from store
+    deleteProduct,
     params,
     setParams,
   } = useManageProductsStore();
 
-  // ✅ Queries & Mutations
+  /* =======================
+     FETCH DATA
+  ======================= */
   const { data, isLoading, isError } = useProductsQuery(params);
   const { mutate: deleteProductAPI, isPending: isDeleting } = useDeleteProductMutation();
 
   const products = data?.products || [];
-  const totalItems = data?.pagination?.totalItems || 0;
   const pagination = data?.pagination || {};
-  
-  // ✅ Select all checkbox handler
+  const totalItems = pagination.totalItems || 0;
+  const width = useWindowWidth();
+
+  /* ============================================================
+     UI HANDLERS
+  ============================================================= */
+
+  const handleSearch = (value) =>
+    setParams({ ...params, search: value, page: 1 });
+
+  const handleCategoryFilter = (label) => {
+    const backend = CATEGORY_MAP[label];
+
+    setParams({
+      ...params,
+      category: backend || undefined,
+      page: 1,
+    });
+  };
+
+  const handleSort = (label) =>
+    setParams({
+      ...params,
+      sort: SORT_MAP[label] || "date-desc",
+      page: 1,
+    });
+
+  const handleOptFilters = (selected) => {
+    const updated = { inStock: undefined, lowStock: undefined };
+
+    selected.forEach((label) => {
+      const mapped = OPT_FILTER_MAP[label];
+      if (mapped) Object.assign(updated, mapped);
+    });
+
+    setParams({ ...params, ...updated, page: 1, optFilters: selected });
+  };
+
   const handleSelectAll = () => {
     if (selectedProducts.length === products.length) deselectAllProducts();
     else selectAllProducts(products.map((p) => p._id));
   };
 
-  // ✅ Edit handler
   const handleEdit = (product = null) => {
     if (product) {
       setEditData(product);
       setIsModalOpen(true);
-    } else if (selectedProducts.length === 1) {
-      const selected = products.find((p) => p._id === selectedProducts[0]);
-      setEditData(selected);
-      setIsModalOpen(true);
-    } else {
-      toast.info("Please select exactly one product to edit.");
+      return;
     }
+
+    if (selectedProducts.length === 1) {
+      const item = products.find((p) => p._id === selectedProducts[0]);
+      setEditData(item);
+      setIsModalOpen(true);
+      return;
+    }
+
+    toast.info("Please select exactly one product to edit.");
   };
 
-  // ✅ Delete handler
   const handleDelete = (ids) => {
     const idList = Array.isArray(ids) ? ids : selectedProducts;
-    if (idList.length === 0) return toast.warning("No products selected.");
+    if (!idList.length) return toast.warning("No products selected.");
 
-    if (!window.confirm(`Delete ${idList.length} product${idList.length > 1 ? "s" : ""}?`))
-      return;
+    if (!window.confirm(`Delete ${idList.length} product(s)?`)) return;
 
     deleteProductAPI(idList, {
       onSuccess: () => {
-        // ✅ Remove deleted products from selectedProducts in store
-        idList.forEach(id => deleteProduct(id));
-        
-        toast.success(
-          `${idList.length > 1 ? `${idList.length} products` : "Product"} deleted successfully!`
-        );
+        idList.forEach((id) => deleteProduct(id));
+        toast.success("Deleted successfully!");
       },
-      onError: (err) => {
-        toast.error(err.response?.data?.message || "Failed to delete product(s).");
-      },
+      onError: (err) => toast.error(err.response?.data?.message),
     });
   };
 
-  // ✅ Single product delete handler (for individual delete buttons)
   const handleDeleteSingle = (id) => {
     if (!window.confirm("Delete this product?")) return;
-
     deleteProductAPI([id], {
       onSuccess: () => {
-        // ✅ Remove single product from selectedProducts in store
         deleteProduct(id);
-        toast.success("Product deleted successfully!");
+        toast.success("Product deleted.");
       },
-      onError: (err) => {
-        toast.error(err.response?.data?.message || "Failed to delete product.");
-      },
+      onError: (err) => toast.error(err.response?.data?.message),
     });
   };
 
-  const width = useWindowWidth();
-
-  /* ======================================================
-     🪪 CARD VIEW (for width <= 1250px)
-  ====================================================== */
+  /* ============================================================
+     CARD VIEW
+  ============================================================= */
   const renderCards = () => (
     <div
       style={{
@@ -126,115 +186,48 @@ const Products = () => {
           radius="lg"
           withBorder
           style={{
-            background: "rgba(20, 20, 25, 0.6)",
-            backdropFilter: "blur(14px) saturate(180%)",
+            background: "rgba(20,20,25,0.6)",
+            backdropFilter: "blur(14px)",
             border: "1px solid rgba(255,255,255,0.1)",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
             transition: "all 0.3s ease",
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow =
-              "0 6px 30px var(--accent-clr, rgba(94,99,255,0.3))";
-            e.currentTarget.style.border =
-              "1px solid var(--accent-clr, rgba(94,99,255,0.4))";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow =
-              "0 4px 20px rgba(0, 0, 0, 0.3)";
-            e.currentTarget.style.border = "1px solid rgba(255,255,255,0.1)";
-          }}
         >
-          {/* Header */}
           <Group position="apart" mb="xs">
             <Checkbox
               checked={selectedProducts.includes(p._id)}
               onChange={() => selectProduct(p._id)}
             />
-            <Badge
-              color={p.countInStock > 0 ? "green" : "red"}
-              variant="light"
-              size="sm"
-            >
-              {p.countInStock > 0 ? "In Stock" : "Out of Stock"}
+
+            <Badge color={p.countInStock > 0 ? "green" : "red"} variant="light">
+              {p.countInStock > 0 ? "In Stock" : "Out"}
             </Badge>
           </Group>
 
-          {/* Image */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: "0.8rem",
-              overflow: "hidden",
-              borderRadius: "10px",
-              background: "rgba(255,255,255,0.04)",
-            }}
-          >
+          <div style={{ marginBottom: "1rem", textAlign: "center" }}>
             <img
               src={p.images?.[0] || "/placeholder.png"}
-              alt={p.name}
               style={{
                 width: "100%",
-                height: "auto",
-                maxHeight: "230px",
-                borderRadius: "10px",
+                height: 220,
                 objectFit: "contain",
-                padding: "4px",
               }}
             />
           </div>
 
-          {/* Info */}
           <Stack spacing={6}>
-            <Text fw={600} size="md" style={{ color: "var(--text)" }}>
-              {p.name}
-            </Text>
+            <Text fw={600}>{p.name}</Text>
             <Text size="sm" color="dimmed">
-              {p.brand || "Unknown"} • {p.category}
+              {p.brand} • {p.category}
             </Text>
-            <Divider my="xs" color="rgba(255,255,255,0.08)" />
-
-            <Group spacing={8}>
-              <Text fw={600} size="sm" color="var(--accent-clr)">
-                {p.price?.toLocaleString()} IQD
-              </Text>
-              {p.discountPrice > 0 && (
-                <Badge color="teal" size="sm" variant="filled">
-                  -{p.discountPrice.toLocaleString()} IQD
-                </Badge>
-              )}
-            </Group>
-
-            <Group spacing={10} mt={6}>
-              <Text size="xs" color="var(--secondary-text-clr)">
-                SKU: <strong>{p.sku || "—"}</strong>
-              </Text>
-              <Text size="xs" color="var(--secondary-text-clr)">
-                Qty: <strong>{p.countInStock}</strong>
-              </Text>
-            </Group>
+            <Divider my="xs" />
+            <Text fw={600}>{p.price.toLocaleString()} IQD</Text>
           </Stack>
 
-          {/* Quick Actions */}
-          <Group position="right" mt="sm" spacing="xs">
-            <ActionIcon
-              variant="light"
-              color="blue"
-              onClick={() => handleEdit(p)}
-              title="Edit Product"
-            >
+          <Group position="right" mt="sm">
+            <ActionIcon onClick={() => handleEdit(p)}>
               <Edit3 size={16} />
             </ActionIcon>
-            <ActionIcon
-              variant="light"
-              color="red"
-              onClick={() => handleDeleteSingle(p._id)} // ✅ Updated to use single delete
-              disabled={isDeleting}
-              title="Delete Product"
-            >
+            <ActionIcon onClick={() => handleDeleteSingle(p._id)} color="red">
               <Trash2 size={16} />
             </ActionIcon>
           </Group>
@@ -243,21 +236,15 @@ const Products = () => {
     </div>
   );
 
-  /* ======================================================
-     🧾 TABLE VIEW (for width > 1250px)
-  ====================================================== */
+  /* ============================================================
+     TABLE VIEW
+  ============================================================= */
   const renderTable = () => (
     <ScrollArea>
-      <Table
-        highlightOnHover
-        verticalSpacing="sm"
-        horizontalSpacing="sm"
-        withColumnBorders={false}
-        style={{ borderCollapse: "separate", borderSpacing: "0 6px" }}
-      >
+      <Table highlightOnHover verticalSpacing="sm">
         <Table.Thead>
           <Table.Tr>
-            <Table.Th style={{ width: "40px" }}>
+            <Table.Th>
               <Checkbox
                 checked={
                   selectedProducts.length === products.length &&
@@ -270,7 +257,7 @@ const Products = () => {
                 onChange={handleSelectAll}
               />
             </Table.Th>
-            <Table.Th style={{ width: "60px" }}>Img</Table.Th>
+            <Table.Th>Img</Table.Th>
             <Table.Th>Name</Table.Th>
             <Table.Th>SKU</Table.Th>
             <Table.Th>Qty</Table.Th>
@@ -280,7 +267,7 @@ const Products = () => {
             <Table.Th>Discount</Table.Th>
             <Table.Th>Status</Table.Th>
             <Table.Th>Priority</Table.Th>
-            <Table.Th style={{ width: "60px", textAlign: "center" }}>Actions</Table.Th>
+            <Table.Th>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>
 
@@ -293,62 +280,54 @@ const Products = () => {
                   onChange={() => selectProduct(p._id)}
                 />
               </Table.Td>
+
               <Table.Td>
                 <img
                   src={p.images?.[0] || "/placeholder.png"}
-                  alt={p.name}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    objectFit: "contain",
-                    borderRadius: "6px",
-                  }}
+                  style={{ width: 40, height: 40, objectFit: "contain" }}
                 />
               </Table.Td>
+
               <Table.Td>{p.name}</Table.Td>
               <Table.Td>{p.sku || "—"}</Table.Td>
               <Table.Td>{p.countInStock}</Table.Td>
               <Table.Td>{p.category}</Table.Td>
               <Table.Td>{p.brand}</Table.Td>
-              <Table.Td>{p.price?.toLocaleString()} IQD</Table.Td>
+              <Table.Td>{p.price.toLocaleString()} IQD</Table.Td>
+
               <Table.Td>
                 {p.discountPrice > 0 ? (
-                  <Text fw={500} color="teal">
-                    {p.discountPrice.toLocaleString()} IQD
-                  </Text>
+                  <Text color="teal">{p.discountPrice.toLocaleString()}</Text>
                 ) : (
-                  <Text color="dimmed">—</Text>
+                  "—"
                 )}
               </Table.Td>
+
               <Table.Td>
-                <Badge color={p.countInStock > 0 ? "green" : "red"} variant="light" >
-                  {p.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                <Badge color={p.countInStock > 0 ? "green" : "red"}>
+                  {p.countInStock > 0 ? "In Stock" : "Out"}
                 </Badge>
               </Table.Td>
 
-              <Table.Td>
-                <Text variant="light" >
-                  {p.priority}
-                </Text>
-              </Table.Td>
+              <Table.Td>{p.priority}</Table.Td>
 
-              {/* Quick Actions */}
-              <Table.Td style={{ textAlign: "center" }}>
-                <Menu shadow="md" width={160}>
+              <Table.Td>
+                <Menu shadow="md">
                   <Menu.Target>
-                    <ActionIcon variant="subtle" color="gray">
-                      <MoreHorizontal size={16} />
+                    <ActionIcon>
+                      <MoreHorizontal />
                     </ActionIcon>
                   </Menu.Target>
+
                   <Menu.Dropdown>
-                    <Menu.Item icon={<Edit3 size={14} />} onClick={() => handleEdit(p)}>
+                    <Menu.Item icon={<Edit3 />} onClick={() => handleEdit(p)}>
                       Edit
                     </Menu.Item>
+
                     <Menu.Item
-                      icon={<Trash2 size={14} />}
+                      icon={<Trash2 />}
                       color="red"
-                      onClick={() => handleDeleteSingle(p._id)} // ✅ Updated to use single delete
-                      disabled={isDeleting}
+                      onClick={() => handleDeleteSingle(p._id)}
                     >
                       Delete
                     </Menu.Item>
@@ -362,31 +341,30 @@ const Products = () => {
     </ScrollArea>
   );
 
-  /* ======================================================
-     MAIN RENDER
-  ====================================================== */
+  /* ============================================================
+     MAIN RETURN
+  ============================================================= */
   return (
-    <main className="adm-ct" >
+    <main className="adm-ct">
       <AdminHeader
         title="Products"
         breadcrumb={["Dashboard", "Products"]}
         Icon={Package}
-        totalCount={totalItems || 0}
+        totalCount={totalItems}
         selectedCount={selectedProducts.length}
-        onSearch={(value) => {setParams({...params, search: value, page: 1})}}
+        onSearch={handleSearch}
         onAdd={() => {
           setEditData(null);
           setIsModalOpen(true);
         }}
         onEdit={() => handleEdit()}
-        onDelete={() => handleDelete()} 
-        onSelectAll={() => selectAllProducts(products.map((p) => p._id))}
-        onDeselectAll={() => deselectAllProducts()}
-        onFilterChange={(v) => console.log("Filter:", v)}
-        onSortChange={(sort) => setParams((prev) => ({ ...prev, sort, page: 1 }))}
-        filterOptions={["Laptops","Keyboards","Mice","Monitors", "Speakers", "Bags", "Cooling Pads", "Mousepads & Deskpads"]}
-        optFilterOptions={["In Stock", "Out of Stock", "Low Stock" ]}
-        isSticky = {isProductSticky}
+        onDelete={() => handleDelete()}
+        onFilterChange={handleCategoryFilter}
+        onSortChange={handleSort}
+        optFilterOptions={["In Stock", "Out of Stock", "Low Stock"]}
+        onOptFilterChange={handleOptFilters}
+        filterOptions={Object.keys(CATEGORY_MAP)}
+        isSticky={true}
       />
 
       <Paper
@@ -399,9 +377,7 @@ const Products = () => {
         }}
       >
         {isLoading ? (
-          <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
-            <Loader color="blue" />
-          </div>
+          <Loader color="blue" style={{ display: "block", margin: "2rem auto" }} />
         ) : isError ? (
           <Text color="red">Failed to load products.</Text>
         ) : products.length === 0 ? (
@@ -413,14 +389,12 @@ const Products = () => {
         )}
       </Paper>
 
-      {products.length > 0 && pagination?.totalPages > 1 && (
-        <div style={{ paddingBottom: "5.7rem" }}>
-          <Pagination
-            currentPage={pagination.page}
-            totalPages={pagination.totalPages}
-            onPageChange={(page) => setParams({ page })}
-          />
-        </div>
+      {pagination.totalPages > 1 && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          onPageChange={(page) => setParams({ ...params, page })}
+        />
       )}
 
       {isModalOpen && (

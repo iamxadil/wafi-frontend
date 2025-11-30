@@ -27,9 +27,8 @@ const CatMonitors = () => {
             )}
           </p>
         </div>
-
-        <AllMonitors />
       </section>
+      <AllMonitors />
     </>
   );
 };

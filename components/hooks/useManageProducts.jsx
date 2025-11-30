@@ -4,37 +4,73 @@ import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-/* -----------------------------------------------
-   📦 Fetch All Products (with pagination)
------------------------------------------------- */
-export const useProductsQuery = (
-  params = {
-    page: 1,
-    limit: 10,
-    search: "",
-    sort: "date-desc",
-    category: "",
-    brand: "",
-    inStock: "",
-    isOffer: "",
-    isTopProduct: "",
-  },
-  normalizeProducts
-) => {
+/* ------------------------------------------------------------
+   ⭐ SORT MAPPING (UI → Backend)
+------------------------------------------------------------ */
+const SORT_MAP = {
+  Default: "date-desc",
+  Newest: "date-desc",
+  Oldest: "date-asc",
+  "A → Z": "alpha-asc",
+  "Z → A": "alpha-desc",
+  "Price ↑": "price-asc",
+  "Price ↓": "price-desc",
+};
+
+/* ------------------------------------------------------------
+   ⭐ MULTI-STOCK FILTER MAPPING (UI → Backend)
+------------------------------------------------------------ */
+const OPT_FILTER_MAP = {
+  "In Stock": { inStock: "true" },
+  "Out of Stock": { inStock: "false" },
+  "Low Stock": { lowStock: "true" },
+};
+
+/* ------------------------------------------------------------
+   📦 FETCH ALL PRODUCTS (COMPLETE FIX)
+------------------------------------------------------------ */
+export const useProductsQuery = (params = {}, normalizeProducts) => {
   return useQuery({
     queryKey: ["products", params],
 
     queryFn: async () => {
-      const filteredParams = {};
+      const parsed = {};
 
-      // remove empty params
+      /* ------------------------------------------------------------
+         1️⃣ SORT MAPPING
+      ------------------------------------------------------------ */
+      if (params.sort) {
+        parsed.sort = SORT_MAP[params.sort] || params.sort;
+      }
+
+      /* ------------------------------------------------------------
+         2️⃣ MULTI FILTERS (inStock, lowStock)
+      ------------------------------------------------------------ */
+      if (Array.isArray(params.optFilters)) {
+        params.optFilters.forEach((label) => {
+          const mapped = OPT_FILTER_MAP[label];
+          if (mapped) Object.assign(parsed, mapped);
+        });
+      }
+
+      /* ------------------------------------------------------------
+         3️⃣ PASS OTHER FILTERS
+      ------------------------------------------------------------ */
       Object.entries(params).forEach(([key, val]) => {
-        if (val !== "" && val !== undefined && val !== null) {
-          filteredParams[key] = val;
+        if (
+          val !== "" &&
+          val !== undefined &&
+          val !== null &&
+          key !== "optFilters"
+        ) {
+          parsed[key] = val;
         }
       });
 
-      const query = new URLSearchParams(filteredParams).toString();
+      /* ------------------------------------------------------------
+         4️⃣ Build final query
+      ------------------------------------------------------------ */
+      const query = new URLSearchParams(parsed).toString();
 
       const res = await axios.get(`${API_URL}/api/products?${query}`, {
         withCredentials: true,
@@ -62,9 +98,9 @@ export const useProductsQuery = (
   });
 };
 
-/* -----------------------------------------------
+/* ------------------------------------------------------------
    ➕ Add Product
------------------------------------------------- */
+------------------------------------------------------------ */
 export const useAddProductMutation = (normalizeProduct, setUploadProgress) => {
   const queryClient = useQueryClient();
 
@@ -75,7 +111,7 @@ export const useAddProductMutation = (normalizeProduct, setUploadProgress) => {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (event) => {
           const percent = Math.round((event.loaded / event.total) * 100);
-          setUploadProgress(percent);   // 🔥 live number
+          setUploadProgress(percent);
         },
       });
 
@@ -95,10 +131,9 @@ export const useAddProductMutation = (normalizeProduct, setUploadProgress) => {
   });
 };
 
-
-/* -----------------------------------------------
+/* ------------------------------------------------------------
    ✏️ Edit Product
------------------------------------------------- */
+------------------------------------------------------------ */
 export const useEditProductMutation = (normalizeProduct, setUploadProgress) => {
   const queryClient = useQueryClient();
 
@@ -118,7 +153,7 @@ export const useEditProductMutation = (normalizeProduct, setUploadProgress) => {
         : res.data.product;
     },
 
-    onSuccess: (updatedProduct) => {
+    onSuccess: () => {
       toast.success("✏️ Product updated successfully!");
       queryClient.invalidateQueries(["products"]);
     },
@@ -129,41 +164,33 @@ export const useEditProductMutation = (normalizeProduct, setUploadProgress) => {
   });
 };
 
-
-/* -----------------------------------------------
-   🗑️ Delete Product (single or multiple)
------------------------------------------------- */
+/* ------------------------------------------------------------
+   🗑️ Delete Product
+------------------------------------------------------------ */
 export const useDeleteProductMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (ids) => {
-      // Allow both single string or array
-      const idList = Array.isArray(ids) ? ids : [ids];
+      const list = Array.isArray(ids) ? ids : [ids];
       const results = [];
 
-      for (const id of idList) {
-        try {
-          const res = await axios.delete(`${API_URL}/api/products/${id}`, {
-            withCredentials: true,
-          });
-          results.push(res.data);
-        } catch (err) {
-          console.error(`❌ Failed to delete product ${id}:`, err.message);
-          throw err;
-        }
+      for (const id of list) {
+        const res = await axios.delete(`${API_URL}/api/products/${id}`, {
+          withCredentials: true,
+        });
+        results.push(res.data);
       }
 
       return results;
     },
 
     onSuccess: (results) => {
-      toast.success(`🗑️ ${results.length} product${results.length > 1 ? "s" : ""} deleted.`);
+      toast.success(`🗑️ Deleted ${results.length} product(s).`);
       queryClient.invalidateQueries(["products"]);
     },
 
     onError: (err) => {
-      console.error("❌ Error deleting product:", err.response?.data || err.message);
       toast.error(err.response?.data?.message || "Failed to delete product");
     },
   });

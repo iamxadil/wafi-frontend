@@ -1,71 +1,69 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
-const useAccessoriesStore = create((set)=>({
-
-   accessoriesParams: { page: 1,limit: 4,},
-
-  setAccessoriesParams: (params) =>
+const useAccessoriesStore = create((set) => ({
+  /* ================================================================
+      🧱 MAIN PAGE (Accessories Listing)
+  ================================================================ */
+  accessoriesPageParams: { page: 1, limit: 8 },
+  setAccessoriesPageParams: (params) =>
     set((state) => ({
-      accessoriesParams: { ...state.accessoriesParams, ...params },
+      accessoriesPageParams: {
+        ...state.accessoriesPageParams,
+        ...params,
+      },
     })),
 
-
-
-
-    //Main Page
-    accessoriesPageParams: { page: 1, limit: 8,}, 
-    setAccessoriesPageParams: (params) =>
-      set((state) => ({
-        accessoriesPageParams: { ...state.accessoriesPageParams, ...params },
-      })),
-
-    //Main Page Filter
-    filters: {},
-    setFilters: (filterObj) =>
+  // Filters (brand, tags, priceRange...)
+  filters: {},
+  setFilters: (filterObj) =>
     set((state) => ({
       filters: { ...state.filters, ...filterObj },
     })),
 
-    //Main Page Sort
-    sort: "newest",
-    setSort: (sortValue) => set({ sort: sortValue }),
+  // Sorting — backend-compatible
+  sort: "date-desc", // ⭐ backend default → enables priority
+  setSort: (sortValue) => set({ sort: sortValue }),
 
+  resetFilters: () =>
+    set({
+      filters: {},
+      sort: "date-desc", // reset to backend default
+    }),
 
-    //Reset
-    resetFilters: () => set({ filters: {} }),               // ✅ optional
+  /* ================================================================
+      🔍 LIVE SEARCH (Instant Dropdown)
+  ================================================================ */
+  searchParam: "",
+  setSearchParam: (value) => set({ searchParam: value }),
 
-
-
-    //Search
-    searchParam: "",
-    setSearchParam: (value) => set({ searchParam: value }),
-
-    //Search Filters
-    searchFilters: {},
-    setSearchFilters: (filterObj) =>
+  searchFilters: {},
+  setSearchFilters: (filterObj) =>
     set((state) => ({
       searchFilters: { ...state.searchFilters, ...filterObj },
     })),
 
-    //Search Sorts
-    searchSort: "newest",
-    setSearchSort: (sortValue) => set({ searchSort: sortValue }),
+  searchSort: "date-desc",
+  setSearchSort: (sortValue) => set({ searchSort: sortValue }),
 
-    //Reset
-    resetSearchFilters: () => set({ searchFilters: {} }),   
+  resetSearchFilters: () =>
+    set({
+      searchFilters: {},
+      searchSort: "date-desc",
+    }),
 
+  /* ================================================================
+      🎮 GAMING ACCESSORIES SECTION
+  ================================================================ */
+  gamingAccessories: { page: 1, limit: 8 },
+  setGamingAccessories: (params) =>
+    set((state) => ({
+      gamingAccessories: {
+        ...state.gamingAccessories,
+        ...params,
+      },
+    })),
 
-
-     //Gaming Accessories
-    gamingAccessories: { page: 1, limit: 8,}, 
-    setGamingAccessories: (params) =>
-      set((state) => ({
-        gamingAccessories: { ...state.gamingAccessories, ...params },
-      })),
-    gamingFilters: {},
-
-
-    
-}))
+  gamingFilters: {}, // dynamic filters for gaming category
+}));
 
 export default useAccessoriesStore;

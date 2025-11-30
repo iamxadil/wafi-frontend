@@ -1,10 +1,11 @@
 import { create } from "zustand";
 
 export const useManageProductsStore = create((set) => ({
-  // Store
+  /* =======================================================
+     🟦 SELECTED PRODUCTS
+  ======================================================= */
   selectedProducts: [],
 
-  // ✅ Toggle single product
   selectProduct: (id) =>
     set((state) => ({
       selectedProducts: state.selectedProducts.includes(id)
@@ -12,25 +13,49 @@ export const useManageProductsStore = create((set) => ({
         : [...state.selectedProducts, id],
     })),
 
-  // ✅ Select all
-  selectAllProducts: (ids) => set(() => ({ selectedProducts: ids })),
+  selectAllProducts: (ids) =>
+    set(() => ({
+      selectedProducts: ids,
+    })),
 
-  // ✅ Deselect all
-  deselectAllProducts: () => set(() => ({ selectedProducts: [] })),
+  deselectAllProducts: () =>
+    set(() => ({
+      selectedProducts: [],
+    })),
 
-  // ✅ Delete single product
   deleteProduct: (id) =>
     set((state) => ({
       selectedProducts: state.selectedProducts.filter((pid) => pid !== id),
     })),
 
-  // ✅ Params (pagination, filters, etc.)
+  /* =======================================================
+     🔧 PARAMS USED IN ADMIN PAGE (backend compatible)
+  ======================================================= */
   params: {
     page: 1,
     limit: 20,
+
+    // 🔍 Searching
+    search: "",
+
+    // 🔢 Sorting
+    sort: "date-desc", // backend default (priority mode)
+
+    // 🏷 Category filter
+    category: undefined,
+
+    // 📦 Stock / Status filters
+    inStock: undefined,
+    lowStock: undefined,
+
+    // 🔥 Special filters
+    isOffer: undefined,
+    isTopProduct: undefined,
   },
 
-  // ✅ Update params safely
+  /* =======================================================
+     🔄 UPDATE PARAMS SAFELY
+  ======================================================= */
   setParams: (updates) =>
     set((state) => ({
       params: {

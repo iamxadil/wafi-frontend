@@ -6,7 +6,6 @@ import Filter from "../components/common/Filter.jsx";
 import Sort from "../components/common/Sort.jsx";
 
 // Reusables
-import ProductGrid from "../components/main/ProductGrid.jsx";
 import ProductBlock from "../components/main/ProductBlock.jsx";
 import ProductCard from "../components/main/ProductCard.jsx";
 import Pagination from "../components/main/Pagination.jsx";

@@ -5,85 +5,118 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 /**
  * 🧠 useAccessoriesQuery
- * Handles dynamic fetching for Accessories — with search, filters, sort, pagination.
+ * Fully compatible with backend filtering + priority/sort logic
  */
 export const useAccessoriesQuery = ({
   limit = 4,
   page = 1,
   search = "",
-  sort = "newest",
-  ...filters // allow dynamic filter keys (e.g. brand, price range, tags)
+  sort = "date-desc",      // ⭐ backend default (priority ON)
+  inStock,
+  isOffer,
+  isTopProduct,
+  category = "",            // optional category override
+  ...filters                // brand, tags, priceRange, etc.
 } = {}) => {
+
   return useQuery({
-    queryKey: ["accessories", { limit, page, search, sort, filters }],
+    queryKey: [
+      "accessories",
+      { limit, page, search, sort, inStock, isOffer, isTopProduct, category, filters },
+    ],
 
     queryFn: async () => {
       const params = new URLSearchParams();
 
-      // Basic pagination
-      params.append("limit", limit);
-      params.append("page", page);
+      /* ---------------------------------------------------------
+         BASIC PARAMS
+      --------------------------------------------------------- */
+      params.set("limit", limit);
+      params.set("page", page);
+      params.set("sort", sort);
 
-      // Search text
-      if (search?.trim()) {
-        params.append("search", search.trim());
+      // Optional category override
+      if (category) params.set("category", category);
+
+      // Search
+      if (search.trim()) params.set("search", search.trim());
+
+      /* ---------------------------------------------------------
+         BOOLEAN FLAGS (Offer / Top Product)
+      --------------------------------------------------------- */
+      if (isOffer === true || isOffer === "true") {
+        params.set("isOffer", "true");
       }
 
-      // Sorting
-      if (sort) {
-        params.append("sort", sort);
+      if (isTopProduct === true || isTopProduct === "true") {
+        params.set("isTopProduct", "true");
       }
 
-      // Dynamic filters
-      if (filters) {
-        Object.entries(filters).forEach(([key, value]) => {
-          if (value == null || value === "" || value?.length === 0) return;
-
-          // handle arrays (e.g. brand=["Razer","Logitech"])
-          if (Array.isArray(value)) {
-            params.append(key, value.join(","));
-          }
-          // handle price range object: { min: 100, max: 500 }
-          else if (typeof value === "object" && value.min != null && value.max != null) {
-            params.append(`min${key[0].toUpperCase() + key.slice(1)}`, value.min);
-            params.append(`max${key[0].toUpperCase() + key.slice(1)}`, value.max);
-          }
-          // handle simple scalar values
-          else {
-            params.append(key, value);
-          }
-        });
+      /* ---------------------------------------------------------
+         STOCK FILTER (true or false)
+      --------------------------------------------------------- */
+      if (inStock === true || inStock === "true") {
+        params.set("inStock", "true");
+      } 
+      else if (inStock === false || inStock === "false") {
+        params.set("inStock", "false");
       }
 
+      /* ---------------------------------------------------------
+         DYNAMIC FILTERS (brand, tags, minPrice/maxPrice, etc.)
+      --------------------------------------------------------- */
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value == null || value === "" || value?.length === 0) return;
+
+        // Arrays: brand=["Razer","Logitech"]
+        if (Array.isArray(value)) {
+          params.set(key, value.join(","));
+          return;
+        }
+
+        // Price range: {min: X, max: Y}
+        if (typeof value === "object" && ("min" in value || "max" in value)) {
+          if (value.min != null) params.set("minPrice", value.min);
+          if (value.max != null) params.set("maxPrice", value.max);
+          return;
+        }
+
+        // Scalar values
+        params.set(key, value);
+      });
+
+      /* ---------------------------------------------------------
+         REQUEST
+      --------------------------------------------------------- */
       const url = `${API_URL}/api/products/accessories?${params.toString()}`;
-      const res = await axios.get(url, { withCredentials: true });
 
-      const data = res.data || {};
+      const { data } = await axios.get(url, { withCredentials: true });
       const products = Array.isArray(data.products) ? data.products : [];
 
-      // normalize prices
+      /* ---------------------------------------------------------
+         NORMALIZE FINAL PRICE
+      --------------------------------------------------------- */
       const normalized = products.map((p) => ({
         ...p,
-        finalPrice:
-          typeof p.finalPrice === "number"
-            ? p.finalPrice
-            : Number((p.price ?? 0) - (p.discountPrice ?? 0)),
+        finalPrice: p.discountPrice > 0 ? p.price - p.discountPrice : p.price,
       }));
 
-      // pagination defaults
-      const pagination = data.pagination || {};
+      /* ---------------------------------------------------------
+         PAGINATION FALLBACKS
+      --------------------------------------------------------- */
       return {
         products: normalized,
         pagination: {
-          currentPage: pagination.page ?? page,
-          totalPages: pagination.pages ?? 0,
-          totalItems: pagination.totalItems ?? 0,
+          currentPage: data.pagination?.page ?? page,
+          totalPages: data.pagination?.pages ?? 0,
+          totalItems: data.pagination?.totalItems ?? 0,
+          limit,
         },
       };
     },
 
     keepPreviousData: true,
-    staleTime: 1000 * 60, // 1 minute
+    staleTime: 60_000,
     refetchOnWindowFocus: false,
   });
 };

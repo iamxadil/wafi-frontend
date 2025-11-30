@@ -19,13 +19,18 @@ const useLaptopsStore = create((set) => ({
       filters: { ...state.filters, ...filterObj },
     })),
 
-  sort: "newest",
+  // 🔥 MUST MATCH BACKEND
+  sort: "date-desc",
   setSort: (sortValue) => set({ sort: sortValue }),
 
-  resetFilters: () => set({ filters: {}, sort: "newest" }),
+  resetFilters: () =>
+    set({
+      filters: {},
+      sort: "date-desc", // ← FIXED
+    }),
 
   /* ================================================================
-     🔍 LIVE SEARCH (for top search dropdown)
+     🔍 LIVE SEARCH (top search dropdown)
   ================================================================ */
   searchParam: "",
   setSearchParam: (value) => set({ searchParam: value }),
@@ -37,13 +42,18 @@ const useLaptopsStore = create((set) => ({
       searchFilters: { ...state.searchFilters, ...filterObj },
     })),
 
-  searchSort: "newest",
+  // 🔥 MUST MATCH BACKEND
+  searchSort: "date-desc",
   setSearchSort: (sortValue) => set({ searchSort: sortValue }),
 
-  resetSearchFilters: () => set({ searchFilters: {}, searchSort: "newest" }),
+  resetSearchFilters: () =>
+    set({
+      searchFilters: {},
+      searchSort: "date-desc", // ← FIXED
+    }),
 
   /* ================================================================
-     🧩 TOP PRODUCTS SECTION (optional — e.g. featured laptops)
+     🧩 TOP PRODUCTS SECTION
   ================================================================ */
   topPageParams: { page: 1, limit: 3 },
   setTopPageParams: (params) =>
@@ -52,7 +62,7 @@ const useLaptopsStore = create((set) => ({
     })),
 
   /* ================================================================
-     🧮 EXTRA: MAIN PAGE (e.g. homepage laptop previews)
+     🧮 EXTRA: MAIN PAGE PREVIEW (homepage)
   ================================================================ */
   mainPageParams: { page: 1, limit: 4 },
   setMainPageParams: (params) =>
