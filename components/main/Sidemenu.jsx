@@ -9,21 +9,13 @@ import {
   ChevronDown,
   ChevronUp,
   ShoppingBag,
-  Monitor
+  Monitor,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/sidemenu.css";
 import useTranslate from "../hooks/useTranslate.jsx";
 
 const menuData = [
-  {
-    titleKey: { en: "Black Friday", ar: "الجمعة السوداء" },
-    icon: <ShoppingBag size={25} />,
-    type: "single",
-    path: "/black-friday",
-    special: true, // ⭐ premium styling
-  },
-
   {
     titleKey: { en: "Laptops", ar: "لابتوبات" },
     icon: <Laptop size={25} />,
@@ -54,11 +46,10 @@ const menuData = [
       { label: "Combo Kb & M", path: "/category/Combo Kb & M" },
       { label: "Cooling Pads", path: "/category/Cooling Pads" },
       { label: "Mousepads & Deskpads", path: "/category/Mousepads & Deskpads" },
-      
     ],
   },
 
-    {
+  {
     titleKey: { en: "Monitors", ar: "شاشات" },
     icon: <Monitor size={25} />,
     type: "single",
@@ -71,7 +62,6 @@ const menuData = [
     type: "single",
     path: "/others",
   },
-
 ];
 
 const Sidemenu = ({ isOpen, setIsOpen }) => {
@@ -127,7 +117,9 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
             <div
               className="sidemenu-close"
               onClick={() => setIsOpen(false)}
-              style={{ flexDirection: t.language === "ar" ? "row-reverse" : "row" }}
+              style={{
+                flexDirection: t.language === "ar" ? "row-reverse" : "row",
+              }}
             >
               <h1>
                 {t("Menu", "القائمة")} <X size={24} />
@@ -138,12 +130,10 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
             <ul className="sidemenu-list">
               {menuData.map((menu, i) => (
                 <li key={i}>
-                  {/* SINGLE ITEM (normal + Black Friday special) */}
+                  {/* SINGLE ITEM */}
                   {menu.type === "single" && (
                     <motion.button
-                      className={`sidemenu-main-btn single ${
-                        menu.special ? "bf-special" : ""
-                      }`}
+                      className="sidemenu-main-btn single"
                       onClick={() => handleNavigate(menu.path)}
                       whileTap={{ scale: 0.97 }}
                     >
@@ -155,7 +145,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                     </motion.button>
                   )}
 
-                  {/* DROPDOWN ITEMS */}
+                  {/* DROPDOWN */}
                   {menu.type === "dropdown" && (
                     <>
                       <motion.button

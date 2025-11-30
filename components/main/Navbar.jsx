@@ -117,30 +117,20 @@ const Navbar = () => {
       </li>
 
       <li>
-          <Link to="/others">
-            <Shapes size={20} />
-            <span>{t("Others", "اخرى")}</span>
-          </Link>
-        </li>
-
-      <li>
           <Link to="/monitors">
             <Monitor size={20} />
             <span>{t("Monitors", "شاشات")}</span>
           </Link>
-        </li>
+       </li>
 
-       <li className="bf-nav-item">
-      <Link to="/black-friday">
-        <span className="bf-badge">
-          <span className="bf-live-dot"></span>
-          <span className="bf-text">{t("Black Friday", "الجمعة السوداء")}</span>
-          <span className="bf-glint"></span>
-        </span>
-      </Link>
-    </li>
+      <li>
+          <Link to="/others">
+            <Shapes size={20} />
+            <span>{t("Others", "اخرى")}</span>
+          </Link>
+      </li>
 
-
+  
 
     </ul>
   ));

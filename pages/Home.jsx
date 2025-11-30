@@ -100,7 +100,6 @@ const Home = () => {
       <Suspense fallback={<Loader />}>
         {width > 650 ? <Land /> : <MobLandingPage />}
         <BrandCards />
-        <BlackFridayHero />
         <Laptops />
         <AccessoriesProducts />
         <Offers />

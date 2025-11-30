@@ -234,7 +234,6 @@ export default function App() {
           <Route path="/accessories" element={<CatAccessories />} />
           <Route path="/monitors" element={<CatMonitors />} />
           <Route path="/others" element={<CatOthers />} />
-          <Route path="/black-friday" element={<BlackFridayPage />} />
 
           {/* Cart / Checkout */}
           <Route path="/cart" element={<Cart />} />
