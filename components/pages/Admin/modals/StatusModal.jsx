@@ -38,16 +38,6 @@ const StatusModal = ({ opened, onClose, order }) => {
   const isPickup = !!order?.pickup;
   const currentIndex = statusOrder.indexOf(order?.status ?? "Waiting");
 
-  // 🧩 Fix mobile scroll freeze issue
-  useEffect(() => {
-    const handleFocusOut = () => {
-      // Small scroll nudge to restore viewport after keyboard closes
-      window.scrollTo(0, document.body.scrollTop + 1);
-      setTimeout(() => window.scrollTo(0, document.body.scrollTop - 1), 80);
-    };
-    window.addEventListener("focusout", handleFocusOut);
-    return () => window.removeEventListener("focusout", handleFocusOut);
-  }, []);
 
   if (!order) {
     return (
@@ -108,6 +98,11 @@ const StatusModal = ({ opened, onClose, order }) => {
         content: "statusmodal",
         body: "statusmodal__body",
       }}
+       trapFocus={false}
+  keepMounted
+  lockScroll={false}
+  closeOnClickOutside={false}
+  closeOnEscape={false}
     >
       {/* HEADER */}
       <div className="statusmodal__header">

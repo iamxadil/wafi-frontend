@@ -148,9 +148,19 @@ export default function AppFooter() {
               <Title level={5} style={{ color: "var(--text)", marginBottom: 10 }}>
                 {t("Contact Info", "معلومات التواصل")}
               </Title>
-              <Text style={{ color: "var(--text)" }}>
+                    <a
+                href="https://www.google.com/maps/place/مكتب+الوافي+للحاسبات%E2%80%AD/@33.3119592,44.4428998,20.75z/data=!4m6!3m5!1s0x1557817ae6c52073:0xb64ad422b70d6a29!8m2!3d33.3118991!4d44.4430964!16s%2Fg%2F11v5g06qcy?entry=ttu&g_ep=EgoyMDI1MTEyMy4xIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  display: "inline-block",
+                }}
+              >
                 {t("Al Senaha St. - Baghdad - Iraq", "شارع الصناعة - بغداد - العراق")}
-              </Text>
+              </a>
+
               <Text style={{ color: "var(--text)" }}>support@alwafi.net</Text>
               <Text style={{ color: "var(--text)" }}>+964 784 497 0384</Text>
             </Space>

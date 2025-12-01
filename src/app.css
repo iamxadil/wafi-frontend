@@ -115,3 +115,7 @@ button {
 }
 
 
+.mantine-Menu-dropdown {
+  overscroll-behavior: none !important;
+  scroll-behavior: auto !important;
+}

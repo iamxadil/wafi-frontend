@@ -5,6 +5,7 @@ import {
   useEditProductMutation,
 } from "../../../hooks/useManageProducts.jsx";
 import { MonitorSmartphone, ScanFace, Fingerprint } from "lucide-react";
+import { Star, StarOff, Eye, EyeOff } from "lucide-react";
 
 const ProductsModal = ({
   setIsModalOpen,
@@ -33,7 +34,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
     description: "",
     isTopProduct: false,
     priority: 0,
-    isBlackFriday: false, 
+    hidden: false,
   });
 
   const [specs, setSpecs] = useState({});
@@ -81,7 +82,8 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
         description: editData.description || "",
         isTopProduct: !!editData.isTopProduct,
         priority: editData?.priority || 0,
-        isBlackFriday: !!editData.isBlackFriday,
+        hidden: editData.hidden ?? false,
+
       });
 
       setSpecs(editData.specs || {});
@@ -458,28 +460,41 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             </div>
           )}
 
-          {/* === TOGGLE === */}
-          <div className="checkbox-row">
-            <input
-              id="isTopProduct"
-              type="checkbox"
-              checked={formData.isTopProduct}
-              onChange={handleChange}
-            />
-            <label htmlFor="isTopProduct">Mark as Top Product</label>
-          </div>
+          {/* === TOP PRODUCT TOGGLE === */}
+<div className="toggle-row">
+  <label className="toggle-container">
+    <input
+      id="isTopProduct"
+      type="checkbox"
+      checked={formData.isTopProduct}
+      onChange={handleChange}
+    />
+    <span className="toggle-icon">
+      {formData.isTopProduct ? <Star size={18} /> : <StarOff size={18} />}
+    </span>
+    <span className="toggle-label">
+      {formData.isTopProduct ? "Top Product" : "Mark as Top Product"}
+    </span>
+  </label>
+</div>
 
-          <div className="checkbox-row">
-            
-          <input
-            id="isBlackFriday"
-            type="checkbox"
-            checked={formData.isBlackFriday}
-            onChange={handleChange}
-          />
-          <label htmlFor="isBlackFriday">Black Friday Product</label>
-        </div>
-
+{/* === HIDDEN toggle === */}
+<div className="toggle-row hide-toggle">
+  <label className="toggle-container">
+    <input
+      id="hidden"
+      type="checkbox"
+      checked={formData.hidden}
+      onChange={handleChange}
+    />
+    <span className="toggle-icon">
+      {formData.hidden ? <EyeOff size={18} /> : <Eye size={18} />}
+    </span>
+    <span className="toggle-label">
+      {formData.hidden ? "Hidden from Public" : "Visible to Public"}
+    </span>
+  </label>
+</div>
 
           {/* === SPECS === */}
           {formData.category === "Laptops" && (

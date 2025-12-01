@@ -21,6 +21,7 @@ import {
   ArchiveRestore,
   MessageSquare,
   Store,
+  ShieldCheck
 } from "lucide-react";
 import "../styles/ordersmodal.css";
 import StatusModal from "./StatusModal.jsx";
@@ -30,7 +31,6 @@ import {
   useUnarchiveOrder,
 } from "../../../hooks/useManageOrders.jsx";
 
-// 🟢 Normal delivery steps
 const deliverySteps = [
   { key: "Waiting", label: "Order Received", icon: ClipboardCheck },
   { key: "Packaging", label: "Packaging", icon: Box },
@@ -38,7 +38,6 @@ const deliverySteps = [
   { key: "Delivered", label: "Delivered", icon: Home },
 ];
 
-// 🟢 Pickup steps (simplified)
 const pickupSteps = [
   { key: "Waiting", label: "Order Received", icon: ClipboardCheck },
   { key: "Picked-Up", label: "Picked Up", icon: CheckCircle2 },
@@ -50,7 +49,6 @@ const OrdersModal = ({ opened, onClose, order }) => {
   const archiveOrder = useArchiveOrder();
   const unarchiveOrder = useUnarchiveOrder();
 
-  // 🟢 Decide which steps to use
   const steps = order?.pickup ? pickupSteps : deliverySteps;
 
   const activeIndex = useMemo(() => {
@@ -62,19 +60,18 @@ const OrdersModal = ({ opened, onClose, order }) => {
   if (!order)
     return (
       <Modal
-            opened={opened}
-            onClose={onClose}
-            centered
-            withCloseButton={false}
-            lockScroll={false}
-            size="lg"
-            classNames={{
-              content: "omodal",
-              body: "omodal__body",
-            }}
-            scrollAreaComponent="div"   // ⭐ THIS FIXES SCROLL-JUMP
-          >
-
+        opened={opened}
+        onClose={onClose}
+        centered
+        withCloseButton={false}
+        lockScroll={false}
+        size="lg"
+        classNames={{
+          content: "omodal",
+          body: "omodal__body",
+        }}
+        scrollAreaComponent="div"
+      >
         <div style={{ padding: "2rem", textAlign: "center" }}>
           <p>No order selected</p>
         </div>
@@ -99,7 +96,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
     pickup,
   } = order;
 
-  const customerName = user?.name || shippingInfo?.fullName + " (Guest)";
+  const customerName = shippingInfo?.fullName;
   const customerEmail = user?.email || shippingInfo?.email || "—";
   const isCanceled = status === "Canceled";
   const isRefunded = status === "Refunded";
@@ -138,6 +135,11 @@ const OrdersModal = ({ opened, onClose, order }) => {
           content: "omodal",
           body: "omodal__body",
         }}
+         trapFocus={false}
+        keepMounted
+        lockScroll={false}
+        closeOnClickOutside={false}
+        closeOnEscape={false}
       >
         {/* HEADER */}
         <header className="omodal__header">
@@ -147,6 +149,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
               <Clock size={14} /> Placed on {new Date(createdAt).toLocaleString()}
             </p>
           </div>
+
           <div className="omodal__tools">
             <button className="iconbtn" title="Print">
               <Printer size={16} />
@@ -160,7 +163,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
           </div>
         </header>
 
-        {/* 🟢 TIMELINE */}
+        {/* TIMELINE */}
         <div className={`timeline ${isFinalized ? "dimmed" : ""}`}>
           {steps.map((step, i) => {
             const Icon = step.icon;
@@ -213,8 +216,20 @@ const OrdersModal = ({ opened, onClose, order }) => {
         {/* CUSTOMER */}
         <section className="section">
           <h3>
-            <User size={16} /> Customer Details
-          </h3>
+            <User size={16} /> Customer Details 
+          <span>
+          {user ? (
+            <>
+             Registered <ShieldCheck size={14} color="#22c55e" />
+            </>
+          ) : (
+            <>
+              Not Registered  <XCircle size={14} color="#ef4444" />
+            </>
+          )}
+        </span>
+        </h3>
+
           <div className="details-grid">
             <div>
               <span>Name</span>
@@ -242,6 +257,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
           <h3>
             <MapPin size={16} /> Shipping Information
           </h3>
+
           {pickup ? (
             <div className="field-long">
               <p>
@@ -254,7 +270,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
                 <span>Address</span>
                 <p>{shippingInfo?.address}</p>
               </div>
-              
+
               <div className="details-grid">
                 <div>
                   <span>City</span>
@@ -269,24 +285,46 @@ const OrdersModal = ({ opened, onClose, order }) => {
           )}
         </section>
 
-        {/* ITEMS */}
+        {/* -------------------------------------------------- */}
+        {/* 🔥 UPDATED ITEMS SECTION WITH ELLIPSIS + VIEW LINK */}
+        {/* -------------------------------------------------- */}
+
         <section className="section">
           <h3>
             <Package size={16} /> Ordered Items
           </h3>
+
           <div className="items">
             {items.map((item, i) => (
               <div key={i} className="item">
-                <img src={item.image || "/placeholder.png"} alt={item.name} />
+
                 <div className="i-info">
+
+                  <div className="i-img">
+                   <img src={item.image || "/placeholder.png"} alt={item.name} />
+                  </div>
+
+                  <div className="i-name-sub">
                   <p className="name">{item.name}</p>
                   <p className="sub">
                     Qty: {item.quantity} × {item.price.toLocaleString()} IQD
                   </p>
+                  </div>
                 </div>
+
                 <p className="price">
                   {(item.price * item.quantity).toLocaleString()} IQD
                 </p>
+
+                <a
+                  href={`/product/${item.product}`}
+                  className="view-btn"
+                  title="Open product page"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View
+                </a>
               </div>
             ))}
           </div>
@@ -297,11 +335,13 @@ const OrdersModal = ({ opened, onClose, order }) => {
           <h3>
             <CreditCard size={16} /> Payment & Status
           </h3>
+
           <div className="details-grid">
             <div>
               <span>Method</span>
               <p>{paymentMethod || "Cash on Delivery"}</p>
             </div>
+
             <div>
               <span>Payment</span>
               <p>
@@ -324,6 +364,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
                 )}
               </p>
             </div>
+
             <div>
               <span>Current Status</span>
               <p>{status}</p>
@@ -337,6 +378,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
             <h3>
               <MessageSquare size={16} /> Status History
             </h3>
+
             <div className="notes-list">
               {adminNotes
                 .slice()
@@ -349,10 +391,9 @@ const OrdersModal = ({ opened, onClose, order }) => {
                         {new Date(n.createdAt).toLocaleString()}
                       </span>
                     </div>
+
                     {n.note && <p className="note-text">{n.note}</p>}
-                    <small className="note-meta">
-                      {n.author?.name || "Admin"}
-                    </small>
+                    <small className="note-meta">{n.author?.name || "Admin"}</small>
                   </div>
                 ))}
             </div>
@@ -366,10 +407,12 @@ const OrdersModal = ({ opened, onClose, order }) => {
               <span>Items</span>
               <p>{itemsPrice?.toLocaleString()} IQD</p>
             </div>
+
             <div>
               <span>Shipping</span>
               <p>{shippingPrice?.toLocaleString()} IQD</p>
             </div>
+
             <div className="final">
               <strong>Total</strong>
               <strong>{totalPrice?.toLocaleString()} IQD</strong>
@@ -384,6 +427,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
               <button className="btn success" onClick={handleRestore}>
                 <ArchiveRestore size={15} /> Restore
               </button>
+
               <button className="btn danger" onClick={onClose}>
                 <XCircle size={15} /> Close
               </button>
@@ -393,17 +437,15 @@ const OrdersModal = ({ opened, onClose, order }) => {
               {!isFinalized && (
                 <>
                   <button className="btn success" onClick={handleMarkDelivered}>
-                    <CheckCircle2 size={15} />{" "}
-                    {pickup ? "Mark Picked Up" : "Mark Delivered"}
+                    <CheckCircle2 size={15} /> {pickup ? "Mark Picked Up" : "Mark Delivered"}
                   </button>
-                  <button
-                    className="btn warning"
-                    onClick={() => setStatusModalOpen(true)}
-                  >
+
+                  <button className="btn warning" onClick={() => setStatusModalOpen(true)}>
                     <RotateCcw size={15} /> Change Status
                   </button>
                 </>
               )}
+
               <button className="btn danger" onClick={handleArchive}>
                 <Archive size={15} /> Archive
               </button>

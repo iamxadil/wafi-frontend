@@ -36,16 +36,15 @@ export const useProductsQuery = (params = {}, normalizeProducts) => {
     queryFn: async () => {
       const parsed = {};
 
-      /* ------------------------------------------------------------
-         1️⃣ SORT MAPPING
-      ------------------------------------------------------------ */
+      // ⭐ Ensure dashboard sees hidden products
+      parsed.admin = "true";
+
+      /* 1️⃣ SORT MAPPING */
       if (params.sort) {
         parsed.sort = SORT_MAP[params.sort] || params.sort;
       }
 
-      /* ------------------------------------------------------------
-         2️⃣ MULTI FILTERS (inStock, lowStock)
-      ------------------------------------------------------------ */
+      /* 2️⃣ MULTI FILTERS */
       if (Array.isArray(params.optFilters)) {
         params.optFilters.forEach((label) => {
           const mapped = OPT_FILTER_MAP[label];
@@ -53,9 +52,7 @@ export const useProductsQuery = (params = {}, normalizeProducts) => {
         });
       }
 
-      /* ------------------------------------------------------------
-         3️⃣ PASS OTHER FILTERS
-      ------------------------------------------------------------ */
+      /* 3️⃣ PASS OTHER FILTERS */
       Object.entries(params).forEach(([key, val]) => {
         if (
           val !== "" &&
@@ -67,9 +64,7 @@ export const useProductsQuery = (params = {}, normalizeProducts) => {
         }
       });
 
-      /* ------------------------------------------------------------
-         4️⃣ Build final query
-      ------------------------------------------------------------ */
+      /* Build final query */
       const query = new URLSearchParams(parsed).toString();
 
       const res = await axios.get(`${API_URL}/api/products?${query}`, {
@@ -86,6 +81,8 @@ export const useProductsQuery = (params = {}, normalizeProducts) => {
         limit: data.pagination?.limit ?? params.limit ?? 10,
       };
 
+      console.log("📡 Sending query:", parsed);
+
       return {
         products: normalizeProducts ? normalizeProducts(products) : products,
         pagination,
@@ -97,6 +94,7 @@ export const useProductsQuery = (params = {}, normalizeProducts) => {
     retry: 1,
   });
 };
+
 
 /* ------------------------------------------------------------
    ➕ Add Product

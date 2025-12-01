@@ -527,3 +527,90 @@
   background: var(--accent-clr, #5e63ff);
   transition: width 0.2s ease;
 }
+
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease;
+  user-select: none;
+}
+
+.checkbox-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent, #5e63ff); /* Premium theme accent */
+  cursor: pointer;
+}
+
+.checkbox-row label {
+  font-size: 0.95rem;
+  color: var(--text);
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  font-weight: 500;
+}
+
+/* === Toggle Row Wrapper === */
+.toggle-row {
+  margin: 1px 0;
+}
+
+/* === Actual Toggle Container === */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+  user-select: none;
+}
+
+/* Hover Glow */
+.toggle-container:hover {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Hide default checkbox */
+.toggle-container input[type="checkbox"] {
+  display: none;
+}
+
+/* Icon Styling */
+.toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  transition: color 0.25s ease;
+}
+
+/* Icon highlight when active */
+.toggle-container input:checked + .toggle-icon {
+  color: var(--accent);
+}
+
+/* Label Styling */
+.toggle-label {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+}

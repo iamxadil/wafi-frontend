@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { Package, Edit3, Trash2, MoreHorizontal } from "lucide-react";
 import { toast } from "react-toastify";
-
+import { EyeOff, ShieldCheck, XCircle } from "lucide-react";
 import AdminHeader from "../AdminHeader";
 import ProductsModal from "../modals/ProductsModal";
 
@@ -54,6 +54,8 @@ const OPT_FILTER_MAP = {
   "In Stock": { inStock: "true" },
   "Out of Stock": { inStock: "false" },
   "Low Stock": { lowStock: "true" },
+  "Hidden": { hidden: "true" },
+  "Visible Only": { hidden: "false" },
 };
 
 /* ============================================================
@@ -201,6 +203,18 @@ const Products = () => {
             <Badge color={p.countInStock > 0 ? "green" : "red"} variant="light">
               {p.countInStock > 0 ? "In Stock" : "Out"}
             </Badge>
+
+             {p.hidden && (
+                  <Badge
+                    size="xs"
+                    variant="filled"
+                    color="gray"
+                    leftSection={<EyeOff size={12} />}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    Hidden
+                  </Badge>
+                )}
           </Group>
 
           <div style={{ marginBottom: "1rem", textAlign: "center" }}>
@@ -215,12 +229,24 @@ const Products = () => {
           </div>
 
           <Stack spacing={6}>
-            <Text fw={600}>{p.name}</Text>
-            <Text size="sm" color="dimmed">
+            <Text fw={600} color="white">{p.name}</Text>
+            <Text size="sm" color="var(--accent)">
               {p.brand} • {p.category}
             </Text>
+
+            {!p.approved && (
+                  <Badge
+                    size="xs"
+                    variant="filled"
+                    color="red"
+                    leftSection={<XCircle size={12} />}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    Not Approved
+                  </Badge>
+                )}
             <Divider my="xs" />
-            <Text fw={600}>{p.price.toLocaleString()} IQD</Text>
+            <Text fw={600} color="white">{p.price.toLocaleString()} IQD</Text>
           </Stack>
 
           <Group position="right" mt="sm">
@@ -288,7 +314,36 @@ const Products = () => {
                 />
               </Table.Td>
 
-              <Table.Td>{p.name}</Table.Td>
+             <Table.Td>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span>{p.name}</span>
+
+                {p.hidden && (
+                  <Badge
+                    size="xs"
+                    variant="filled"
+                    color="gray"
+                    leftSection={<EyeOff size={12} />}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    Hidden
+                  </Badge>
+                )}
+
+                {!p.approved && (
+                  <Badge
+                    size="xs"
+                    variant="filled"
+                    color="red"
+                    leftSection={<EyeOff size={12} />}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    Not Approved
+                  </Badge>
+                )}
+              </div>
+            </Table.Td>
+
               <Table.Td>{p.sku || "—"}</Table.Td>
               <Table.Td>{p.countInStock}</Table.Td>
               <Table.Td>{p.category}</Table.Td>
@@ -310,6 +365,7 @@ const Products = () => {
               </Table.Td>
 
               <Table.Td>{p.priority}</Table.Td>
+
 
               <Table.Td>
                 <Menu shadow="md">
@@ -361,7 +417,13 @@ const Products = () => {
         onDelete={() => handleDelete()}
         onFilterChange={handleCategoryFilter}
         onSortChange={handleSort}
-        optFilterOptions={["In Stock", "Out of Stock", "Low Stock"]}
+        optFilterOptions={[
+          "In Stock",
+          "Out of Stock",
+          "Low Stock",
+          "Hidden",
+          "Visible Only"
+        ]}
         onOptFilterChange={handleOptFilters}
         filterOptions={Object.keys(CATEGORY_MAP)}
         isSticky={true}

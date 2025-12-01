@@ -875,7 +875,7 @@ const handleShare = async () => {
                     <span
                       style={{
                         textDecoration: "line-through",
-                        color: "var(--secondary-text-clr)",
+                        color: "--text",
                         marginRight: 8,
                         fontSize: "0.9rem",
                       }}
