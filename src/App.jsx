@@ -54,7 +54,6 @@ const Users = lazy(() => import("../components/pages/Admin/navs/Users.jsx"));
 const Archive = lazy(() => import("../components/pages/Admin/navs/Archive.jsx"));
 const Analytics = lazy(() => import("../components/pages/Admin/navs/Analytics.jsx"));
 const Approvals = lazy(() => import("../components/pages/Admin/navs/Approvals.jsx"));
-const Vitals = lazy(() => import("../components/pages/Admin/navs/Vitals.jsx"));
 import Test from "../sections/Test.jsx";
 
 // Cart & Orders
@@ -221,7 +220,6 @@ export default function App() {
           <Route path="/favorites" element={<Favorites />} />
 
           {/* Test */}
-          <Route path="/test" element={<Test />} />
         
 
           {/* Product / Category */}
@@ -258,7 +256,6 @@ export default function App() {
             <Route path="notifications" element={<Notifications />} />
             <Route path="permissions" element={<PermissionFields />} />
             <Route path="analytics" element={<Analytics />} />
-            <Route path="vitals" element={<Vitals />} />
           </Route>
         </Routes>
       </Suspense>
