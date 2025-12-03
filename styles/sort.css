@@ -40,10 +40,10 @@
   transform: rotate(180deg);
 }
 
-/* === DROPDOWN === */
 .sort-dropdown {
   position: absolute;
-  top: calc(100% + 0.4rem);
+  top: 100%;
+  transform: translate(-50%, -50%);    /* center horizontally */
   background: var(--background);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 10px;
@@ -51,7 +51,9 @@
   overflow: hidden;
   opacity: 0;
   max-height: 0;
-  transition: opacity 0.25s ease, max-height 0.35s ease;
+  transition: opacity 0.25s ease,
+              max-height 0.35s ease,
+              transform 0.2s ease;
   pointer-events: none;
   z-index: 1;
 }
@@ -59,8 +61,10 @@
 .sort-container.open .sort-dropdown {
   opacity: 1;
   max-height: 400px;
+  transform: translateX(-50%) scale(1);
   pointer-events: auto;
 }
+
 
 /* === OPTION === */
 .sort-option {
@@ -133,3 +137,5 @@
  
 
 }
+
+

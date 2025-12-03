@@ -1,275 +1,615 @@
-/* ================================
-   ADMIN LANDING PAGE — REFINED
-   ================================ */
+/* ============================================================
+   🧊 AL-WAFI ADMIN LANDING — LIQUID GLASS WIDGETS
+   ============================================================ */
 
-/* ---------- GLOBAL LAYOUT ---------- */
-.admin-landing.refined {
-  width: 100%;
-  min-height: 100vh;
-  padding: 2rem 2.5rem;
-  background: var(--background);
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
-  overflow-x: hidden;
+   :root {
+  --accent-rgb: 94, 99, 255;
 }
 
-/* ---------- HEADER ---------- */
-.dashboard-header.fancy {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--background);
-  padding: 1.25rem 2rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  border: 1px solid rgba(var(--accent-rgb), 0.15);
-  transition: all 0.3s ease;
 
-}
-
-.dashboard-header.fancy:hover {
-  box-shadow: 0 6px 22px rgba(var(--accent-rgb), 0.15);
-}
-
-/* ---------- SECTION WRAPPER ---------- */
-.dashboard-section {
+#admin-landing {
   position: relative;
-  padding: 2rem;
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--background) 92%, rgba(var(--accent-rgb), 0.05));
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.dashboard-section.alt {
-  background: color-mix(in srgb, var(--background) 90%, rgba(var(--accent-rgb), 0.08));
-}
-
-.dashboard-section:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(var(--accent-rgb), 0.1);
-}
-
-/* ---------- CHART SECTION ---------- */
-.chart-section {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--background) 90%, rgba(var(--accent-rgb), 0.15)),
-    color-mix(in srgb, var(--background) 95%, rgba(124, 77, 255, 0.12))
-  );
-  border: 1px solid rgba(var(--accent-rgb), 0.15);
-  box-shadow: 0 6px 24px rgba(var(--accent-rgb), 0.1);
-}
-
-/* ---------- CARD BASE ---------- */
-.mantine-Card-root {
-  transition: all 0.25s ease;
-  cursor: default;
-}
-
-.mantine-Card-root:hover {
-  box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.12);
-}
-
-/* ---------- GRID ELEMENTS ---------- */
-.mantine-SimpleGrid-root {
-  align-items: stretch;
-}
-
-.mantine-ThemeIcon-root {
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease;
-}
-
-.mantine-ThemeIcon-root:hover {
-  transform: scale(1.05);
-}
-
-/* ---------- TEXTS ---------- */
-.dashboard-section h2,
-.dashboard-section h3,
-.dashboard-section .mantine-Text-root {
+  width: 100%;
+  max-width: 1640px;
+  margin: 0 auto;
+  padding: 2.5rem 1.75rem 3.5rem;
+  box-sizing: border-box;
   color: var(--text);
-  transition: color 0.3s ease;
+  background: transparent;
+  z-index: 0;
+  padding-bottom: 6rem;
 }
 
-/* ---------- BADGES ---------- */
-.mantine-Badge-root {
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  backdrop-filter: blur(8px);
+/* Ambient glow behind everything */
+#admin-landing::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.82;
 }
 
-/* ---------- ANIMATIONS ---------- */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Make it adapt a bit for light theme if you have one */
+[data-theme="light"] #admin-landing::before {
+  opacity: 0.6;
 }
 
-.dashboard-section {
-  animation: fadeUp 0.6s ease forwards;
-}
+/* ------------------------------------------------------------
+   HEADER
+   ------------------------------------------------------------ */
 
-/* ---------- DARK MODE ADAPTATION ---------- */
-[data-theme="dark"] .dashboard-section {
-  background: color-mix(in srgb, var(--background) 85%, rgba(var(--accent-rgb), 0.1));
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-}
-
-[data-theme="dark"] .dashboard-header.fancy {
-  background: color-mix(in srgb, var(--background) 85%, rgba(var(--accent-rgb), 0.1));
-  border: 1px solid rgba(var(--accent-rgb), 0.25);
-  box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.15);
-}
-
-/* ---------- MOBILE OPTIMIZATION ---------- */
-@media (max-width: 768px) {
-  .admin-landing.refined {
-    padding: 1.25rem;
-    gap: 2rem;
-  }
-
-  .dashboard-header.fancy {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  .dashboard-section {
-    padding: 1.25rem;
-  }
-}
-
-/* Polished Header Layout */
-.dashboard-header.polished {
+.al-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 1.5rem 2rem;
-  border-radius: 16px;
-  background: var(--background);
-  border: 1px solid rgba(var(--accent-rgb), 0.15);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-  gap: 1rem;
+  gap: 2rem;
+  margin-bottom: 2.25rem;
 }
 
-.dashboard-header.polished .header-left {
+.al-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.al-title {
+  font-size: 1.7rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.al-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.78;
+}
+
+.al-header-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.al-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.al-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.al-status-ok {
+  background: radial-gradient(circle at 30% 30%, #5eff8a, #13b46a);
+  box-shadow: 0 0 12px rgba(38, 214, 123, 0.8);
+}
+
+.al-status-meta {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+/* ------------------------------------------------------------
+   GENERIC CARD — LIQUID GLASS
+   ------------------------------------------------------------ */
+
+.al-card {
+  position: relative;
+  border-radius: 18px;
+  padding: 1.2rem 1.1rem;
+  overflow: hidden;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.09),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+/* Slight overlay to adapt better to dark backgrounds */
+[data-theme="dark"] .al-card {
+  background: linear-gradient(
+    135deg,
+    rgba(21, 22, 25, 0.9),
+    rgba(13, 14, 15, 0.9)
+  );
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Tiny highlight on top edge */
+.al-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  opacity: 0.25;
+}
+
+/* Hover motion */
+.al-card {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.al-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* Inside card heading row */
+.al-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.al-card-head h2 {
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------
+   CHIP / BADGE
+   ------------------------------------------------------------ */
+
+.al-chip-soft {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ------------------------------------------------------------
+   GRID LAYOUTS
+   ------------------------------------------------------------ */
+
+.al-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.al-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Bottom layout: 2-column */
+.al-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.1rem;
+}
+
+.al-column-large {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.al-column-small {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* ------------------------------------------------------------
+   TOP STAT CARDS
+   ------------------------------------------------------------ */
+
+.al-card-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-color: var(--button-hover-bg);
+}
+
+.al-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.al-card-label {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.al-card-value {
+  font-size: 1.35rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.al-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.al-trend-pill {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}
+
+.al-trend-up {
+  background: rgba(0, 210, 120, 0.14);
+  color: #56ffb0;
+}
+
+.al-trend-down {
+  background: rgba(244, 67, 54, 0.16);
+  color: #ff7a7a;
+}
+
+.al-trend-neutral {
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+}
+
+.al-card-hint {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* Inline pseudo sparkline */
+.al-mini-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  margin-top: 0.35rem;
+}
+
+.al-mini-bar {
+  flex: 1;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.02)
+  );
+  opacity: 0.4;
+}
+
+.al-mini-bar:nth-child(3),
+.al-mini-bar:nth-child(6),
+.al-mini-bar:nth-child(9) {
+  height: 20px;
+}
+
+/* ------------------------------------------------------------
+   QUICK ACTIONS
+   ------------------------------------------------------------ */
+
+.al-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.al-quick-btn {
+  position: relative;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: radial-gradient(
+      circle at 0% 0%,
+      rgba(255, 255, 255, 0.18),
+      transparent 60%
+    ),
+    rgba(9, 10, 11, 0.9);
+  color: inherit;
+  padding: 0.55rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  justify-content: space-between;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+[data-theme="light"] .al-quick-btn {
+  background: radial-gradient(
+      circle at 0% 0%,
+      rgba(255, 255, 255, 0.75),
+      transparent 60%
+    ),
+    rgba(250, 250, 252, 0.9);
+}
+
+.al-quick-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
+}
+
+.al-quick-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #5effff, #3b7cff);
+}
+
+.al-quick-label {
+  flex: 1;
+  text-align: left;
+}
+
+.al-quick-chevron {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* ------------------------------------------------------------
+   TIMELINE / ACTIVITY
+   ------------------------------------------------------------ */
+
+.al-card-activity {
+  padding-bottom: 1.1rem;
+  flex: 1;
+}
+
+.al-link-ghost {
+  border: none;
+  background: transparent;
+  color: inherit;
+  opacity: 0.75;
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.al-link-ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+  opacity: 1;
+}
+
+.al-timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.85rem;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  list-style: none;
+}
+
+.al-timeline-item {
+  display: grid;
+  grid-template-columns: auto 2fr;
+  gap: 0.6rem 0.7rem;
+  padding: 0.4rem 0;
+  padding: 12px;
+ background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-radius: 12px;
+}
+
+
+
+.al-timeline-icon {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  margin-top: 0.4rem;
+  background: radial-gradient(circle at 30% 30%, #ffd36a, #ff7e39);
+  box-shadow: 0 0 10px rgba(255, 184, 94, 0.7);
+}
+
+.al-timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.al-timeline-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.al-timeline-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.al-timeline-time {
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+.al-timeline-detail {
+  margin: 0;
+  font-size: 0.78rem;
+  opacity: 0.78;
+}
+
+/* ------------------------------------------------------------
+   HEALTH WIDGET
+   ------------------------------------------------------------ */
+
+.al-card-health {
+  padding-bottom: 1rem;
+}
+
+.al-health-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.al-health-row {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
 
-.dashboard-header.polished .header-right {
+.al-health-main {
   display: flex;
-  align-items: center;
-}
-
-/* Metric Cards Refinement */
-.metric-card {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  font-size: 0.8rem;
 }
 
-.metric-value {
+.al-health-label {
+  opacity: 0.8;
+}
+
+.al-health-status {
+  opacity: 0.9;
+}
+
+.al-health-meter {
+  position: relative;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.al-health-fill {
+  --health: 90%;
+  width: var(--health);
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38ef7d, #11998e);
+  box-shadow: 0 0 12px rgba(56, 239, 125, 0.7);
+}
+
+/* ------------------------------------------------------------
+   NOTES
+   ------------------------------------------------------------ */
+
+.al-card-notes {
+  padding-bottom: 0.95rem;
+flex: 1;}
+
+.al-notes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.35rem 0 0;
   display: flex;
   flex-direction: column;
+  gap: 0.55rem;
   align-items: flex-start;
-  gap: 0.2rem;
 }
 
-/* Fact Cards Alignment */
-.fact-card {
-  padding: 1.2rem 1.5rem;
+.al-notes-list li {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
-  background: var(--background);
-  border: 1px solid rgba(var(--accent-rgb), 0.15);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.8rem;
 }
 
-.fact-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(var(--accent-rgb), 0.15);
+.al-note-dot {
+  margin-top: 0.25rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #5effff, #a855ff);
 }
 
-/* Chart Section alignment */
-.chart-section {
-  padding-top: 1rem;
-  padding-bottom: 2rem;
+.al-note-text {
+  opacity: 0.85;
 }
 
-/* Responsive Header */
-@media (max-width: 768px) {
-  .dashboard-header.polished {
+/* ------------------------------------------------------------
+   RESPONSIVE
+   ------------------------------------------------------------ */
+
+@media (max-width: 960px) {
+  #admin-landing {
+    padding-inline: 1.2rem;
+  }
+
+  .al-header {
     flex-direction: column;
     align-items: flex-start;
-    text-align: left;
-    padding: 1.25rem;
   }
-  .header-right {
-    margin-top: 1rem;
+
+  .al-header-status {
+    align-items: flex-start;
+  }
+
+  .al-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .al-layout {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-.metric-card.horizontal {
-  padding: 1.4rem 1.5rem;
+@media (max-width: 640px) {
+  #admin-landing {
+    padding-inline: 1rem;
+    padding-top: 1.8rem;
+  }
+
+  .al-grid-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .al-quick-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.al-header-status {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 16px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+@media (max-width: 960px) {
+  .al-header-status {
+    align-items: flex-start;
+  }
 }
 
-.metric-card.horizontal .mantine-ThemeIcon-root {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.al-mini-bar:nth-child(3),
+.al-mini-bar:nth-child(6),
+.al-mini-bar:nth-child(9) {
+  height: 17px;
 }
-
-.metric-card.horizontal .mantine-ThemeIcon-root:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.25);
-}
-
-.metric-card.horizontal .mantine-Text-root {
-  transition: color 0.2s ease;
-}
-
-.metric-card.horizontal:hover .mantine-Text-root {
-  color: var(--accent-clr);
-}
-
-/* Badge alignment */
-.mantine-Badge-root {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-weight: 600;
-}
-
-/* Keep sections visually consistent */
-.dashboard-section {
-  padding: 2rem 1.5rem;
-  border-radius: 18px;
-}
-
-/* Compact header spacing */
-.dashboard-header.polished {
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-
-

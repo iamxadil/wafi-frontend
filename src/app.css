@@ -18,7 +18,7 @@ html, body {
   --text: #000;
   --button-border: 1px solid #000;
   --button-bg: #ffffff;
-  --button-hover-bg: #b32525;
+  --button-hover-bg: #272727;
   --img: url('../assets/svg/wafi-logo-outline.svg');
 }
 
@@ -27,7 +27,7 @@ html, body {
   --text: #fff;
   --button-border: 1px solid #fff;
   --button-bg: #202020;
-  --button-hover-bg: #2f3242;
+  --button-hover-bg: #13211f;
   --img: url('../assets/svg/wafi-logo-outline-white.svg');
   --gradient-start: #2c4493;
   --gradient-end: #462775;

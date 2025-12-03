@@ -1,353 +1,241 @@
 import React from "react";
-import {
-  Card,
-  Group,
-  Text,
-  Loader,
-  Center,
-  SimpleGrid,
-  Stack,
-  ThemeIcon,
-  Badge,
-  Divider,
-} from "@mantine/core";
-import { motion } from "framer-motion";
-import {
-  Users,
-  ShoppingBag,
-  Coins,
-  Star,
-  Truck,
-  BarChart3,
-  Sparkles,
-  Activity,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
-import {
-  LineChart,
-  Line,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { useDashboardStats } from "../../../hooks/useDashboardQuery.jsx";
-import "../styles/adminlandingpage.css";
-import Loading from '../../../main/Loading.jsx';
-
-const MotionCard = motion(Card);
+import {useNavigate} from "react-router-dom";
+import "../styles/adminlandingpage.css"; // make sure this path/name matches your file
 
 const AdminLandingPage = () => {
-  const { data, isLoading, isError } = useDashboardStats();
 
-  if (isLoading)
-    return (
-      <Center h="80vh" w="100vw">
-        <Loading />
-      </Center>
-    );
-
-  if (isError)
-    return (
-      <Center h="80vh">
-        <Text c="red" fw={600}>
-          Failed to load dashboard data
-        </Text>
-      </Center>
-    );
-
-  const {
-    usersCount = 0,
-    ordersCount = 0,
-    totalRevenue = 0,
-    avgOrderValue = 0,
-    growth = {},
-    topSellingBrand = "N/A",
-    revenueLast7Days = [],
-    newUsersThisWeek = 4,
-    newOrdersThisWeek = 7,
-    newRevenueThisWeek = 3,
-  } = data || {};
-
-  const growthData = {
-    users: growth.users ?? 0,
-    orders: growth.orders ?? 0,
-    revenue: growth.revenue ?? 0,
-  };
-
-  const fadeUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
-
-  const metrics = [
+  const navigate = useNavigate();
+  const stats = [
     {
-      label: "Users",
-      value: usersCount.toLocaleString(),
-      delta: `+${newUsersThisWeek} this week`,
-      growth: growthData.users,
-      icon: Users,
-      color: "#7c4dff",
+      label: "Today’s Orders",
+      value: "128",
+      trend: "+12.4%",
+      hint: "vs yesterday",
+      tone: "up",
     },
     {
-      label: "Orders",
-      value: ordersCount.toLocaleString(),
-      delta: `+${newOrdersThisWeek} this week`,
-      growth: growthData.orders,
-      icon: ShoppingBag,
-      color: "#f7971e",
+      label: "Revenue (IQD)",
+      value: "4,320,000",
+      trend: "+8.1%",
+      hint: "last 24 hours",
+      tone: "up",
     },
     {
-      label: "Revenue",
-      value: `${totalRevenue.toLocaleString()} IQD`,
-      delta: `+${newRevenueThisWeek}% growth`,
-      growth: growthData.revenue,
-      icon: Coins,
-      color: "#26a69a",
+      label: "Pending Approvals",
+      value: "7",
+      trend: "Review now",
+      hint: "products & updates",
+      tone: "neutral",
     },
   ];
 
+  const quickActions = [
+    {
+      label: "Add New Product",
+      navigate : ""
+    },
+    {
+      label: "Review Approvals",
+      navigate : "approvals"
+    },
+    {
+      label: "View Orders",
+      navigate : "orders"
+    },
+    {
+      label: "Manage Users",
+      navigate : "users"
+    },
+  ];
+
+  const activities = [
+    {
+      time: "2 min ago",
+      title: "New Order #1200",
+      detail: "3 items · Pickup at store",
+    },
+    {
+      time: "18 min ago",
+      title: "Updated Product",
+      detail: "Lenovo Legion 5 · price adjusted",
+    },
+    {
+      time: "1 hr ago",
+      title: "New User",
+      detail: "adil.tahseen@example.com",
+    },
+    {
+      time: "Yesterday",
+      title: "StockAlert",
+      detail: "Logitech G Pro X · low stock",
+    },
+  ];
+
+  const health = [
+    { label: "API", status: "OK", code: 99 },
+    { label: "Database", status: "OK", code: 98 },
+    { label: "Payments", status: "Stable", code: 96 },
+    { label: "Email", status: "OK", code: 94 },
+  ];
+
   return (
-    <>
-    <section className="admin-landing refined">
-      {/* HEADER */}
-      <motion.header
-        className="dashboard-header polished"
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="header-left">
-          <Group gap="xs" align="center" mb={4}>
-            <Sparkles size={20} color="var(--accent-clr)" />
-            <Text fw={800} size="1.8rem" style={{ color: "var(--text)" }}>
-              Dashboard Overview
-            </Text>
-          </Group>
-          <Text size="sm" style={{ color: "var(--text)", opacity: 0.7 }}>
-            Platform insights and performance at a glance
-          </Text>
+    <div id="admin-landing">
+      <header className="al-header">
+        <div className="al-header-main">
+          <h1 className="al-title">Admin Overview</h1>
+          <p className="al-subtitle">
+            A calm snapshot of AL-WAFI — orders, revenue, and activity at a
+            glance.
+          </p>
         </div>
 
-        <div className="header-right">
-          <Badge
-            size="sm"
-            radius="xl"
-            variant="light"
-            color="violet"
-            style={{
-              background: "var(--accent-clr)",
-              color: "#fff",
-              boxShadow: "0 0 10px rgba(var(--accent-rgb), 0.35)",
-              padding: "0.5rem 1rem",
-            }}
-          >
-            {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-          </Badge>
+        <div className="al-header-status">
+          <span className="al-status-pill">
+            <span className="al-status-dot al-status-ok" />
+            System stable
+          </span>
+          <span className="al-status-meta">Last sync: just now</span>
         </div>
-      </motion.header>
+      </header>
 
-      {/* MAIN METRIC CARDS */}
-      <motion.div
-        className="dashboard-section"
-        variants={fadeUp}
-        initial="hidden"
-        animate="visible"
-      >
-        <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
-          {metrics.map(({ label, value, delta, growth, icon: Icon, color }, i) => {
-            const isPositive = growth >= 0;
-            return (
-              <MotionCard
-                key={label}
-                radius="lg"
-                shadow="md"
-                withBorder
-                className="metric-card horizontal"
-                style={{
-                  border: `1px solid ${color}40`,
-                  background: "var(--background)",
-                }}
-                whileHover={{ y: -3 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Group align="center" justify="space-between" wrap="nowrap">
-                  {/* ICON */}
-                  <ThemeIcon
-                    radius="lg"
-                    size={42}
-                    style={{
-                      background: color,
-                      color: "#fff",
-                      boxShadow: `0 0 10px ${color}55`,
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Icon size={20} />
-                  </ThemeIcon>
+      {/* Top stats row */}
+      <section className="al-grid al-grid-3">
+        {stats.map((item) => (
+          <article key={item.label} className="al-card al-card-stat">
+            <div className="al-card-body">
+              <div className="al-card-label">{item.label}</div>
+              <div className="al-card-value">{item.value}</div>
 
-                  {/* INFO */}
-                  <Stack gap={2} style={{ flex: 1 }}>
-                    <Group align="center" gap={6}>
-                      <Text fw={700} size="lg" style={{ color: "var(--text)" }}>
-                        {value}
-                      </Text>
-                     <Badge
-                        size="sm"
-                        radius="sm"
-                        className="metric-badge"
-                        style={{
-                          background: isPositive
-                            ? "rgba(46, 204, 113, 0.12)"
-                            : "rgba(231, 76, 60, 0.12)",
-                          color: isPositive ? "#2ecc71" : "#e74c3c",
-                        }}
-                      >
-                        {isPositive ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                        {Math.abs(growth)}%
-                      </Badge>
+              <div className="al-card-meta">
+                <span
+                  className={`al-trend-pill ${
+                    item.tone === "up"
+                      ? "al-trend-up"
+                      : item.tone === "down"
+                      ? "al-trend-down"
+                      : "al-trend-neutral"
+                  }`}
+                >
+                  {item.trend}
+                </span>
+                <span className="al-card-hint">{item.hint}</span>
+              </div>
+            </div>
 
-                    </Group>
-                    <Group align="center" gap={6}>
-                      <Text size="sm" style={{ color: "var(--text)", opacity: 0.75 }}>
-                        {label}
-                      </Text>
-                      <Text size="xs" style={{ color: "var(--accent-clr)", fontWeight: 500, marginTop: "2px" }}>
-                        {delta}
-                      </Text>
-                    </Group>
-                  </Stack>
-                </Group>
-              </MotionCard>
-            );
-          })}
-        </SimpleGrid>
-      </motion.div>
+            {/* Soft little inline “sparkline” bars */}
+            <div className="al-mini-bars">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <span key={i} className="al-mini-bar" />
+              ))}
+            </div>
+          </article>
+        ))}
+      </section>
 
-      {/* HIGHLIGHTS SECTION */}
-      <motion.div
-        className="dashboard-section alt"
-        variants={fadeUp}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: 0.1 }}
-      >
-        <Divider
-          my="xl"
-          label="Highlights"
-          labelPosition="center"
-          styles={{ label: { color: "var(--text)", fontWeight: 600 } }}
-        />
+      {/* Bottom layout */}
+      <section className="al-layout">
+        <div className="al-column-large">
+          {/* Quick actions */}
+          <article className="al-card al-card-quick">
+            <div className="al-card-head">
+              <h2>Quick actions</h2>
+              <span className="al-chip-soft">Most used</span>
+            </div>
 
-        <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
-          <Card radius="md" shadow="md" withBorder className="fact-card">
-            <Group>
-              <ThemeIcon color="yellow" radius="xl" size="lg">
-                <Star size={18} />
-              </ThemeIcon>
-              <Stack gap={2}>
-                <Text size="sm" fw={600} style={{ color: "var(--text)", opacity: 0.8 }}>
-                  Top Brand
-                </Text>
-                <Text fw={700} style={{ color: "var(--text)" }}>
-                  {topSellingBrand}
-                </Text>
-              </Stack>
-            </Group>
-          </Card>
+            <div className="al-quick-grid">
+              {quickActions.map((item) => (
+                <button key={item.label} className="al-quick-btn" type="button" onClick={() => navigate(`${item.navigate}`)}>
+                  <span className="al-quick-dot" />
+                  <span className="al-quick-label">{item.label}</span>
+                  <span className="al-quick-chevron">↗</span>
+                </button>
+              ))}
+            </div>
+          </article>
 
-          <Card radius="md" shadow="md" withBorder className="fact-card">
-            <Group>
-              <ThemeIcon color="teal" radius="xl" size="lg">
-                <Activity size={18} />
-              </ThemeIcon>
-              <Stack gap={2}>
-                <Text size="sm" fw={600} style={{ color: "var(--text)", opacity: 0.8 }}>
-                  Avg Order Value
-                </Text>
-                <Text fw={700} style={{ color: "var(--text)" }}>
-                  {avgOrderValue.toLocaleString()} IQD
-                </Text>
-              </Stack>
-            </Group>
-          </Card>
+          {/* Recent activity */}
+          <article className="al-card al-card-activity">
+            <div className="al-card-head">
+              <h2>Recent activity</h2>
+              <button className="al-link-ghost" type="button">
+                View all
+              </button>
+            </div>
 
-          <Card radius="md" shadow="md" withBorder className="fact-card">
-            <Group>
-              <ThemeIcon color="violet" radius="xl" size="lg">
-                <Truck size={18} />
-              </ThemeIcon>
-              <Stack gap={2}>
-                <Text size="sm" fw={600} style={{ color: "var(--text)", opacity: 0.8 }}>
-                  Active Deliveries
-                </Text>
-                <Text fw={700} style={{ color: "var(--text)" }}>
-                  42
-                </Text>
-              </Stack>
-            </Group>
-          </Card>
-        </SimpleGrid>
-      </motion.div>
+            <ul className="al-timeline">
+              {activities.map((a, idx) => (
+                <li key={idx} className="al-timeline-item">
+                  <div className="al-timeline-icon" />
+                  <div className="al-timeline-content">
+                    <div className="al-timeline-main">
+                      <span className="al-timeline-title">{a.title}</span>
+                      <span className="al-timeline-time">{a.time}</span>
+                    </div>
+                    <p className="al-timeline-detail">{a.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </article>
+        </div>
 
-      {/* REVENUE CHART */}
-      <motion.div
-        className="dashboard-section chart-section"
-        variants={fadeUp}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: 0.2 }}
-      >
-        <Divider
-          my="xl"
-          label="Revenue Trend"
-          labelPosition="center"
-          styles={{ label: { color: "var(--text)", fontWeight: 600 } }}
-        />
+        {/* Right side mini widgets */}
+        <div className="al-column-small">
+          {/* Health widget */}
+          <article className="al-card al-card-health">
+            <div className="al-card-head">
+              <h2>System health</h2>
+              <span className="al-chip-soft">Live</span>
+            </div>
 
-        <Card
-          radius="lg"
-          withBorder
-          shadow="xl"
-          p="lg"
-          style={{
-            background: "var(--background)",
-            border: "1px solid rgba(var(--accent-rgb),0.2)",
-          }}
-        >
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={revenueLast7Days}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" />
-              <XAxis dataKey="day" stroke="var(--text)" tick={{ fontSize: 12 }} />
-              <YAxis stroke="var(--text)" tick={{ fontSize: 12 }} />
-              <Tooltip
-                contentStyle={{
-                  background: "var(--background)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  color: "var(--text)",
-                }}
-                formatter={(v) => `${v.toLocaleString()} IQD`}
-              />
-              <Line
-                type="monotone"
-                dataKey="total"
-                stroke="var(--accent-clr)"
-                strokeWidth={3}
-                dot={{ r: 3 }}
-                activeDot={{ r: 5 }}
-                isAnimationActive
-                animationBegin={200}
-                animationDuration={1300}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </Card>
-      </motion.div>
-      <div id="spacer" style={{width: "100%", height: "70px"}}></div>
-    </section>
-    </>
+            <div className="al-health-grid">
+              {health.map((h) => (
+                <div key={h.label} className="al-health-row">
+                  <div className="al-health-main">
+                    <span className="al-health-label">{h.label}</span>
+                    <span className="al-health-status">{h.status}</span>
+                  </div>
+                  <div className="al-health-meter">
+                    <div
+                      className="al-health-fill"
+                      style={{ "--health": `${h.code}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          {/* Tiny notes / reminders */}
+          <article className="al-card al-card-notes">
+            <div className="al-card-head">
+              <h2>Admin notes</h2>
+            </div>
+
+            <ul className="al-notes-list">
+              <li>
+                <span className="al-note-dot" />
+                <span className="al-note-text">
+                  Review Black Friday offers and mark top products.
+                </span>
+              </li>
+              <li>
+                <span className="al-note-dot" />
+                <span className="al-note-text">
+                  Check stock levels on gaming mice & keyboards.
+                </span>
+              </li>
+              <li>
+                <span className="al-note-dot" />
+                <span className="al-note-text">
+                  Verify new laptop specs and images before publishing.
+                </span>
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </div>
   );
 };
 

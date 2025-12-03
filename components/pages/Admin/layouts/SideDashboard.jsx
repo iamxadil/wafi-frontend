@@ -46,7 +46,7 @@ const SideDashboard = () => {
        
 
         {/* Dashboard */}
-        {(user?.role === "admin" || user?.permissions?.dashboard) && (
+       
           <li className="menu">
             <span className="menu-title">
               <Link to="/admin-dashboard">
@@ -54,7 +54,7 @@ const SideDashboard = () => {
               </Link>
             </span>
           </li>
-        )}
+     
 
       
 
@@ -143,14 +143,6 @@ const SideDashboard = () => {
             </span>
           </li>
         )}
-
-         <li className="menu">
-          <span className="menu-title">
-            <Link to="vitals">
-              <Activity size={16}/> <span className='head-line'>Vitals</span>
-            </Link>
-          </span>
-        </li>
 
       </ul>
     </aside>

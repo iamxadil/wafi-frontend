@@ -76,12 +76,12 @@ const Sort = ({
         className="sort-toggle"
         onClick={() => setIsOpen((p) => !p)}
         title={currentOption}
-        style={{ flexDirection: t.rowReverse }}
+        style={{ justifyContent: "center",  }}
       >
         <IconComponent size={18} />
 
         <span className="sort-title">
-          {t(title, "ترتيب حسب")}
+          {title}
         </span>
 
         <Icons.ChevronDown
@@ -101,10 +101,10 @@ const Sort = ({
       <div
         className="sort-dropdown"
         style={{
-          [t.positionAlign]: "0",
           transform: isOpen ? "scale(1)" : "scale(0.95)",
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? "auto" : "none",
+          [t.positionAlign]: "-120%",
         }}
       >
         {sortOptions.map((opt) => (

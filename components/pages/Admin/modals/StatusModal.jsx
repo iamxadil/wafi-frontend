@@ -50,19 +50,30 @@ const StatusModal = ({ opened, onClose, order }) => {
   }
 
   const shouldDisable = (target) => {
-    if (isLocked) return true;
+  if (isLocked) return true;
 
-    // pickup case
-    if (isPickup) {
-      if (!["Waiting", "Picked-Up"].includes(target)) return true;
-      if (order.status === "Picked-Up" || target === order.status) return true;
-      return false;
-    }
+  // === PICKUP ORDERS ============================
+  if (isPickup) {
+    // Allowed transitions:
+    // Waiting → Picked-Up
+    // Waiting → Canceled
+    const allowed = ["Waiting", "Picked-Up", "Canceled"];
 
-    const targetIndex = statusOrder.indexOf(target);
-    if (targetIndex !== -1 && targetIndex <= currentIndex) return true;
+    // Target not allowed?
+    if (!allowed.includes(target)) return true;
+
+    // Can't re-select same status
+    if (target === order.status) return true;
+
     return false;
-  };
+  }
+
+  // === NORMAL ORDERS ============================
+  const targetIndex = statusOrder.indexOf(target);
+  if (targetIndex !== -1 && targetIndex <= currentIndex) return true;
+  return false;
+};
+
 
   const handleSave = async () => {
     if (!newStatus || newStatus === order.status) {
