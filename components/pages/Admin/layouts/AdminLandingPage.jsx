@@ -1,92 +1,167 @@
-import React from "react";
-import {useNavigate} from "react-router-dom";
-import "../styles/adminlandingpage.css"; // make sure this path/name matches your file
+// components/pages/Admin/layouts/AdminLandingPage.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/adminlandingpage.css";
+
+import useQuickStats from "../../../query/useQuickStats.jsx";
+import {
+  useNotesQuery,
+  useAddNote,
+  useUpdateNote,
+  useDeleteNote,
+} from "../../../query/useNotes.jsx";
+import useAuthStore from "../../../stores/useAuthStore.jsx";
+import ProductsModal from "../modals/ProductsModal.jsx";
+
+import {
+  ShoppingBag,
+  Package,
+  UserPlus,
+  AlertTriangle,
+  Edit,
+  Save,
+  Trash2,
+  Plus,
+} from "lucide-react";
+
+/* -----------------------------------------------------------
+   Time-ago formatter
+----------------------------------------------------------- */
+const timeAgo = (date) => {
+  if (!date) return "Unknown";
+  const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+  const intervals = [
+    { label: "year", seconds: 31536000 },
+    { label: "month", seconds: 2592000 },
+    { label: "week", seconds: 604800 },
+    { label: "day", seconds: 86400 },
+    { label: "hour", seconds: 3600 },
+    { label: "minute", seconds: 60 },
+  ];
+  for (let i of intervals) {
+    const count = Math.floor(seconds / i.seconds);
+    if (count >= 1) return `${count} ${i.label}${count > 1 ? "s" : ""} ago`;
+  }
+  return "Just now";
+};
 
 const AdminLandingPage = () => {
-
   const navigate = useNavigate();
-  const stats = [
-    {
-      label: "Today’s Orders",
-      value: "128",
-      trend: "+12.4%",
-      hint: "vs yesterday",
-      tone: "up",
-    },
-    {
-      label: "Revenue (IQD)",
-      value: "4,320,000",
-      trend: "+8.1%",
-      hint: "last 24 hours",
-      tone: "up",
-    },
-    {
-      label: "Pending Approvals",
-      value: "7",
-      trend: "Review now",
-      hint: "products & updates",
-      tone: "neutral",
-    },
-  ];
+  const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.role === "admin";
 
+  /* -----------------------------------------------------------
+     QUERIES
+  ----------------------------------------------------------- */
+  const {
+    data: quick,
+    isLoading,
+    error,
+  } = useQuickStats();
+
+  const {
+    data: notesData,
+    isLoading: notesLoading,
+  } = useNotesQuery();
+
+  const addNote = useAddNote();
+  const updateNote = useUpdateNote();
+  const deleteNote = useDeleteNote();
+
+  /* -----------------------------------------------------------
+     NOTE EDITING STATE
+  ----------------------------------------------------------- */
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [editingValue, setEditingValue] = useState("");
+
+  /* -----------------------------------------------------------
+     PRODUCT MODAL STATE
+  ----------------------------------------------------------- */
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+
+  if (isLoading) return <div id="admin-landing">Loading admin overview…</div>;
+  if (error) return <div id="admin-landing">Failed to load stats.</div>;
+
+  const { stats, activities, health, lastSync } = quick;
+
+  const maxSalesValue =
+    stats.salesTrend && stats.salesTrend.length > 0
+      ? Math.max(...stats.salesTrend.map((s) => s.value))
+      : 1;
+
+  const salesTrendPercent = stats.salesTrendPercent ?? 0;
+  const trendTone = salesTrendPercent >= 0 ? "up" : "down";
+  const trendLabel = `${salesTrendPercent >= 0 ? "+" : ""}${salesTrendPercent.toFixed(
+    1
+  )}%`;
+
+  /* -----------------------------------------------------------
+     QUICK ACTIONS
+  ----------------------------------------------------------- */
   const quickActions = [
     {
       label: "Add New Product",
-      navigate : ""
+      onClick: () => setIsProductModalOpen(true),
     },
     {
       label: "Review Approvals",
-      navigate : "approvals"
+      onClick: () => navigate("approvals"),
     },
     {
       label: "View Orders",
-      navigate : "orders"
+      onClick: () => navigate("orders"),
     },
     {
       label: "Manage Users",
-      navigate : "users"
+      onClick: () => navigate("users"),
     },
   ];
 
-  const activities = [
-    {
-      time: "2 min ago",
-      title: "New Order #1200",
-      detail: "3 items · Pickup at store",
-    },
-    {
-      time: "18 min ago",
-      title: "Updated Product",
-      detail: "Lenovo Legion 5 · price adjusted",
-    },
-    {
-      time: "1 hr ago",
-      title: "New User",
-      detail: "adil.tahseen@example.com",
-    },
-    {
-      time: "Yesterday",
-      title: "StockAlert",
-      detail: "Logitech G Pro X · low stock",
-    },
-  ];
+  /* -----------------------------------------------------------
+     HELPERS
+  ----------------------------------------------------------- */
+  const getTypeIcon = (type) => {
+    switch (type) {
+      case "order":
+        return <ShoppingBag size={18} />;
+      case "user":
+        return <UserPlus size={18} />;
+      case "product":
+        return <Package size={18} />;
+      case "stock":
+        return <AlertTriangle size={18} />;
+      default:
+        return null;
+    }
+  };
 
-  const health = [
-    { label: "API", status: "OK", code: 99 },
-    { label: "Database", status: "OK", code: 98 },
-    { label: "Payments", status: "Stable", code: 96 },
-    { label: "Email", status: "OK", code: 94 },
-  ];
+  const getStatClass = (type) => {
+    switch (type) {
+      case "order":
+        return "al-pill-order";
+      case "user":
+        return "al-pill-user";
+      case "product":
+        return "al-pill-product";
+      case "stock":
+        return "al-pill-stock";
+      default:
+        return "";
+    }
+  };
 
+  const notes = notesData || [];
+
+  /* -----------------------------------------------------------
+     RENDER
+  ----------------------------------------------------------- */
   return (
     <div id="admin-landing">
+      {/* HEADER */}
       <header className="al-header">
         <div className="al-header-main">
           <h1 className="al-title">Admin Overview</h1>
-          <p className="al-subtitle">
-            A calm snapshot of AL-WAFI — orders, revenue, and activity at a
-            glance.
-          </p>
+          <p className="al-subtitle">Sales, Activity & System Status</p>
         </div>
 
         <div className="al-header-status">
@@ -94,48 +169,84 @@ const AdminLandingPage = () => {
             <span className="al-status-dot al-status-ok" />
             System stable
           </span>
-          <span className="al-status-meta">Last sync: just now</span>
+          <span className="al-status-meta">
+            Last sync: {new Date(lastSync).toLocaleTimeString()}
+          </span>
         </div>
       </header>
 
-      {/* Top stats row */}
+      {/* TOP STATS */}
       <section className="al-grid al-grid-3">
-        {stats.map((item) => (
-          <article key={item.label} className="al-card al-card-stat">
-            <div className="al-card-body">
-              <div className="al-card-label">{item.label}</div>
-              <div className="al-card-value">{item.value}</div>
-
-              <div className="al-card-meta">
-                <span
-                  className={`al-trend-pill ${
-                    item.tone === "up"
-                      ? "al-trend-up"
-                      : item.tone === "down"
-                      ? "al-trend-down"
-                      : "al-trend-neutral"
-                  }`}
-                >
-                  {item.trend}
-                </span>
-                <span className="al-card-hint">{item.hint}</span>
-              </div>
+        {/* SALES TODAY */}
+        <article className="al-card al-card-stat">
+          <div className="al-card-body">
+            <div className="al-card-label">Sales Today</div>
+            <div className="al-card-value">
+              {stats.salesToday.toLocaleString()} IQD
             </div>
 
-            {/* Soft little inline “sparkline” bars */}
-            <div className="al-mini-bars">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <span key={i} className="al-mini-bar" />
-              ))}
+            <div className="al-card-meta">
+              <span
+                className={`al-trend-pill ${
+                  trendTone === "up" ? "al-trend-up" : "al-trend-down"
+                }`}
+              >
+                {trendLabel}
+              </span>
+              <span className="al-card-hint">vs yesterday</span>
             </div>
-          </article>
-        ))}
+          </div>
+
+          {/* Sparkline — interactive bars */}
+          <div className="al-mini-bars">
+            {stats.salesTrend?.map((d, i) => (
+              <span
+                key={i}
+                className="al-mini-bar"
+                title={`${d.value.toLocaleString()} IQD on ${d.day}`}
+                style={{
+                  height: `${Math.max(
+                    15,
+                    (d.value / maxSalesValue) * 100
+                  )}%`,
+                }}
+              />
+            ))}
+          </div>
+        </article>
+
+        {/* PENDING APPROVALS */}
+        <article className="al-card al-card-stat">
+          <div className="al-card-body">
+            <div className="al-card-label">Pending Approvals</div>
+            <div className="al-card-value">{stats.pendingApprovals}</div>
+            <div className="al-card-meta">
+              <span className="al-card-hint">
+                Products waiting for review / publish
+              </span>
+            </div>
+          </div>
+        </article>
+
+        {/* YESTERDAY SALES */}
+        <article className="al-card al-card-stat">
+          <div className="al-card-body">
+            <div className="al-card-label">Sales Yesterday</div>
+            <div className="al-card-value">
+              {stats.salesYesterday.toLocaleString()} IQD
+            </div>
+            <div className="al-card-meta">
+              <span className="al-card-hint">Reference baseline</span>
+            </div>
+          </div>
+        </article>
       </section>
 
-      {/* Bottom layout */}
+      {/* MAIN */}
       <section className="al-layout">
+        {/* LEFT COLUMN */}
         <div className="al-column-large">
-          {/* Quick actions */}
+          {/* QUICK ACTIONS */}
           <article className="al-card al-card-quick">
             <div className="al-card-head">
               <h2>Quick actions</h2>
@@ -143,8 +254,13 @@ const AdminLandingPage = () => {
             </div>
 
             <div className="al-quick-grid">
-              {quickActions.map((item) => (
-                <button key={item.label} className="al-quick-btn" type="button" onClick={() => navigate(`${item.navigate}`)}>
+              {quickActions.map((item, idx) => (
+                <button
+                  key={idx}
+                  className="al-quick-btn"
+                  type="button"
+                  onClick={item.onClick}
+                >
                   <span className="al-quick-dot" />
                   <span className="al-quick-label">{item.label}</span>
                   <span className="al-quick-chevron">↗</span>
@@ -153,25 +269,48 @@ const AdminLandingPage = () => {
             </div>
           </article>
 
-          {/* Recent activity */}
+          {/* RECENT ACTIVITY */}
           <article className="al-card al-card-activity">
             <div className="al-card-head">
-              <h2>Recent activity</h2>
-              <button className="al-link-ghost" type="button">
-                View all
-              </button>
+              <h2>Recent Activity</h2>
             </div>
 
             <ul className="al-timeline">
               {activities.map((a, idx) => (
-                <li key={idx} className="al-timeline-item">
-                  <div className="al-timeline-icon" />
+                <li
+                  key={idx}
+                  className="al-timeline-item al-activity-animate-v4"
+                  style={{ animationDelay: `${idx * 60}ms` }}
+                >
+                  <div className="al-timeline-icon-v4">
+                    {getTypeIcon(a.type)}
+                  </div>
+
                   <div className="al-timeline-content">
                     <div className="al-timeline-main">
                       <span className="al-timeline-title">{a.title}</span>
-                      <span className="al-timeline-time">{a.time}</span>
+                      <span className="al-timeline-time">
+                        {timeAgo(a.time)}
+                      </span>
                     </div>
+
                     <p className="al-timeline-detail">{a.detail}</p>
+
+                    {/* Extra info from backend (user name / category, etc.) */}
+                    {a.name && (
+                      <div className="al-timeline-sub">User: {a.name}</div>
+                    )}
+                    {a.category && (
+                      <div className="al-timeline-sub">
+                        Category: {a.category}
+                      </div>
+                    )}
+
+                    <span
+                      className={`al-timeline-stat-v4 ${getStatClass(a.type)}`}
+                    >
+                      {a.stat}
+                    </span>
                   </div>
                 </li>
               ))}
@@ -179,62 +318,146 @@ const AdminLandingPage = () => {
           </article>
         </div>
 
-        {/* Right side mini widgets */}
+        {/* RIGHT COLUMN */}
         <div className="al-column-small">
-          {/* Health widget */}
+          {/* SYSTEM HEALTH */}
           <article className="al-card al-card-health">
             <div className="al-card-head">
-              <h2>System health</h2>
+              <h2>System Health</h2>
               <span className="al-chip-soft">Live</span>
             </div>
 
             <div className="al-health-grid">
-              {health.map((h) => (
-                <div key={h.label} className="al-health-row">
-                  <div className="al-health-main">
-                    <span className="al-health-label">{h.label}</span>
-                    <span className="al-health-status">{h.status}</span>
-                  </div>
-                  <div className="al-health-meter">
+              {health.map((h, idx) => {
+                const statusClass =
+                  h.code >= 90
+                    ? "al-health-good"
+                    : h.code >= 70
+                    ? "al-health-warn"
+                    : "al-health-bad";
+
+                return (
+                  <div key={idx} className="al-health-row">
+                    <div className="al-health-main">
+                      <span className="al-health-label">{h.label}</span>
+                      <span
+                        className={`al-health-status ${statusClass}`}
+                        title={h.details || ""}
+                      >
+                        {h.status}
+                      </span>
+                    </div>
+
                     <div
-                      className="al-health-fill"
-                      style={{ "--health": `${h.code}%` }}
-                    />
+                      className="al-health-meter"
+                      title={
+                        h.details
+                          ? h.details
+                          : `${h.label} health: ${h.code.toFixed?.(0) ?? h.code
+                            }`
+                      }
+                    >
+                      <div
+                        className="al-health-fill"
+                        style={{ "--health": `${h.code}%` }}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </article>
 
-          {/* Tiny notes / reminders */}
+          {/* ADMIN NOTES */}
           <article className="al-card al-card-notes">
             <div className="al-card-head">
-              <h2>Admin notes</h2>
+              <h2>Admin Notes</h2>
             </div>
 
             <ul className="al-notes-list">
-              <li>
-                <span className="al-note-dot" />
-                <span className="al-note-text">
-                  Review Black Friday offers and mark top products.
-                </span>
-              </li>
-              <li>
-                <span className="al-note-dot" />
-                <span className="al-note-text">
-                  Check stock levels on gaming mice & keyboards.
-                </span>
-              </li>
-              <li>
-                <span className="al-note-dot" />
-                <span className="al-note-text">
-                  Verify new laptop specs and images before publishing.
-                </span>
-              </li>
+              {notesLoading ? (
+                <p>Loading notes…</p>
+              ) : notes.length === 0 ? (
+                <p className="al-empty-notes">No notes yet.</p>
+              ) : (
+                notes.map((note) => (
+                  <li key={note._id}>
+                    <span className="al-note-dot" />
+
+                    {editingNoteId === note._id ? (
+                      <input
+                        className="al-note-input"
+                        value={editingValue}
+                        onChange={(e) => setEditingValue(e.target.value)}
+                      />
+                    ) : (
+                      <span className="al-note-text">{note.text}</span>
+                    )}
+
+                    {isAdmin && (
+                      <>
+                        <button
+                          type="button"
+                          className="al-note-edit-btn"
+                          onClick={() => {
+                            if (editingNoteId === note._id) {
+                              if (editingValue.trim()) {
+                                updateNote.mutate({
+                                  id: note._id,
+                                  text: editingValue.trim(),
+                                });
+                              }
+                              setEditingNoteId(null);
+                            } else {
+                              setEditingValue(note.text);
+                              setEditingNoteId(note._id);
+                            }
+                          }}
+                        >
+                          {editingNoteId === note._id ? (
+                            <Save size={16} />
+                          ) : (
+                            <Edit size={16} />
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="al-note-delete-btn"
+                          onClick={() => deleteNote.mutate(note._id)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </>
+                    )}
+                  </li>
+                ))
+              )}
+
+              {isAdmin && (
+                <button
+                  type="button"
+                  className="al-add-note-btn"
+                  onClick={() => addNote.mutate("New note")}
+                >
+                  <Plus size={14} />
+                  <span> Add note</span>
+                </button>
+              )}
             </ul>
           </article>
         </div>
       </section>
+
+      {/* ADD / EDIT PRODUCT MODAL */}
+      {isProductModalOpen && (
+        <ProductsModal
+          setIsModalOpen={setIsProductModalOpen}
+          isEditing={false}
+          editData={null}
+          allProducts={[]} // if you have a products query, pass real list here
+        />
+      )}
     </div>
   );
 };

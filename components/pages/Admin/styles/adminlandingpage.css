@@ -1,23 +1,25 @@
 /* ============================================================
-   🧊 AL-WAFI ADMIN LANDING — LIQUID GLASS WIDGETS
+   🧊 AL-WAFI ADMIN LANDING — LIQUID GLASS WIDGETS V8
    ============================================================ */
 
-   :root {
+:root {
   --accent-rgb: 94, 99, 255;
 }
 
+/* ------------------------------------------------------------
+   ROOT WRAPPER
+   ------------------------------------------------------------ */
 
 #admin-landing {
   position: relative;
   width: 100%;
   max-width: 1640px;
   margin: 0 auto;
-  padding: 2.5rem 1.75rem 3.5rem;
+  padding: 2.5rem 1.75rem 6rem;
   box-sizing: border-box;
   color: var(--text);
   background: transparent;
   z-index: 0;
-  padding-bottom: 6rem;
 }
 
 /* Ambient glow behind everything */
@@ -27,6 +29,22 @@
   inset: 0;
   pointer-events: none;
   opacity: 0.82;
+  background: radial-gradient(
+      800px circle at 20% 10%,
+      rgba(94, 99, 255, 0.15),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px circle at 80% 70%,
+      rgba(0, 220, 130, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      600px circle at 50% 100%,
+      rgba(255, 255, 255, 0.08),
+      transparent 70%
+    );
+  filter: blur(12px);
 }
 
 /* Make it adapt a bit for light theme if you have one */
@@ -68,7 +86,7 @@
 .al-header-status {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   gap: 0.25rem;
 }
 
@@ -79,7 +97,6 @@
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
   font-size: 0.8rem;
-
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(14px);
@@ -103,30 +120,43 @@
   margin-left: 4px;
 }
 
+@media (max-width: 960px) {
+  .al-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .al-header-status {
+    align-items: flex-start;
+  }
+
+  .al-timeline {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
 /* ------------------------------------------------------------
-   GENERIC CARD — LIQUID GLASS
+   GENERIC CARD — LIQUID GLASS V8
    ------------------------------------------------------------ */
 
 .al-card {
   position: relative;
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 1.2rem 1.1rem;
   overflow: hidden;
 
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.09),
-    rgba(255, 255, 255, 0.02)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
-/* Slight overlay to adapt better to dark backgrounds */
+/* Dark theme specialization */
 [data-theme="dark"] .al-card {
   background: linear-gradient(
     135deg,
@@ -134,6 +164,14 @@
     rgba(13, 14, 15, 0.9)
   );
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Light theme specialization */
+[data-theme="light"] .al-card {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(180, 180, 200, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 /* Tiny highlight on top edge */
@@ -151,20 +189,8 @@
   opacity: 0.25;
 }
 
-/* Hover motion */
-.al-card {
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease;
-}
-
-.al-card:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.04);
+.al-card:hover::after {
+  opacity: 1;
 }
 
 /* Inside card heading row */
@@ -212,7 +238,7 @@
 /* Bottom layout: 2-column */
 .al-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.5fr);
   gap: 1.1rem;
 }
 
@@ -226,6 +252,36 @@
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 960px) {
+  #admin-landing {
+    padding-inline: 1.2rem;
+  }
+
+  .al-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .al-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  #admin-landing {
+    padding-inline: 1rem;
+    padding-top: 1.8rem;
+  }
+
+  .al-grid-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .al-quick-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* ------------------------------------------------------------
@@ -289,17 +345,18 @@
   opacity: 0.7;
 }
 
-/* Inline pseudo sparkline */
+/* Inline sparkline container */
 .al-mini-bars {
   display: flex;
   align-items: flex-end;
   gap: 3px;
   margin-top: 0.35rem;
+  height: 26px;
 }
 
 .al-mini-bar {
   flex: 1;
-  height: 14px;
+  min-height: 4px;
   border-radius: 999px;
   background: linear-gradient(
     180deg,
@@ -307,12 +364,17 @@
     rgba(255, 255, 255, 0.02)
   );
   opacity: 0.4;
+  transition: height 0.25s ease-out, opacity 0.2s ease;
+}
+
+.al-mini-bar:hover {
+  opacity: 0.9;
 }
 
 .al-mini-bar:nth-child(3),
 .al-mini-bar:nth-child(6),
 .al-mini-bar:nth-child(9) {
-  height: 20px;
+  height: 17px;
 }
 
 /* ------------------------------------------------------------
@@ -327,14 +389,13 @@
 
 .al-quick-btn {
   position: relative;
-  border-radius: 999px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  background: radial-gradient(
-      circle at 0% 0%,
-      rgba(255, 255, 255, 0.18),
-      transparent 60%
-    ),
-    rgba(9, 10, 11, 0.9);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.03)
+  );
   color: inherit;
   padding: 0.55rem 0.85rem;
   display: flex;
@@ -345,11 +406,9 @@
   justify-content: space-between;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    border-color 0.15s ease,
-    background 0.15s ease;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease, background 0.15s ease;
 }
 
 [data-theme="light"] .al-quick-btn {
@@ -362,8 +421,9 @@
 }
 
 .al-quick-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(var(--accent-rgb), 0.25);
 }
 
 .al-quick-dot {
@@ -390,6 +450,7 @@
 .al-card-activity {
   padding-bottom: 1.1rem;
   flex: 1;
+  width: 100%;
 }
 
 .al-link-ghost {
@@ -411,24 +472,60 @@
 
 .al-timeline {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.85rem;
   padding: 0;
   margin: 0.5rem 0 0;
   list-style: none;
 }
 
+@media (max-width: 760px) {
+  .al-timeline {
+    grid-template-columns: 1fr;
+  }
+}
+
 .al-timeline-item {
   display: grid;
   grid-template-columns: auto 2fr;
   gap: 0.6rem 0.7rem;
-  padding: 0.4rem 0;
-  padding: 12px;
- background: color-mix(in srgb, var(--accent) 12%, transparent);
-  border-radius: 12px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: 0.28s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  height: 100%;
 }
 
+/* Hover lifting + subtle highlight streak */
+.al-timeline-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--accent-rgb), 0.35);
+  background: rgba(var(--accent-rgb), 0.08);
+}
 
+.al-timeline-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 25%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.al-timeline-item:hover::after {
+  opacity: 1;
+}
 
 .al-timeline-icon {
   width: 9px;
@@ -439,8 +536,27 @@
   box-shadow: 0 0 10px rgba(255, 184, 94, 0.7);
 }
 
+.al-timeline-icon-v4 {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(var(--accent-rgb), 0.12);
+  backdrop-filter: blur(6px);
+  transition: 0.25s ease-in-out, box-shadow 0.25s ease;
+}
+
+.al-timeline-item:hover .al-timeline-icon-v4 {
+  background: rgba(var(--accent-rgb), 0.22);
+  transform: scale(1.1);
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.35);
+}
+
 .al-timeline-content {
   display: flex;
+  justify-content: space-around;
   flex-direction: column;
   gap: 0.15rem;
 }
@@ -465,6 +581,85 @@
   margin: 0;
   font-size: 0.78rem;
   opacity: 0.78;
+}
+
+.al-timeline-sub {
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+/* Activity animation */
+.al-activity-animate-v4 {
+  animation: fadeSlideUp 0.4s ease forwards;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* Stat pill base */
+.al-timeline-stat-v4 {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), 0 0 12px rgba(255, 255, 255, 0.15);
+  transition: 0.25s ease;
+}
+
+.al-timeline-item:hover .al-timeline-stat-v4 {
+  transform: translateY(-2px);
+}
+
+/* Color variants */
+.al-pill-order {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 180, 60, 0.15),
+    rgba(0, 180, 60, 0.08)
+  );
+  color: rgb(0, 150, 50);
+}
+
+.al-pill-user {
+  background: linear-gradient(
+    135deg,
+    rgba(60, 120, 255, 0.15),
+    rgba(60, 120, 255, 0.08)
+  );
+  color: rgb(50, 100, 255);
+}
+
+.al-pill-product {
+  background: linear-gradient(
+    135deg,
+    rgba(160, 60, 255, 0.15),
+    rgba(160, 60, 255, 0.08)
+  );
+  color: rgb(150, 50, 255);
+}
+
+.al-pill-stock {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 200, 0, 0.18),
+    rgba(255, 200, 0, 0.08)
+  );
+  color: rgb(230, 180, 0);
+}
+
+/* Activity animation keyframes */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ------------------------------------------------------------
@@ -515,7 +710,21 @@
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, #38ef7d, #11998e);
-  box-shadow: 0 0 12px rgba(56, 239, 125, 0.7);
+  box-shadow: 0 0 14px rgba(56, 239, 125, 0.9),
+    inset 0 0 6px rgba(255, 255, 255, 0.25);
+  position: relative;
+}
+
+.al-health-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.25),
+    transparent 60%
+  );
+  mix-blend-mode: overlay;
 }
 
 /* ------------------------------------------------------------
@@ -524,7 +733,8 @@
 
 .al-card-notes {
   padding-bottom: 0.95rem;
-flex: 1;}
+  flex: 1;
+}
 
 .al-notes-list {
   list-style: none;
@@ -538,9 +748,19 @@ flex: 1;}
 
 .al-notes-list li {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.45rem;
   font-size: 0.8rem;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  transition: 0.2s ease;
+  flex-wrap: wrap;
+}
+
+.al-notes-list li:hover {
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
 .al-note-dot {
@@ -555,61 +775,174 @@ flex: 1;}
   opacity: 0.85;
 }
 
+/* Editable notes */
+.al-note-input {
+  flex: 1;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.35);
+  color: inherit;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  outline: none;
+}
+
+[data-theme="light"] .al-note-input {
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
+}
+
+.al-note-edit-btn {
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.15s ease;
+}
+
+.al-note-edit-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.al-add-note-btn {
+  margin-top: 0.5rem;
+  border: none;
+  background: rgba(var(--accent-rgb), 0.15);
+  color: inherit;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: 0.2s ease;
+}
+
+.al-add-note-btn:hover {
+  background: rgba(var(--accent-rgb), 0.25);
+}
+
 /* ------------------------------------------------------------
-   RESPONSIVE
+   UTIL
    ------------------------------------------------------------ */
 
-@media (max-width: 960px) {
-  #admin-landing {
-    padding-inline: 1.2rem;
-  }
-
-  .al-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .al-header-status {
-    align-items: flex-start;
-  }
-
-  .al-grid-3 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .al-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.al-empty-activity {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  margin-top: 0.25rem;
 }
 
-@media (max-width: 640px) {
-  #admin-landing {
-    padding-inline: 1rem;
-    padding-top: 1.8rem;
-  }
+/* ------------------------------------------------------------
+   🔧 INTERACTION FIX PATCH — V8
+   Enables clicking, editing, focusing inside liquid-glass cards
+   ------------------------------------------------------------ */
 
-  .al-grid-3 {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .al-quick-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+/* Make sure all cards accept input + click */
+.al-card,
+.al-card * {
+  pointer-events: auto !important;
 }
 
-.al-header-status {
+/* Remove overflow clipping so elements inside can be clicked */
+.al-card,
+.al-timeline-item,
+.al-quick-btn {
+  overflow: visible !important;
+}
+
+/* Ensure timeline items receive clicks */
+.al-timeline-item {
+  position: relative;
+  z-index: 5 !important;
+  cursor: pointer;
+}
+
+/* Buttons must sit above blur layers */
+.al-quick-btn {
+  position: relative;
+  z-index: 10 !important;
+}
+
+/* Notes input becomes fully focusable */
+.al-note-input {
+  position: relative;
+  z-index: 20 !important;
+  pointer-events: auto !important;
+}
+
+/* Fix for cards blocking clicks due to backdrop blur */
+.al-card::after,
+.al-card::before {
+  pointer-events: none !important;
+}
+
+/* Fix timeline glow overlay blocking clicks */
+.al-timeline-item::after {
+  pointer-events: none !important;
+}
+
+/* Ensure the big ambient overlay never intercepts */
+#admin-landing::before {
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+/* Make health bar editable for future interactions */
+.al-health-row,
+.al-health-fill {
+  pointer-events: auto !important;
+}
+
+.al-note-item {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-@media (max-width: 960px) {
-  .al-header-status {
-    align-items: flex-start;
-  }
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
 }
 
-.al-mini-bar:nth-child(3),
-.al-mini-bar:nth-child(6),
-.al-mini-bar:nth-child(9) {
-  height: 17px;
+.al-note-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+
+.al-note-edit-btn,
+.al-note-delete-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 3px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: 0.15s ease;
+}
+
+.al-note-edit-btn:hover,
+.al-note-delete-btn:hover {
+  background: rgba(var(--accent-rgb), 0.18);
+}
+
+.al-note-delete-btn {
+  color: #ff6b6b;
+}
+
+.al-add-note-btn {
+  margin-top: 0.5rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(var(--accent-rgb), 0.15);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.al-add-note-btn:hover {
+  background: rgba(var(--accent-rgb), 0.22);
 }
