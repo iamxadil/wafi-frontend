@@ -254,7 +254,27 @@ const useCartStore = create((set, get) => ({
         console.error("Failed to clear server cart:", err);
       }
     }
-  }
+  },
+
+
+    replaceCart: (items) => {
+    set({ cart: items, hydrated: true });
+    saveCart(items);
+
+    // persist for logged-in users
+    const { user } = useAuthStore.getState();
+    if (user) {
+      axios.put(
+        `${API_URL}/api/cart`,
+        { items: items.map(i => ({ productId: i._id, quantity: i.qty })) },
+        { withCredentials: true }
+      ).catch(err => console.error("replaceCart sync fail", err));
+    }
+  },
+  
 }));
+
+
+
 
 export default useCartStore;

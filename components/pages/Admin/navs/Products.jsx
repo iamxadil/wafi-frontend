@@ -426,7 +426,7 @@ const Products = () => {
         ]}
         onOptFilterChange={handleOptFilters}
         filterOptions={Object.keys(CATEGORY_MAP)}
-        isSticky={true}
+        isSticky={width > 650 && true}
       />
 
       <Paper

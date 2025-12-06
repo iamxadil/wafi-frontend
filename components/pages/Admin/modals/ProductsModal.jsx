@@ -42,31 +42,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
   const [deletedImages, setDeletedImages] = useState([]); // urls of removed existing images
   const [tags, setTags] = useState([]); // 🏷️ new
   const [tagInput, setTagInput] = useState("");
-  const [priorityError, setPriorityError] = useState("");
 
-  const validatePriority = (value) => {
-  if (!value || value === "") {
-    setPriorityError("");
-    return;
-  }
-
-  const num = Number(value);
-  if (isNaN(num)) {
-    setPriorityError("Priority must be a number");
-    return;
-  }
-
-  // Ignore current product's own priority when editing
-  const conflict = allProducts.find(
-    (p) => p.priority === num && p._id !== editData?._id
-  );
-
-  if (conflict) {
-    setPriorityError(`Priority ${num} is already used by: ${conflict.name}`);
-  } else {
-    setPriorityError("");
-  }
-};
 
 
   // 🧠 Prefill when editing
@@ -292,26 +268,24 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             </select>
           </div>
 
-              <div className="static-field">
+             <div className="static-field">
               <label htmlFor="priority">Priority</label>
               <input
                 id="priority"
                 type="number"
                 value={formData.priority ?? 0}
-                onChange={(e) => {
-                  handleChange(e);
-                  validatePriority(e.target.value);
-                }}
-                className={priorityError ? "input-error" : ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    priority: Number(e.target.value),
+                  }))
+                }
                 placeholder="Higher number appears first"
               />
-
-              {priorityError && (
-                <p className="error-text">{priorityError}</p>
-              )}
+              <p className="helper-text">
+                Repeated priorities are allowed — newest one goes on top.
+              </p>
             </div>
-
-
 
           <div className="two-grid">
             <div className="static-field">
@@ -564,7 +538,6 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
            <button
               type="submit"
               className="btn save"
-              disabled={isPending || priorityError}
             >
               {isPending
                 ? isEditing

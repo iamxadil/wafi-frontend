@@ -54,7 +54,7 @@
   background: none;
   border-radius: 12px;
   border: var(--theme);
-  color: var(--text);
+  color: var(--accent);
   font-weight: 600;
   cursor: pointer;
   
@@ -64,13 +64,14 @@
   margin-right: 1rem;
   display: flex;
   align-items: center;
-  color: var(--text);
+  color: var(--accent);
 }
 
 .sidemenu-title {
   flex-grow: 1;
   text-align: left;
   white-space: nowrap;
+  color: var(--accent);
 }
 
 .sidemenu-arrow {
@@ -95,7 +96,7 @@
   border-radius: 999px;
   font-weight: 400;
   transition: all 0.5s ease;
-  color: var(--text);
+  color: var(--accent);
   width: 100%;
 }
 

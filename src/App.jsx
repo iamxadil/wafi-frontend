@@ -19,7 +19,6 @@ import AppFooter from "../components/main/AppFooter.jsx";
 import NotificationToast from "../components/main/NotificationToast.jsx";
 import SocketListener from "../components/main/SocketListener.jsx";
 import VitalsTracker from '../components/main/VitalsTracker.jsx';
-import TestWindowsKey from "../pages/TestWindowsKey.jsx";
 
 // === Lazy-loaded Pages ===
 const Home = lazy(() => import("../pages/Home.jsx"));
@@ -98,7 +97,6 @@ export default function App() {
       "/favorites",
       "/my-orders",
       "/settings",
-      "/product",
     ],
     []
   );
@@ -233,7 +231,6 @@ export default function App() {
           <Route path="/accessories" element={<CatAccessories />} />
           <Route path="/monitors" element={<CatMonitors />} />
           <Route path="/others" element={<CatOthers />} />
-          <Route path="/windows" element={<TestWindowsKey />} />
 
           {/* Cart / Checkout */}
           <Route path="/cart" element={<Cart />} />

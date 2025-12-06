@@ -895,3 +895,9 @@
 .spec-value {
   text-align: left;
 }
+
+
+.regular-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+}

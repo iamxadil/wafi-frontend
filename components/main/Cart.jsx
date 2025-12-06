@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import useCartStore from "../stores/useCartStore.jsx";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
+import Loading from '../main/Loading.jsx';
 
 // Suggestions Hook
 import { useWindowsKeySuggestions } from "../query/useWindowsKeySuggestions.jsx";
@@ -96,7 +97,7 @@ const Cart = () => {
         </h2>
       </header>
 
-      {cartLoading && <p className="cu-loading">{t("Loading cart...", "جاري تحميل السلة...")}</p>}
+      {cartLoading && <Loading message={t("Loading cart...", "جاري تحميل السلة...")}></Loading>}
 
       {/* EMPTY */}
       {!cartLoading && isEmpty && (

@@ -160,7 +160,7 @@ const Sidemenu = ({ isOpen, setIsOpen }) => {
                         </span>
 
                         <span className="sidemenu-arrow">
-                          {openIndex === i ? <ChevronUp /> : <ChevronDown />}
+                          {openIndex === i ? <ChevronUp color="var(--accent)"/> : <ChevronDown color="var(--accent)"/>}
                         </span>
                       </motion.button>
 

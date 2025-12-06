@@ -231,11 +231,22 @@ const brandIcons = {
       }, qty);
   };
 
-  const handleBuyNow = () => {
-    clearCart(false);
-    handleAddToCart();
-    navigate("/cart");
+const handleBuyNow = async () => {
+  const item = {
+    ...selectedProduct,
+    qty,
+    originalPrice: selectedProduct.price,
+    discountPrice: selectedProduct.discountPrice,
+    finalPrice: getFinalPrice(selectedProduct),
+    countInStock: selectedProduct.countInStock,
   };
+
+  // ⭐ 1. Replace cart entirely with this single item
+  useCartStore.getState().replaceCart([item]);
+
+  // ⭐ 2. Navigate after store updates
+  setTimeout(() => navigate("/cart"), 20);
+};
 
 const handleShare = async () => {
   const shareUrl = `${window.location.origin}/product/${id}`;
