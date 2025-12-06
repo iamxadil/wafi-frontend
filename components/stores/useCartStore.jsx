@@ -21,10 +21,13 @@ const saveCart = (cart) => {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
 
+
+
 // --- Store ---
 const useCartStore = create((set, get) => ({
   cart: getGuestCart(),
   cartLoading: false,
+  hydrated: false,
 
   totalItems: () => get().cart.reduce((sum, i) => sum + i.qty, 0),
   totalPrice: () => get().cart.reduce((sum, i) => sum + i.qty * i.finalPrice, 0),
@@ -42,8 +45,9 @@ const useCartStore = create((set, get) => ({
     } catch (err) {
       console.error("Failed to init cart:", err);
     } finally {
-      set({ cartLoading: false });
-    }
+        set({ cartLoading: false, hydrated: true }); 
+      }
+
   },
 
   // Sync logged-in cart with server
@@ -55,9 +59,10 @@ const useCartStore = create((set, get) => ({
       const { data } = await axios.get(`${API_URL}/api/cart`, { withCredentials: true });
       const serverItems = data.items || [];
 
-      const normalizedServer = serverItems.map(i => {
+   const normalizedServer = serverItems.map(i => {
         const discount = i.discountPrice && i.discountPrice > 0 ? i.discountPrice : 0;
         const finalPrice = i.price - discount;
+
         return {
           _id: i._id,
           name: i.name || "Unknown",
@@ -68,8 +73,15 @@ const useCartStore = create((set, get) => ({
           images: i.images || [],
           qty: i.qty,
           brand: i.brand || "Unknown",
+
+          // ⭐ IMPORTANT FIELDS FOR DETECTION
+          category: i.category || "",
+          type: i.type || "",
+          specs: i.specs || {},
+          tags: i.tags || [],
         };
       });
+
 
       let merged = normalizedServer;
 
@@ -106,6 +118,7 @@ const useCartStore = create((set, get) => ({
     }
   },
 
+  
   addToCart: async (product, qty = 1) => {
   if (product.countInStock <= 0) {
     toast.error(`${product.name} is out of stock`);
@@ -120,18 +133,48 @@ const useCartStore = create((set, get) => ({
     return;
   }
 
-  const newCart = existing
-    ? get().cart.map(i => i._id === product._id ? { ...i, qty: i.qty + qty } : i)
-    : [...get().cart, { ...product, qty }];
+  // ⭐ Ensure essential fields are ALWAYS saved into cart
+  const normalizedProduct = {
+    _id: product._id,
+    name: product.name,
+    price: product.price,
+    discountPrice: product.discountPrice,
+    finalPrice: product.finalPrice,
+    countInStock: product.countInStock,
+    images: product.images,
+    brand: product.brand,
+
+    // ⭐ These were missing → suggestions failed after refresh
+    category: product.category || "", 
+    type: product.type || "",
+    specs: product.specs || {},
+
+    qty
+  };
+
+  let newCart;
+
+  if (existing) {
+    newCart = get().cart.map(i =>
+      i._id === product._id
+        ? { ...i, qty: i.qty + qty }
+        : i
+    );
+  } else {
+    newCart = [...get().cart, normalizedProduct];
+  }
 
   set({ cart: newCart });
   saveCart(newCart);
 
   toast[existing ? "info" : "success"](
-    existing ? `Increased quantity of ${product.name}` : `${product.name} added to cart`
+    existing
+      ? `Increased quantity of ${product.name}`
+      : `${product.name} added to cart`
   );
 
   const { user } = useAuthStore.getState();
+
   if (user) {
     try {
       await axios.put(

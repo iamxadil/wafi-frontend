@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/cart.css";
 import { TbArrowNarrowLeft as Back } from "react-icons/tb";
 import { TiPlus as Plus, TiMinus as Minus } from "react-icons/ti";
@@ -9,12 +9,25 @@ import useCartStore from "../stores/useCartStore.jsx";
 import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
 
+// Suggestions Hook
+import { useWindowsKeySuggestions } from "../query/useWindowsKeySuggestions.jsx";
+
 const Cart = () => {
   const navigate = useNavigate();
   const t = useTranslate();
   const width = useWindowWidth();
 
+  // Init Cart
+  const initCart = useCartStore((s) => s.initCart);
+  const cartLoading = useCartStore((s) => s.cartLoading);
+
+  useEffect(() => {
+    initCart();
+  }, []);
+
   const cart = useCartStore((s) => s.cart);
+  const hydrated = useCartStore((s) => s.hydrated);
+
   const add = useCartStore((s) => s.addToCart);
   const update = useCartStore((s) => s.updateQty);
   const remove = useCartStore((s) => s.removeFromCart);
@@ -24,8 +37,48 @@ const Cart = () => {
     (sum, item) => sum + (item.finalPrice || item.price) * item.qty,
     0
   );
-
   const isEmpty = cart.length === 0;
+
+  // Detect laptop in cart
+  const hasLaptop =
+    hydrated &&
+    cart.some((item) => {
+      const cat = item.category?.toLowerCase();
+      const type = item.type?.toLowerCase();
+      const name = item.name?.toLowerCase();
+      const specs = item.specs || {};
+
+      return (
+        (cat && cat.includes("laptop")) ||
+        (type && type.includes("laptop")) ||
+        (name && name.includes("laptop")) ||
+        specs.cpu ||
+        specs.ram ||
+        specs.gpu
+      );
+    });
+
+  // Fetch suggestions
+  const { data: suggestions = [] } = useWindowsKeySuggestions(hydrated && hasLaptop);
+
+  // Track hidden suggestions
+  const [hidden, setHidden] = useState([]);
+
+  // Hide suggestions already in cart on refresh/mount
+  useEffect(() => {
+    if (!hydrated || !suggestions.length) return;
+
+    const alreadyInCart = suggestions
+      .filter((p) => cart.some((c) => c._id === p._id))
+      .map((p) => p._id);
+
+    if (alreadyInCart.length > 0) {
+      setHidden((prev) => [...new Set([...prev, ...alreadyInCart])]);
+    }
+  }, [hydrated, suggestions, cart]);
+
+  // Filter visible suggestions
+  const visibleSuggestions = suggestions.filter((p) => !hidden.includes(p._id));
 
   return (
     <main id="cart-ultra">
@@ -43,18 +96,19 @@ const Cart = () => {
         </h2>
       </header>
 
-      {/* Empty */}
-      {isEmpty && (
+      {cartLoading && <p className="cu-loading">{t("Loading cart...", "جاري تحميل السلة...")}</p>}
+
+      {/* EMPTY */}
+      {!cartLoading && isEmpty && (
         <div className="cu-empty">
           <div className="cu-empty-icon">🛒</div>
           <p>{t("Your cart is empty.", "سلة التسوق فارغة.")}</p>
         </div>
       )}
 
-      {/* Content */}
-      {!isEmpty && (
+      {/* CART CONTENT */}
+      {!cartLoading && !isEmpty && (
         <>
-          {/* Labels */}
           {width > 650 && (
             <div className="cu-labels">
               <span>{t("Product", "المنتج")}</span>
@@ -63,28 +117,25 @@ const Cart = () => {
             </div>
           )}
 
-          {/* List */}
+          {/* Cart Rows */}
           <section className="cu-list">
             {cart.map((item) => {
-              const hasDiscount = item.discountPrice > 0;
-              const finalPrice = hasDiscount ? item.finalPrice : item.price;
+              const finalPrice =
+                item.discountPrice > 0 ? item.finalPrice : item.price;
 
               return (
                 <article className="cu-row" key={item._id}>
-                  {/* Product block */}
                   <div className="cu-product">
                     <div className="cu-img">
                       <img src={item.images?.[0]} alt={item.name} />
                     </div>
-
                     <div className="cu-info">
                       <p className="cu-brand">{item.brand}</p>
                       <h3 className="cu-name">{item.name}</h3>
 
-                      {/* Price on mobile only */}
                       {width <= 650 && (
                         <div className="cu-mobile-price">
-                          {hasDiscount && (
+                          {item.discountPrice > 0 && (
                             <span className="cu-old">
                               {item.price.toLocaleString()} IQD
                             </span>
@@ -99,54 +150,102 @@ const Cart = () => {
 
                   {/* Quantity */}
                   <div className="cu-qty">
-                    <button
-                      className="cu-qty-btn"
-                      onClick={() => add(item)}
-                    >
+                    <button className="cu-qty-btn" onClick={() => add(item)}>
                       <Plus size={15} />
                     </button>
 
                     <span className="cu-qty-num">{item.qty}</span>
 
-                  <button
-                        className="cu-qty-btn"
-                        onClick={() => {
-                          if (item.qty - 1 <= 0) {
-                            remove(item._id); 
-                          } else {
-                            update(item._id, item.qty - 1);
-                          }
-                        }}
-                      >
-                        <Minus size={15} />
-                      </button>
+                    <button
+                      className="cu-qty-btn"
+                      onClick={() =>
+                        item.qty - 1 <= 0
+                          ? remove(item._id)
+                          : update(item._id, item.qty - 1)
+                      }
+                    >
+                      <Minus size={15} />
+                    </button>
                   </div>
 
-                  {/* Price desktop + delete */}
-                  {/* Price desktop + delete */}
-                <div className="cu-side">
-                  {width > 650 && (
-                    <div className="cu-desktop-price">
-                      {hasDiscount && (
-                        <span className="cu-old">
-                          {item.price.toLocaleString()} IQD
+                  {/* Price + delete */}
+                  <div className="cu-side">
+                    {width > 650 && (
+                      <div className="cu-desktop-price">
+                        {item.discountPrice > 0 && (
+                          <span className="cu-old">
+                            {item.price.toLocaleString()} IQD
+                          </span>
+                        )}
+                        <span className="cu-new">
+                          {finalPrice.toLocaleString()} IQD
                         </span>
-                      )}
-                      <span className="cu-new">
-                        {finalPrice.toLocaleString()} IQD
-                      </span>
-                    </div>
-                  )}
+                      </div>
+                    )}
 
-                  <button className="cu-delete" onClick={() => remove(item._id)}>
-                    <Delete size={15} />
-                  </button>
-                </div>
-
+                    <button className="cu-delete" onClick={() => remove(item._id)}>
+                      <Delete size={15} />
+                    </button>
+                  </div>
                 </article>
               );
             })}
           </section>
+
+          {/* SUGGESTIONS */}
+          {hasLaptop && visibleSuggestions.length > 0 && (
+            <section className="cu-suggest ultra-wrap">
+              <h3 className="cu-suggest-title" style={{textAlign: t.textAlign}}>
+                {t("Recommended for your laptop", "مقترح لجهازك")}
+              </h3>
+
+              <div className="aura-strip">
+                {visibleSuggestions.map((p) => {
+                  const price = p.finalPrice || p.price;
+
+                  return (
+                    <div key={p._id} className="aura-item">
+                      <div className="aura-orbit"></div>
+
+                      <div
+                        className="aura-img-box"
+                        onClick={() => navigate(`/product/${p._id}`)}
+                      >
+                        <img src={p.images?.[0]} alt={p.name} className="aura-img" />
+                      </div>
+
+                      <div
+                        className="aura-info"
+                        onClick={() => navigate(`/product/${p._id}`)}
+                      >
+                        <p className="aura-name">{p.name}</p>
+                        <p className="aura-price">
+                          {price.toLocaleString()} IQD
+                        </p>
+                      </div>
+
+                      <button
+                        className="aura-btn"
+                        onClick={() => {
+                          add({
+                            ...p,
+                            qty: 1,
+                            countInStock: p.countInStock || 999,
+                            finalPrice: price,
+                          });
+
+                          // Hide suggestion
+                          setHidden((prev) => [...prev, p._id]);
+                        }}
+                      >
+                        {t("Add", "أضف")}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
 
           {/* Totals */}
           <section className="cu-totals">
@@ -154,24 +253,24 @@ const Cart = () => {
               <span>{t("Subtotal", "المجموع")}</span>
               <span>{subtotal.toLocaleString()} IQD</span>
             </div>
+
             <div className="cu-trow">
               <span>{t("Delivery", "التوصيل")}</span>
               <span>0 IQD</span>
             </div>
+
             <div className="cu-trow cu-main-total">
               <span>{t("Total", "الإجمالي")}</span>
               <span>{subtotal.toLocaleString()} IQD</span>
             </div>
           </section>
 
-          {/* Actions */}
+          {/* Footer */}
           <footer className="cu-actions">
-            <button
-              className="cu-btn primary"
-              onClick={() => navigate("/payment")}
-            >
+            <button className="cu-btn primary" onClick={() => navigate("/payment")}>
               {t("Proceed to Payment", "المتابعة إلى الدفع")}
             </button>
+
             <button className="cu-btn secondary" onClick={clear}>
               {t("Clear Cart", "مسح السلة")}
             </button>
