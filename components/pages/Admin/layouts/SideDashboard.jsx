@@ -13,7 +13,7 @@ import {
   RiArchive2Line as Arhive
 } from "react-icons/ri";
 
-import { Activity } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 import { IoAnalyticsOutline as Analytics } from "react-icons/io5";
 import { TbLayoutSidebarRightExpand as Collapse, TbLayoutSidebarRightCollapse as Expand } from "react-icons/tb";
@@ -139,6 +139,17 @@ const SideDashboard = () => {
             <span className="menu-title">
               <Link to="permissions">
                 <PermissionsIcon /> <span className='head-line'>Permissions</span>
+              </Link>
+            </span>
+          </li>
+        )}
+
+        {/* Emails */}
+        {(user?.role === "admin" || user?.permissions?.permissions) && (
+          <li className="menu">
+            <span className="menu-title">
+              <Link to="emails">
+                <Mail size={16}/> <span className='head-line'>Emails</span>
               </Link>
             </span>
           </li>

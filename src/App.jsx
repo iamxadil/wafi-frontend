@@ -18,7 +18,8 @@ import BottomNavbar from "../components/main/BottomNavbar.jsx";
 import AppFooter from "../components/main/AppFooter.jsx";
 import NotificationToast from "../components/main/NotificationToast.jsx";
 import SocketListener from "../components/main/SocketListener.jsx";
-import VitalsTracker from '../components/main/VitalsTracker.jsx';
+import VisitTracker from "../components/main/VisitTracker.jsx";
+import trackVisit from '../components/main/TrackVisit.jsx';
 
 // === Lazy-loaded Pages ===
 const Home = lazy(() => import("../pages/Home.jsx"));
@@ -54,7 +55,9 @@ const Users = lazy(() => import("../components/pages/Admin/navs/Users.jsx"));
 const Archive = lazy(() => import("../components/pages/Admin/navs/Archive.jsx"));
 const Analytics = lazy(() => import("../components/pages/Admin/navs/Analytics.jsx"));
 const Approvals = lazy(() => import("../components/pages/Admin/navs/Approvals.jsx"));
-import Test from "../sections/Test.jsx";
+const Emails = lazy(() => import("../components/pages/Admin/navs/Emails.jsx"));
+
+
 
 // Cart & Orders
 const Cart = lazy(() => import("../components/main/Cart.jsx"));
@@ -146,6 +149,13 @@ export default function App() {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
+
+
+  
+  useEffect(() => {
+    trackVisit();
+  }, []);
+
 
   return (
     <>
@@ -255,6 +265,7 @@ export default function App() {
             <Route path="notifications" element={<Notifications />} />
             <Route path="permissions" element={<PermissionFields />} />
             <Route path="analytics" element={<Analytics />} />
+            <Route path="emails" element={<Emails />} />
           </Route>
         </Routes>
       </Suspense>
@@ -262,6 +273,7 @@ export default function App() {
       {/* === Persistent Layouts === */}
       {showFooter && <AppFooter />}
       {showBottomNavbar && <BottomNavbar />}
+      <VisitTracker />
     </>
   );
 }

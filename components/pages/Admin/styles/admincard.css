@@ -1,0 +1,855 @@
+
+.admin-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 1.15rem 1.2rem 1.25rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  isolation: isolate;
+  min-height: 220px; 
+  width: auto;
+  /* base glass */
+  background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.9), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.6), transparent 55%),
+    rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.6);
+
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+
+  color: var(--text);
+  transform-origin: center;
+}
+
+/* Dark mode */
+[data-theme="dark"] .admin-card {
+  background:
+    radial-gradient(circle at 0 0, rgba(148, 163, 253, 0.35), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(45, 212, 191, 0.16), transparent 55%),
+    rgba(10, 12, 21, 0.92);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(129, 140, 248, 0.35);
+}
+
+/* Size variants */
+.size-sm {
+  padding: 0.9rem 1rem 1.05rem;
+}
+.size-sm .card-value {
+  font-size: 1.55rem;
+}
+
+.size-md .card-value {
+  font-size: 1.9rem;
+}
+
+.size-lg {
+  padding: 1.3rem 1.3rem 1.4rem;
+}
+.size-lg .card-value {
+  font-size: 2.2rem;
+}
+
+/* Motion presets (class hooks) */
+.motion-soft {}
+.motion-bounce {}
+.motion-none {}
+
+/* Pressing state (subtle scale handled in JS with whileTap) */
+
+/* ==========================================
+   LIQUID / NOISE / GLOW LAYERS
+   ========================================== */
+
+.card-noise {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.25;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+.card-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(40px);
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.ring-1 {
+  width: 230px;
+  height: 230px;
+  top: -120px;
+  right: -90px;
+  background: radial-gradient(circle at 30% 30%, rgba(129, 140, 248, 0.7), transparent 65%);
+}
+
+.ring-2 {
+  width: 260px;
+  height: 260px;
+  bottom: -160px;
+  left: -110px;
+  background: radial-gradient(circle at 40% 40%, rgba(45, 212, 191, 0.6), transparent 65%);
+}
+
+.card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.65),
+    rgba(255, 255, 255, 0.12) 30%,
+    transparent 55%
+  );
+  mix-blend-mode: soft-light;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ==========================================
+   RIPPLE
+   ========================================== */
+
+.card-ripple {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.card-ripple::before {
+  content: "";
+  position: absolute;
+  width: var(--ripple-size, 0px);
+  height: var(--ripple-size, 0px);
+  left: var(--ripple-left, 0px);
+  top: var(--ripple-top, 0px);
+  border-radius: 999px;
+  background: var(--ripple-color, rgba(255, 255, 255, 0.4));
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.card-ripple.show::before {
+  animation: ripple-anim 480ms ease-out;
+}
+
+@keyframes ripple-anim {
+  0% {
+    opacity: 0.65;
+    transform: scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.card-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+
+  background: radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.1));
+  box-shadow:
+    0 8px 18px rgba(15, 23, 42, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+[data-theme="dark"] .card-icon {
+  background: radial-gradient(circle at 25% 20%, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.4));
+}
+
+.card-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.card-pill {
+  font-size: 0.72rem;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .card-pill {
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  border-color: rgba(148, 163, 253, 0.55);
+}
+
+/* Actions row */
+.card-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.card-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: inherit;
+}
+
+.card-action-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.action-icon {
+  font-size: 0.85rem;
+}
+
+/* Chevron */
+.card-chevron {
+  font-size: 1.1rem;
+  opacity: 0.7;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.card-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* ==========================================
+   MAIN VALUE
+   ========================================== */
+
+.card-value-row {
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.card-value {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+.card-footer {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  opacity: 0.85;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================
+   EXPANDABLE SECTION
+   ========================================== */
+
+.card-details-wrapper {
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.card-details {
+  padding: 0.75rem 0.65rem 0.4rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+/* Dark mode */
+[data-theme="dark"] .card-details {
+  background: rgba(15, 23, 42, 0.92);
+  border-color: rgba(148, 163, 253, 0.5);
+}
+
+/* ==========================================
+   ACCENT VARIANTS
+   ========================================== */
+
+.accent-default .card-icon {
+  color: #111827;
+}
+
+.accent-green .card-icon {
+  background: radial-gradient(circle at 25% 20%, #bbf7d0, #22c55e);
+  color: #052e16;
+}
+.accent-red .card-icon {
+  background: radial-gradient(circle at 25% 20%, #fecaca, #ef4444);
+  color: #7f1d1d;
+}
+.accent-blue .card-icon {
+  background: radial-gradient(circle at 25% 20%, #bfdbfe, #3b82f6);
+  color: #0b1120;
+}
+.accent-purple .card-icon {
+  background: radial-gradient(circle at 25% 20%, #e9d5ff, #8b5cf6);
+  color: #2e1065;
+}
+.accent-amber .card-icon {
+  background: radial-gradient(circle at 25% 20%, #fde68a, #f59e0b);
+  color: #451a03;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 800px) {
+  .admin-card {
+    padding: 1rem 1rem 1.1rem;
+    border-radius: 20px;
+  }
+
+  .card-label {
+    font-size: 0.86rem;
+  }
+
+  .card-value {
+    font-size: 1.7rem;
+  }
+
+  .card-details {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  .card-actions {
+    margin-top: 0.25rem;
+  }
+}
+
+
+/* ------------------------------------------
+   TITLE BLOCK / SUBTITLE
+------------------------------------------ */
+.card-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.card-title-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-subtitle {
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+
+/* ------------------------------------------
+   VALUE GROUP + PREFIX / SUFFIX
+------------------------------------------ */
+.card-value-row {
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.card-value-group {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.card-value-affix {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.card-value-affix.prefix {
+  transform: translateY(1px);
+}
+
+.card-value-affix.suffix {
+  transform: translateY(1px);
+}
+
+/* ------------------------------------------
+   DELTA PILL
+------------------------------------------ */
+.card-delta {
+  font-size: 0.78rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.78);
+  color: rgba(15, 23, 42, 0.9);
+  white-space: nowrap;
+}
+
+.card-delta-value {
+  font-weight: 600;
+}
+
+.card-delta-label {
+  opacity: 0.8;
+}
+
+/* tone variants */
+.delta-positive {
+  border-color: rgba(34, 197, 94, 0.7);
+}
+
+.delta-negative {
+  border-color: rgba(239, 68, 68, 0.8);
+}
+
+.delta-neutral {
+  border-color: rgba(148, 163, 184, 0.7);
+}
+
+[data-theme="dark"] .card-delta {
+  background: rgba(15, 23, 42, 0.94);
+  color: #e5e7eb;
+}
+
+/* ------------------------------------------
+   FOOTER MAIN + HINT
+------------------------------------------ */
+.card-footer {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  opacity: 0.9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.card-footer-main {
+  flex: 1;
+}
+
+.card-hint {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------
+   STATUS VARIANTS (border / glow)
+------------------------------------------ */
+.status-good {
+  box-shadow:
+    0 18px 45px rgba(22, 163, 74, 0.137),
+    0 0 0 1px rgba(34, 197, 94, 0.17);
+}
+
+.status-warning {
+  box-shadow:
+    0 18px 45px rgba(245, 158, 11, 0.4),
+    0 0 0 1px rgba(245, 158, 11, 0.6);
+}
+
+.status-critical {
+  box-shadow:
+    0 18px 45px rgba(239, 68, 68, 0.5),
+    0 0 0 1px rgba(239, 68, 68, 0.65);
+}
+
+/* dark mode tweaks */
+[data-theme="dark"] .status-good {
+  box-shadow:
+    0 22px 55px rgba(22, 163, 74, 0.103),
+    0 0 0 1px rgba(34, 197, 94, 0.216);
+}
+
+[data-theme="dark"] .status-warning {
+  box-shadow:
+    0 22px 55px rgba(245, 158, 11, 0.32),
+    0 0 0 1px rgba(245, 158, 11, 0.65);
+}
+
+[data-theme="dark"] .status-critical {
+  box-shadow:
+    0 22px 55px rgba(239, 68, 68, 0.38),
+    0 0 0 1px rgba(239, 68, 68, 0.7);
+}
+
+/* ------------------------------------------
+   LAYOUT HORIZONTAL
+------------------------------------------ */
+.layout-horizontal .card-header {
+  margin-bottom: 0.15rem;
+}
+
+.layout-horizontal .card-value-row {
+  margin-top: 0.3rem;
+}
+
+/* ------------------------------------------
+   LOADING SKELETON
+------------------------------------------ */
+.card-skeleton {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.card-skeleton-bar {
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.card-skeleton-bar.big {
+  height: 16px;
+  width: 70%;
+}
+
+.card-skeleton-bar.short {
+  width: 45%;
+}
+
+.card-skeleton-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0)
+  );
+  transform: translateX(-100%);
+  animation: card-skeleton-shimmer 1.4s infinite;
+}
+
+@keyframes card-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* responsive tweaks */
+@media (max-width: 800px) {
+  .card-value-row {
+    align-items: flex-start;
+  }
+
+  .card-delta {
+    font-size: 0.75rem;
+  }
+}
+
+
+/* ==========================================
+   COPY BUTTON + TOOLTIP
+   ========================================== */
+
+.card-icon-button {
+  border: none;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 0.22rem 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  cursor: pointer;
+  position: relative;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.2s ease;
+}
+
+.card-icon-button:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.card-icon-button-symbol {
+  transform: translateY(-0.4px);
+}
+
+.has-tooltip {
+  position: relative;
+}
+
+.card-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #f9fafb;
+  font-size: 0.72rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 20;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.38);
+}
+
+.has-tooltip:hover .card-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0px);
+}
+
+[data-theme="dark"] .card-tooltip {
+  background: rgba(15, 23, 42, 0.97);
+}
+
+/* ==========================================
+   SPARKLINE MINI-CHART
+   ========================================== */
+
+.card-sparkline-block {
+  margin-top: 0.65rem;
+  position: relative;
+  z-index: 1;
+}
+
+.card-sparkline {
+  width: 100%;
+  height: 36px;
+  display: block;
+}
+
+.card-sparkline-line {
+  fill: none;
+  stroke: url(#sparkline-stroke);
+  stroke-width: 1.9;
+  stroke-linecap: round;
+}
+
+.card-sparkline-fill {
+  fill: url(#sparkline-fill);
+}
+
+.card-sparkline-label {
+  margin-top: 0.25rem;
+  font-size: 0.78rem;
+  opacity: 0.85;
+}
+
+
+/* ============================================================
+   PREMIUM DETAILS EXPANDER — iOS / VisionOS Style
+   ============================================================ */
+
+.card-details-wrapper {
+  overflow: hidden;
+  border-radius: 16px;
+  margin-top: 0.65rem;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  opacity: 1;
+}
+
+/* Smooth collapsing behavior */
+.card-details-wrapper.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* ------------------------------------------------------------
+   Actual details block
+------------------------------------------------------------ */
+.card-details {
+  padding: 1rem 1rem 0.9rem;
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0.52),
+      rgba(255, 255, 255, 0.22)
+    );
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+
+  box-shadow:
+    inset 0 0 14px rgba(255, 255, 255, 0.18),
+    inset 0 0 22px rgba(255, 255, 255, 0.08),
+    0 8px 28px rgba(0, 0, 0, 0.25);
+
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text);
+  position: relative;
+  z-index: 2;
+}
+
+/* ------------------------------------------------------------
+   Dark Mode Styling (gorgeous and glassy)
+------------------------------------------------------------ */
+[data-theme="dark"] .card-details {
+  background:
+    linear-gradient(
+      to bottom right,
+      rgba(17, 25, 40, 0.85),
+      rgba(27, 38, 59, 0.65)
+    );
+  border-color: rgba(148, 163, 253, 0.32);
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.05),
+    inset 0 0 28px rgba(94, 99, 255, 0.06),
+    0 10px 34px rgba(0, 0, 0, 0.65);
+}
+
+/* ------------------------------------------------------------
+   Decorative shine strip (so Apple-like)
+------------------------------------------------------------ */
+.card-details::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  border-radius: inherit;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0.15) 40%,
+    transparent
+  );
+
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="dark"] .card-details::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+}
+
+/* ------------------------------------------------------------
+   Better spacing & info grouping
+------------------------------------------------------------ */
+.card-details p {
+  margin-bottom: 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.9;
+}
+
+.card-details p:last-child {
+  margin-bottom: 0;
+}
+
+/* Icons inside details */
+.card-details p svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0.75;
+}
+
+/* ------------------------------------------------------------
+   Animate reveal (slide + fade)
+------------------------------------------------------------ */
+.card-details {
+  animation: details-reveal 0.35s ease;
+}
+
+@keyframes details-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

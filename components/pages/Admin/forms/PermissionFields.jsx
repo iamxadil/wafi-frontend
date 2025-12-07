@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Card, Checkbox, Row, Col, Typography } from "antd";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Home, Box, ShoppingCart, Users, BarChart2, CheckCircle, Archive, Shield } from "lucide-react";
-import usePermissionStore from "../../../stores/usePermissionStore";
+import { ChevronDown, ChevronUp, Home, Box, ShoppingCart, Users, BarChart2, CheckCircle, Archive, Shield, Mail } from "lucide-react";
+import usePermissionStore from "../../../stores/usePermissionStore.jsx";
 
 const { Title } = Typography;
 
@@ -15,6 +15,7 @@ const permissionIcons = {
   approvals: <CheckCircle size={18} />,
   archive: <Archive size={18} />,
   permissions: <Shield size={18} />,
+  emails: <Mail size={18} />
 };
 
 const PermissionFields = () => {
