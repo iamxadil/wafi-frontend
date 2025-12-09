@@ -47,6 +47,7 @@
         "npm:lodash.debounce@4.0.8",
         "npm:lucide-react@0.545.0",
         "npm:minimist@^1.2.8",
+        "npm:motion@^12.23.25",
         "npm:qrcode@1.5.4",
         "npm:react-dom@^18.3.1",
         "npm:react-google-recaptcha@3.1.0",

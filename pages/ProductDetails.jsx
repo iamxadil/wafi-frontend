@@ -64,6 +64,7 @@ import {
   ScanFace,
   MonitorSmartphone,
   PackagePlus,
+  Keyboard
 } from "lucide-react";
 
 import { toast } from "react-toastify";
@@ -96,6 +97,7 @@ const keywordIcons = {
   RESOLUTION: <Expand />,
   RELEASEYEAR: <CalendarCheck2 />,
   OS: <Disc3 />,
+  KEYBOARD: <Keyboard />,
   ACCESSORIES: <PackagePlus />,
 };
 
@@ -120,6 +122,7 @@ const keywordLabels = {
   PORTS: { en: "Ports", ar: "المنافذ" },
   RESOLUTION: { en: "Resolution", ar: "الدقة" },
   RELEASEYEAR: { en: "Release Year", ar: "الإصدار" },
+  KEYBOARD: { en: "Keyboard", ar: "لوحة المفاتيح" },
   ACCESSORIES: { en: "Accessories", ar: "الاكسسوارات" },
 };
 
@@ -386,6 +389,7 @@ const handleShare = async () => {
     "touchscreen",
     "fingerPrint",
     "faceId",
+    "keyboard",
     "accessories",
   ];
 

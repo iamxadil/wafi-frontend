@@ -490,6 +490,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
                   ["warranty", "Warranty", "e.g. 1 Year"],
                   ["colorOptions", "Colors", "e.g. Black, Silver"],
                   ["accessories", "Included Accessories", "e.g. Charger, Stylus, Bag"],
+                  ["keyboard", "Keyboard Features", "e.g. Arabic, RGB, etc.."],
 
                 ].map(([id, label, placeholder]) => (
                   <div key={id}>

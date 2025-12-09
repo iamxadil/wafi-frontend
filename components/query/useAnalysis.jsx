@@ -117,3 +117,42 @@ export default function useAnalysis() {
     liveTone,
   };
 }
+
+
+export function useAnalyticsRange(range = "today") {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({
+    range: "today",
+    from: null,
+    days: 1,
+
+    totalVisits: 0,
+    newVisitors: 0,
+    returningVisitors: 0,
+
+    avgSessionTime: 0,
+    peakActiveUsers: 0,
+
+    devices: {},
+    browsers: {},
+    utm: {}
+  });
+
+  useEffect(() => {
+    setLoading(true);
+
+    axios
+      .get(`${API_URL}/api/analytics/range?range=${range}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.error("Range analytics error:", err);
+      })
+      .finally(() => setLoading(false));
+  }, [range]);
+
+  return { loading, data };
+}
