@@ -10,6 +10,7 @@ import {
   ChevronUp,
   ShoppingBag,
   Monitor,
+  Puzzle
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/sidemenu.css";
@@ -51,7 +52,7 @@ const menuData = [
 
   {
     titleKey: { en: "Components", ar: "مُعدات" },
-    icon: <Mouse size={25} />,
+    icon: <Puzzle size={25} />,
     type: "dropdown",
     items: [
       { label: { en: "All Components", ar: "جميع المعدات" }, path: "/components" },

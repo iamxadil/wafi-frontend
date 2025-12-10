@@ -27,7 +27,7 @@ import gesture4 from "../../assets/img/gesture4.avif";
 const baseCards = Object.freeze([
   { id: 1, img: gesture1, icon: <Zap size={18} strokeWidth={2.4} />, link: "/laptops" },
   { id: 2, img: gesture2, icon: <Gamepad2 size={18} strokeWidth={2.4} />, link: "/category/Mice" },
-  { id: 3, img: gesture3, icon: <Gauge size={18} strokeWidth={2.4} />, link: null },
+  { id: 3, img: gesture3, icon: <Gauge size={18} strokeWidth={2.4} />, link: "/category/Hard Disks & SSDs" },
   { id: 4, img: gesture4, icon: <Music2 size={18} strokeWidth={2.4} />, link: "/category/Headphones" },
 ]);
 

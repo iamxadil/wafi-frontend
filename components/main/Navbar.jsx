@@ -27,7 +27,7 @@ import useTranslate from "../hooks/useTranslate.jsx";
 
 // ✅ Pre-memoize static menu data
 const LAPTOP_BRANDS = ["Asus", "Acer", "Apple", "Lenovo", "HP", "MSI", "Microsoft", "Dell"];
-const ACCESSORIES = ["Keyboards", "Mice", "Combo Kb & M", "Headphones", "Speakers", "Bags", "Cooling Pads", "Mousepads & Deskpads"];
+const ACCESSORIES = ["Headphones", "Speakers", "Bags", "Mice", "Keyboards", "Combo Kb & M", "Cooling Pads", "Mousepads & Deskpads"];
 const COMPONENTS = ["Hard Disks & SSDs", "RAM"];
 const OTHERS = ["Monitors"];
 

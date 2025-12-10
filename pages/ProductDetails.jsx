@@ -161,6 +161,7 @@ const ProductDetails = () => {
   }, [selectedProduct]);
 
 
+
   if (!selectedProduct) return <Spin fullscreen />;
 
 
@@ -224,17 +225,30 @@ const brandIcons = {
     }, 200);
   };
 
-  const handleAddToCart = () => {
-    addToCart(
-      {
-        ...selectedProduct,
-        originalPrice: selectedProduct.price,
-        discountPrice: selectedProduct.discountPrice,
-        finalPrice: getFinalPrice(selectedProduct),
-      }, qty);
-  };
+  
 
-const handleBuyNow = async () => {
+const handleAddToCart = () => {
+  if (selectedProduct.countInStock <= 0) {
+    return toast.error(t("This product is out of stock", "المنتج غير متوفر"));
+  }
+
+  addToCart(
+    {
+      ...selectedProduct,
+      originalPrice: selectedProduct.price,
+      discountPrice: selectedProduct.discountPrice,
+      finalPrice: getFinalPrice(selectedProduct),
+    },
+    qty
+  );
+};
+
+
+const handleBuyNow = () => {
+  if (selectedProduct.countInStock <= 0) {
+    return toast.error(t("This product is out of stock", "المنتج غير متوفر"));
+  }
+
   const item = {
     ...selectedProduct,
     qty,
@@ -244,10 +258,7 @@ const handleBuyNow = async () => {
     countInStock: selectedProduct.countInStock,
   };
 
-  // ⭐ 1. Replace cart entirely with this single item
   useCartStore.getState().replaceCart([item]);
-
-  // ⭐ 2. Navigate after store updates
   setTimeout(() => navigate("/cart"), 20);
 };
 
@@ -392,6 +403,8 @@ const handleShare = async () => {
     "keyboard",
     "accessories",
   ];
+
+  
 
   const specsList = specOrder
     .map((key) => {
