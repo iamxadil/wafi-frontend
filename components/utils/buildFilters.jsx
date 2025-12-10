@@ -1,17 +1,20 @@
-/**
- * 🧩 buildFilters()
- * Reusable helper to transform backend filter data
- * (brands, tags, specs, priceRange) into standardized Filter.jsx sections.
- *
- * @param {Object} filtersData - API response from /api/products/filters
- * @param {Function} [t] - optional translation helper (useTranslate)
- * @returns {Array} formatted sections for the Filter component
- */
 const buildFilters = (filtersData, t) => {
   if (!filtersData) return [];
 
-  const { brands = [], tags = [], specs = {}, priceRange = {} } = filtersData;
+  const { categories = [], brands = [], tags = [], specs = {}, priceRange = {} } = filtersData;
   const sections = [];
+
+  /* =========================================================
+     🗂️ Categories
+  ========================================================= */
+  if (categories.length > 0) {
+    sections.push({
+      id: "category",
+      label: t ? t("Category", "الفئة") : "Category",
+      type: "checkbox",
+      options: categories.sort(),
+    });
+  }
 
   /* =========================================================
      🏷️ Brands
@@ -38,7 +41,7 @@ const buildFilters = (filtersData, t) => {
   }
 
   /* =========================================================
-     💻 Specs (CPU, RAM, GPU, etc.)
+     💻 Specs
   ========================================================= */
   Object.entries(specs).forEach(([key, values]) => {
     if (values && Object.keys(values).length > 0) {
@@ -46,7 +49,7 @@ const buildFilters = (filtersData, t) => {
         id: key,
         label: t ? t(key.toUpperCase(), key.toUpperCase()) : key.toUpperCase(),
         type: "checkbox",
-        options: values, // supports nested objects (Intel → Core i7)
+        options: values,
       });
     }
   });

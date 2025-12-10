@@ -240,7 +240,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             />
           </div>
 
-          <div className="static-field">
+         <div className="static-field">
             <label htmlFor="category">Category *</label>
             <select
               id="category"
@@ -249,24 +249,49 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
               required
             >
               <option value="">Select category</option>
-              <option value="Laptops">Laptops</option>
-              <option value="Mice">Mice</option>
-              <option value="Keyboards">Keyboards</option>
-              <option value="Monitors">Monitors</option>
-              <option value="Combo Kb & M">Combo Kb & M</option>
-              <option value="Headphones">Headphones</option>
-              <option value="Speakers">Speakers</option>
-              <option value="Bags">Bags</option>
-              <option value="Mousepads & Deskpads">Mousepads & Deskpads</option>
-              <option value="Cooling Pads">Cooling Pads</option>
-              <option value="Adapters">Adapters</option>
-              <option value="Cables">Cables</option>
-              <option value="Hard Disks & SSDs">Hard Disks & SSDs</option>
-              <option value="Flash Drives">Flash Drives</option>
-              <option value="Routers">Routers</option>
-              <option value="Others">Others</option>
+
+              {/* ======================= */}
+              {/* Laptops                 */}
+              {/* ======================= */}
+              <optgroup label="Laptops">
+                <option value="Laptops">Laptops</option>
+              </optgroup>
+
+              {/* ======================= */}
+              {/* Components              */}
+              {/* ======================= */}
+              <optgroup label="Components">
+                <option value="Hard Disks & SSDs">Hard Disks & SSDs</option>
+                <option value="RAM">RAM</option>
+              </optgroup>
+
+              {/* ======================= */}
+              {/* Accessories             */}
+              {/* ======================= */}
+              <optgroup label="Accessories">
+                <option value="Mice">Mice</option>
+                <option value="Keyboards">Keyboards</option>
+                <option value="Combo KB & Mouse">Combo KB & Mouse</option>
+                <option value="Headphones">Headphones</option>
+                <option value="Speakers">Speakers</option>
+                <option value="Bags">Bags</option>
+                <option value="Mousepads & Deskpads">Mousepads & Deskpads</option>
+                <option value="Cooling Pads">Cooling Pads</option>
+              </optgroup>
+
+              {/* ======================= */}
+              {/* Others                  */}
+              {/* ======================= */}
+              <optgroup label="Others">
+                <option value="Monitors">Monitors</option>
+                <option value="Adapters">Adapters</option>
+                <option value="Cables">Cables</option>
+                <option value="Flash Drives">Flash Drives</option>
+                <option value="Others">Others</option>
+              </optgroup>
             </select>
           </div>
+
 
              <div className="static-field">
               <label htmlFor="priority">Priority</label>

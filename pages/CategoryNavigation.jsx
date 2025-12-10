@@ -90,11 +90,13 @@ useEffect(() => {
     p => !debouncedSearch || p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
-    const nothingAtAll =
-      !loadingProducts &&
-      !loadingOffers &&
-      displayedProducts.length === 0 &&
-      displayedOffers.length === 0;
+const nothingAtAll =
+  !loadingProducts &&
+  !loadingOffers &&
+  !searchTerm &&
+  (productsData?.products?.length === 0) &&
+  (offersData?.products?.length === 0);
+
 
 
       

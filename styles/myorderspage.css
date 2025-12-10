@@ -252,7 +252,14 @@
   transform: scale(1.05);
 }
 
-.pr-item-name { flex: 2; }
+.pr-item-name {
+  flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px; /* prevents stretching and ensures truncation */
+}
+
 .pr-item-qty { flex: 0.6; text-align: center; }
 .pr-item-price { flex: 1; text-align: right; }
 

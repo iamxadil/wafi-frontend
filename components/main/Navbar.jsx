@@ -9,7 +9,7 @@ import {
   Heart,
   UserCircle,
   GaugeCircle,
-  Monitor
+  Puzzle
 } from "lucide-react";
 import { CgMenuRightAlt as Menu } from "react-icons/cg";
 import { Link } from "react-router-dom";
@@ -28,7 +28,8 @@ import useTranslate from "../hooks/useTranslate.jsx";
 // ✅ Pre-memoize static menu data
 const LAPTOP_BRANDS = ["Asus", "Acer", "Apple", "Lenovo", "HP", "MSI", "Microsoft", "Dell"];
 const ACCESSORIES = ["Keyboards", "Mice", "Combo Kb & M", "Headphones", "Speakers", "Bags", "Cooling Pads", "Mousepads & Deskpads"];
-const OTHERS = ["Routers", "Cables", "Adapters", "Flash Drives", "Hard Disks & SSDs"];
+const COMPONENTS = ["Hard Disks & SSDs", "RAM"];
+const OTHERS = ["Monitors"];
 
 const Logo = memo(() => (
   <div id="logo" className="logo" aria-label="Al-Wafi Logo">
@@ -116,22 +117,49 @@ const Navbar = () => {
         </ul>
       </li>
 
-      <li>
-          <Link to="/monitors">
-            <Monitor size={20} />
-            <span>{t("Monitors", "شاشات")}</span>
-          </Link>
-       </li>
+     <li
+        onMouseEnter={() => setActiveMenu("components")}
+        onMouseLeave={() => setActiveMenu(null)}
+      >
+        <Link to="/components">
+          <Puzzle size={20} />
+          <span>{t("Components", "مكوّنات")}</span>
+        </Link>
 
-      <li>
+        <ul className={`submenu glassy ${activeMenu === "components" ? "show" : ""}`}>
+          <div className="submenu-group">
+            {COMPONENTS.map((item) => (
+              <li key={item}>
+                <Link to={`/category/${item}`}>
+                  {item}
+                </Link>
+              </li>
+            ))}
+          </div>
+        </ul>
+      </li>
+
+        <li
+          onMouseEnter={() => setActiveMenu("others")}
+          onMouseLeave={() => setActiveMenu(null)}
+        >
           <Link to="/others">
             <Shapes size={20} />
             <span>{t("Others", "اخرى")}</span>
           </Link>
-      </li>
 
-  
-
+          <ul className={`submenu glassy ${activeMenu === "others" ? "show" : ""}`}>
+            <div className="submenu-group">
+              {OTHERS.map((item) => (
+                <li key={item}>
+                  <Link to={`/category/${item}`}>
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </div>
+          </ul>
+        </li>
     </ul>
   ));
 

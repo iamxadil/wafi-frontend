@@ -50,6 +50,17 @@ const menuData = [
   },
 
   {
+    titleKey: { en: "Components", ar: "مُعدات" },
+    icon: <Mouse size={25} />,
+    type: "dropdown",
+    items: [
+      { label: { en: "All Components", ar: "جميع المعدات" }, path: "/components" },
+      { label: "Hard Disks & SSDs", path: "/category/Hard Disks & SSDs" },
+      { label: "RAM", path: "/category/RAM" },
+    ],
+  },
+
+  {
     titleKey: { en: "Monitors", ar: "شاشات" },
     icon: <Monitor size={25} />,
     type: "single",
