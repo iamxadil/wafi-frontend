@@ -25,6 +25,15 @@ import { useManageProductsStore } from "../../../stores/useManageProductsStore";
 import Pagination from "../../../main/Pagination.jsx";
 import useWindowWidth from "../../../hooks/useWindowWidth.jsx";
 
+
+const buildImage = (src) => {
+  if (!src) return "/placeholder.png";
+  if (src.startsWith("http")) return src;
+
+  const endpoint = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
+  return `${endpoint}/${src.replace(/^\//, "")}`;
+};
+
 /* ============================================================
    FRONTEND → BACKEND MAPPINGS
 ============================================================ */
@@ -218,14 +227,15 @@ const Products = () => {
           </Group>
 
           <div style={{ marginBottom: "1rem", textAlign: "center" }}>
-            <img
-              src={p.images?.[0] || "/placeholder.png"}
-              style={{
-                width: "100%",
-                height: 220,
-                objectFit: "contain",
-              }}
-            />
+           <img
+                src={buildImage(p.images?.[0])}
+                style={{
+                  width: "100%",
+                  height: 220,
+                  objectFit: "contain",
+                }}
+              />
+
           </div>
 
           <Stack spacing={6}>
@@ -309,9 +319,10 @@ const Products = () => {
 
               <Table.Td>
                 <img
-                  src={p.images?.[0] || "/placeholder.png"}
-                  style={{ width: 40, height: 40, objectFit: "contain" }}
-                />
+                src={buildImage(p.images?.[0])}
+                style={{ width: 40, height: 40, objectFit: "contain" }}
+              />
+
               </Table.Td>
 
              <Table.Td>

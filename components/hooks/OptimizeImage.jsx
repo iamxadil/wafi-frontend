@@ -1,77 +1,59 @@
 import React, { useRef, useState, useEffect } from "react";
 
-/**
- * Responsive, lazy-loading, high-quality image optimizer
- */
 const OptimizeImage = ({
   src,
   alt = "",
   className = "",
-  aspectRatio = 1, // e.g. 1 for square, 16/9 for wide images
-  quality = 100,
-  format = "webp",
+  aspectRatio = 1,
   style = {},
   lazyBackground = "#1a1a1a",
 }) => {
   const [visible, setVisible] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(null);
-  const imgRef = useRef(null);
   const containerRef = useRef(null);
 
-  /* ============================================================
-     👁️ 1. Lazy load when visible
-  ============================================================ */
+  const IMAGEKIT_URL = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
+
+  /* --------------------------------------------
+     1. Lazy Load
+  -------------------------------------------- */
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisible(true);
-            observer.disconnect();
-          }
-        });
+        if (entries[0].isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
       },
-      { rootMargin: "250px" }
+      { rootMargin: "300px" }
     );
+
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
-  /* ============================================================
-     📏 2. Detect container width (for responsive optimization)
-  ============================================================ */
-  useEffect(() => {
-    if (!visible || !containerRef.current) return;
+  if (!src) return null;
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const width = entry.contentRect.width;
-        if (width !== containerWidth) setContainerWidth(Math.round(width));
-      }
-    });
+  /* --------------------------------------------
+     2. Normalize source → prevent duplicates!
+  -------------------------------------------- */
+  let finalUrl;
 
-    resizeObserver.observe(containerRef.current);
-    return () => resizeObserver.disconnect();
-  }, [visible]);
-
-  /* ============================================================
-     🧠 3. Compute optimized URL
-  ============================================================ */
-  let optimizedUrl = src;
-  if (visible && containerWidth) {
-    const dpr =
-      typeof window !== "undefined"
-        ? Math.min(window.devicePixelRatio || 1, 2)
-        : 1;
-
-    optimizedUrl = `${src}?tr=w-${Math.round(
-      containerWidth * dpr
-    )},q-${quality},f-${format},dpr-${dpr}`;
+  // A. Full URL
+  if (src.startsWith("http")) {
+    finalUrl = src;
+  }
+  // B. Already a CDN URL
+  else if (src.startsWith(IMAGEKIT_URL)) {
+    finalUrl = src;
+  }
+  // C. Raw filename stored in DB
+  else {
+    finalUrl = `${IMAGEKIT_URL}/${src.replace(/^\//, "")}`;
   }
 
-  /* ============================================================
-     🎨 4. Placeholder layout (no shift)
-  ============================================================ */
+  /* --------------------------------------------
+     3. Placeholder
+  -------------------------------------------- */
   if (!visible) {
     return (
       <div
@@ -86,14 +68,13 @@ const OptimizeImage = ({
     );
   }
 
-  /* ============================================================
-     🖼️ 5. Actual image render
-  ============================================================ */
+  /* --------------------------------------------
+     4. Render (CDN will auto-optimize)
+  -------------------------------------------- */
   return (
     <div
       ref={containerRef}
       style={{
-        position: "relative",
         width: "100%",
         aspectRatio,
         overflow: "hidden",
@@ -102,16 +83,15 @@ const OptimizeImage = ({
       }}
     >
       <img
-        ref={imgRef}
-        src={optimizedUrl}
+        src={finalUrl}
         alt={alt}
         className={className}
         style={{
           width: "100%",
           height: "100%",
           objectFit: "contain",
-          transition: "opacity 0.4s ease",
-          opacity: visible ? 1 : 0,
+          opacity: 1,
+          transition: "opacity 0.3s ease",
         }}
         loading="lazy"
         decoding="async"
