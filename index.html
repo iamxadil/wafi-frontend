@@ -4,74 +4,92 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- English (default) -->
+    <!-- ENGLISH DESCRIPTION -->
     <meta
       name="description"
       content="Al-Wafi Computers — Iraq’s #1 destination for laptops, gaming gear, accessories, and premium electronics. Fast delivery, original products, and unbeatable prices."
     />
 
-    <!-- Arabic (SEO only) -->
     <meta
       name="description"
-      content="الوافي للحاسبات — الوجهة الأولى في العراق لشراء اللابتوبات، أجهزة الألعاب، الإكسسوارات والإلكترونيات. توصيل سريع ومنتجات أصلية بأسعار مميزة."
       lang="ar"
+      content="الوافي للحاسبات — الوجهة الأولى في العراق لشراء اللابتوبات، أجهزة الألعاب، الإكسسوارات والإلكترونيات. توصيل سريع ومنتجات أصلية بأسعار مميزة."
     />
 
+    <!-- Theme -->
     <meta name="theme-color" content="#0f1011" />
 
     <title>Al-Wafi Computers | الوافي للحاسبات</title>
+
+    <!-- Hreflang -->
     <link rel="alternate" href="https://alwafi.net/" hreflang="en" />
     <link rel="alternate" href="https://alwafi.net/" hreflang="ar" />
     <link rel="alternate" href="https://alwafi.net/" hreflang="x-default" />
+
+    <!-- ==========================
+         FAVICONS (Required for Google)
+       ========================== -->
+
+    <!-- Classic favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+
+    <!-- Modern icons -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- PWA-required icons -->
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- OpenGraph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://alwafi.net/" />
-    <meta
-      property="og:title"
-      content="Al-Wafi Computers | Laptops & Gaming in Iraq"
-    />
+    <meta property="og:title" content="Al-Wafi Computers | Laptops & Gaming in Iraq" />
     <meta
       property="og:description"
-      content="Shop premium laptops, gaming PCs, monitors, accessories, and electronics at the best prices in Iraq."
+      content="Shop premium laptops, gaming PCs, accessories, and electronics at the best prices in Iraq."
     />
     <meta property="og:image" content="https://alwafi.net/og-banner.png?v=1" />
 
     <meta property="og:locale" content="en_US" />
     <meta property="og:locale:alternate" content="ar_IQ" />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="Al-Wafi for Computers | Laptops & Accessories"
-    />
+    <meta name="twitter:title" content="Al-Wafi for Computers | Laptops & Accessories" />
     <meta
       name="twitter:description"
       content="Explore top-quality laptops, electronics, and gaming gear across Iraq."
     />
     <meta name="twitter:image" content="https://alwafi.net/og-banner.png?v=1" />
+
+    <!-- Canonical -->
     <link rel="canonical" href="https://alwafi.net/" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       media="print"
       onload="this.media='all'"
     />
+
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap"
       media="print"
       onload="this.media='all'"
     />
+
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap"
       media="print"
       onload="this.media='all'"
-    />
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Aref+Ruqaa:wght@400;700&family=Noto+Sans+Arabic:wght@100..900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
-      rel="stylesheet"
     />
 
     <noscript>
@@ -89,11 +107,7 @@
       />
     </noscript>
 
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
+    <!-- Schema.org -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -106,8 +120,7 @@
             "url": "https://alwafi.net/",
             "logo": "https://alwafi.net/favicon.svg",
             "image": "https://alwafi.net/og-banner.png?v=1",
-            "description": "Al-Wafi Computers — Iraq’s #1 destination for laptops, gaming gear, and electronics.",
-            "sameAs": []
+            "description": "Al-Wafi Computers — Iraq’s #1 destination for laptops, gaming gear, and electronics."
           },
           {
             "@type": "WebSite",
@@ -115,9 +128,7 @@
             "url": "https://alwafi.net/",
             "name": "Al-Wafi for Computers",
             "alternateName": "الوافي للحاسبات",
-            "publisher": {
-              "@id": "https://alwafi.net/#organization"
-            },
+            "publisher": { "@id": "https://alwafi.net/#organization" },
             "potentialAction": {
               "@type": "SearchAction",
               "target": "https://alwafi.net/search?query={search_term_string}",

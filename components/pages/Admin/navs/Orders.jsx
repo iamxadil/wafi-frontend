@@ -60,6 +60,23 @@ const getStatusColor = (status) => {
   }
 };
 
+
+
+const STATUS_GRADIENTS = {
+  Delivered:  { from: "#16a34a", to: "#4ade80", deg: 130 },
+  "Picked-Up": { from: "#0ea5e9", to: "#38bdf8", deg: 130 },
+  Packaging: { from: "#f59e0b", to: "#fbbf24", deg: 130 },
+  "On the way": { from: "#3b82f6", to: "#60a5fa", deg: 130 },
+  Canceled: { from: "#ef4444", to: "#f87171", deg: 130 },
+  Refunded: { from: "#eab308", to: "#fde047", deg: 130 },
+  Waiting: { from: "#6366f1", to: "#a78bfa", deg: 130 },
+  default: { from: "#6b7280", to: "#9ca3af", deg: 130 },
+};
+
+const getGradient = (status) =>
+  STATUS_GRADIENTS[status] || STATUS_GRADIENTS.default;
+
+
 /* ============================================================
    🧱 MEMOIZED DESKTOP ROW
 ============================================================ */
@@ -115,9 +132,34 @@ const OrderRow = React.memo(
         </Table.Td>
 
         <Table.Td>
-          <Badge color={color} variant="light">
-            {order.status || "Waiting"}
-          </Badge>
+         <Badge
+              variant="gradient"
+              gradient={getGradient(order.status)}
+              leftSection={
+                order.status === "Delivered"
+                  ? <CheckCircle2 size={14} />
+                  : order.status === "On the way"
+                  ? <Truck size={14} />
+                  : order.status === "Packaging"
+                  ? <Box size={14} />
+                  : order.status === "Picked-Up"
+                  ? <Handshake size={14} />
+                  : order.status === "Canceled"
+                  ? <XCircle size={14} />
+                  : order.status === "Refunded"
+                  ? <RotateCcw size={14} />
+                  : <ClipboardCheck size={14} />
+              }
+              style={{
+                borderRadius: 999,
+                paddingInline: 12,
+                color: "white",
+                fontWeight: 600,
+              }}
+            >
+              {order.status || "Waiting"}
+            </Badge>
+
         </Table.Td>
 
         <Table.Td>
@@ -205,12 +247,19 @@ const MobileOrderCard = React.memo(
             #{order.orderNumber}
           </Text>
           <Badge
-            color={color}
-            variant="filled"
-            leftSection={<StatusIcon size={13} />}
-          >
-            {order.status}
-          </Badge>
+                variant="gradient"
+                gradient={getGradient(order.status)}
+                leftSection={<StatusIcon size={13} />}
+                style={{
+                  borderRadius: 999,
+                  paddingInline: 10,
+                  color: "white",
+                  fontWeight: 600,
+                }}
+              >
+                {order.status}
+              </Badge>
+
         </Group>
 
         {order.pickup && (

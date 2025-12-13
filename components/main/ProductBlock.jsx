@@ -80,7 +80,29 @@ const ProductBlock = ({ product }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            -{Math.round((product.discountPrice / product.price) * 100)}%
+             {Math.round((product.discountPrice / product.price) * 100)}% 
+          </motion.span>
+        )}
+
+        {product.countInStock <= 0 && (
+          <motion.span
+            className="essence-out-of-stock"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            {t("Out of Stock", "غير متوفر")}
+          </motion.span>
+        )}
+
+        {product.countInStock > 0 && (
+          <motion.span
+            className="essence-in-stock"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            {t("In Stock", "متوفر")}
           </motion.span>
         )}
 

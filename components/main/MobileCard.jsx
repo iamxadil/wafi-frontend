@@ -44,8 +44,8 @@ const MobileCard = ({ product, customDelay = 0 }) => {
       onClick={() => navigate(`/product/${id}`)}
     >
       {/* Badges */}
-      {product.countInStock === 0 && <span className="badge out-of-stock">Out of Stock</span>}
-      {product.countInStock > 0 && <span className="badge in-stock">In Stock</span>}
+      {product.countInStock === 0 && <span className="badge out-of-stock">{t("Out of Stock", "غير متوفر")}</span>}
+      {product.countInStock > 0 && <span className="badge in-stock">{t("In Stock", "متوفر")}</span>}
       {product.discountPrice > 0 && (
         <span className="badge offer">
           {Math.round((product.discountPrice / product.price) * 100)}% {t("Off", "تخفيض")}

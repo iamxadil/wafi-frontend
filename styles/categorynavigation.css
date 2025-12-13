@@ -22,9 +22,11 @@
 .cat-header {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 20px;
+  margin-top: 2rem;
   flex-wrap: wrap;
   padding: 2rem 3rem;
   
@@ -142,13 +144,16 @@
   padding-bottom: 10px;
 }
 
-
+.offers-header {
+  width: 100%;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* --- RESPONSIVE DYNAMIC SIZING --- */
 @media (max-width: 650px) {
-
-
-
 
   .search-cat {
     width: 100%;
@@ -158,12 +163,10 @@
     padding-left: 2rem;
   }
   .cat-header h1 {
-    font-size:2rem;
+    font-size:1.45rem !important;
   }
   
-  .cat-header input {
-    padding: 0.6rem;
-  }
+ 
 
   .mob-card {
     min-width: 120px;
@@ -182,12 +185,21 @@
     flex-direction: column;
     align-items: flex-start;
   }
+  
+  .offers-header h1{
+    font-size: 1.45rem !important;
+    
+  }
+
+  
+
+
+
 }
 
-#offers-header {
-  width: 100%;
-  margin-top: 2rem;
-}
+
+
+
 
 #pc-cat-cards-container {
   display: flex;

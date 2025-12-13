@@ -80,6 +80,34 @@
   letter-spacing: 0.15px;
 }
 
+.essence-out-of-stock {
+  position: absolute;
+  top: 34px;
+  left: 4px;
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.272), #ff3a8f3f);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 8px;
+  letter-spacing: 0.15px;
+}
+
+.essence-in-stock {
+  position: absolute;
+  top: 34px;
+  left: 4px;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.272), #3affb33f);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 8px;
+  letter-spacing: 0.15px;
+}
+
 /* === FAVORITE BUTTON === */
 .essence-fav {
   position: absolute;

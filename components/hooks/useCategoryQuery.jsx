@@ -17,9 +17,9 @@ export const useCategoryQuery = (params = {}) => {
       const data = res.data || {};
       const products = Array.isArray(data.products) ? data.products : [];
 
-      const normalized = products.map((p) => ({
+       const normalized = (products || []).map((p) => ({
         ...p,
-        finalPrice: Number(p.finalPrice ?? p.price ?? 0),
+        finalPrice: p.discountPrice > 0 ? p.price - p.discountPrice : p.price,
       }));
 
       return {
