@@ -1,7 +1,8 @@
 export const getIKUrl = (src, opts = {}) => {
   const { w = 800, q = 70, f = "webp" } = opts;
 
-  const BASE = import.meta.env.IMAGEKIT_URL_ENDPOINT;
+  const BASE = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
+  
   if (!src) return "";
 
   // If full URL → strip the domain
