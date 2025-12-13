@@ -6,12 +6,15 @@ const OptimizeImage = ({
   className = "",
   aspectRatio = 1,
   style = {},
-  lazyBackground = "#1a1a1a",
+  widths = [400, 600, 900, 1200], // responsive breakpoints
+  quality = 60,
+  format = "webp", // can be webp or avif
+  background = "#1a1a1a",
 }) => {
   const [visible, setVisible] = useState(false);
   const containerRef = useRef(null);
 
-  const IMAGEKIT_URL = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
+  const IMAGEKIT_URL = import.meta.env.IMAGEKIT_URL_ENDPOINT;
 
   /* --------------------------------------------
      1. Lazy Load
@@ -34,25 +37,34 @@ const OptimizeImage = ({
   if (!src) return null;
 
   /* --------------------------------------------
-     2. Normalize source → prevent duplicates!
+     2. Normalize Source URL
   -------------------------------------------- */
-  let finalUrl;
+  let baseUrl;
 
-  // A. Full URL
   if (src.startsWith("http")) {
-    finalUrl = src;
-  }
-  // B. Already a CDN URL
-  else if (src.startsWith(IMAGEKIT_URL)) {
-    finalUrl = src;
-  }
-  // C. Raw filename stored in DB
-  else {
-    finalUrl = `${IMAGEKIT_URL}/${src.replace(/^\//, "")}`;
+    baseUrl = src;
+  } else if (src.startsWith(IMAGEKIT_URL)) {
+    baseUrl = src;
+  } else {
+    baseUrl = `${IMAGEKIT_URL}/${src.replace(/^\//, "")}`;
   }
 
   /* --------------------------------------------
-     3. Placeholder
+     3. Generate responsive srcset
+  -------------------------------------------- */
+  const srcSet = widths
+    .map(
+      (w) =>
+        `${baseUrl}?tr=w-${w},q-${quality},f-${format} ${w}w`
+    )
+    .join(", ");
+
+  const largest = widths[widths.length - 1];
+
+  const finalUrl = `${baseUrl}?tr=w-${largest},q-${quality},f-${format}`;
+
+  /* --------------------------------------------
+     4. Placeholder (before visible)
   -------------------------------------------- */
   if (!visible) {
     return (
@@ -61,7 +73,7 @@ const OptimizeImage = ({
         style={{
           aspectRatio,
           width: "100%",
-          background: lazyBackground,
+          background,
           borderRadius: 8,
         }}
       />
@@ -69,7 +81,7 @@ const OptimizeImage = ({
   }
 
   /* --------------------------------------------
-     4. Render (CDN will auto-optimize)
+     5. Render optimized responsive image
   -------------------------------------------- */
   return (
     <div
@@ -84,14 +96,15 @@ const OptimizeImage = ({
     >
       <img
         src={finalUrl}
+        srcSet={srcSet}
+        sizes="(max-width: 600px) 100vw, 50vw"
         alt={alt}
         className={className}
         style={{
           width: "100%",
           height: "100%",
           objectFit: "contain",
-          opacity: 1,
-          transition: "opacity 0.3s ease",
+          transition: "opacity 0.4s ease",
         }}
         loading="lazy"
         decoding="async"

@@ -1,7 +1,8 @@
 import "../styles/productdetails.css";
 import { useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { SiAsus,
+import {
+  SiAsus,
   SiApple,
   SiHp,
   SiAcer,
@@ -12,10 +13,11 @@ import { SiAsus,
   SiSamsung,
   SiSony,
   SiCorsair,
-  SiSteelseries 
+  SiSteelseries,
 } from "react-icons/si";
 import { TiVendorMicrosoft as Microsoft } from "react-icons/ti";
 import AulaIcon from "../assets/brands/aula.svg?react";
+import LenovoIcon from "../assets/brands/lenovo.svg?react";
 import RapooIcon from "../assets/brands/rapoo.svg?react";
 import HavitIcon from "../assets/brands/havit.svg?react";
 import WiwuIcon from "../assets/brands/wiwu.svg?react";
@@ -34,13 +36,11 @@ import HocoIcon from "../assets/brands/hoco.svg?react";
 import GigabyteIcon from "../assets/brands/gigabyte.svg?react";
 import GloriousIcon from "../assets/brands/glorious.svg?react";
 import AttackSharkIcon from "../assets/brands/attackshark.svg?react";
-import LenovoIcon from "../assets/brands/lenovo.svg?react";
-
 
 import { FiChevronDown, FiShare2, FiTrash2 } from "react-icons/fi";
 import { TiPlus as Plus, TiMinus as Minus } from "react-icons/ti";
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Card, Button, Rate, Divider, Carousel, Spin } from "antd";
 import {
   Cpu,
@@ -64,7 +64,7 @@ import {
   ScanFace,
   MonitorSmartphone,
   PackagePlus,
-  Keyboard
+  Keyboard,
 } from "lucide-react";
 
 import { toast } from "react-toastify";
@@ -74,7 +74,7 @@ import useAuthStore from "../components/stores/useAuthStore.jsx";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import useTranslate from "../components/hooks/useTranslate.jsx";
 
-
+import { getIKUrl } from "../components/utils/getIKUrl";
 
 const keywordIcons = {
   GPU: <Gpu />,
@@ -131,14 +131,16 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const width = useWindowWidth();
   const t = useTranslate();
+
   const fetchProduct = useProductStore((s) => s.fetchProduct);
   const addReview = useProductStore((s) => s.addReview);
   const deleteReview = useProductStore((s) => s.deleteReview);
   const selectedProduct = useProductStore((s) => s.selectedProduct);
   const reviewLoading = useProductStore((s) => s.reviewLoading);
+
   const addToCart = useCartStore((s) => s.addToCart);
-  const clearCart = useCartStore((s) => s.clearCart);
   const user = useAuthStore((s) => s.user);
+
   const [qty, setQty] = useState(1);
   const [mainImage, setMainImage] = useState("");
   const [fade, setFade] = useState(false);
@@ -153,132 +155,157 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (id) fetchProduct(id);
-  }, [id]);
+  }, [id, fetchProduct]);
 
   useEffect(() => {
     if (selectedProduct?.images?.length > 0)
       setMainImage(selectedProduct.images[0]);
   }, [selectedProduct]);
 
-
-
   if (!selectedProduct) return <Spin fullscreen />;
 
-
+  /* ============================================================
+     🔗 Normalized brand → icon map
+  ============================================================ */
   function normalizeBrand(name) {
-    return name
-      ?.trim()
-      .toLowerCase()
-      .replace(/[\s-]/g, ""); // remove spaces and dashes
+    return name?.trim().toLowerCase().replace(/[\s-]/g, "");
   }
 
+  const brandIcons = {
+    asus: SiAsus,
+    apple: SiApple,
+    hp: SiHp,
+    acer: SiAcer,
+    logitech: SiLogitech,
+    razer: SiRazer,
+    msi: SiMsi,
+    redragon: SiRedragon,
+    microsoft: Microsoft,
+    sony: SiSony,
+    corsair: SiCorsair,
+    samsung: SiSamsung,
+    steelseries: SiSteelseries,
+    lenovo: LenovoIcon,
+    aula: AulaIcon,
+    rapoo: RapooIcon,
+    havit: HavitIcon,
+    wiwu: WiwuIcon,
+    fantech: FantechIcon,
+    sandisk: SandiskIcon,
+    wd: WDIcon,
+    lexar: LexarIcon,
+    hisense: HisenseIcon,
+    acefast: AcefastIcon,
+    transcend: TranscendIcon,
+    anker: AnkerIcon,
+    tplink: TPlinkIcon,
+    orico: OricoIcon,
+    mcdodo: McdodoIcon,
+    hoco: HocoIcon,
+    gigabyte: GigabyteIcon,
+    glorious: GloriousIcon,
+    attackshark: AttackSharkIcon,
+  };
 
-  
-const brandIcons = {
-  asus: SiAsus,
-  apple: SiApple,
-  hp: SiHp,
-  acer: SiAcer,
-  logitech: SiLogitech,
-  razer: SiRazer,
-  msi: SiMsi,
-  redragon: SiRedragon,
-  microsoft: Microsoft,
-  sony: SiSony,
-  corsair: SiCorsair,
-  samsung: SiSamsung,
-  steelseries: SiSteelseries,
-  lenovo: LenovoIcon,
-  aula: AulaIcon,
-  rapoo: RapooIcon,
-  havit: HavitIcon,
-  wiwu: WiwuIcon,
-  fantech: FantechIcon,
-  sandisk: SandiskIcon,
-  wd: WDIcon,
-  lexar: LexarIcon,
-  hisense: HisenseIcon,
-  acefast: AcefastIcon,
-  transcend: TranscendIcon,
-  anker: AnkerIcon,
-  tplink: TPlinkIcon,
-  orico: OricoIcon,
-  mcdodo: McdodoIcon,
-  hoco: HocoIcon,
-  gigabyte: GigabyteIcon,
-  glorious: GloriousIcon,
-  attackshark: AttackSharkIcon,
-};
-
+  /* ============================================================
+     💰 Price helpers
+  ============================================================ */
   const getFinalPrice = (p) =>
     p.discountPrice > 0 ? p.price - p.discountPrice : p.price;
 
-  const handleThumbnailClick = (img) => {
-    if (img === mainImage) return;
+  /* ============================================================
+     🖼️ Optimized image URLs (bandwidth reduction)
+  ============================================================ */
 
-    setFade(true);
+  // Main desktop image: small (view) + large (zoom)
+  const mainImageSmall = getIKUrl(mainImage, { w: 800, q: 70, f: "webp" })
 
-    setTimeout(() => {
-      setMainImage(img);
 
-      setFade(false);
-    }, 200);
+  const mainImageLarge = getIKUrl(mainImage, { w: 2000, q: 80, f: "webp" })
+
+
+  // Primary image for SEO
+  const primaryImage = selectedProduct.images?.[0] || "";
+  const primaryImageOg = primaryImage
+    ? getIKUrl(primaryImage, { w: 1200, q: 80, f: "webp" })
+    : "";
+
+  /* ============================================================
+     🛒 Cart actions
+  ============================================================ */
+const handleThumbnailClick = (img) => {
+  if (img === mainImage) return;
+
+  setFade(true);
+
+  setTimeout(() => {
+    // Always store the RAW filename, not the optimized URL
+    // So transformations ALWAYS apply correctly
+    setMainImage(img);
+
+    setFade(false);
+  }, 200);
+};
+
+  const handleAddToCart = () => {
+    if (selectedProduct.countInStock <= 0) {
+      return toast.error(
+        t("This product is out of stock", "المنتج غير متوفر")
+      );
+    }
+
+    addToCart(
+      {
+        ...selectedProduct,
+        originalPrice: selectedProduct.price,
+        discountPrice: selectedProduct.discountPrice,
+        finalPrice: getFinalPrice(selectedProduct),
+      },
+      qty
+    );
   };
 
-  
+  const handleBuyNow = () => {
+    if (selectedProduct.countInStock <= 0) {
+      return toast.error(
+        t("This product is out of stock", "المنتج غير متوفر")
+      );
+    }
 
-const handleAddToCart = () => {
-  if (selectedProduct.countInStock <= 0) {
-    return toast.error(t("This product is out of stock", "المنتج غير متوفر"));
-  }
-
-  addToCart(
-    {
+    const item = {
       ...selectedProduct,
+      qty,
       originalPrice: selectedProduct.price,
       discountPrice: selectedProduct.discountPrice,
       finalPrice: getFinalPrice(selectedProduct),
-    },
-    qty
-  );
-};
+      countInStock: selectedProduct.countInStock,
+    };
 
-
-const handleBuyNow = () => {
-  if (selectedProduct.countInStock <= 0) {
-    return toast.error(t("This product is out of stock", "المنتج غير متوفر"));
-  }
-
-  const item = {
-    ...selectedProduct,
-    qty,
-    originalPrice: selectedProduct.price,
-    discountPrice: selectedProduct.discountPrice,
-    finalPrice: getFinalPrice(selectedProduct),
-    countInStock: selectedProduct.countInStock,
+    useCartStore.getState().replaceCart([item]);
+    setTimeout(() => navigate("/cart"), 20);
   };
 
-  useCartStore.getState().replaceCart([item]);
-  setTimeout(() => navigate("/cart"), 20);
-};
-
-const handleShare = async () => {
-  const shareUrl = `${window.location.origin}/product/${id}`;
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: selectedProduct.name,
-        text: "Check out this product!",
-        url: shareUrl,
-      });
-    } catch (err) {
-      console.error("Share failed", err);
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/product/${id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: selectedProduct.name,
+          text: "Check out this product!",
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error("Share failed", err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      alert("Product link copied to clipboard!");
     }
-  } else {
-    navigator.clipboard.writeText(shareUrl);
-    alert("Product link copied to clipboard!");
-  }
-};
+  };
+
+  /* ============================================================
+     🔍 Desktop magnifier
+  ============================================================ */
 
   const handleMagnify = (e) => {
     const container = e.currentTarget;
@@ -289,6 +316,10 @@ const handleShare = async () => {
     container.style.backgroundPosition = `${x}% ${y}%`;
   };
 
+  /* ============================================================
+     📱 Mobile double-tap zoom
+  ============================================================ */
+
   const handleDoubleTap = (e) => {
     const currentTime = Date.now();
     const timeDiff = currentTime - lastTapRef.current;
@@ -298,7 +329,7 @@ const handleShare = async () => {
       const touch = e.changedTouches[0];
       const x = ((touch.pageX - rect.left) / rect.width) * 100;
       const y = ((touch.pageY - rect.top) / rect.height) * 100;
-      // toggle zoom
+
       if (touchZoom) {
         setTouchZoom(false);
       } else {
@@ -317,16 +348,18 @@ const handleShare = async () => {
     const touch = e.touches[0];
     const rect = e.currentTarget.getBoundingClientRect();
 
-    // Calculate normalized position (0 → 1)
     const x = (touch.pageX - rect.left) / rect.width;
     const y = (touch.pageY - rect.top) / rect.height;
 
-    // Flip horizontally and vertically for natural feel
     const newX = 100 - x * 100;
     const newY = 100 - y * 100;
 
     setTouchPosition({ x: newX, y: newY });
   };
+
+  /* ============================================================
+     📝 Reviews
+  ============================================================ */
 
   const handleSubmitReview = async () => {
     if (!user)
@@ -382,7 +415,10 @@ const handleShare = async () => {
     await deleteReview(selectedProduct.id, reviewId);
   };
 
-  // === Build formatted specs list ===
+  /* ============================================================
+     📊 Specs & description
+  ============================================================ */
+
   const specOrder = [
     "cpu",
     "ram",
@@ -404,13 +440,10 @@ const handleShare = async () => {
     "accessories",
   ];
 
-  
-
   const specsList = specOrder
     .map((key) => {
       const value = selectedProduct.specs?.[key];
 
-      // ✅ Skip all "empty" cases:
       if (
         value === null ||
         value === undefined ||
@@ -438,31 +471,36 @@ const handleShare = async () => {
       }
 
       return (
-      <li className="spec-line" key={label} style={{flexDirection: t.rowReverse}}>
-      <span className="spec-icon">{icon}</span>
+        <li
+          className="spec-line"
+          key={label}
+          style={{ flexDirection: t.rowReverse }}
+        >
+          <span className="spec-icon">{icon}</span>
 
-        <span className="spec-text" 
-        style={{direction: "t.inlineDirection", unicodeBidi: t.bidiMode, alignItems: t.flexAlign, textAlign: t.textAlign}} >
-          <span className="spec-key">{label}: </span>
-          <span className="spec-value">{formattedValue}</span>
-        </span>
-      </li>
-
+          <span
+            className="spec-text"
+            style={{
+              direction: t.inlineDirection,
+              unicodeBidi: t.bidiMode,
+              alignItems: t.flexAlign,
+              textAlign: t.textAlign,
+            }}
+          >
+            <span className="spec-key">{label}: </span>
+            <span className="spec-value">{formattedValue}</span>
+          </span>
+        </li>
       );
     })
     .filter(Boolean);
 
   const descriptionLines = selectedProduct.description
     ? selectedProduct.description
-
         .replace(/\r\n|\r/g, "\n")
-
         .split(/(?<=\.) +/)
-
         .map((l) => l.trim())
-
         .filter(Boolean)
-
         .map((line) => {
           const matchedKeyword = Object.keys(keywordIcons).find((keyword) =>
             line.toLowerCase().startsWith(keyword.toLowerCase())
@@ -487,130 +525,146 @@ const handleShare = async () => {
       selectedProduct.reviews.length
     : 0;
 
+  /* ============================================================
+     🧠 SEO helpers
+  ============================================================ */
 
-            // Clean product title
-        function buildCleanTitle(product) {
-          const brand = product.brand || "";
-          const name = product.name || "";
+  function buildCleanTitle(product) {
+    const brand = product.brand || "";
+    const name = product.name || "";
 
-          return name.toLowerCase().startsWith(brand.toLowerCase())
-            ? name
-            : `${brand} ${name}`;
-        }
+    return name.toLowerCase().startsWith(brand.toLowerCase())
+      ? name
+      : `${brand} ${name}`;
+  }
 
-        // Short description
-        function buildDescription(product) {
-          if (!product.description) return "View full specifications and details.";
+  function buildDescription(product) {
+    if (!product.description)
+      return "View full specifications and details.";
 
-          const clean = product.description.replace(/\n+/g, " ").trim();
-          return clean.length > 160 ? clean.slice(0, 160) + "…" : clean;
-        }
+    const clean = product.description.replace(/\n+/g, " ").trim();
+    return clean.length > 160 ? clean.slice(0, 160) + "…" : clean;
+  }
 
-        // Format price
-        function formatPriceIQD(num) {
-          return new Intl.NumberFormat("en-IQ").format(num);
-        }
+  function formatPriceIQD(num) {
+    return new Intl.NumberFormat("en-IQ").format(num);
+  }
 
-        // Build JSON-LD (rich results)
-        function buildJsonLd(product) {
-          const price = product.discountPrice || product.price;
+  function buildJsonLd(product) {
+    const price = product.discountPrice || product.price;
 
-          return {
-            "@context": "https://schema.org/",
-            "@type": "Product",
-            name: product.name,
-            image: product.images,
-            description: buildDescription(product),
-            sku: product.sku,
-            brand: {
-              "@type": "Brand",
-              name: product.brand,
-            },
-            offers: {
-              "@type": "Offer",
-              priceCurrency: "IQD",
-              price: price.toString(),
-              availability:
-                product.countInStock > 0
-                  ? "https://schema.org/InStock"
-                  : "https://schema.org/OutOfStock",
-              url: `https://alwafi.net/product/${product._id}`,
-            },
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: product.rating || 5,
-              reviewCount: product.numReviews || 1,
-            },
-          };
-        }
+    return {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      name: product.name,
+      image: (product.images || []).map((img) =>
+        getIKUrl(img, { w: 1200, q: 80, f: "webp" })
+      ),
+      description: buildDescription(product),
+      sku: product.sku,
+      brand: {
+        "@type": "Brand",
+        name: product.brand,
+      },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "IQD",
+        price: price.toString(),
+        availability:
+          product.countInStock > 0
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+        url: `https://alwafi.net/product/${product._id}`,
+      },
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: product.rating || 5,
+        reviewCount: product.numReviews || 1,
+      },
+    };
+  }
+
+  console.log("MAIN_IMAGE:", mainImage);
+  console.log("SMALL_URL:", mainImageSmall);
+  console.log("LARGE_URL:", mainImageLarge);
+
 
 
   return (
     <>
       <Helmet>
-       <title>{buildCleanTitle(selectedProduct)} | Al-Wafi Computers</title>
-          <meta
-            name="description"
-            content={buildDescription(selectedProduct)}
-          />
+        <title>{buildCleanTitle(selectedProduct)} | Al-Wafi Computers</title>
+        <meta
+          name="description"
+          content={buildDescription(selectedProduct)}
+        />
 
-          {/* Canonical URL */}
-          <link
-            rel="canonical"
-            href={`https://alwafi.net/product/${selectedProduct._id}`}
-          />
+        {/* Canonical URL */}
+        <link
+          rel="canonical"
+          href={`https://alwafi.net/product/${selectedProduct._id}`}
+        />
 
-          {/* Language support */}
-          <meta name="language" content="en, ar" />
-          <meta httpEquiv="Content-Language" content="en" />
-          <meta property="og:locale" content="en_US" />
-          <meta property="og:locale:alternate" content="ar_IQ" />
+        {/* Language support */}
+        <meta name="language" content="en, ar" />
+        <meta httpEquiv="Content-Language" content="en" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:locale:alternate" content="ar_IQ" />
 
-          {/* OG preview */}
-          <meta property="og:title" content={buildCleanTitle(selectedProduct)} />
-          <meta
-            property="og:description"
-            content={buildDescription(selectedProduct)}
-          />
-          <meta property="og:image" content={selectedProduct.images[0]} />
-          <meta
-            property="og:url"
-            content={`https://alwafi.net/product/${selectedProduct._id}`}
-          />
-          <meta property="og:type" content="product" />
+        {/* OG preview */}
+        <meta
+          property="og:title"
+          content={buildCleanTitle(selectedProduct)}
+        />
+        <meta
+          property="og:description"
+          content={buildDescription(selectedProduct)}
+        />
+        <meta property="og:image" content={primaryImageOg} />
+        <meta
+          property="og:url"
+          content={`https://alwafi.net/product/${selectedProduct._id}`}
+        />
+        <meta property="og:type" content="product" />
 
-          {/* Twitter */}
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={buildCleanTitle(selectedProduct)} />
-          <meta
-            name="twitter:description"
-            content={buildDescription(selectedProduct)}
-          />
-          <meta name="twitter:image" content={selectedProduct.images[0]} />
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={buildCleanTitle(selectedProduct)}
+        />
+        <meta
+          name="twitter:description"
+          content={buildDescription(selectedProduct)}
+        />
+        <meta name="twitter:image" content={primaryImageOg} />
 
-          {/* Google Rich Results */}
-          <script type="application/ld+json">
-            {JSON.stringify(buildJsonLd(selectedProduct))}
-          </script>
+        {/* Google Rich Results */}
+        <script type="application/ld+json">
+          {JSON.stringify(buildJsonLd(selectedProduct))}
+        </script>
       </Helmet>
-
 
       {/* Desktop */}
       {width > 950 && (
         <div className="dt-container">
           <main id="product-card">
-          <div className="dt-brand">
-          {selectedProduct.brand && (() => {
-            const brandKey = normalizeBrand(selectedProduct.brand);
-            const Icon = brandIcons[brandKey] || Brackets;
-            return <Icon className="brand-icon" style={{width: "45px", height: "45px"}} size={35} color="var(--text)" />;
-          })()}
-        </div>
-
-
+            <div className="dt-brand">
+              {selectedProduct.brand && (() => {
+                const brandKey = normalizeBrand(selectedProduct.brand);
+                const Icon = brandIcons[brandKey] || Brackets;
+                return (
+                  <Icon
+                    className="brand-icon"
+                    style={{ width: "45px", height: "45px" }}
+                    size={35}
+                    color="var(--text)"
+                  />
+                );
+              })()}
+            </div>
 
             {/* Image & Thumbnails */}
-
             <section className="pr-img-container">
               <div className="image-wrapper">
                 <div className="image-overlay">
@@ -619,37 +673,48 @@ const handleShare = async () => {
 
                 <div
                   className="main-pr-img magnifier"
-                  onMouseMove={(e) => handleMagnify(e)}
+                  onMouseMove={handleMagnify}
                   onMouseLeave={() => setZoom(false)}
                   style={{
-                    backgroundImage: zoom ? `url(${mainImage})` : "none",
+                    backgroundImage: zoom ? `url(${mainImageLarge})` : "none",
+                    backgroundSize: zoom ? "200%" : "contain",
+                    backgroundRepeat: "no-repeat",
                   }}
                 >
                   <img
                     ref={imgRef}
-                    src={mainImage}
+                    src={mainImageSmall}
                     alt={selectedProduct.name}
                     className={fade ? "fade-out" : "fade-in"}
                     style={{ minWidth: "350px" }}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
               </div>
 
               <div className="thumbnail-row">
-                {selectedProduct.images.map((img, i) => (
+                {selectedProduct.images.map((img, i) => {
+                  const thumbUrl = getIKUrl(img, {
+                    w: 220,
+                    q: 60,
+                    f: "webp",
+                  });
+                  return (
                   <img
-                    key={i}
-                    src={img}
-                    alt={`thumb${i + 1}`}
-                    onClick={() => handleThumbnailClick(img)}
-                    className={mainImage === img ? "active-thumb" : ""}
-                  />
-                ))}
+                key={i}
+                src={thumbUrl}
+                alt={`thumb${i + 1}`}
+                onClick={() => handleThumbnailClick(img)}  // ✅ FIXED
+                className={mainImage === img ? "active-thumb" : ""}
+              />
+
+                  );
+                })}
               </div>
             </section>
 
             {/* Product Details */}
-
             <section className="pr-details-container">
               <div className="dt-name">
                 <h1>{selectedProduct.name}</h1>
@@ -684,7 +749,7 @@ const handleShare = async () => {
                   ))}
                 </div>
               </div>
-                
+
               <div className="dt-price">
                 {selectedProduct.discountPrice > 0 ? (
                   <>
@@ -704,7 +769,6 @@ const handleShare = async () => {
               </div>
 
               {/* Quantity + Buttons */}
-
               <div className="dt-quantity">
                 <button onClick={() => setQty((p) => Math.max(p - 1, 1))}>
                   <Minus />
@@ -714,7 +778,9 @@ const handleShare = async () => {
 
                 <button
                   onClick={() =>
-                    setQty((p) => Math.min(p + 1, selectedProduct.countInStock))
+                    setQty((p) =>
+                      Math.min(p + 1, selectedProduct.countInStock)
+                    )
                   }
                 >
                   <Plus />
@@ -735,6 +801,7 @@ const handleShare = async () => {
         </div>
       )}
 
+      {/* Mobile */}
       {width < 950 && (
         <div className="dt-container" style={{ padding: "1.5rem" }}>
           <Card
@@ -763,35 +830,52 @@ const handleShare = async () => {
                   overflow: "hidden",
                 }}
               >
-                {selectedProduct.images.map((img, index) => (
-                  <div key={index}>
-                    <div
-                      className="mobile-magnifier"
-                      onTouchEnd={handleDoubleTap}
-                      onTouchMove={handleTouchMove}
-                      style={{
-                        backgroundImage: touchZoom ? `url(${img})` : "none",
-                        backgroundSize: touchZoom ? "300%" : "contain",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: `${touchPosition.x}% ${touchPosition.y}%`,
-                        transition:
-                          "background-size 0.3s ease, background-position 0.3s ease",
-                      }}
-                    >
-                      <img
-                        src={img}
-                        alt={`${selectedProduct.name}-${index}`}
+                {selectedProduct.images.map((img, index) => {
+                  const mobileSmall = getIKUrl(img, {
+                    w: 900,
+                    q: 70,
+                    f: "webp",
+                  });
+                  const mobileLarge = getIKUrl(img, {
+                    w: 2000,
+                    q: 80,
+                    f: "webp",
+                  });
+
+                  return (
+                    <div key={index}>
+                      <div
+                        className="mobile-magnifier"
+                        onTouchEnd={handleDoubleTap}
+                        onTouchMove={handleTouchMove}
                         style={{
-                          width: "100%",
-                          height: 280,
-                          objectFit: "contain",
-                          opacity: touchZoom ? 0 : 1,
-                          transition: "opacity 0.3s ease",
+                          backgroundImage: touchZoom
+                            ? `url(${mobileLarge})`
+                            : "none",
+                          backgroundSize: touchZoom ? "300%" : "contain",
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: `${touchPosition.x}% ${touchPosition.y}%`,
+                          transition:
+                            "background-size 0.3s ease, background-position 0.3s ease",
                         }}
-                      />
+                      >
+                        <img
+                          src={mobileSmall}
+                          alt={`${selectedProduct.name}-${index}`}
+                          style={{
+                            width: "100%",
+                            height: 280,
+                            objectFit: "contain",
+                            opacity: touchZoom ? 0 : 1,
+                            transition: "opacity 0.3s ease",
+                          }}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </Carousel>
 
               <Button
@@ -822,28 +906,32 @@ const handleShare = async () => {
                   marginBottom: 10,
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {selectedProduct.brand && (() => {
-                  const brandKey = normalizeBrand(selectedProduct.brand);
-                  const Icon = brandIcons[brandKey] || Brackets;
-                  return <Icon size={25} color="var(--text)" className="brand-icon" />;
-                })()}
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: 8 }}
+                >
+                  {selectedProduct.brand && (() => {
+                    const brandKey = normalizeBrand(selectedProduct.brand);
+                    const Icon = brandIcons[brandKey] || Brackets;
+                    return (
+                      <Icon
+                        size={25}
+                        color="var(--text)"
+                        className="brand-icon"
+                      />
+                    );
+                  })()}
 
-
-                 <span
+                  <span
                     style={{
                       fontSize: 14,
                       color:
-                        selectedProduct.countInStock > 0
-                          ? "green"      // Green
-                          : "red",     // Red
+                        selectedProduct.countInStock > 0 ? "green" : "red",
                     }}
                   >
                     {selectedProduct.countInStock > 0
                       ? t("In Stock", "متوفر")
                       : t("Out of Stock", "غير متوفر")}
                   </span>
-
                 </div>
                 <span
                   style={{
@@ -867,7 +955,9 @@ const handleShare = async () => {
                 {selectedProduct.name}
               </h2>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: 6 }}
+              >
                 <Rate
                   value={Math.round(avgRating)}
                   disabled
@@ -886,7 +976,9 @@ const handleShare = async () => {
                   )}
                 />
                 {selectedProduct.reviews?.length > 0 && (
-                  <span style={{ fontSize: 13, color: "var(--line-clr)" }}>
+                  <span
+                    style={{ fontSize: 13, color: "var(--line-clr)" }}
+                  >
                     ({selectedProduct.reviews.length})
                   </span>
                 )}
@@ -986,7 +1078,11 @@ const handleShare = async () => {
 
               {/* Action Buttons */}
               <div
-                style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem" }}
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  marginBottom: "1.5rem",
+                }}
               >
                 <Button
                   type="default"
@@ -1028,7 +1124,6 @@ const handleShare = async () => {
       )}
 
       {/* Description + Specs */}
-
       <div className="dt-container">
         <div className="pr-description-container">
           <div
@@ -1039,7 +1134,9 @@ const handleShare = async () => {
               {t("Description", "الوصف والمواصفات")}
             </h3>
 
-            <FiChevronDown className={`arrow ${expanded ? "rotated" : ""}`} />
+            <FiChevronDown
+              className={`arrow ${expanded ? "rotated" : ""}`}
+            />
           </div>
 
           <div
@@ -1068,7 +1165,6 @@ const handleShare = async () => {
       </div>
 
       {/* Comments Section */}
-
       <main id="comments-main-container">
         <div className="pr-comments-container">
           <h3 style={{ justifyContent: t.flexAlign }}>
@@ -1090,7 +1186,8 @@ const handleShare = async () => {
                           key={i}
                           className="star-icon"
                           style={{
-                            color: i <= review.rating ? "#f5b50a" : "#d0d0d0",
+                            color:
+                              i <= review.rating ? "#f5b50a" : "#d0d0d0",
                           }}
                         >
                           ★
@@ -1137,7 +1234,9 @@ const handleShare = async () => {
                   {[1, 2, 3, 4, 5].map((star) => (
                     <span
                       key={star}
-                      className={`star ${star <= newRating ? "selected" : ""}`}
+                      className={`star ${
+                        star <= newRating ? "selected" : ""
+                      }`}
                       onClick={() => setNewRating(star)}
                     >
                       ★
@@ -1170,7 +1269,10 @@ const handleShare = async () => {
           ) : (
             <p>
               {t("Please", "يرجى")}{" "}
-              <span className="login-link" onClick={() => navigate("/signin")}>
+              <span
+                className="login-link"
+                onClick={() => navigate("/signin")}
+              >
                 {t("login", "تسجيل الدخول")}
               </span>{" "}
               {t("to post a review.", "لإضافة مراجعة.")}

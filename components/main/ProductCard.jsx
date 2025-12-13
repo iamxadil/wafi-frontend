@@ -50,6 +50,9 @@ const ProductCard = ({ product }) => {
       <div className="prd-img-wrap">
         <OptimizeImage
           src={product.images?.[0]}
+          aspectRatio={1}
+          widths={[300, 500]}
+          quality={60}
           alt={product.name}
           className="prd-img"
         />
