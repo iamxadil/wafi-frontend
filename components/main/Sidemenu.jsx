@@ -65,7 +65,7 @@ const menuData = [
     titleKey: { en: "Monitors", ar: "شاشات" },
     icon: <Monitor size={25} />,
     type: "single",
-    path: "/monitors",
+    path: "/category/monitors",
   },
 
   {
