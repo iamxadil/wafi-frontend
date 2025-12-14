@@ -26,6 +26,7 @@ import useWindowWidth from "../hooks/useWindowWidth.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
 
 // ✅ Pre-memoize static menu data
+
 const LAPTOP_BRANDS = ["Asus", "Acer", "Apple", "Lenovo", "HP", "MSI", "Microsoft", "Dell"];
 const ACCESSORIES = ["Headphones", "Speakers", "Bags", "Mice", "Keyboards", "Combo Kb & M", "Cooling Pads", "Mousepads & Deskpads"];
 const COMPONENTS = ["Hard Disks & SSDs", "RAM"];
@@ -109,10 +110,21 @@ const Navbar = () => {
         <ul className={`submenu glassy ${activeMenu === "accessories" ? "show" : ""}`}>
           <div className="submenu-group">
             {ACCESSORIES.map((cat) => (
-              <li key={cat}>
-                <Link to={`/category/${cat}`}>{cat}</Link>
-              </li>
-            ))}
+            <li key={cat}>
+              <Link to={`/category/${cat}`}>
+                {t(cat, {
+                  Headphones: "سماعات رأس",
+                  Speakers: "مكبرات صوت",
+                  Bags: "حقائب",
+                  Mice: "ماوسات",
+                  Keyboards: "لوحات مفاتيح",
+                  "Combo Kb & M": "كومبو كيبورد وماوس",
+                  "Cooling Pads": "لوحات تبريد",
+                  "Mousepads & Deskpads": "مفارش ماوسات",
+                }[cat])}
+              </Link>
+            </li>
+          ))}
           </div>
         </ul>
       </li>
@@ -129,12 +141,15 @@ const Navbar = () => {
         <ul className={`submenu glassy ${activeMenu === "components" ? "show" : ""}`}>
           <div className="submenu-group">
             {COMPONENTS.map((item) => (
-              <li key={item}>
-                <Link to={`/category/${item}`}>
-                  {item}
-                </Link>
-              </li>
-            ))}
+            <li key={item}>
+              <Link to={`/category/${item}`}>
+                {t(item, {
+                  "Hard Disks & SSDs": "التخزين",
+                  RAM: "الرامات",
+                }[item])}
+              </Link>
+            </li>
+          ))}
           </div>
         </ul>
       </li>
@@ -150,10 +165,12 @@ const Navbar = () => {
 
           <ul className={`submenu glassy ${activeMenu === "others" ? "show" : ""}`}>
             <div className="submenu-group">
-              {OTHERS.map((item) => (
+             {OTHERS.map((item) => (
                 <li key={item}>
                   <Link to={`/category/${item}`}>
-                    {item}
+                    {t(item, {
+                      Monitors: "شاشات",
+                    }[item])}
                   </Link>
                 </li>
               ))}

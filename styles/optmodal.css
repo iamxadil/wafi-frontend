@@ -52,10 +52,9 @@
 }
 
 .otp-btn.whatsapp {
-  background: #404040;
-  opacity: 0.2;
+  background: #00a246;
   color: white;
-  cursor: not-allowed;
+  cursor: pointer;
 }
 
 
@@ -67,4 +66,96 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* OPTIONS */
+.otp-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.otp-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color, #ddd);
+  background: var(--panel-bg, rgba(255,255,255,0.7));
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.otp-option:hover {
+  border-color: var(--accent, #4f46e5);
+  background: rgba(79,70,229,0.05);
+}
+
+.otp-option.selected {
+  border-color: var(--accent, #4f46e5);
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.15);
+}
+
+/* Hide native radio */
+.otp-option input {
+  display: none;
+}
+
+/* Custom checkbox */
+.custom-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #bbb;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.otp-option.selected .custom-check {
+  border-color: var(--accent, #4f46e5);
+  background: var(--accent, #4f46e5);
+}
+
+.custom-check::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.otp-option.selected .custom-check::after {
+  opacity: 1;
+}
+
+/* TEXT */
+.otp-option-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.otp-option-text strong {
+  font-size: 15px;
+  color: var(--text);
+}
+
+.otp-option-text span {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+/* BUTTONS */
+.otp-btn.primary {
+  background: var(--accent, #4f46e5);
+  color: #fff;
+}
+
+.otp-btn.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

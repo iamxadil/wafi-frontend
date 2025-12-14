@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../../styles/payment.css";
 import useCartStore from "../stores/useCartStore.jsx";
 import useOrderStore from "../stores/useOrderStore.jsx";
@@ -8,11 +8,18 @@ import ReCAPTCHA from "react-google-recaptcha";
 import useTranslate from "../hooks/useTranslate.jsx";
 import { useOtpQuery } from "../query/useOtpQuery.jsx";
 import OtpMethodModal from "../utils/OtpMethodModal.jsx";
+import {Mail} from "lucide-react";
+
+const RECAPTCHA_SITE_KEY = "6Lfk68wrAAAAAI-CXEppIpnN86Ss-wgBiBAbEdzv";
 
 const Payment = () => {
   const navigate = useNavigate();
   const t = useTranslate();
+
   const [resendTimer, setResendTimer] = useState(0);
+
+  // interval ref to prevent stacking/leaks
+  const resendIntervalRef = useRef(null);
 
   /* ==========================================================
      Cart & Totals
@@ -41,6 +48,7 @@ const Payment = () => {
   const [phoneValid1, setPhoneValid1] = useState(true);
   const [phoneValid2, setPhoneValid2] = useState(true);
   const [samePhoneError, setSamePhoneError] = useState(false);
+  const [otpTarget, setOtpTarget] = useState(null);
 
   const [shippingInfo, setShippingInfo] = useState({
     fullName: "",
@@ -83,6 +91,18 @@ const Payment = () => {
   } = useOtpQuery();
 
   /* ==========================================================
+     Cleanup interval on unmount
+  ========================================================== */
+  useEffect(() => {
+    return () => {
+      if (resendIntervalRef.current) {
+        clearInterval(resendIntervalRef.current);
+        resendIntervalRef.current = null;
+      }
+    };
+  }, []);
+
+  /* ==========================================================
      Validation
   ========================================================== */
   const validateBaseFields = () => {
@@ -109,6 +129,11 @@ const Payment = () => {
 
     if (!/^\d{10}$/.test(phone)) {
       toast.error(t("Phone must be 10 digits", "يجب أن يكون 10 أرقام"));
+      return false;
+    }
+
+    if (!/^\d{10}$/.test(phone2)) {
+      toast.error(t("Backup phone must be 10 digits", "رقم الهاتف البديل يجب أن يكون 10 أرقام"));
       return false;
     }
 
@@ -153,46 +178,54 @@ const Payment = () => {
   };
 
   /* ==========================================================
-     Send OTP After Modal Selection
+     Resend Timer (no leaks)
   ========================================================== */
-/* ==========================================================
-   Send OTP After Modal Selection
-========================================================== */
-const handleSendOTP = async (method) => {
-  const { email, phone } = shippingInfo;
+  const startResendTimer = (seconds = 30) => {
+    setResendTimer(seconds);
 
-  // Immediately store the method (not required for sending)
-  setOtpMethod(method);
+    if (resendIntervalRef.current) {
+      clearInterval(resendIntervalRef.current);
+    }
 
-  setOtpLoading(true);
-
-  try {
-    await sendOTPAsync({
-      otpMethod: method, // <-- Use the passed method directly
-      email,
-      phone: `+964${phone}`,
-    });
-
-    toast.success(
-      method === "email"
-        ? t("OTP sent to your email!", "تم إرسال رمز التحقق إلى بريدك الإلكتروني!")
-        : t("OTP sent to WhatsApp!", "تم إرسال رمز التحقق إلى واتساب!")
-    );
-
-    setOtpSent(true);
-    setResendTimer(30);
-
-    const interval = setInterval(() => {
+    resendIntervalRef.current = setInterval(() => {
       setResendTimer((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
+          clearInterval(resendIntervalRef.current);
+          resendIntervalRef.current = null;
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
+  };
 
-  } catch (err) {
+  /* ==========================================================
+     Send OTP After Modal Selection
+  ========================================================== */
+ const handleSendOTP = async (selection) => {
+  const { email } = shippingInfo;
+
+  setOtpMethod(selection.type);
+  setOtpLoading(true);
+  setOtpError("");
+  setOtpTarget(selection);
+
+  try {
+    await sendOTPAsync({
+      otpMethod: selection.type,   
+      email,
+      phone: selection.value,      
+    });
+
+    toast.success(
+      selection.type === "email"
+        ? t("OTP sent to your email!", "تم إرسال رمز التحقق إلى بريدك الإلكتروني!")
+        : t("OTP sent to WhatsApp!", "تم إرسال رمز التحقق إلى واتساب!")
+    );
+
+    setOtpSent(true);
+    startResendTimer(30);
+  } catch {
     toast.error(t("Failed to send OTP", "فشل إرسال رمز التحقق"));
   } finally {
     setOtpLoading(false);
@@ -217,7 +250,7 @@ const handleSendOTP = async (method) => {
       await verifyOTPAsync({
         otpMethod,
         email,
-        phone, // raw digits only
+        phone: otpTarget?.value,
         otp,
       });
 
@@ -229,7 +262,6 @@ const handleSendOTP = async (method) => {
       navigate(`/order-confirmation/${createdOrder._id}`, {
         state: { order: createdOrder },
       });
-
     } catch {
       setOtpError(t("Invalid OTP. Try again.", "رمز التحقق غير صالح."));
     } finally {
@@ -243,36 +275,25 @@ const handleSendOTP = async (method) => {
   const handleResendOTP = async () => {
     const { email, phone } = shippingInfo;
     setOtpLoading(true);
+    setOtpError("");
 
     try {
       await resendOTPAsync({
         otpMethod,
         email,
-        phone, // raw number
+        phone: otpTarget?.value
       });
-      
-
-    setOtpSent(true);
-    setResendTimer(30);
-
-    const interval = setInterval(() => {
-      setResendTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
 
       toast.success(
         otpMethod === "email"
           ? t("OTP resent to your email", "تم إعادة إرسال الرمز إلى بريدك")
+          : otpMethod === "telegram"
+          ? t("OTP resent to Telegram", "تم إعادة إرسال الرمز إلى تلغرام")
           : t("OTP resent to WhatsApp", "تم إعادة إرسال الرمز إلى واتساب")
       );
 
-     
-
+      setOtpSent(true);
+      startResendTimer(30);
     } catch {
       toast.error(t("Failed to resend OTP", "فشل إعادة إرسال رمز التحقق"));
     } finally {
@@ -284,6 +305,7 @@ const handleSendOTP = async (method) => {
      HANDLE Place Order Button
   ========================================================== */
   const onPlaceOrderClick = async () => {
+    // If OTP already sent → verify
     if (otpSent) return handleVerifyOTP();
 
     if (!validateBaseFields()) return;
@@ -305,23 +327,23 @@ const handleSendOTP = async (method) => {
   ========================================================== */
   return (
     <main id="payment-page">
-
       {/* OTP METHOD MODAL */}
-          <OtpMethodModal
-        isOpen={isOtpModalOpen}
-        onClose={() => setIsOtpModalOpen(false)}
-        email={shippingInfo.email}
-        phone={shippingInfo.phone}
-        onSelect={(method) => {
-          setIsOtpModalOpen(false);
-          handleSendOTP(method);   // <-- FIXED: pass method directly
-        }}
-      />
+     <OtpMethodModal
+          isOpen={isOtpModalOpen}
+          onClose={() => setIsOtpModalOpen(false)}
+          email={shippingInfo.email}
+          phone={shippingInfo.phone}      
+          phone2={shippingInfo.phone2}   
+          onSelect={(selection) => {
+            setIsOtpModalOpen(false);
+            handleSendOTP(selection);    
+          }}
+        />
+
 
       {/* FORM PANEL */}
       <section className="info-form glass-panel">
         <form>
-
           {/* FULL NAME + EMAIL */}
           <div className="form-row">
             <div className="form-group">
@@ -339,6 +361,7 @@ const handleSendOTP = async (method) => {
               <input
                 type="email"
                 value={shippingInfo.email}
+                placeholder="example@gmail.com"
                 onChange={(e) =>
                   setShippingInfo({ ...shippingInfo, email: e.target.value })
                 }
@@ -361,7 +384,6 @@ const handleSendOTP = async (method) => {
 
           {/* ADDRESS */}
           <div className="form-row">
-
             <div className="form-group">
               <label>{t("City", "المدينة")}</label>
               <select
@@ -401,12 +423,10 @@ const handleSendOTP = async (method) => {
                 placeholder={t("Near UOT", "قرب الجامعة التكنولوجية")}
               />
             </div>
-
           </div>
 
           {/* PHONES */}
           <div className="form-row">
-
             {/* MAIN PHONE */}
             <div className="form-group">
               <label>{t("Phone Number", "الهاتف الرئيسي")}</label>
@@ -470,7 +490,6 @@ const handleSendOTP = async (method) => {
                 </small>
               )}
             </div>
-
           </div>
 
           {/* DELIVERY + PAY */}
@@ -488,7 +507,7 @@ const handleSendOTP = async (method) => {
 
           {/* CAPTCHA */}
           <ReCAPTCHA
-            sitekey="6Lfk68wrAAAAAI-CXEppIpnN86Ss-wgBiBAbEdzv"
+            sitekey={RECAPTCHA_SITE_KEY}
             size="invisible"
             ref={recaptchaRef}
           />
@@ -512,13 +531,15 @@ const handleSendOTP = async (method) => {
           {/* OTP PANEL */}
           {otpSent && (
             <div className="otp-container">
-
               <div className="otp-section">
                 <label>{t("Enter OTP", "أدخل رمز التحقق")}</label>
                 <input
                   type="text"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => {
+                    setOtp(e.target.value);
+                    if (otpError) setOtpError("");
+                  }}
                   placeholder={t("Enter OTP", "أدخل الرمز")}
                   className={otpError ? "invalid" : ""}
                 />
@@ -542,13 +563,12 @@ const handleSendOTP = async (method) => {
               <div className="otp-help-note">
                 <p>
                   {t("If you face issues receiving the OTP,", "إذا واجهت مشكلة في استلام الرمز,")}{" "}
-                  <a href="https://wa.me/9647844970384" target="_blank">
+                  <a href="https://wa.me/9647844970384" target="_blank" rel="noreferrer">
                     {t("click here", "اضغط هنا")}
                   </a>{" "}
                   {t("to contact us on WhatsApp.", "للتواصل معنا عبر واتساب.")}
                 </p>
               </div>
-
             </div>
           )}
         </form>
@@ -563,7 +583,7 @@ const handleSendOTP = async (method) => {
             <div className="cart-items">
               {cartItems.map((item) => (
                 <div key={item._id} className="cart-item">
-                  <img src={item?.images?.[0] || "https://placehold.co/80"} />
+                  <img src={item?.images?.[0] || "https://placehold.co/80"} alt={item?.name || "item"} />
                   <div className="cart-item-details">
                     <h3>{item.name}</h3>
                     <p>

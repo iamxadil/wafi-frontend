@@ -28,7 +28,6 @@ const CategoryNavigation = lazy(() => import("../pages/CategoryNavigation.jsx"))
 const CatLaptops = lazy(() => import("../pages/CatLaptops.jsx"));
 const CatAccessories = lazy(() => import("../pages/CatAccessories.jsx"));
 const CatOthers = lazy(() => import ("../pages/CatOthers.jsx"));
-const CatMonitors = lazy(() => import ("../pages/CatMonitors.jsx"));
 const CatComponents = lazy(() => import ("../pages/CatComponents.jsx"));
 const BlackFridayPage = lazy(() => import ("../pages/BlackFridayPage.jsx"));
 
@@ -240,7 +239,6 @@ export default function App() {
           <Route path="/category/:categoryName/:brandName" element={<CategoryNavigation />} />
           <Route path="/laptops" element={<CatLaptops />} />
           <Route path="/accessories" element={<CatAccessories />} />
-          <Route path="/monitors" element={<CatMonitors />} />
           <Route path="/others" element={<CatOthers />} />
           <Route path="/components" element={<CatComponents />} />
 

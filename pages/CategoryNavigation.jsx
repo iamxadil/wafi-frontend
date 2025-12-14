@@ -15,11 +15,8 @@ import "../styles/categorynavigation.css";
 import useTranslate from "../components/hooks/useTranslate.jsx";
 
 /* ============================================================
-   🌍 TRANSLATION MAPS (Category + Brand)
-   - Only define once
-   - Auto-translates dynamically using your t() hook
+   🌍 CATEGORY TRANSLATIONS (ONLY CATEGORIES, NOT BRANDS)
 ============================================================ */
-
 const CATEGORY_TRANSLATIONS = {
   laptops: "لابتوبات",
   accessories: "اكسسوارات",
@@ -37,33 +34,14 @@ const CATEGORY_TRANSLATIONS = {
   "cooling pads": "قواعد التبريد",
   "mousepads & deskpads": "لوحات الماوسات",
   "hard disks & ssds": "التخزين",
-  "ram": "الرامات"
-
+  ram: "الرامات",
 };
 
-const BRAND_TRANSLATIONS = {
-  asus: "أسوس",
-  acer: "أيسر",
-  lenovo: "لينوفو",
-  hp: "اتش بي",
-  dell: "ديل",
-  apple: "آبل",
-  samsung: "سامسونغ",
-  logitech: "لوجيتك",
-  razer: "ريزر",
-  msi: "أم أس آي",
-  huawei: "هواوي",
-  xiaomi: "شاومي",
-  sony: "سوني",
-  microsfot: "مايكروسوفت"
-};
-
-/* Helper to dynamically translate category or brand */
-const translateName = (name, map, t) => {
-  if (!name) return ""; // fallback
-  const en = name;
-  const ar = map[name.toLowerCase()] || name; // fallback to same text
-  return t(en, ar);
+/* Helper: translate category only */
+const translateCategory = (name, t) => {
+  if (!name) return "";
+  const ar = CATEGORY_TRANSLATIONS[name.toLowerCase()] || name;
+  return t(name, ar);
 };
 
 const CategoryNavigation = () => {
@@ -75,11 +53,13 @@ const CategoryNavigation = () => {
   const category = categoryName?.trim() || "";
   const brand = brandName?.trim() || "";
 
+  const isArabic = t("en", "ar") === "ar";
+
   /* =====================================
-     🔥 DYNAMIC TRANSLATION FOR TITLES
+     🔥 DISPLAY NAMES
   ===================================== */
-  const translatedCategory = translateName(category, CATEGORY_TRANSLATIONS, t);
-  const translatedBrand = translateName(brand, BRAND_TRANSLATIONS, t);
+  const translatedCategory = translateCategory(category, t);
+  const displayBrand = brand; // ❗ brand is NEVER translated
 
   const {
     productsParams,
@@ -92,7 +72,9 @@ const CategoryNavigation = () => {
 
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
-  // Debounce search
+  /* =====================================
+     🔍 Debounce Search
+  ===================================== */
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(searchTerm), 400);
     return () => clearTimeout(handler);
@@ -100,7 +82,9 @@ const CategoryNavigation = () => {
 
   const location = useLocation();
 
-  // Reset search + params on navigation
+  /* =====================================
+     ♻️ Reset on Navigation
+  ===================================== */
   useEffect(() => {
     setSearchTerm("");
     setDebouncedSearch("");
@@ -122,18 +106,22 @@ const CategoryNavigation = () => {
     }));
   }, [location.pathname, location.key]);
 
-  /* Fetch data */
-  const { data: productsData, isLoading: loadingProducts } = useCategoryQuery({
-    ...productsParams,
-    category,
-    ...(brand && { brand }),
-  });
+  /* =====================================
+     📡 Fetch Data
+  ===================================== */
+  const { data: productsData, isLoading: loadingProducts } =
+    useCategoryQuery({
+      ...productsParams,
+      category,
+      ...(brand && { brand }),
+    });
 
-  const { data: offersData, isLoading: loadingOffers } = useCategoryQuery({
-    ...offersParams,
-    category,
-    ...(brand && { brand }),
-  });
+  const { data: offersData, isLoading: loadingOffers } =
+    useCategoryQuery({
+      ...offersParams,
+      category,
+      ...(brand && { brand }),
+    });
 
   const displayedProducts = (productsData?.products || []).filter(
     (p) =>
@@ -154,62 +142,79 @@ const CategoryNavigation = () => {
     productsData?.products?.length === 0 &&
     offersData?.products?.length === 0;
 
-  const isArabic = t("en", "ar") === "ar";
   /* ============================================================
-     RENDER
+     🖥️ RENDER
   ============================================================= */
   return (
-    <div className="category-page">
-      {/* 🌟 Coming Soon */}
+    <div
+      className="category-page"
+      dir={isArabic ? "rtl" : "ltr"}
+    >
       {nothingAtAll ? (
         <div className="coming-soon">
           <h1>{t("Coming Soon...", "..يتوفر قريباً")}</h1>
         </div>
       ) : (
         <>
-          {/* HEADER */}
-          <header className="cat-header" style={{...(isArabic && width < 650 && { alignItems: t.flexAlign })}}>
-            <h1>
-            {isArabic
-              ? `${t("Products", "منتجات")} ${translatedBrand || translatedCategory}`
-              : `${translatedBrand || translatedCategory} ${t("Products", "منتجات")}`
-            }
-          </h1>
+          {/* ================= HEADER ================= */}
+          <header
+            className="cat-header"
+            style={{
+              alignItems: isArabic && isMobile && t.alignItems ,
+            }}
+          >
+            <h1 style={{ textAlign: isArabic ? "right" : "left" }}>
+              {isArabic
+                ? `${t("Products", "منتجات")} ${
+                    displayBrand || translatedCategory
+                  }`
+                : `${displayBrand || translatedCategory} ${t(
+                    "Products",
+                    "منتجات"
+                  )}`}
+            </h1>
 
-            <div className="search-cat">
+            <div
+              className="search-cat"
+              style={{
+                flexDirection: isArabic ? "row-reverse" : "row",
+              }}
+            >
               <Search />
               <input
                 type="search"
-                placeholder={t("Search Products...", "بحث المنتجات...")}
+                dir={isArabic ? "rtl" : "ltr"}
+                style={{ textAlign: isArabic ? "right" : "left" }}
+                placeholder={t(
+                  "Search Products...",
+                  "بحث المنتجات..."
+                )}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </header>
 
-          {/* DESKTOP */}
+          {/* ================= DESKTOP ================= */}
           {!isMobile && (
             <>
-              {/* PRODUCTS */}
               <main id="cat-container">
                 <div
                   className="pc-pr-cards"
-                  style={{ justifyContent: "center", padding: "0" }}
+                  style={{ justifyContent: "center", padding: 0 }}
                 >
                   {loadingProducts ? (
                     <div className="loading-container">
-                      <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <h2>
                         Loading <Spin />
                       </h2>
                     </div>
-                  ) : displayedProducts.length > 0 ? (
+                  ) : displayedProducts.length ? (
                     displayedProducts.map((p) => (
                       <ProductCard key={p._id} product={p} />
                     ))
                   ) : (
-                    <div style={{ textAlign: "center" }}>
-                      {t("No Products Found", "لا توجد منتجات")}
-                    </div>
+                    <div>{t("No Products Found", "لا توجد منتجات")}</div>
                   )}
                 </div>
 
@@ -217,44 +222,37 @@ const CategoryNavigation = () => {
                   <Pagination
                     currentPage={productsData.pagination.currentPage}
                     totalPages={productsData.pagination.totalPages}
-                    onPageChange={(page) => setProductsParams({ page })}
+                    onPageChange={(page) =>
+                      setProductsParams({ page })
+                    }
                   />
                 )}
               </main>
 
-              {/* OFFERS */}
+              {/* ================= OFFERS ================= */}
               <main id="cat-container">
-                <header className="offers-header" >
-                 <h1>
-                {isArabic
-                  ? `${t("Offers", "عروض")} ${translatedBrand || translatedCategory}`
-                  : `${translatedBrand || translatedCategory} ${t("Offers", "عروض")}`
-                }
-              </h1>
+                <header className="offers-header">
+                  <h1 style={{ textAlign: isArabic ? "right" : "left" }}>
+                    {isArabic
+                      ? `${t("Offers", "عروض")} ${
+                          displayBrand || translatedCategory
+                        }`
+                      : `${displayBrand || translatedCategory} ${t(
+                          "Offers",
+                          "عروض"
+                        )}`}
+                  </h1>
                 </header>
 
-                <div
-                  className="pc-pr-cards"
-                  style={{
-                    justifyContent: "center",
-                    marginTop: "4rem",
-                    padding: "0",
-                  }}
-                >
+                <div className="pc-pr-cards">
                   {loadingOffers ? (
-                    <div className="loading-container">
-                      <h2 style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        Loading <Spin />
-                      </h2>
-                    </div>
-                  ) : displayedOffers.length > 0 ? (
+                    <Spin />
+                  ) : displayedOffers.length ? (
                     displayedOffers.map((p) => (
                       <ProductCard key={p._id} product={p} />
                     ))
                   ) : (
-                    <div style={{ textAlign: "center" }}>
-                      {t("No Offers Found", "لا توجد عروض")}
-                    </div>
+                    <div>{t("No Offers Found", "لا توجد عروض")}</div>
                   )}
                 </div>
 
@@ -262,57 +260,56 @@ const CategoryNavigation = () => {
                   <Pagination
                     currentPage={offersData.pagination.currentPage}
                     totalPages={offersData.pagination.totalPages}
-                    onPageChange={(page) => setOffersParams({ page })}
+                    onPageChange={(page) =>
+                      setOffersParams({ page })
+                    }
                   />
                 )}
               </main>
             </>
           )}
 
-          {/* MOBILE */}
+          {/* ================= MOBILE ================= */}
           {isMobile && (
             <main className="mob-pr-container">
               <div className="mobile-grid">
-                {displayedProducts.length > 0 ? (
-                  displayedProducts.map((p) => (
-                    <ProductBlock key={p._id} product={p} />
-                  ))
-                ) : (
-                  <div className="mob-loading">
-                    {t("No Products Found", "لا توجد منتجات")}
-                  </div>
-                )}
+                {displayedProducts.map((p) => (
+                  <ProductBlock key={p._id} product={p} />
+                ))}
               </div>
 
               <Pagination
                 currentPage={productsData?.pagination.currentPage || 1}
                 totalPages={productsData?.pagination.totalPages || 1}
-                onPageChange={(page) => setProductsParams({ page })}
+                onPageChange={(page) =>
+                  setProductsParams({ page })
+                }
               />
 
-              <header className="offers-header" >
-                <h1>
-                  {t("Offers for", "عروض")}{" "}
-                  {translatedBrand || translatedCategory}
+              <header className="offers-header">
+                <h1 style={{ textAlign: isArabic ? "right" : "left" }}>
+                  {isArabic
+                    ? `${t("Offers", "عروض")} ${
+                        displayBrand || translatedCategory
+                      }`
+                    : `${t("Offers for", "Offers for")} ${
+                        displayBrand || translatedCategory
+                      }`}
                 </h1>
               </header>
 
               <div className="mobile-grid">
-                {displayedOffers.length > 0 ? (
-                  displayedOffers.map((p) => (
-                    <ProductBlock key={p._id} product={p} />
-                  ))
-                ) : (
-                  <div className="mob-loading">
-                    {t("No Offers Found", "لا توجد عروض")}
-                  </div>
-                )}
+                {displayedOffers.map((p) => (
+                  <ProductBlock key={p._id} product={p} />
+                ))}
               </div>
 
               <Pagination
                 currentPage={offersData?.pagination.currentPage || 1}
                 totalPages={offersData?.pagination.totalPages || 1}
-                onPageChange={(page) => setOffersParams({ page })}
+                onPageChange={(page) =>
+                  setOffersParams({ page })
+                }
               />
             </main>
           )}

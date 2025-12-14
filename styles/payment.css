@@ -125,7 +125,7 @@
 ------------------------------------------------------------ */
 .info-form {
   flex: 1.4;
-  min-width: 330px;
+  min-width: 300px;
   max-width: 700px;
   z-index: 2;
 }
@@ -148,9 +148,12 @@
 }
 
 .form-group label {
-  font-size: 0.9rem;
+  font-size: 0.94rem;
   font-weight: 600;
   color: rgba(var(--accent-rgb,94,99,255), 0.9);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .form-group input,

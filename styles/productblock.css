@@ -66,47 +66,9 @@
   border-radius: inherit;
 }
 
-/* === OFFER === */
-.essence-offer {
-  position: absolute;
-  top: 6px;
-  left: 4px;
-  background: linear-gradient(135deg, var(--ess-accent), #6c3aff);
-  color: #fff;
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 3px 7px;
-  border-radius: 8px;
-  letter-spacing: 0.15px;
-}
 
-.essence-out-of-stock {
-  position: absolute;
-  top: 34px;
-  left: 4px;
-  background: linear-gradient(135deg, rgba(255, 0, 0, 0.272), #ff3a8f3f);
-  backdrop-filter: blur(4px);
-  color: #fff;
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 3px 7px;
-  border-radius: 8px;
-  letter-spacing: 0.15px;
-}
 
-.essence-in-stock {
-  position: absolute;
-  top: 34px;
-  left: 4px;
-  background: linear-gradient(135deg, rgba(0, 255, 136, 0.272), #3affb33f);
-  backdrop-filter: blur(4px);
-  color: #fff;
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 3px 7px;
-  border-radius: 8px;
-  letter-spacing: 0.15px;
-}
+
 
 /* === FAVORITE BUTTON === */
 .essence-fav {
@@ -323,18 +285,49 @@
   overflow: hidden;
 }
 
+
+.essence-status {
+  padding: 4px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+}
+
 /* Add subtle fade animation to offer */
 .essence-offer {
-  background: linear-gradient(135deg, var(--ess-accent), #6c3aff);
+  background: linear-gradient(135deg, var(--ess-accent), #6b3aff55);
   border-radius: 0.6rem;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   padding: 3px 8px;
   color: white;
   font-weight: 600;
-  position: absolute;
-  top: 6px;
-  left: 4px;
-  letter-spacing: 0.3px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(4px);
+  max-width: 38px; 
+}
+
+.essence-in-stock {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.272), #3affb33f);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 8px;
+  letter-spacing: 0.15px;
+}
+
+
+.essence-out-of-stock {
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.095), #ff3a403f);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 8px;
+  letter-spacing: 0.15px;
 }

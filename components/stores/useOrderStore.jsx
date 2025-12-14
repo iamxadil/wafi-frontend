@@ -3,9 +3,10 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-
 const useOrderStore = create((set, get) => ({
-  // ✅ State
+  /* =========================================================
+     State
+  ========================================================= */
   loading: false,
   allOrders: [],
   archivedOrders: [],
@@ -18,57 +19,39 @@ const useOrderStore = create((set, get) => ({
   orderTerm: "",
   status: "",
 
-  // ✅ Modals & Selection
+  /* =========================================================
+     Modals & Selection
+  ========================================================= */
   setTrackModal: () => set({ trackModal: true }),
   closeTrackModal: () => set({ trackModal: false }),
   setSelectedOrder: (order) => set({ selectedOrder: order }),
 
-  // ✅ Filters, Sorting, Pagination
+  /* =========================================================
+     Filters, Sorting, Pagination
+  ========================================================= */
   setSort: (value) => {
     set({ sort: value, currentPage: 1 });
     get().fetchAllOrders(1);
   },
+
   setPage: (page) => {
     set({ currentPage: page });
     get().fetchAllOrders(page);
   },
+
   setOrderTerm: (term) => set({ orderTerm: term, currentPage: 1 }),
   setStatusFilter: (status) => set({ status, currentPage: 1 }),
 
-  // ✅ OTP Flow
-  otpSent: false,
-  otpLoading: false,
-  otpError: null,
-  otpVerified: false,
-  sendOrderOTP: async (email) => {
-    set({ otpLoading: true, otpError: null });
-    try {
-      await axios.post(`${API_URL}/api/orders/send-otp`, { email });
-      set({ otpSent: true, otpLoading: false });
-    } catch (err) {
-      set({ otpError: err.response?.data?.message || err.message, otpLoading: false });
-      throw err;
-    }
-  },
-  verifyOrderOTP: async (email, otp) => {
-    set({ otpLoading: true, otpError: null });
-    try {
-      await axios.post(`${API_URL}/api/orders/verify-otp`, { email, otp });
-      set({ otpVerified: true, otpLoading: false });
-      return true;
-    } catch (err) {
-      set({ otpError: err.response?.data?.message || err.message, otpLoading: false });
-      throw err;
-    }
-  },
-  resetOTPState: () => set({ otpSent: false, otpVerified: false, otpError: null }),
-
-  // ✅ Attach Order
+  /* =========================================================
+     Attach Order
+  ========================================================= */
   attachLoading: false,
   attachError: null,
-  attachedOrders: {}, // keep attached orders separate
+  attachedOrders: {},
+
   attachOrderToUser: async (orderId) => {
     set({ attachLoading: true, attachError: null });
+
     try {
       const { data } = await axios.post(
         `${API_URL}/api/orders/attach`,
@@ -77,7 +60,10 @@ const useOrderStore = create((set, get) => ({
       );
 
       set((state) => ({
-        attachedOrders: { ...state.attachedOrders, [data.order._id]: data.order },
+        attachedOrders: {
+          ...state.attachedOrders,
+          [data.order._id]: data.order,
+        },
         attachLoading: false,
         attachError: null,
       }));
@@ -93,10 +79,16 @@ const useOrderStore = create((set, get) => ({
     }
   },
 
-  // ✅ Orders
+  /* =========================================================
+     Orders
+  ========================================================= */
   createOrder: async (orderData) => {
     try {
-      const { data } = await axios.post(`${API_URL}/api/orders`, orderData, { withCredentials: true });
+      const { data } = await axios.post(
+        `${API_URL}/api/orders`,
+        orderData,
+        { withCredentials: true }
+      );
       set({ lastOrder: data });
       return data;
     } catch (error) {
@@ -104,10 +96,13 @@ const useOrderStore = create((set, get) => ({
       throw error;
     }
   },
+
   fetchAllOrders: async (page = null) => {
     set({ loading: true });
+
     try {
       const { orderTerm, status, currentPage, sort } = get();
+
       const { data } = await axios.get(`${API_URL}/api/orders`, {
         withCredentials: true,
         params: {
@@ -118,56 +113,95 @@ const useOrderStore = create((set, get) => ({
           sort,
         },
       });
+
       set({
         allOrders: data.orders,
         totalOrders: data.totalOrders,
         currentPage: data.page,
         totalPages: data.pages,
         loading: false,
-        lastOrderMade: data.orders.length > 0 ? data.orders[data.orders.length - 1] : null,
+        lastOrderMade:
+          data.orders.length > 0
+            ? data.orders[data.orders.length - 1]
+            : null,
       });
     } catch (error) {
       console.error("Failed to fetch orders:", error.response?.data || error.message);
       set({ allOrders: [], loading: false });
     }
   },
+
   fetchArchivedOrders: async () => {
     set({ loading: true });
+
     try {
-      const { data } = await axios.get(`${API_URL}/api/orders/archived`, { withCredentials: true });
+      const { data } = await axios.get(
+        `${API_URL}/api/orders/archived`,
+        { withCredentials: true }
+      );
       set({ archivedOrders: data, loading: false });
     } catch (error) {
       console.error("Failed to fetch archived orders:", error.response?.data || error.message);
       set({ archivedOrders: [], loading: false });
     }
   },
+
   archiveOrder: async (orderId) => {
     try {
-      await axios.patch(`${API_URL}/api/orders/${orderId}/archive`, {}, { withCredentials: true });
-      await Promise.all([get().fetchAllOrders(get().currentPage), get().fetchArchivedOrders()]);
+      await axios.patch(
+        `${API_URL}/api/orders/${orderId}/archive`,
+        {},
+        { withCredentials: true }
+      );
+
+      await Promise.all([
+        get().fetchAllOrders(get().currentPage),
+        get().fetchArchivedOrders(),
+      ]);
     } catch (error) {
       console.error("Failed to archive order:", error.response?.data || error.message);
       throw error;
     }
   },
+
   unarchiveOrder: async (orderId) => {
     try {
-      await axios.patch(`${API_URL}/api/orders/${orderId}/unarchive`, {}, { withCredentials: true });
-      await Promise.all([get().fetchAllOrders(get().currentPage), get().fetchArchivedOrders()]);
+      await axios.patch(
+        `${API_URL}/api/orders/${orderId}/unarchive`,
+        {},
+        { withCredentials: true }
+      );
+
+      await Promise.all([
+        get().fetchAllOrders(get().currentPage),
+        get().fetchArchivedOrders(),
+      ]);
     } catch (error) {
       console.error("Failed to unarchive order:", error.response?.data || error.message);
       throw error;
     }
   },
+
   updateOrderStatus: async (orderId, status) => {
     try {
-      const { data } = await axios.put(`${API_URL}/api/orders/${orderId}/status`, { status }, { withCredentials: true });
+      const { data } = await axios.put(
+        `${API_URL}/api/orders/${orderId}/status`,
+        { status },
+        { withCredentials: true }
+      );
+
       set((state) => ({
         allOrders: state.allOrders.map((order) =>
-          order._id === orderId ? { ...order, status: data.status } : order
+          order._id === orderId
+            ? { ...order, status: data.status }
+            : order
         ),
-        selectedOrder: state.selectedOrder?._id === orderId ? data : state.selectedOrder,
+        selectedOrder:
+          state.selectedOrder?._id === orderId
+            ? data
+            : state.selectedOrder,
       }));
+
       return data;
     } catch (error) {
       console.error("Failed to update order status:", error.response?.data || error.message);
@@ -175,14 +209,21 @@ const useOrderStore = create((set, get) => ({
     }
   },
 
-  // ✅ My Orders
+  /* =========================================================
+     My Orders
+  ========================================================= */
   loadingMyOrders: false,
   myOrdersError: null,
   myOrders: [],
+
   fetchMyOrders: async () => {
     set({ loadingMyOrders: true, myOrdersError: null });
+
     try {
-      const { data } = await axios.get(`${API_URL}/api/orders/my-orders`, { withCredentials: true });
+      const { data } = await axios.get(
+        `${API_URL}/api/orders/my-orders`,
+        { withCredentials: true }
+      );
       set({ myOrders: data, loadingMyOrders: false });
     } catch (err) {
       set({
@@ -192,14 +233,20 @@ const useOrderStore = create((set, get) => ({
     }
   },
 
-  // ✅ Last Order
+  /* =========================================================
+     Last / Single Order
+  ========================================================= */
   fetchLastOrder: async () => {
     set({ loading: true });
+
     try {
-      const { data } = await axios.get(`${API_URL}/api/orders/last-order`, { withCredentials: true });
+      const { data } = await axios.get(
+        `${API_URL}/api/orders/last-order`,
+        { withCredentials: true }
+      );
       set({ loading: false, lastOrder: data });
     } catch (error) {
-      if (error.response && error.response.status === 404) {
+      if (error.response?.status === 404) {
         set({ loading: false, lastOrder: null });
       } else {
         console.error("Error fetching last order:", error);
@@ -210,8 +257,12 @@ const useOrderStore = create((set, get) => ({
 
   fetchOrderById: async (orderId) => {
     set({ loading: true });
+
     try {
-      const { data } = await axios.get(`${API_URL}/api/orders/${orderId}`, { withCredentials: true });
+      const { data } = await axios.get(
+        `${API_URL}/api/orders/${orderId}`,
+        { withCredentials: true }
+      );
       set({ selectedOrder: data, loading: false });
       return data;
     } catch (error) {
@@ -223,8 +274,11 @@ const useOrderStore = create((set, get) => ({
 
   countAllOrders: async () => {
     try {
-      const data = await axios.get(`${API_URL}/api/orders`, { withCredentials: true });
-      set({ totalOrders: data.data.totalOrders });
+      const { data } = await axios.get(
+        `${API_URL}/api/orders`,
+        { withCredentials: true }
+      );
+      set({ totalOrders: data.totalOrders });
     } catch (error) {
       console.error("Failed to count all orders");
       throw error;

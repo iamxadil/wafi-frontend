@@ -7,7 +7,6 @@ const Land = lazy(() => import("../components/main/Land.jsx"));
 const BrandCards = lazy(() => import("../components/main/BrandCards.jsx"));
 const Laptops = lazy(() => import("../components/main/Laptops.jsx"));
 const Offers = lazy(() => import("../components/main/Offers.jsx"));
-const TrendingProducts = lazy(() => import("../components/main/TrendingProducts.jsx"));
 const AccessoriesProducts = lazy(() => import("../components/main/AccessoriesProducts.jsx"));
 const MobLandingPage = lazy(() => import("../components/main/MobLandingPage.jsx"));
 const BlackFridayHero = lazy(() => import("../components/main/BlackFridayHero.jsx"));
@@ -27,7 +26,7 @@ const Home = () => {
         {/* Description */}
         <meta
           name="description"
-          content="Al-Wafi Computers: Best laptops, gaming PCs, accessories, and electronics in Iraq. Original products, fast delivery, and great prices."
+          content="Al-Wafi Computers: Best laptops, gaming gears, accessories, and electronics in Iraq. Original products, fast delivery, and great prices."
         />
 
         {/* Canonical URL */}
@@ -40,7 +39,7 @@ const Home = () => {
         <meta property="og:locale:alternate" content="ar_IQ" />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Al-Wafi Computers | Laptops & Gaming" />
+        <meta property="og:title" content="Al-Wafi for Computers | Laptops & Gaming" />
         <meta
           property="og:description"
           content="Shop laptops, gaming gear, accessories, and electronics in Iraq at the best prices with fast delivery."
@@ -69,13 +68,12 @@ const Home = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "Al-Wafi Computers",
+            name: "Al-Wafi for Computers",
             url: "https://alwafi.net",
             logo: "https://alwafi.net/favicon.svg",
             sameAs: [
-              "https://www.facebook.com/alwafi",
-              "https://www.instagram.com/alwafi",
-              "https://t.me/alwafi"
+              "https://www.facebook.com/alwafi.co1",
+              "https://www.instagram.com/alwafi.co1",
             ],
           })}
         </script>
@@ -85,7 +83,7 @@ const Home = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
-            name: "Al-Wafi Computers",
+            name: "Al-Wafi for Computers",
             url: "https://alwafi.net",
             potentialAction: {
               "@type": "SearchAction",

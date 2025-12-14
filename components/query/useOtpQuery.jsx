@@ -4,80 +4,111 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 /* ===========================================================
-   🟢 Send OTP (Email OR WhatsApp)
+   Utils
+=========================================================== */
+const normalizePhone = (phone) =>
+  phone?.replace(/\D/g, "").replace(/^0/, "");
+
+const getErrorMessage = (error) =>
+  error?.response?.data?.message ||
+  error?.message ||
+  "";
+
+
+/* ===========================================================
+   API Calls
 =========================================================== */
 const sendOtpFn = async ({ otpMethod, email, phone }) => {
-  const { data } = await axios.post(`${API_URL}/api/orders/send-otp`, {
+  const payload = {
     otpMethod,
     email,
-    phone,
-  });
+    phone:
+      otpMethod === "whatsapp" || otpMethod === "telegram"
+        ? normalizePhone(phone)
+        : phone,
+  };
+
+  const { data } = await axios.post(
+    `${API_URL}/api/orders/send-otp`,
+    payload
+  );
+
   return data;
 };
 
-/* ===========================================================
-   🔍 Verify OTP
-=========================================================== */
 const verifyOtpFn = async ({ otpMethod, email, phone, otp }) => {
-  const { data } = await axios.post(`${API_URL}/api/orders/verify-otp`, {
+  const payload = {
     otpMethod,
     email,
-    phone,
     otp,
-  });
+    phone:
+      otpMethod === "whatsapp" || otpMethod === "telegram"
+        ? normalizePhone(phone)
+        : phone,
+  };
+
+  const { data } = await axios.post(
+    `${API_URL}/api/orders/verify-otp`,
+    payload
+  );
+
   return data;
 };
 
-/* ===========================================================
-   🔁 Resend OTP
-=========================================================== */
 const resendOtpFn = async ({ otpMethod, email, phone }) => {
-  const { data } = await axios.post(`${API_URL}/api/orders/resend-otp`, {
+  const payload = {
     otpMethod,
     email,
-    phone,
-  });
+    phone:
+      otpMethod === "whatsapp" || otpMethod === "telegram"
+        ? normalizePhone(phone)
+        : phone,
+  };
+
+  const { data } = await axios.post(
+    `${API_URL}/api/orders/resend-otp`,
+    payload
+  );
+
   return data;
 };
-
 
 /* ===========================================================
    🧩 Custom Hook
 =========================================================== */
 export function useOtpQuery() {
-
-  // 1️⃣ Send OTP mutation
   const sendOTPMutation = useMutation({
     mutationFn: sendOtpFn,
   });
 
-  // 2️⃣ Verify OTP mutation
   const verifyOTPMutation = useMutation({
     mutationFn: verifyOtpFn,
   });
 
-  // 3️⃣ Resend OTP mutation
   const resendOTPMutation = useMutation({
     mutationFn: resendOtpFn,
   });
 
   return {
-    // 🔹 Send OTP
+    /* ---------------- Send OTP ---------------- */
     sendOTP: sendOTPMutation.mutate,
     sendOTPAsync: sendOTPMutation.mutateAsync,
     sendingOTP: sendOTPMutation.isPending,
-    sendOTPError: sendOTPMutation.error,
+    sendOTPSuccess: sendOTPMutation.isSuccess,
+    sendOTPError: getErrorMessage(sendOTPMutation.error),
 
-    // 🔹 Verify OTP
+    /* ---------------- Verify OTP ---------------- */
     verifyOTP: verifyOTPMutation.mutate,
     verifyOTPAsync: verifyOTPMutation.mutateAsync,
     verifyingOTP: verifyOTPMutation.isPending,
-    verifyOTPError: verifyOTPMutation.error,
+    verifyOTPSuccess: verifyOTPMutation.isSuccess,
+    verifyOTPError: getErrorMessage(verifyOTPMutation.error),
 
-    // 🔹 Resend OTP
+    /* ---------------- Resend OTP ---------------- */
     resendOTP: resendOTPMutation.mutate,
     resendOTPAsync: resendOTPMutation.mutateAsync,
     resendingOTP: resendOTPMutation.isPending,
-    resendOTPError: resendOTPMutation.error,
+    resendOTPSuccess: resendOTPMutation.isSuccess,
+    resendOTPError: getErrorMessage(resendOTPMutation.error),
   };
 }

@@ -72,7 +72,8 @@ const ProductBlock = ({ product }) => {
           alt={product.name}
           className="essence-img"
         />
-
+        
+        <div className="essence-status">
         {product.discountPrice > 0 && (
           <motion.span
             className="essence-offer"
@@ -105,7 +106,8 @@ const ProductBlock = ({ product }) => {
             {t("In Stock", "متوفر")}
           </motion.span>
         )}
-
+        </div>
+        
         <motion.button
           className={`essence-fav ${favorite ? "active" : ""}`}
           onClick={handleFavorite}
