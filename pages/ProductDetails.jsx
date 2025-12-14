@@ -584,12 +584,6 @@ const handleThumbnailClick = (img) => {
     };
   }
 
-  console.log("MAIN_IMAGE:", mainImage);
-  console.log("SMALL_URL:", mainImageSmall);
-  console.log("LARGE_URL:", mainImageLarge);
-
-
-
   return (
     <>
       <Helmet>
