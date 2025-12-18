@@ -1,27 +1,41 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { motion, Reorder, AnimatePresence } from "framer-motion";
 import "../styles/productsmodal.css";
 import {
   useAddProductMutation,
   useEditProductMutation,
 } from "../../../hooks/useManageProducts.jsx";
-import { MonitorSmartphone, ScanFace, Fingerprint } from "lucide-react";
-import { Star, StarOff, Eye, EyeOff } from "lucide-react";
+import {
+  MonitorSmartphone,
+  ScanFace,
+  Fingerprint,
+  Star,
+  StarOff,
+  Eye,
+  EyeOff,
+  GripVertical,
+  XCircle,
+} from "lucide-react";
 
 const ProductsModal = ({
   setIsModalOpen,
   editData = null,
   isEditing = false,
-  allProducts = [], 
+  allProducts = [],
 }) => {
   const fileInputRef = useRef(null);
 
-
-const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // === Mutations ===
-const {mutate: addProduct, isPending: isAdding} = useAddProductMutation(null, setUploadProgress);
-const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutation(null, setUploadProgress);
+  const { mutate: addProduct, isPending: isAdding } = useAddProductMutation(
+    null,
+    setUploadProgress
+  );
+  const { mutate: editProduct, isPending: isEditingRequest } =
+    useEditProductMutation(null, setUploadProgress);
 
+  const isPending = isAdding || isEditingRequest;
 
   // === Form states ===
   const [formData, setFormData] = useState({
@@ -40,10 +54,22 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
   const [specs, setSpecs] = useState({});
   const [images, setImages] = useState([]); // [{file, preview, existing}]
   const [deletedImages, setDeletedImages] = useState([]); // urls of removed existing images
-  const [tags, setTags] = useState([]); // 🏷️ new
+  const [tags, setTags] = useState([]); // 🏷️
   const [tagInput, setTagInput] = useState("");
+  
 
+  // Helper: stable id for reorder (needed when previews duplicate or change)
+  const makeImgId = () =>
+    typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
+  // Always normalize images to include id for Reorder.Item key stability
+  const normalizeImagesWithIds = (arr) =>
+    arr.map((img) => ({
+      id: img.id || makeImgId(),
+      ...img,
+    }));
 
   // 🧠 Prefill when editing
   useEffect(() => {
@@ -59,7 +85,6 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
         isTopProduct: !!editData.isTopProduct,
         priority: editData?.priority || 0,
         hidden: editData.hidden ?? false,
-
       });
 
       setSpecs(editData.specs || {});
@@ -78,13 +103,16 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
 
       if (Array.isArray(editData.images)) {
         setImages(
-          editData.images.map((url) => ({
-            preview: url,
-            existing: true,
-          }))
+          normalizeImagesWithIds(
+            editData.images.map((url) => ({
+              preview: url,
+              existing: true,
+            }))
+          )
         );
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing, editData]);
 
   // === Handlers ===
@@ -131,13 +159,13 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
     );
 
     const mapped = valid.map((file) => ({
+      id: makeImgId(),
       file,
       preview: URL.createObjectURL(file),
       existing: false,
-      
     }));
 
-    setImages((prev) => [...prev, ...mapped]);
+    setImages((prev) => normalizeImagesWithIds([...prev, ...mapped]));
   };
 
   const handleFileChange = (e) => handleFiles(e.target.files);
@@ -148,20 +176,34 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
     handleFiles(e.dataTransfer.files);
   };
 
+  // Main image = images[0]
   const removeImage = (index) => {
     setImages((prev) => {
+      if (index === 0 && prev.length > 1) {
+        alert(
+          "This is the main image. Drag another image to the first position before deleting."
+        );
+        return prev;
+      }
+
       const removed = prev[index];
-      if (removed.existing && removed.preview) {
+      if (removed?.existing && removed?.preview) {
         setDeletedImages((d) => [...d, removed.preview]);
       }
+
+      // cleanup objectURL for new images (optional but good)
+      if (!removed?.existing && removed?.preview?.startsWith("blob:")) {
+        try {
+          URL.revokeObjectURL(removed.preview);
+        } catch {}
+      }
+
       return prev.filter((_, i) => i !== index);
     });
   };
 
   // === TAGS ===
-  const handleTagInputChange = (e) => {
-    setTagInput(e.target.value);
-  };
+  const handleTagInputChange = (e) => setTagInput(e.target.value);
 
   const handleAddTag = (e) => {
     e.preventDefault();
@@ -176,21 +218,41 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
 
+  // --- Image order payload for backend (existing URLs + new placeholders)
+  const imageOrderPayload = useMemo(() => {
+    return images.map((img) => {
+      if (img.existing) return { type: "existing", url: img.preview };
+      return { type: "new", clientId: img.id };
+    });
+  }, [images]);
+
   // === Submit ===
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const form = new FormData();
     for (const key in formData) form.append(key, formData[key]);
+
     form.append("specs", JSON.stringify(specs));
-    form.append("tags", JSON.stringify(tags)); // ✅ always clean array
+    form.append("tags", JSON.stringify(tags));
+
+    // ✅ Main image is FIRST after reorder
+    form.append("mainImageIndex", 0);
+
+    // ✅ Send order to backend (so it can reorder final URLs after upload)
+    form.append("imageOrder", JSON.stringify(imageOrderPayload));
 
     // Attach new images only
+    // IMPORTANT: backend should map these to the "new" entries by arrival order,
+    // OR you can additionally send "newImageClientIds" array for exact mapping.
+    const newClientIds = [];
     images.forEach((img) => {
       if (!img.existing && img.file) {
         form.append("images", img.file);
+        newClientIds.push(img.id);
       }
     });
+    form.append("newImageClientIds", JSON.stringify(newClientIds));
 
     // Attach deleted image URLs
     if (deletedImages.length > 0) {
@@ -206,12 +268,16 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
     setIsModalOpen(false);
   };
 
-  const isPending = isAdding || isEditingRequest;
-
   // === UI ===
   return (
     <div className="static-modal-backdrop">
-      <div className="static-modal">
+      <motion.div
+        className="static-modal"
+        initial={{ opacity: 0, scale: 0.97, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 8 }}
+        transition={{ duration: 0.18 }}
+      >
         <h2 className="static-title">
           {isEditing ? "Edit Product" : "Add Product"}
         </h2>
@@ -240,7 +306,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             />
           </div>
 
-         <div className="static-field">
+          <div className="static-field">
             <label htmlFor="category">Category *</label>
             <select
               id="category"
@@ -250,24 +316,15 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             >
               <option value="">Select category</option>
 
-              {/* ======================= */}
-              {/* Laptops                 */}
-              {/* ======================= */}
               <optgroup label="Laptops">
                 <option value="Laptops">Laptops</option>
               </optgroup>
 
-              {/* ======================= */}
-              {/* Components              */}
-              {/* ======================= */}
               <optgroup label="Components">
                 <option value="Hard Disks & SSDs">Hard Disks & SSDs</option>
                 <option value="RAM">RAM</option>
               </optgroup>
 
-              {/* ======================= */}
-              {/* Accessories             */}
-              {/* ======================= */}
               <optgroup label="Accessories">
                 <option value="Mice">Mice</option>
                 <option value="Keyboards">Keyboards</option>
@@ -275,13 +332,12 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
                 <option value="Headphones">Headphones</option>
                 <option value="Speakers">Speakers</option>
                 <option value="Bags">Bags</option>
-                <option value="Mousepads & Deskpads">Mousepads & Deskpads</option>
+                <option value="Mousepads & Deskpads">
+                  Mousepads & Deskpads
+                </option>
                 <option value="Cooling Pads">Cooling Pads</option>
               </optgroup>
 
-              {/* ======================= */}
-              {/* Others                  */}
-              {/* ======================= */}
               <optgroup label="Others">
                 <option value="Monitors">Monitors</option>
                 <option value="Adapters">Adapters</option>
@@ -292,25 +348,24 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             </select>
           </div>
 
-
-             <div className="static-field">
-              <label htmlFor="priority">Priority</label>
-              <input
-                id="priority"
-                type="number"
-                value={formData.priority ?? 0}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    priority: Number(e.target.value),
-                  }))
-                }
-                placeholder="Higher number appears first"
-              />
-              <p className="helper-text">
-                Repeated priorities are allowed — newest one goes on top.
-              </p>
-            </div>
+          <div className="static-field">
+            <label htmlFor="priority">Priority</label>
+            <input
+              id="priority"
+              type="number"
+              value={formData.priority ?? 0}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  priority: Number(e.target.value),
+                }))
+              }
+              placeholder="Higher number appears first"
+            />
+            <p className="helper-text">
+              Repeated priorities are allowed — newest one goes on top.
+            </p>
+          </div>
 
           <div className="two-grid">
             <div className="static-field">
@@ -400,7 +455,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
                       className="remove-tag-btn"
                       title="Remove tag"
                     >
-                      ×
+                      <XCircle />
                     </button>
                   </div>
                 ))}
@@ -428,72 +483,105 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             </p>
           </div>
 
+          {/* === IMAGE PREVIEW (DRAG REORDER) === */}
           {images.length > 0 && (
-            <div className="image-preview-grid">
-              {images.map((img, i) => (
-                <div key={i} className="image-preview">
-                  <img src={img.preview} alt={`preview-${i}`} />
-                  <button
-                    type="button"
-                    className="remove-btn"
-                    onClick={() => removeImage(i)}
-                    title="Remove image"
+            <Reorder.Group
+              axis="x"
+              values={images}
+              onReorder={setImages}
+              className="image-preview-grid"
+            >
+              <AnimatePresence>
+                {images.map((img, i) => (
+                  <Reorder.Item
+                    key={img.id}
+                    value={img}
+                    className={`image-preview ${i === 0 ? "main-image" : ""}`}
+                    whileDrag={{ scale: 1.03 }}
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ duration: 0.12 }}
                   >
-                    ×
-                  </button>
+                    <img src={img.preview} alt={`preview-${i}`} />
 
-                  {uploadProgress > 0 && uploadProgress < 100 && (
-                    <div className="upload-overlay">
-                      <div className="progress-bar">
-                        <div
-                          className="progress-fill"
-                          style={{ width: `${uploadProgress}%` }}
-                        />
-                      </div>
-                      <p>{uploadProgress}%</p>
+                    {/* Drag handle indicator */}
+                    <div className="drag-handle" title="Drag to reorder">
+                      <GripVertical size={16} />
                     </div>
-                  )}
 
-                </div>
-              ))}
-            </div>
+                    {/* Main badge */}
+                    {i === 0 && (
+                      <div className="main-badge" title="Main image">
+                        <Star size={14} />
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      className="remove-btn"
+                      onClick={() => removeImage(i)}
+                      title="Remove image"
+                    >
+                      <XCircle />
+                    </button>
+
+                    {uploadProgress > 0 && uploadProgress < 100 && (
+                      <div className="upload-overlay">
+                        <div className="progress-bar">
+                          <div
+                            className="progress-fill"
+                            style={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+                        <p>{uploadProgress}%</p>
+                      </div>
+                    )}
+                  </Reorder.Item>
+                ))}
+              </AnimatePresence>
+            </Reorder.Group>
           )}
 
           {/* === TOP PRODUCT TOGGLE === */}
-<div className="toggle-row">
-  <label className="toggle-container">
-    <input
-      id="isTopProduct"
-      type="checkbox"
-      checked={formData.isTopProduct}
-      onChange={handleChange}
-    />
-    <span className="toggle-icon">
-      {formData.isTopProduct ? <Star size={18} /> : <StarOff size={18} />}
-    </span>
-    <span className="toggle-label">
-      {formData.isTopProduct ? "Top Product" : "Mark as Top Product"}
-    </span>
-  </label>
-</div>
+          <div className="toggle-row">
+            <label className="toggle-container">
+              <input
+                id="isTopProduct"
+                type="checkbox"
+                checked={formData.isTopProduct}
+                onChange={handleChange}
+              />
+              <span className="toggle-icon">
+                {formData.isTopProduct ? (
+                  <Star size={18} />
+                ) : (
+                  <StarOff size={18} />
+                )}
+              </span>
+              <span className="toggle-label">
+                {formData.isTopProduct ? "Top Product" : "Mark as Top Product"}
+              </span>
+            </label>
+          </div>
 
-{/* === HIDDEN toggle === */}
-<div className="toggle-row hide-toggle">
-  <label className="toggle-container">
-    <input
-      id="hidden"
-      type="checkbox"
-      checked={formData.hidden}
-      onChange={handleChange}
-    />
-    <span className="toggle-icon">
-      {formData.hidden ? <EyeOff size={18} /> : <Eye size={18} />}
-    </span>
-    <span className="toggle-label">
-      {formData.hidden ? "Hidden from Public" : "Visible to Public"}
-    </span>
-  </label>
-</div>
+          {/* === HIDDEN toggle === */}
+          <div className="toggle-row hide-toggle">
+            <label className="toggle-container">
+              <input
+                id="hidden"
+                type="checkbox"
+                checked={formData.hidden}
+                onChange={handleChange}
+              />
+              <span className="toggle-icon">
+                {formData.hidden ? <EyeOff size={18} /> : <Eye size={18} />}
+              </span>
+              <span className="toggle-label">
+                {formData.hidden ? "Hidden from Public" : "Visible to Public"}
+              </span>
+            </label>
+          </div>
 
           {/* === SPECS === */}
           {formData.category === "Laptops" && (
@@ -505,7 +593,7 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
                   ["cpu", "CPU", "e.g. Intel Core i7"],
                   ["gpu", "GPU", "e.g. RTX 4060"],
                   ["storage", "Storage", "e.g. 1TB SSD"],
-                  ["screenSize", "Screen Size", "e.g. 15.6\""],
+                  ["screenSize", "Screen Size", 'e.g. 15.6"'],
                   ["resolution", "Resolution", "e.g. 1920x1080"],
                   ["os", "OS", "e.g. Windows 11"],
                   ["battery", "Battery", "e.g. 75Wh"],
@@ -514,9 +602,12 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
                   ["releaseYear", "Release Year", "e.g. 2024"],
                   ["warranty", "Warranty", "e.g. 1 Year"],
                   ["colorOptions", "Colors", "e.g. Black, Silver"],
-                  ["accessories", "Included Accessories", "e.g. Charger, Stylus, Bag"],
+                  [
+                    "accessories",
+                    "Included Accessories",
+                    "e.g. Charger, Stylus, Bag",
+                  ],
                   ["keyboard", "Keyboard Features", "e.g. Arabic, RGB, etc.."],
-
                 ].map(([id, label, placeholder]) => (
                   <div key={id}>
                     <label htmlFor={id}>{label}</label>
@@ -533,9 +624,17 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
 
               <div className="specs-checkboxes">
                 {[
-                  ["touchscreen", "Touch Screen", <MonitorSmartphone size={18} />],
+                  [
+                    "touchscreen",
+                    "Touch Screen",
+                    <MonitorSmartphone size={18} />,
+                  ],
                   ["faceId", "Face ID", <ScanFace size={18} />],
-                  ["fingerPrint", "Fingerprint Sensor", <Fingerprint size={18} />],
+                  [
+                    "fingerPrint",
+                    "Fingerprint Sensor",
+                    <Fingerprint size={18} />,
+                  ],
                 ].map(([id, label, Icon]) => (
                   <label key={id} className="spec-checkbox">
                     <input
@@ -561,10 +660,8 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
             >
               Cancel
             </button>
-           <button
-              type="submit"
-              className="btn save"
-            >
+
+            <button type="submit" className="btn save">
               {isPending
                 ? isEditing
                   ? "Saving..."
@@ -573,10 +670,9 @@ const {mutate: editProduct, isPending: isEditingRequest} = useEditProductMutatio
                 ? "Save Changes"
                 : "Add Product"}
             </button>
-
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };
