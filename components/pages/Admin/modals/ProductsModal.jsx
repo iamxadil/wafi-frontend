@@ -484,6 +484,8 @@ const ProductsModal = ({
           </div>
 
           {/* === IMAGE PREVIEW (DRAG REORDER) === */}
+          <div className="image-scroll-wrapper">
+            <div className="image-scroll-inner">
           {images.length > 0 && (
             <Reorder.Group
               axis="x"
@@ -542,6 +544,9 @@ const ProductsModal = ({
               </AnimatePresence>
             </Reorder.Group>
           )}
+          </div>
+          </div>
+
 
           {/* === TOP PRODUCT TOGGLE === */}
           <div className="toggle-row">
