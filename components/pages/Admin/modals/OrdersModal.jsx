@@ -23,6 +23,7 @@ import {
   Store,
   ShieldCheck,
   Notebook,
+  Check
 } from "lucide-react";
 import "../styles/ordersmodal.css";
 import StatusModal from "./StatusModal.jsx";
@@ -35,6 +36,7 @@ import {
 const deliverySteps = [
   { key: "Waiting", label: "Order Received", icon: ClipboardCheck },
   { key: "Packaging", label: "Packaging", icon: Box },
+  { key: "Accepted", label: "Accepted", icon: Check },
   { key: "On the way", label: "In Transit", icon: Truck },
   { key: "Delivered", label: "Delivered", icon: Home },
 ];

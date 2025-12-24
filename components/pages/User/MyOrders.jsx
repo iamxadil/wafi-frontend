@@ -19,25 +19,38 @@ const MyOrdersPage = () => {
   const attachLoading = useOrderStore((state) => state.attachLoading);
   const attachErrorFromStore = useOrderStore((state) => state.attachError);
 
-  // === Local states ===
+  // === Local state ===
   const [attachId, setAttachId] = useState("");
   const [attachError, setAttachError] = useState(null);
 
   // === Refs ===
   const cardRefs = useRef([]);
 
-  // === Combine orders safely ===
-  const combinedOrders = useMemo(
-    () => [...Object.values(attachedOrders), ...myOrders],
-    [attachedOrders, myOrders]
-  );
+  /* =====================================================
+     ✅ FIX: MERGE + DEDUPE ORDERS BY _id
+  ===================================================== */
+  const combinedOrders = useMemo(() => {
+    const map = new Map();
 
-  // === Fetch user's orders on mount ===
+    // Optimistic attached orders
+    Object.values(attachedOrders).forEach((order) => {
+      if (order?._id) map.set(order._id, order);
+    });
+
+    // Backend orders override
+    myOrders.forEach((order) => {
+      if (order?._id) map.set(order._id, order);
+    });
+
+    return Array.from(map.values());
+  }, [attachedOrders, myOrders]);
+
+  // === Fetch orders ===
   useEffect(() => {
     if (user) fetchMyOrders();
   }, [user, fetchMyOrders]);
 
-  // === Animate cards on intersection ===
+  // === Animate cards ===
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -54,7 +67,7 @@ const MyOrdersPage = () => {
     return () => observer.disconnect();
   }, [combinedOrders]);
 
-  // === Handle attach order ===
+  // === Attach order ===
   const handleAttachOrder = async () => {
     if (!attachId.trim()) return;
     setAttachError(null);
@@ -62,7 +75,7 @@ const MyOrdersPage = () => {
     try {
       await attachOrderToUser(attachId.trim());
       setAttachId("");
-      fetchMyOrders(); // refresh orders after attaching
+      fetchMyOrders();
     } catch (err) {
       setAttachError(
         err.response?.data?.message ||
@@ -72,7 +85,7 @@ const MyOrdersPage = () => {
     }
   };
 
-  // === Early return (after all hooks) ===
+  // === Not signed in ===
   if (!user) {
     return (
       <main id="not-signed-in-page" dir={t.language === "ar" ? "rtl" : "ltr"}>
@@ -102,6 +115,18 @@ const MyOrdersPage = () => {
     );
   }
 
+  // === Status localization ===
+  const statusMap = {
+    Waiting: "قيد الانتظار",
+    Accepted: "تم القبول",
+    Packaging: "قيد التحضير",
+    "On the way": "في الطريق",
+    Delivered: "تم التوصيل",
+    "Picked-Up": "تم الاستلام",
+    Canceled: "تم الإلغاء",
+    Refunded: "تم استرجاع المبلغ",
+  };
+
   // === Main render ===
   return (
     <main
@@ -125,7 +150,10 @@ const MyOrdersPage = () => {
         <input
           type="text"
           dir={t.language === "ar" ? "rtl" : "ltr"}
-          placeholder={t("Enter your order ID to attach", "أدخل رقم الطلب لربطه بحسابك")}
+          placeholder={t(
+            "Enter your order ID to attach",
+            "أدخل رقم الطلب لربطه بحسابك"
+          )}
           value={attachId}
           onChange={(e) => setAttachId(e.target.value)}
         />
@@ -159,7 +187,7 @@ const MyOrdersPage = () => {
           combinedOrders.map((order, idx) => (
             <div
               className="pr-order-card"
-              key={order._id || idx}
+              key={order._id}
               ref={(el) => (cardRefs.current[idx] = el)}
             >
               {/* Header */}
@@ -172,19 +200,10 @@ const MyOrdersPage = () => {
                     ?.replace(/\s+/g, "-")
                     ?.toLowerCase()}`}
                 >
-                  {(() => {
-                    const statusMap = {
-                      Waiting: "قيد الانتظار",
-                      Packaging: "قيد التحضير",
-                      "On the way": "في الطريق",
-                      Delivered: "تم التوصيل",
-                      "Picked-Up": "تم الاستلام",
-                      Canceled: "تم الإلغاء",
-                      Refunded: "تم استرجاع المبلغ",
-                    };
-                    const localized = statusMap[order.status] || order.status;
-                    return t(order.status, localized);
-                  })()}
+                  {t(
+                    order.status,
+                    statusMap[order.status] || order.status
+                  )}
                 </span>
               </div>
 

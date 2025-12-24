@@ -163,6 +163,12 @@
   border: 1px solid rgba(245, 158, 11, 0.35);
 }
 
+.pr-order-status.accepted {
+  background: rgba(0, 237, 122, 0.2);
+  color: #0bf5b7;
+  border: 1px solid rgba(11, 245, 218, 0.35);
+}
+
 /* 🟠 Packaging */
 .pr-order-status.packaging {
   background: rgba(249, 115, 22, 0.2);

@@ -11,13 +11,14 @@ import {
   Lock,
   Store,
   Handshake,
+  Check
 } from "lucide-react";
 import "../styles/statusmodal.css";
 import { useUpdateOrderStatus } from "../../../hooks/useManageOrders.jsx";
 
 const statusOptions = [
   { label: "Waiting", value: "Waiting", icon: ClipboardCheck },
-  { label: "Packaging", value: "Packaging", icon: Box },
+  { label: "Accepted", value: "Accepted", icon: Check },
   { label: "On the way", value: "On the way", icon: Truck },
   { label: "Delivered", value: "Delivered", icon: Home },
   { label: "Picked-Up", value: "Picked-Up", icon: Handshake },
@@ -26,7 +27,7 @@ const statusOptions = [
 ];
 
 const irreversibleStatuses = ["Delivered", "Picked-Up", "Canceled", "Refunded"];
-const statusOrder = ["Waiting", "Packaging", "On the way", "Delivered"];
+const statusOrder = ["Waiting", "Accepted", "On the way", "Delivered"];
 
 const StatusModal = ({ opened, onClose, order }) => {
   const updateStatus = useUpdateOrderStatus();

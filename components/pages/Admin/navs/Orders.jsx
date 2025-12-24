@@ -15,6 +15,7 @@ import {
   XCircle,
   RotateCcw,
   Handshake,
+  Check,
 } from "lucide-react";
 import {
   Table,
@@ -49,6 +50,8 @@ const getStatusColor = (status) => {
       return "green";
     case "Packaging":
       return "yellow";
+      case "Accepted":
+        return "lightgreen";
     case "On the way":
       return "blue";
     case "Canceled":
@@ -66,6 +69,7 @@ const STATUS_GRADIENTS = {
   Delivered:  { from: "#16a34a", to: "#4ade80", deg: 130 },
   "Picked-Up": { from: "#0ea5e9", to: "#38bdf8", deg: 130 },
   Packaging: { from: "#f59e0b", to: "#fbbf24", deg: 130 },
+  Accepted: { from: "#22c55e", to: "#38bdf8", deg: 130 },
   "On the way": { from: "#3b82f6", to: "#60a5fa", deg: 130 },
   Canceled: { from: "#ef4444", to: "#f87171", deg: 130 },
   Refunded: { from: "#eab308", to: "#fde047", deg: 130 },
@@ -142,6 +146,8 @@ const OrderRow = React.memo(
                   ? <Truck size={14} />
                   : order.status === "Packaging"
                   ? <Box size={14} />
+                  : order.status === "Accepted"
+                  ? <Check size={14} />
                   : order.status === "Picked-Up"
                   ? <Handshake size={14} />
                   : order.status === "Canceled"
