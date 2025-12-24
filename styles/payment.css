@@ -165,6 +165,24 @@
   font-size: 0.95rem;
   color: var(--text);
   transition: 0.22s ease;
+  outline: none;
+}
+
+.form-group textarea {
+  background: var(--surface-glass-strong);
+  outline: none;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--text);
+  padding: 0.75rem 1rem;
+  width: 100%;
+  resize: none;
+}
+
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.35);
 }
 
 .form-group input:focus,

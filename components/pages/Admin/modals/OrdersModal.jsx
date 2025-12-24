@@ -21,7 +21,8 @@ import {
   ArchiveRestore,
   MessageSquare,
   Store,
-  ShieldCheck
+  ShieldCheck,
+  Notebook,
 } from "lucide-react";
 import "../styles/ordersmodal.css";
 import StatusModal from "./StatusModal.jsx";
@@ -122,6 +123,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
     }
   };
 
+
   return (
     <>
       <Modal
@@ -135,7 +137,7 @@ const OrdersModal = ({ opened, onClose, order }) => {
           content: "omodal",
           body: "omodal__body",
         }}
-         trapFocus={false}
+        trapFocus={false}
         keepMounted
         lockScroll={false}
         closeOnClickOutside={false}
@@ -146,7 +148,8 @@ const OrdersModal = ({ opened, onClose, order }) => {
           <div className="head-left">
             <h2>Order #{orderNumber}</h2>
             <p className="meta">
-              <Clock size={14} /> Placed on {new Date(createdAt).toLocaleString()}
+              <Clock size={14} /> Placed on{" "}
+              {new Date(createdAt).toLocaleString()}
             </p>
           </div>
 
@@ -169,7 +172,10 @@ const OrdersModal = ({ opened, onClose, order }) => {
             const Icon = step.icon;
             const active = !isFinalized && i <= activeIndex;
             return (
-              <div key={step.key} className={`t-step ${active ? "active" : ""}`}>
+              <div
+                key={step.key}
+                className={`t-step ${active ? "active" : ""}`}
+              >
                 <div className="t-icon">
                   <Icon size={15} />
                 </div>
@@ -201,7 +207,8 @@ const OrdersModal = ({ opened, onClose, order }) => {
           <div className="notice danger">
             <XCircle size={15} />
             <span>
-              This order has been {isCanceled ? "canceled" : "refunded"} and is no longer active.
+              This order has been {isCanceled ? "canceled" : "refunded"} and is
+              no longer active.
             </span>
           </div>
         )}
@@ -216,19 +223,19 @@ const OrdersModal = ({ opened, onClose, order }) => {
         {/* CUSTOMER */}
         <section className="section">
           <h3>
-            <User size={16} /> Customer Details 
-          <span>
-          {user ? (
-            <>
-             Registered <ShieldCheck size={14} color="#22c55e" />
-            </>
-          ) : (
-            <>
-              Not Registered  <XCircle size={14} color="#ef4444" />
-            </>
-          )}
-        </span>
-        </h3>
+            <User size={16} /> Customer Details
+            <span>
+              {user ? (
+                <>
+                  Registered <ShieldCheck size={14} color="#22c55e" />
+                </>
+              ) : (
+                <>
+                  Not Registered <XCircle size={14} color="#ef4444" />
+                </>
+              )}
+            </span>
+          </h3>
 
           <div className="details-grid">
             <div>
@@ -285,9 +292,15 @@ const OrdersModal = ({ opened, onClose, order }) => {
           )}
         </section>
 
-        {/* -------------------------------------------------- */}
-        {/* 🔥 UPDATED ITEMS SECTION WITH ELLIPSIS + VIEW LINK */}
-        {/* -------------------------------------------------- */}
+        {shippingInfo.userNotes && (
+          <section className="section">
+            <h3>
+              <Notebook size={16} /> Customer Notes
+            </h3>
+
+            <p className="user-notes">{shippingInfo.userNotes}</p>
+          </section>
+        )}
 
         <section className="section">
           <h3>
@@ -297,18 +310,19 @@ const OrdersModal = ({ opened, onClose, order }) => {
           <div className="items">
             {items.map((item, i) => (
               <div key={i} className="item">
-
                 <div className="i-info">
-
                   <div className="i-img">
-                   <img src={item.image || "/placeholder.png"} alt={item.name} />
+                    <img
+                      src={item.image || "/placeholder.png"}
+                      alt={item.name}
+                    />
                   </div>
 
                   <div className="i-name-sub">
-                  <p className="name">{item.name}</p>
-                  <p className="sub">
-                    Qty: {item.quantity} × {item.price.toLocaleString()} IQD
-                  </p>
+                    <p className="name">{item.name}</p>
+                    <p className="sub">
+                      Qty: {item.quantity} × {item.price.toLocaleString()} IQD
+                    </p>
                   </div>
                 </div>
 
@@ -393,7 +407,9 @@ const OrdersModal = ({ opened, onClose, order }) => {
                     </div>
 
                     {n.note && <p className="note-text">{n.note}</p>}
-                    <small className="note-meta">{n.author?.name || "Admin"}</small>
+                    <small className="note-meta">
+                      {n.author?.name || "Admin"}
+                    </small>
                   </div>
                 ))}
             </div>
@@ -437,10 +453,14 @@ const OrdersModal = ({ opened, onClose, order }) => {
               {!isFinalized && (
                 <>
                   <button className="btn success" onClick={handleMarkDelivered}>
-                    <CheckCircle2 size={15} /> {pickup ? "Mark Picked Up" : "Mark Delivered"}
+                    <CheckCircle2 size={15} />{" "}
+                    {pickup ? "Mark Picked Up" : "Mark Delivered"}
                   </button>
 
-                  <button className="btn warning" onClick={() => setStatusModalOpen(true)}>
+                  <button
+                    className="btn warning"
+                    onClick={() => setStatusModalOpen(true)}
+                  >
                     <RotateCcw size={15} /> Change Status
                   </button>
                 </>

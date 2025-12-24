@@ -8,7 +8,6 @@ import ReCAPTCHA from "react-google-recaptcha";
 import useTranslate from "../hooks/useTranslate.jsx";
 import { useOtpQuery } from "../query/useOtpQuery.jsx";
 import OtpMethodModal from "../utils/OtpMethodModal.jsx";
-import {Mail} from "lucide-react";
 
 const RECAPTCHA_SITE_KEY = "6Lfk68wrAAAAAI-CXEppIpnN86Ss-wgBiBAbEdzv";
 
@@ -58,6 +57,7 @@ const Payment = () => {
     phone: "",
     phone2: "",
     email: "",
+    userNotes: "",
   });
 
   /* ==========================================================
@@ -150,7 +150,7 @@ const Payment = () => {
      Build Order Payload
   ========================================================== */
   const buildOrderData = () => {
-    const { fullName, address, city, postalCode, phone, phone2, email } = shippingInfo;
+    const { fullName, address, city, postalCode, phone, phone2, email, userNotes } = shippingInfo;
 
     return {
       items: cartItems.map((item) => ({
@@ -167,6 +167,7 @@ const Payment = () => {
         phone: `+964${phone}`,
         phone2: phone2 ? `+964${phone2}` : "",
         email,
+        userNotes
       },
       itemsPrice: subtotal,
       shippingPrice: delivery,
@@ -255,7 +256,6 @@ const Payment = () => {
       });
 
       const createdOrder = await createOrder(buildOrderData());
-
       toast.success(t("Order placed successfully!", "تم تقديم الطلب بنجاح!"));
       clearCart();
 
@@ -503,6 +503,17 @@ const Payment = () => {
               <label>{t("Payment Method", "طريقة الدفع")}</label>
               <input readOnly value={t("Cash on Delivery", "عند الاستلام")} />
             </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>{t("Add Your Notes", "أضِف ملاحظاتك")}</label>
+              <textarea name="user-notes"
+               onChange={(e) => setShippingInfo({...shippingInfo, userNotes: e.target.value})}
+               value={shippingInfo.userNotes}
+               />
+            </div>
+              
           </div>
 
           {/* CAPTCHA */}
