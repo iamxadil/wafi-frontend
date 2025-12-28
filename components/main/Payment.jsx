@@ -8,6 +8,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import useTranslate from "../hooks/useTranslate.jsx";
 import { useOtpQuery } from "../query/useOtpQuery.jsx";
 import OtpMethodModal from "../utils/OtpMethodModal.jsx";
+import { CircleAlert } from 'lucide-react';
 
 const RECAPTCHA_SITE_KEY = "6Lfk68wrAAAAAI-CXEppIpnN86Ss-wgBiBAbEdzv";
 
@@ -16,6 +17,7 @@ const Payment = () => {
   const t = useTranslate();
 
   const [resendTimer, setResendTimer] = useState(0);
+  const isArabic = t("en", "ar") === "ar";
 
   // interval ref to prevent stacking/leaks
   const resendIntervalRef = useRef(null);
@@ -513,7 +515,18 @@ const Payment = () => {
                value={shippingInfo.userNotes}
                />
             </div>
-              
+          </div>
+
+          <div className="form-row">
+            <div className="form-group order-note">
+              <h1 dir={isArabic ? "rtl" : "ltr"} style={{alignItems: t.flexAlign, textAlign: t.textAlign}}>{t("Note", "ملاحظة")}
+              <span><CircleAlert size={18} color="crimson" /></span>
+               </h1>
+              <p style={{textAlign: t.textAlign}}>
+                {t("This Order Can Not Be Canceled Placement!",
+                <span> ! هذا الطلب غير قابل للالغاء بعد التأكيد</span>)}
+              </p>
+            </div>
           </div>
 
           {/* CAPTCHA */}

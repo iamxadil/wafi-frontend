@@ -1,6 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import useWindowWidth from "../components/hooks/useWindowWidth.jsx";
 import { Helmet } from "react-helmet-async";
+import Loading from "../components/main/Loading.jsx";
+import useAuthStore from "../components/stores/useAuthStore.jsx";
+import useTranslate from "../components/hooks/useTranslate.jsx";
 
 // 🧩 Lazy-load heavy sections
 const Land = lazy(() => import("../components/main/Land.jsx"));
@@ -9,12 +12,13 @@ const Laptops = lazy(() => import("../components/main/Laptops.jsx"));
 const Offers = lazy(() => import("../components/main/Offers.jsx"));
 const AccessoriesProducts = lazy(() => import("../components/main/AccessoriesProducts.jsx"));
 const MobLandingPage = lazy(() => import("../components/main/MobLandingPage.jsx"));
-const BlackFridayHero = lazy(() => import("../components/main/BlackFridayHero.jsx"));
-
-const Loader = () => <div style={{ textAlign: "center", padding: "2rem" }}>Loading...</div>;
+const Loader = () => <Loading  message="Loading..."/>;
 
 const Home = () => {
+  
   const width = useWindowWidth();
+  const {user} = useAuthStore();
+  const t = useTranslate();
 
   return (
     <>

@@ -4,6 +4,7 @@ import "../../styles/moblandingpage.css";
 import { SquaresSubtract } from "lucide-react";
 import useProductStore from "../stores/useProductStore";
 import useTranslate from "../hooks/useTranslate";
+import NewYearHero from '../effects/NewYearHero.jsx';
 
 // === Lazy-load icons to reduce JS bundle ===
 const SearchIcon = React.lazy(() =>
@@ -200,6 +201,7 @@ const MobLandingPage = () => {
           </div>
         )}
       </div>
+      
 
       {/* ======= Slider Section ======= */}
       <section className="slider-container">
@@ -226,6 +228,9 @@ const MobLandingPage = () => {
           ))}
         </div>
       </section>
+
+            <NewYearHero />
+
     </main>
   );
 };

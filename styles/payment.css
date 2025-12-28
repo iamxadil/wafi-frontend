@@ -41,7 +41,6 @@
   --shadow-2: rgba(0, 0, 0, 0.55);
 }
 
-
 #payment-page,
 #payment-page * {
   box-sizing: border-box;
@@ -61,9 +60,16 @@
   max-width: 1350px;
   margin-inline: auto;
 
-  background:
-    radial-gradient(circle at 20% 0%, rgba(var(--accent-rgb,94,99,255),0.15), transparent 45%),
-    radial-gradient(circle at 80% 100%, rgba(0,220,130,0.12), transparent 45%),
+  background: radial-gradient(
+      circle at 20% 0%,
+      rgba(var(--accent-rgb, 94, 99, 255), 0.15),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 80% 100%,
+      rgba(0, 220, 130, 0.12),
+      transparent 45%
+    ),
     var(--background);
 }
 
@@ -76,7 +82,12 @@
   position: absolute;
   width: 160px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb,94,99,255),0.7), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--accent-rgb, 94, 99, 255), 0.7),
+    transparent
+  );
   opacity: 0.4;
   filter: blur(1px);
 }
@@ -99,11 +110,8 @@
   padding: 2rem;
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(22px);
-  box-shadow:
-    0 22px 45px var(--shadow-1),
-    0 0 1px var(--shadow-2);
+  box-shadow: 0 22px 45px var(--shadow-1), 0 0 1px var(--shadow-2);
   position: relative;
-  overflow: hidden;
 }
 
 .glass-panel::before {
@@ -114,11 +122,10 @@
 
   background: linear-gradient(
     145deg,
-    rgba(var(--accent-rgb), 0.10),
+    rgba(var(--accent-rgb), 0.1),
     transparent 60%
   );
 }
-
 
 /* ------------------------------------------------------------
    LEFT FORM PANEL
@@ -150,7 +157,7 @@
 .form-group label {
   font-size: 0.94rem;
   font-weight: 600;
-  color: rgba(var(--accent-rgb,94,99,255), 0.9);
+  color: rgba(var(--accent-rgb, 94, 99, 255), 0.9);
   display: flex;
   align-items: center;
   gap: 0.45rem;
@@ -226,7 +233,6 @@
   color: var(--text);
 }
 
-
 .error-text {
   font-size: 0.78rem;
   color: #ff5252;
@@ -255,18 +261,19 @@
   width: 18px;
   height: 18px;
   border-radius: 6px;
-  border: 1px solid rgba(var(--accent-rgb,94,99,255),0.85);
-  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(var(--accent-rgb, 94, 99, 255), 0.85);
+  background: rgba(255, 255, 255, 0.07);
   transition: 0.2s;
 }
 
 .pickup-label input:checked + .checkmark {
-  background: linear-gradient(135deg,
-    rgba(var(--accent-rgb,94,99,255),1),
-    rgba(0,220,130,0.95)
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-rgb, 94, 99, 255), 1),
+    rgba(0, 220, 130, 0.95)
   );
   border-color: transparent;
-  box-shadow: 0 0 10px rgba(var(--accent-rgb,94,99,255),0.7);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb, 94, 99, 255), 0.7);
 }
 
 .pickup-label input:checked + .checkmark::after {
@@ -299,8 +306,8 @@
 
 .otp-help-note {
   padding: 0.95rem 1.2rem;
-  background: rgba(255,255,255,0.07);
-  border-left: 4px solid rgba(var(--accent-rgb,94,99,255),0.9);
+  background: rgba(255, 255, 255, 0.07);
+  border-left: 4px solid rgba(var(--accent-rgb, 94, 99, 255), 0.9);
   border-radius: 14px;
   animation: fadeSlide 0.45s ease forwards;
   opacity: 0;
@@ -308,7 +315,7 @@
 
 .otp-help-note a {
   font-weight: 600;
-  color: rgba(var(--accent-rgb,94,99,255),1);
+  color: rgba(var(--accent-rgb, 94, 99, 255), 1);
 }
 
 /* ------------------------------------------------------------
@@ -363,7 +370,7 @@
   align-items: center;
   gap: 1rem;
   padding-bottom: 0.8rem;
-  border-bottom: 1px dashed rgba(255,255,255,0.18);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.18);
 }
 
 .cart-item img {
@@ -371,8 +378,8 @@
   height: 72px;
   border-radius: 14px;
   object-fit: contain;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .cart-item-details h3 {
@@ -387,7 +394,7 @@
 .cart-item-price {
   font-size: 0.9rem;
   font-weight: 700;
-  color: rgba(var(--accent-rgb,94,99,255),1);
+  color: rgba(var(--accent-rgb, 94, 99, 255), 1);
 }
 
 .cart-totals h2 {
@@ -402,7 +409,7 @@
 }
 
 .totals-row.total {
-  border-top: 1px solid rgba(255,255,255,0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
   padding-top: 0.8rem;
   font-size: 1rem;
 }
@@ -411,8 +418,14 @@
    ANIMATIONS
 ------------------------------------------------------------ */
 @keyframes fadeSlide {
-  0% { opacity: 0; transform: translateY(8px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ------------------------------------------------------------
@@ -437,7 +450,6 @@
     margin-inline: auto;
   }
 }
-
 
 /* Ensures OTP inherits styling */
 .otp-container {
@@ -467,7 +479,6 @@
   border-radius: 14px;
 }
 
-
 /* Pickup should only appear once */
 .pickup-option {
   margin-bottom: 1.4rem;
@@ -477,19 +488,18 @@
   opacity: 0;
 }
 
-
 /* ============================================================
    FIX: SELECT LIST IN DARK MODE (Dropdown + Options)
 ============================================================ */
 
 [data-theme="dark"] select {
-  background: rgba(255,255,255,0.10) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   color: var(--text) !important;
-  border: 1px solid rgba(255,255,255,0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
 
 [data-theme="dark"] select:focus {
-  background: rgba(255,255,255,0.14) !important;
+  background: rgba(255, 255, 255, 0.14) !important;
   border-color: var(--accent) !important;
   box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.35);
 }
@@ -505,8 +515,6 @@
   background-color: #0f1011 !important;
   color: #fff !important;
 }
-
-
 
 .otp-actions {
   padding: 1rem 0;
@@ -554,4 +562,36 @@
   border-radius: 8px;
   font-weight: 600;
   margin-left: 10px;
+}
+
+.form-group h1 {
+  font-size: 1rem;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.form-group h1 span svg {
+  transform: translateY(4px);
+  margin: 0 6px 0px 6px;
+
+}
+
+.form-group p span,
+.form-group p {
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.order-note {
+  padding: 6px 10px;
+  border-radius: 12px;
+  background-color: var(--surface-glass);
+  border: 1px solid var(--glass-border);
+  border-right: 2px solid var(--danger);
+  border-left: 2px solid var(--danger);
+  color: var(--text);
+}
+
+.grecaptcha-badge {
+  display: none !important;
 }

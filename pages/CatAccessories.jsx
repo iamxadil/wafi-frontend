@@ -114,7 +114,6 @@ const CatAccessories = () => {
 
       {/* === MAIN ACCESSORY SECTIONS === */}
       <AllAccessories />
-      <GamingAccessories />
     </>
   );
 };

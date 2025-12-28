@@ -1,0 +1,14 @@
+#float-container {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    transform: translate(-50%, -50%);
+    z-index: 500;
+}
+
+
+.float-button {
+    padding: 6px 12px;
+    border: 1px solid var(--line-clr);
+    border-radius: 18px;
+}

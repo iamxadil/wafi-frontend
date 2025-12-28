@@ -20,6 +20,8 @@ import NotificationToast from "../components/main/NotificationToast.jsx";
 import SocketListener from "../components/main/SocketListener.jsx";
 import VisitTracker from "../components/main/VisitTracker.jsx";
 import trackVisit from '../components/main/TrackVisit.jsx';
+import FullScreenConfetti from "../components/effects/FullScreenConfetti.jsx";
+import NewYeartFloat from "../components/effects/NewYeartFloat.jsx";
 
 // === Lazy-loaded Pages ===
 const Home = lazy(() => import("../pages/Home.jsx"));
@@ -29,7 +31,6 @@ const CatLaptops = lazy(() => import("../pages/CatLaptops.jsx"));
 const CatAccessories = lazy(() => import("../pages/CatAccessories.jsx"));
 const CatOthers = lazy(() => import ("../pages/CatOthers.jsx"));
 const CatComponents = lazy(() => import ("../pages/CatComponents.jsx"));
-const BlackFridayPage = lazy(() => import ("../pages/BlackFridayPage.jsx"));
 
 // Auth
 const Signin = lazy(() => import("../components/pages/Auth/Signin.jsx"));
@@ -172,6 +173,8 @@ export default function App() {
         </>
       )}
 
+      <FullScreenConfetti />
+    
       
       {/* === Toast Notifications === */}
       <ToastContainer
@@ -229,7 +232,7 @@ export default function App() {
           <Route path="/favorites" element={<Favorites />} />
 
           {/* Test */}
-        
+
 
           {/* Product / Category */}
          <Route path="/product/:id" element={<ProductDetails />} />

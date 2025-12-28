@@ -12,6 +12,7 @@ import { useAllProductsQuery } from "../hooks/useAllProductsQuery.jsx";
 import useAllProductsStore from "../stores/useAllProductsStore.jsx";
 import useTranslate from "../hooks/useTranslate.jsx";
 import "../../styles/land.css";
+import NewYearHero from '../effects/NewYearHero.jsx';
 
 import { Zap, Gamepad2, Gauge, Music2 } from "lucide-react";
 
@@ -225,7 +226,10 @@ const Land = () => {
           </button>
         ))}
       </div>
+          <NewYearHero />
     </section>
+
+
   );
 };
 

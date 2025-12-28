@@ -1,0 +1,118 @@
+.ny-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(5, 8, 15, 0.65);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ny-countdown {
+  font-size: 96px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 2px;
+}
+
+.ny-moment {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.ny-moment h1 {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.ny-moment p {
+  font-size: 18px;
+  opacity: 0.85;
+}
+
+.ny-glow {
+  position: absolute;
+  inset: -120px;
+  background: radial-gradient(
+    circle,
+    rgba(56, 189, 248, 0.35),
+    transparent 70%
+  );
+  animation: nyPulse 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes nyPulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+
+.ny-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(5, 8, 15, 0.65);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ny-countdown {
+  font-size: 96px;
+  font-weight: 700;
+  color: white;
+}
+
+.ny-moment {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.ny-moment h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.ny-moment p {
+  font-size: 18px;
+  opacity: 0.85;
+}
+
+.ny-glow {
+  position: absolute;
+  inset: -140px;
+  background: radial-gradient(
+    circle,
+    rgba(56, 189, 248, 0.4),
+    transparent 70%
+  );
+  animation: nyPulse 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes nyPulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+
+#ny-container {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 6000;
+}
+
+
+
+.ny-reveal {
+  border: 1px solid var(--line-clr);
+  border-radius: 22px;
+}
