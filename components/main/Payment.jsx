@@ -523,7 +523,7 @@ const Payment = () => {
               <span><CircleAlert size={18} color="crimson" /></span>
                </h1>
               <p style={{textAlign: t.textAlign}}>
-                {t("This Order Can Not Be Canceled Placement!",
+                {t("This Order Can Not Be Canceled After Placement!",
                 <span> ! هذا الطلب غير قابل للالغاء بعد التأكيد</span>)}
               </p>
             </div>
