@@ -901,3 +901,39 @@
   font-size: 1.5rem;
   font-weight: bold;
 }
+
+
+
+.desc-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.copy-desc-btn {
+  font-size: 0.95rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line-clr);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@media (max-width: 720px) {
+  .copy-desc-btn {
+    font-size: 0.85rem;
+  }
+}
+
+.copy-desc-btn:hover {
+  background: var(--accent-clr);
+  color: #fff;
+}
+
+

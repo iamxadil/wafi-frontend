@@ -14,6 +14,7 @@ import {
   SiSony,
   SiCorsair,
   SiSteelseries,
+  SiDell
 } from "react-icons/si";
 import { TiVendorMicrosoft as Microsoft } from "react-icons/ti";
 import AulaIcon from "../assets/brands/aula.svg?react";
@@ -65,6 +66,7 @@ import {
   MonitorSmartphone,
   PackagePlus,
   Keyboard,
+  CopyIcon
 } from "lucide-react";
 
 import { toast } from "react-toastify";
@@ -185,6 +187,7 @@ const ProductDetails = () => {
     corsair: SiCorsair,
     samsung: SiSamsung,
     steelseries: SiSteelseries,
+    dell: SiDell,
     lenovo: LenovoIcon,
     aula: AulaIcon,
     rapoo: RapooIcon,
@@ -356,6 +359,82 @@ const handleThumbnailClick = (img) => {
 
     setTouchPosition({ x: newX, y: newY });
   };
+
+const handleCopyDescription = async () => {
+  if (!selectedProduct) {
+    return toast.info(t("Nothing to copy", "لا يوجد شيء للنسخ"));
+  }
+
+  let text = "";
+
+  /* =======================
+     📊 SPECS
+  ======================= */
+  if (specsList.length > 0) {
+    text += t("Specifications:", "المواصفات:") + "\n";
+
+    specOrder.forEach((key) => {
+      const value = selectedProduct.specs?.[key];
+
+      if (
+        value === null ||
+        value === undefined ||
+        value === "" ||
+        value === false ||
+        (Array.isArray(value) && value.length === 0)
+      ) {
+        return;
+      }
+
+      const label = t(
+        keywordLabels[key.toUpperCase()]?.en || key,
+        keywordLabels[key.toUpperCase()]?.ar || key
+      );
+
+      const formattedValue = Array.isArray(value)
+        ? value.join(", ")
+        : typeof value === "boolean"
+        ? t("Included", "متوفر")
+        : value;
+
+      text += `• ${label}: ${formattedValue}\n`;
+    });
+
+    text += "\n";
+  }
+
+  /* =======================
+     📝 DESCRIPTION
+  ======================= */
+  if (selectedProduct.description?.trim()) {
+    text += t("Description:", "الوصف:") + "\n";
+    text += selectedProduct.description
+      .replace(/\r\n|\r/g, "\n")
+      .trim();
+  }
+
+  /* =======================
+     ❌ NOTHING TO COPY
+  ======================= */
+  if (!text.trim()) {
+    return toast.info(
+      t("Nothing to copy", "لا يوجد شيء للنسخ")
+    );
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success(
+      t("Copied successfully", "تم النسخ بنجاح")
+    );
+  } catch {
+    toast.error(
+      t("Copy failed", "فشل النسخ")
+    );
+  }
+};
+
+
 
   /* ============================================================
      📝 Reviews
@@ -1121,17 +1200,42 @@ const handleThumbnailClick = (img) => {
       <div className="dt-container">
         <div className="pr-description-container">
           <div
-            className="description-header"
+          className="description-header"
+          dir={t("ltr", "rtl")}
+        >
+          <h3
+            style={{
+
+              textAlign: t.textAlign,
+            }}
             onClick={() => setExpanded(!expanded)}
           >
-            <h3 style={{ justifyContent: t.flexAlign }}>
-              {t("Description", "الوصف والمواصفات")}
-            </h3>
+            {t("Description", "الوصف")}
+          </h3>
+
+          <div
+            className="desc-actions"
+            style={{
+              flexDirection: t.rowReverse, // 🔥 RTL aware
+            }}
+          >
+            <button
+              className="copy-desc-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCopyDescription();
+              }}
+            >
+              {t("Copy", "نسخ")} <CopyIcon size={18}/>
+            </button>
 
             <FiChevronDown
               className={`arrow ${expanded ? "rotated" : ""}`}
+              onClick={() => setExpanded(!expanded)}
             />
           </div>
+        </div>
+
 
           <div
             className={`description-content ${

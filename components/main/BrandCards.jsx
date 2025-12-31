@@ -25,12 +25,12 @@ const BrandCards = () => {
 
   const cards = [
     { name: "Asus", icon: <SiAsus /> },
-    { name: "Apple", icon: <SiApple /> },
-    { name: "Acer", icon: <SiAcer /> },
     { name: "MSI", icon: <MSI /> },
     { name: "Lenovo", icon: <SiLenovo /> },
     { name: "HP", icon: <SiHp /> },
-    { name: "Dell", icon: <SiDell /> },
+    { name: "Dell", icon: <SiDell /> }, 
+    { name: "Apple", icon: <SiApple /> },
+    { name: "Acer", icon: <SiAcer /> },
     { name: "Microsoft", icon: <Microsoft /> },
   ];
 
