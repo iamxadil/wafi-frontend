@@ -229,8 +229,6 @@ const MobLandingPage = () => {
         </div>
       </section>
 
-            <NewYearHero />
-
     </main>
   );
 };

@@ -226,7 +226,6 @@ const Land = () => {
           </button>
         ))}
       </div>
-          <NewYearHero />
     </section>
 
 

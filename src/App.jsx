@@ -20,7 +20,6 @@ import NotificationToast from "../components/main/NotificationToast.jsx";
 import SocketListener from "../components/main/SocketListener.jsx";
 import VisitTracker from "../components/main/VisitTracker.jsx";
 import trackVisit from '../components/main/TrackVisit.jsx';
-import FullScreenConfetti from "../components/effects/FullScreenConfetti.jsx";
 import NewYeartFloat from "../components/effects/NewYeartFloat.jsx";
 
 // === Lazy-loaded Pages ===
@@ -173,7 +172,6 @@ export default function App() {
         </>
       )}
 
-      <FullScreenConfetti />
     
       
       {/* === Toast Notifications === */}
