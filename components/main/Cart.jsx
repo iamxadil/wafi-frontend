@@ -38,6 +38,10 @@ const Cart = () => {
     (sum, item) => sum + (item.finalPrice || item.price) * item.qty,
     0
   );
+
+  const delivery = subtotal >= 200_000 ? 0 : 5_000;
+  const total = subtotal + delivery;
+
   const isEmpty = cart.length === 0;
 
   // Detect laptop in cart
@@ -257,12 +261,16 @@ const Cart = () => {
 
             <div className="cu-trow">
               <span>{t("Delivery", "التوصيل")}</span>
-              <span>0 IQD</span>
+              <span>
+                {delivery === 0
+                  ? "0 IQD"
+                  : `${delivery.toLocaleString()} IQD`}
+              </span>
             </div>
 
             <div className="cu-trow cu-main-total">
               <span>{t("Total", "الإجمالي")}</span>
-              <span>{subtotal.toLocaleString()} IQD</span>
+              <span>{total.toLocaleString()} IQD</span>
             </div>
           </section>
 

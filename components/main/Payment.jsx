@@ -27,13 +27,8 @@ const Payment = () => {
   ========================================================== */
   const cartItems = useCartStore((state) => state.cart);
   const clearCart = useCartStore((state) => state.clearCart);
-  const delivery = 0;
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.finalPrice * item.qty,
-    0
-  );
-  const total = subtotal + delivery;
+
 
   const cities = [
     "Al-Anbar","Erbil","Babil","Baghdad","Basra","Dhi-Qar","Duhok","Diyala","Halabja",
@@ -42,6 +37,20 @@ const Payment = () => {
   ];
 
   const [pickup, setPickup] = useState(false);
+
+
+    const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.finalPrice * item.qty,
+    0
+  );
+
+  const delivery = pickup
+    ? 0
+    : subtotal >= 200_000
+      ? 0
+      : 5_000;
+
+  const total = subtotal + delivery;
 
   /* ==========================================================
      Shipping + Contact
@@ -378,6 +387,13 @@ const Payment = () => {
                 type="checkbox"
                 checked={pickup}
                 onChange={(e) => setPickup(e.target.checked)}
+                value={
+                    pickup
+                      ? t("Pickup", "استلام")
+                      : delivery === 0
+                        ? t("Free", "مجاني")
+                        : `${delivery.toLocaleString()} IQD`
+                  }
               />
               <span className="checkmark"></span>
               {t("Pickup from store (no delivery)", "الاستلام من المتجر (بدون توصيل)")}
@@ -498,7 +514,16 @@ const Payment = () => {
           <div className="form-row">
             <div className="form-group">
               <label>{t("Delivery", "التوصيل")}</label>
-              <input readOnly value={pickup ? t("Pickup", "استلام") : "0 IQD"} />
+              <input
+              readOnly
+              value={
+                pickup
+                  ? t("Pickup", "استلام")
+                  : delivery === 0
+                    ? t("Free", "مجاني")
+                    : `${delivery.toLocaleString()} IQD`
+              }
+            />
             </div>
 
             <div className="form-group">
@@ -624,10 +649,17 @@ const Payment = () => {
             <div className="cart-totals">
               <h2>{t("Cart Totals", "مجموع السلة")}</h2>
 
-              <div className="totals-row">
-                <span>{t("Delivery", "التوصيل")}</span>
-                <span>{pickup ? t("Pickup", "استلام") : "0 IQD"}</span>
-              </div>
+             <div className="totals-row">
+              <span>{t("Delivery", "التوصيل")}</span>
+              <span>
+                {pickup
+                  ? t("Pickup", "استلام")
+                  : delivery === 0
+                    ? t("Free", "مجاني")
+                    : `${delivery.toLocaleString()} IQD`}
+              </span>
+            </div>
+
 
               <div className="totals-row">
                 <span>{t("Subtotal", "المجموع")}</span>

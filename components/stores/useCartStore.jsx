@@ -72,6 +72,7 @@ const useCartStore = create((set, get) => ({
   totalItems: () => get().cart.reduce((sum, i) => sum + i.qty, 0),
   totalPrice: () =>
     get().cart.reduce((sum, i) => sum + i.qty * i.finalPrice, 0),
+  
 
   /* -------------------- INIT CART -------------------- */
   initCart: async () => {
