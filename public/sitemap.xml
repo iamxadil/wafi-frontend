@@ -1,52 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset 
+<urlset
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml"
 >
+
   <!-- Homepage -->
   <url>
     <loc>https://alwafi.net/</loc>
-    <lastmod>2025-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-
-    <xhtml:link rel="alternate" hreflang="en" href="https://alwafi.net/" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://alwafi.net/" />
   </url>
 
-  <!-- Laptops category -->
+  <!-- Core Categories -->
   <url>
     <loc>https://alwafi.net/laptops</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
 
-  <!-- Accessories category -->
   <url>
     <loc>https://alwafi.net/accessories</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://alwafi.net/others</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- Favorites -->
   <url>
-    <loc>https://alwafi.net/favorites</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-
-  <!-- Cart -->
-  <url>
-    <loc>https://alwafi.net/cart</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
-  <!-- Settings -->
-  <url>
-    <loc>https://alwafi.net/settings</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://alwafi.net/components</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 
 </urlset>

@@ -2,44 +2,43 @@
 <html lang="en" dir="ltr">
 <head>
   <!-- =====================
-       BASICS
+       CORE
   ====================== -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0f1011" />
 
   <!-- =====================
-       SITE NAME (BILINGUAL)
-       Google uses this for logo + site name
+       SITE NAME (GOOGLE AUTHORITY)
   ====================== -->
-  <title>Al-Wafi for Computers | الوافي للحاسبات</title>
+  <title>Alwafi for Computers | الوافي للحاسبات</title>
 
-  <!-- ONE description only (Google rule) -->
+  <!-- SINGLE DESCRIPTION (Google rule) -->
   <meta
     name="description"
-    content="Al-Wafi for Computers (الوافي للحاسبات) — Iraq’s #1 destination for laptops, gaming gear, accessories, and premium electronics. Fast delivery & original products."
+    content="Alwafi for Computers (الوافي للحاسبات) — Iraq’s #1 destination for laptops, gaming gear, accessories, and premium electronics. Fast delivery & 100% original products."
   />
 
   <!-- =====================
-       CANONICAL & HREFLANG
+       CANONICAL & LANG TARGETING
   ====================== -->
   <link rel="canonical" href="https://alwafi.net/" />
   <link rel="alternate" hreflang="en" href="https://alwafi.net/" />
-  <link rel="alternate" hreflang="ar" href="https://alwafi.net/" />
+  <link rel="alternate" hreflang="ar-IQ" href="https://alwafi.net/" />
   <link rel="alternate" hreflang="x-default" href="https://alwafi.net/" />
 
   <!-- =====================
-       OPEN GRAPH (SOCIAL + GOOGLE)
+       OPEN GRAPH (GOOGLE + SOCIAL)
   ====================== -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://alwafi.net/" />
-  <meta property="og:site_name" content="Al-Wafi for Computers | الوافي للحاسبات" />
-  <meta property="og:title" content="Al-Wafi for Computers | الوافي للحاسبات" />
+  <meta property="og:site_name" content="Alwafi for Computers | الوافي للحاسبات" />
+  <meta property="og:title" content="Alwafi for Computers | الوافي للحاسبات" />
   <meta
     property="og:description"
-    content="Premium laptops, gaming gear, and electronics in Iraq | الوافي للحاسبات"
+    content="Top laptops, gaming gear & premium electronics in Iraq | الوافي للحاسبات"
   />
-  <meta property="og:image" content="https://alwafi.net/og-banner.png?v=1" />
+  <meta property="og:image" content="https://alwafi.net/og-banner.png" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="ar_IQ" />
 
@@ -47,27 +46,24 @@
        TWITTER
   ====================== -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Al-Wafi for Computers | الوافي للحاسبات" />
+  <meta name="twitter:title" content="Alwafi for Computers | الوافي للحاسبات" />
   <meta
     name="twitter:description"
-    content="Top laptops, gaming gear & electronics in Iraq | الوافي للحاسبات"
+    content="Iraq’s leading store for laptops & electronics | الوافي للحاسبات"
   />
-  <meta name="twitter:image" content="https://alwafi.net/og-banner.png?v=1" />
+  <meta name="twitter:image" content="https://alwafi.net/og-banner.png" />
 
   <!-- =====================
-       FAVICONS / LOGO SOURCE
-       (Used by Google for branding)
+       ICONS (GOOGLE BRANDING)
   ====================== -->
   <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/favicon-192.png" />
   <link rel="manifest" href="/site.webmanifest" />
 
   <!-- =====================
-       FONT PERFORMANCE (SEO + UX)
-       Your exact fonts, optimized
+       FONT PERFORMANCE (PERFECT)
   ====================== -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -111,43 +107,28 @@
     onload="this.media='all'"
   />
 
-  <!-- Aref Ruqaa -->
-  <link
-    rel="preload"
-    as="style"
-    href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap"
-  />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap"
-    media="print"
-    onload="this.media='all'"
-  />
-
   <noscript>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" />
   </noscript>
 
   <!-- =====================
-       SCHEMA.ORG (ENTITY CONTROL)
+       SCHEMA — THIS CONTROLS GOOGLE SITE NAME
   ====================== -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": "https://alwafi.net/#organization",
-    "name": "Al-Wafi for Computers",
+    "name": "Alwafi for Computers",
     "alternateName": [
       "الوافي للحاسبات",
-      "Al Wafi Computers"
+      "Alwafi Computers"
     ],
     "url": "https://alwafi.net/",
     "logo": "https://alwafi.net/favicon.svg",
-    "image": "https://alwafi.net/og-banner.png?v=1",
-    "description": "Al-Wafi for Computers (الوافي للحاسبات) — Iraq’s leading electronics store."
+    "image": "https://alwafi.net/og-banner.png",
+    "description": "Alwafi for Computers (الوافي للحاسبات) — Iraq’s #1 electronics store."
   }
   </script>
 
@@ -157,7 +138,7 @@
     "@type": "WebSite",
     "@id": "https://alwafi.net/#website",
     "url": "https://alwafi.net/",
-    "name": "Al-Wafi for Computers | الوافي للحاسبات",
+    "name": "Alwafi for Computers",
     "alternateName": "الوافي للحاسبات",
     "publisher": {
       "@id": "https://alwafi.net/#organization"
