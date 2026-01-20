@@ -186,7 +186,7 @@ export default function AppFooter() {
               </Space>
 
               <Text style={{ color: "var(--text)", marginTop: 20 }}>
-                © 2025 {t("AL-WAFI. All rights reserved.", "الوافي. جميع الحقوق محفوظة.")}
+                © 2026 {t("Al-Wafi for Computers. All rights reserved.", "الوافي للحاسبات. جميع الحقوق محفوظة")}
               </Text>
             </Space>
           </Col>
