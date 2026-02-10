@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 // Try to read saved language from localStorage, fallback to English
-const savedLanguage = localStorage.getItem("appLanguage") || "en";
+const savedLanguage = localStorage.getItem("appLanguage") || "ar";
 
 const useLanguageStore = create((set) => ({
   language: savedLanguage,
