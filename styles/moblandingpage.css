@@ -172,7 +172,6 @@ position: absolute;
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-
   /* offset parent's padding to allow peek */
   margin-left: -2rem;
   margin-right: -2rem;
@@ -192,20 +191,35 @@ position: absolute;
 
 .slider-card {
   border: 1px solid var(--text);
-  height: 185px;
+  height: 200px;
   width: 125px;
   display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  justify-content: center;
   border-radius: 12px;
   padding: 0.45rem;
   scroll-snap-align: start;
-  
+
+
+  p {
+    font-size: 0.95rem;
+    font-weight: bold;
+    backdrop-filter: blur(24px);
+    padding: 4px;
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+
 }
 
 .slider-card img {
   width: 115px;
-  height: auto;
+  height: 100px;
   display: block;
   border-radius: 6px;
   object-fit: cover;

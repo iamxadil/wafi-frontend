@@ -4,7 +4,6 @@ import "../../styles/moblandingpage.css";
 import { SquaresSubtract } from "lucide-react";
 import useProductStore from "../stores/useProductStore";
 import useTranslate from "../hooks/useTranslate";
-import NewYearHero from '../effects/NewYearHero.jsx';
 
 // === Lazy-load icons to reduce JS bundle ===
 const SearchIcon = React.lazy(() =>
@@ -15,11 +14,12 @@ const FilterIcon = React.lazy(() =>
 );
 
 // === Static images (preprocessed by Vite) ===
-import LaptopImg from "../../assets/img/surface.avif";
+import LaptopImg from "../../assets/img/strix.webp";
 import HeadphoneImg from "../../assets/img/sony.avif";
 import MouseImg from "../../assets/img/logitech.webp";
 import BagImg from "../../assets/img/bag.webp";
 import KeyboardImg from "../../assets/img/keyboard.avif";
+import SSDImg from "../../assets/img/ssd.webp";
 
 const MobLandingPage = () => {
   const navigate = useNavigate();
@@ -32,16 +32,17 @@ const MobLandingPage = () => {
   const abortRef = useRef(null);
 
   // === Memoized images (prevent re-renders) ===
-  const images = useMemo(
-    () => [
-      { src: LaptopImg, category: "Laptops" },
-      { src: HeadphoneImg, category: "Headphones" }, // main LCP image
-      { src: MouseImg, category: "Mice" },
-      { src: BagImg, category: "Bags" },
-      { src: KeyboardImg, category: "Keyboards" },
-    ],
-    []
-  );
+  const images = 
+     [
+      { src: LaptopImg, category: "Laptops", title: t("Laptops", "اللابتوبات") },
+      { src: SSDImg, category: "Hard Disks & SSDs", title: t("Storage", "التخزين") },
+      { src: HeadphoneImg, category: "Headphones", title: t("Headphones", "السماعات") }, // main LCP image
+      { src: MouseImg, category: "Mice", title: t("Mice", "الماوسات") },
+      { src: BagImg, category: "Bags", title: t("Bags", "الحقائب") },
+      { src: KeyboardImg, category: "Keyboards", title: t("Keyboards", "الكيبوردات") },
+    ]
+  
+
 
   const navCat = (category) => {
     if (!category) return;
@@ -224,6 +225,9 @@ const MobLandingPage = () => {
                 height="400"
                 loading={index === 1 ? "eager" : "lazy"} // ✅ Eager load the hero (Headphones)
               />
+
+              <p>{item.title}</p>
+             
             </div>
           ))}
         </div>
