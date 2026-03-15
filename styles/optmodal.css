@@ -159,3 +159,68 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ============================================================
+   LIGHT MODE – OTP Modal (better contrast & colors)
+============================================================ */
+[data-theme="light"] .otp-modal-overlay {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] .otp-modal {
+  background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.2);
+}
+
+[data-theme="light"] .otp-modal-desc {
+  color: #475569;
+}
+
+[data-theme="light"] .otp-option {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .otp-option:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+[data-theme="light"] .otp-option.selected {
+  border-color: #5e63ff;
+  background: rgba(94, 99, 255, 0.08);
+  box-shadow: 0 0 0 2px rgba(94, 99, 255, 0.2);
+}
+
+[data-theme="light"] .otp-option.selected .custom-check {
+  border-color: #5e63ff;
+  background: #5e63ff;
+}
+
+[data-theme="light"] .custom-check {
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .otp-option-text strong {
+  color: #1e293b;
+}
+
+[data-theme="light"] .otp-option-text span {
+  color: #64748b;
+}
+
+[data-theme="light"] .otp-btn.primary {
+  background: linear-gradient(135deg, #5e63ff, #00d4ff);
+  color: #fff;
+}
+
+[data-theme="light"] .otp-btn.cancel {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .otp-btn.cancel:hover {
+  background: #cbd5e1;
+  color: #334155;
+}
