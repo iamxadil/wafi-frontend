@@ -15,6 +15,7 @@ import '../styles/darkmode.css';
 import '../styles/navbar.css';
 import '../styles/profilepage.css';
 import '../styles/bottomnavbar.css';
+import MaintenancePage from "./MaintenancePage.jsx";
 
   const theme = createTheme({
     primaryColor: "blue",
@@ -37,7 +38,7 @@ import '../styles/bottomnavbar.css';
     <Router>
       <MantineProvider theme={theme}>
        <QueryClientProvider client={queryClient}>
-        <App />
+        <MaintenancePage />
       </QueryClientProvider>
       </MantineProvider>
     </Router>
