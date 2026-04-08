@@ -1,4 +1,4 @@
-import { StrictMode, useEffect } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -16,6 +16,7 @@ import '../styles/navbar.css';
 import '../styles/profilepage.css';
 import '../styles/bottomnavbar.css';
 import MaintenancePage from "./MaintenancePage.jsx";
+import useAuthStore from "../components/stores/useAuthStore.jsx";
 
   const theme = createTheme({
     primaryColor: "blue",
@@ -23,7 +24,14 @@ import MaintenancePage from "./MaintenancePage.jsx";
 
  const queryClient = new QueryClient();
 
+function isStaffRole(role) {
+  return role === "admin" || role === "moderator";
+}
+
   function Root() {
+    const user = useAuthStore((s) => s.user);
+    const [authReady, setAuthReady] = useState(false);
+
     useEffect(() => {
       const link =
         document.querySelector("link[rel~='icon']") || document.createElement("link");
@@ -33,12 +41,28 @@ import MaintenancePage from "./MaintenancePage.jsx";
       document.head.appendChild(link);
     }, []);
 
+    useEffect(() => {
+      let cancelled = false;
+      (async () => {
+        try {
+          await useAuthStore.getState().profile();
+        } finally {
+          if (!cancelled) setAuthReady(true);
+        }
+      })();
+      return () => {
+        cancelled = true;
+      };
+    }, []);
+
+    const showApp = authReady && isStaffRole(user?.role);
+
   return (
   <HelmetProvider>
     <Router>
       <MantineProvider theme={theme}>
        <QueryClientProvider client={queryClient}>
-        <MaintenancePage />
+          <App />
       </QueryClientProvider>
       </MantineProvider>
     </Router>
