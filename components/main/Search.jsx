@@ -59,6 +59,19 @@ const Search = () => {
     handleSearch(text);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    setIsOpen(false);
+    navigate(`/search?query=${encodeURIComponent(query)}`);
+  };
+
+  const handleViewAll = () => {
+    if (!query.trim()) return;
+    setIsOpen(false);
+    navigate(`/search?query=${encodeURIComponent(query)}`);
+  };
+
   /* -------------------------------------------------------
       ⌨️ Keyboard Navigation
   ------------------------------------------------------- */
@@ -103,22 +116,22 @@ const Search = () => {
       {/* ---------------------------------- */}
       {/* 🔍 Search Input */}
       {/* ---------------------------------- */}
-      <div id="search-container">
+      <form id="search-container" onSubmit={handleSubmit}>
         <input
           type="search"
           placeholder="Search for products..."
           value={query}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => setIsOpen(true)}  // 🔥 open on focus
+          onFocus={() => setIsOpen(true)}
         />
         <SearchIcon />
-      </div>
+      </form>
 
       {/* ---------------------------------- */}
       {/* 🔽 DROPDOWN */}
       {/* ---------------------------------- */}
-      {isOpen && results.length > 0 && (      // 🔥 controlled visibility
+      {isOpen && results.length > 0 && (
         <div className="search-results">
           {results.map((product, index) => (
             <div
@@ -135,6 +148,9 @@ const Search = () => {
               </div>
             </div>
           ))}
+          <div className="search-view-all" onClick={handleViewAll}>
+            View All Results ({results.length}+)
+          </div>
         </div>
       )}
     </motion.div>

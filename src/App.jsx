@@ -25,6 +25,7 @@ import NewYeartFloat from "../components/effects/NewYeartFloat.jsx";
 // === Lazy-loaded Pages ===
 const Home = lazy(() => import("../pages/Home.jsx"));
 const ProductDetails = lazy(() => import("../pages/ProductDetails.jsx"));
+const SearchResults = lazy(() => import("../pages/SearchResults.jsx"));
 const CategoryNavigation = lazy(() => import("../pages/CategoryNavigation.jsx"));
 const CatLaptops = lazy(() => import("../pages/CatLaptops.jsx"));
 const CatAccessories = lazy(() => import("../pages/CatAccessories.jsx"));
@@ -196,6 +197,7 @@ export default function App() {
         <Routes>
           {/* Public */}
           <Route path="/" element={<Home />} />
+          <Route path="/search" element={<SearchResults />} />
           <Route
             path="/signin"
             element={

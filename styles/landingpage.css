@@ -287,4 +287,18 @@
   border-left: 3px solid var(--accent-clr);
 }
 
+.search-view-all {
+  padding: 10px 16px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--accent-clr);
+  cursor: pointer;
+  border-top: 1px solid rgba(var(--accent-rgb), 0.2);
+  transition: background 0.2s;
+}
+
+.search-view-all:hover {
+  background: rgba(var(--accent-rgb), 0.1);
+}
+
 

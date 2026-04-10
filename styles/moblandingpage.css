@@ -149,6 +149,20 @@ position: absolute;
   background: #fafafa; /* optional: matches dropdown background */
 }
 
+.mob-search-view-all {
+  padding: 12px 16px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--accent-clr);
+  cursor: pointer;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  transition: background 0.2s;
+}
+
+.mob-search-view-all:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
 
 
 .slider-container {

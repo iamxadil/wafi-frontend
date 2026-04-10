@@ -96,6 +96,17 @@ const MobLandingPage = () => {
 
   const clearFilters = () => setSelectedBrands([]);
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    navigate(`/search?query=${encodeURIComponent(query)}`);
+  };
+
+  const handleViewAll = () => {
+    if (!query.trim()) return;
+    navigate(`/search?query=${encodeURIComponent(query)}`);
+  };
+
   return (
     <main id="mob-landing-page">
       {/* ======= Title ======= */}
@@ -106,7 +117,7 @@ const MobLandingPage = () => {
 
       {/* ======= Search + Filter ======= */}
       <div className="mob-search-container">
-        <div className="mob-search-row">
+        <form className="mob-search-row" onSubmit={handleSearchSubmit}>
           <div className="mob-search">
             <Suspense fallback={<span>🔍</span>}>
               <SearchIcon size={22} />
@@ -155,7 +166,7 @@ const MobLandingPage = () => {
               </ul>
             )}
           </div>
-        </div>
+        </form>
 
         {/* Active filters */}
         {selectedBrands.length > 0 && (
@@ -174,25 +185,30 @@ const MobLandingPage = () => {
           <div className="mob-search-results">
             <div className="mob-search-results-inner">
               {results.length > 0 ? (
-                results.map((item) => (
-                  <div
-                    key={item._id}
-                    className="mob-search-result-item"
-                    onClick={() => navigate(`/product/${item._id}`)}
-                  >
-                    <img
-                      src={item.images?.[0] || "/placeholder.png"}
-                      alt={item.name}
-                      decoding="async"
-                      width="80"
-                      height="80"
-                    />
-                    <div className="mob-result-info">
-                      <span>{item.name}</span>
-                      <span style={{color: "var(--accent)", fontWeight: "bold"}}>{item.finalPrice?.toLocaleString()} IQD</span>
+                <>
+                  {results.map((item) => (
+                    <div
+                      key={item._id}
+                      className="mob-search-result-item"
+                      onClick={() => navigate(`/product/${item._id}`)}
+                    >
+                      <img
+                        src={item.images?.[0] || "/placeholder.png"}
+                        alt={item.name}
+                        decoding="async"
+                        width="80"
+                        height="80"
+                      />
+                      <div className="mob-result-info">
+                        <span>{item.name}</span>
+                        <span style={{color: "var(--accent)", fontWeight: "bold"}}>{item.finalPrice?.toLocaleString()} IQD</span>
+                      </div>
                     </div>
+                  ))}
+                  <div className="mob-search-view-all" onClick={handleViewAll}>
+                    {t("View All Results", "عرض جميع النتائج")} ({results.length}+)
                   </div>
-                ))
+                </>
               ) : (
                 <div className="no-results">
                   {t("No results found", "لا توجد نتائج")}

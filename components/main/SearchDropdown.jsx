@@ -17,6 +17,14 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
       🔥 KEYBOARD NAVIGATION
   ------------------------------------------------------- */
   const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !isOpen) {
+      e.preventDefault();
+      if (value.trim()) {
+        navigate(`/search?query=${encodeURIComponent(value)}`);
+      }
+      return;
+    }
+
     if (!isOpen) return;
 
     const count = products.length;
@@ -37,8 +45,8 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
         e.preventDefault();
         if (activeIndex >= 0 && products[activeIndex]) {
           navigate(`/product/${products[activeIndex]._id}`);
-        } else {
-          navigate(`/search?query=${value}`);
+        } else if (value.trim()) {
+          navigate(`/search?query=${encodeURIComponent(value)}`);
         }
         setIsOpen(false);
         break;
@@ -47,6 +55,12 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
         inputRef.current.blur();
         break;
     }
+  };
+
+  const handleViewAll = () => {
+    if (!value.trim()) return;
+    setIsOpen(false);
+    navigate(`/search?query=${encodeURIComponent(value)}`);
   };
 
   /* -------------------------------------------------------
@@ -83,7 +97,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
           value={value}
           onChange={(e) => {
             onChange(e);
-            setIsOpen(e.target.value.length > 0);   // ONLY OPEN WHEN NOT EMPTY
+            setIsOpen(e.target.value.length > 0);
           }}
           onKeyDown={handleKeyDown}
           onFocus={() => {
@@ -155,6 +169,9 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
                     </div>
                   </motion.div>
                 ))}
+                <div className="search-view-all" onClick={handleViewAll}>
+                  {t("View All Results", "عرض جميع النتائج")} ({products.length}+)
+                </div>
               </motion.div>
             ) : (
               <div className="search-no-results">

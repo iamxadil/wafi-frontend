@@ -15,22 +15,11 @@ import '../styles/darkmode.css';
 import '../styles/navbar.css';
 import '../styles/profilepage.css';
 import '../styles/bottomnavbar.css';
-import MaintenancePage from "./MaintenancePage.jsx";
-import useAuthStore from "../components/stores/useAuthStore.jsx";
-
-  const theme = createTheme({
-    primaryColor: "blue",
-  });
 
  const queryClient = new QueryClient();
 
-function isStaffRole(role) {
-  return role === "admin" || role === "moderator";
-}
 
   function Root() {
-    const user = useAuthStore((s) => s.user);
-    const [authReady, setAuthReady] = useState(false);
 
     useEffect(() => {
       const link =
@@ -41,26 +30,13 @@ function isStaffRole(role) {
       document.head.appendChild(link);
     }, []);
 
-    useEffect(() => {
-      let cancelled = false;
-      (async () => {
-        try {
-          await useAuthStore.getState().profile();
-        } finally {
-          if (!cancelled) setAuthReady(true);
-        }
-      })();
-      return () => {
-        cancelled = true;
-      };
-    }, []);
 
-    const showApp = authReady && isStaffRole(user?.role);
+
 
   return (
   <HelmetProvider>
     <Router>
-      <MantineProvider theme={theme}>
+      <MantineProvider >
        <QueryClientProvider client={queryClient}>
           <App />
       </QueryClientProvider>
