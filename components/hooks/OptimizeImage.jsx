@@ -39,9 +39,13 @@ const OptimizeImage = ({
   /* --------------------------------------------
      2. Normalize Source URL
   -------------------------------------------- */
+  const isLocalhost = src.includes("localhost") || src.includes("127.0.0.1");
+  const hasImageKit = IMAGEKIT_URL && IMAGEKIT_URL.length > 0;
   let baseUrl;
 
-  if (src.startsWith("http")) {
+  if (isLocalhost || !hasImageKit) {
+    baseUrl = src;
+  } else if (src.startsWith("http")) {
     baseUrl = src;
   } else if (src.startsWith(IMAGEKIT_URL)) {
     baseUrl = src;
@@ -52,16 +56,18 @@ const OptimizeImage = ({
   /* --------------------------------------------
      3. Generate responsive srcset
   -------------------------------------------- */
-  const srcSet = widths
-    .map(
-      (w) =>
-        `${baseUrl}?tr=w-${w},q-${quality},f-${format} ${w}w`
-    )
-    .join(", ");
+  const srcSet = isLocalhost
+    ? null  // No srcset for localhost
+    : widths
+        .map(
+          (w) =>
+            `${baseUrl}?tr=w-${w},q-${quality},f-${format} ${w}w`
+        )
+        .join(", ");
 
   const largest = widths[widths.length - 1];
 
-  const finalUrl = `${baseUrl}?tr=w-${largest},q-${quality},f-${format}`;
+  const finalUrl = isLocalhost ? baseUrl : `${baseUrl}?tr=w-${largest},q-${quality},f-${format}`;
 
   /* --------------------------------------------
      4. Placeholder (before visible)
@@ -96,8 +102,8 @@ const OptimizeImage = ({
     >
       <img
         src={finalUrl}
-        srcSet={srcSet}
-        sizes="(max-width: 600px) 100vw, 50vw"
+        srcSet={srcSet || undefined}
+        sizes={srcSet ? "(max-width: 600px) 100vw, 50vw" : undefined}
         alt={alt}
         className={className}
         style={{

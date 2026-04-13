@@ -55,14 +55,12 @@ const useProductStore = create((set, get) => ({
   
   setPage: (newPage) => set({ page: newPage }),
 
- normalizeProduct: (product) => ({
-  ...product,
-  id: product._id,
-  images: (product.images || []).map(img =>
-    img.startsWith("http") ? img : `${API_URL}:5000/${img}`
-  ),
-  finalPrice: Number(product.price || 0) - Number(product.discountPrice || 0),
-}),
+  normalizeProduct: (product) => ({
+   ...product,
+   id: product._id,
+   images: product.images || [],
+   finalPrice: Number(product.price || 0) - Number(product.discountPrice || 0),
+ }),
 
   // Fetch products
   fetchProducts: async (searchTerm = "", sort = "", filters = {}, page= 1, limit=5, admin) => {

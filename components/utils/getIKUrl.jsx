@@ -5,12 +5,14 @@ export const getIKUrl = (src, opts = {}) => {
   
   if (!src) return "";
 
-  // If full URL → strip the domain
-  if (src.startsWith("http")) {
+  // If full ImageKit URL → strip the domain and re-apply transformations
+  if (src.startsWith("https://ik.imagekit.io")) {
+    if (!BASE) return src;
     const cleaned = src.replace(/^https:\/\/ik\.imagekit\.io\/[^/]+\//, "");
     return `${BASE}/${cleaned}?tr=w-${w},q-${q},f-${f}`;
   }
 
-  // Raw filename
+  // Raw filename → use ImageKit (only if BASE is configured)
+  if (!BASE) return src;
   return `${BASE}/${src}?tr=w-${w},q-${q},f-${f}`;
 };
