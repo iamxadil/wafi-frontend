@@ -30,6 +30,7 @@ const CatLaptops = lazy(() => import("../pages/CatLaptops.jsx"));
 const CatAccessories = lazy(() => import("../pages/CatAccessories.jsx"));
 const CatOthers = lazy(() => import ("../pages/CatOthers.jsx"));
 const CatComponents = lazy(() => import ("../pages/CatComponents.jsx"));
+const SearchResults = lazy(() => import("../pages/SearchResults.jsx"));
 
 // Auth
 const Signin = lazy(() => import("../components/pages/Auth/Signin.jsx"));
@@ -242,6 +243,9 @@ export default function App() {
           <Route path="/accessories" element={<CatAccessories />} />
           <Route path="/others" element={<CatOthers />} />
           <Route path="/components" element={<CatComponents />} />
+
+          {/* Search */}
+          <Route path="/search" element={<SearchResults />} />
 
           {/* Cart / Checkout */}
           <Route path="/cart" element={<Cart />} />

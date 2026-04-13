@@ -17,14 +17,19 @@ import '../styles/profilepage.css';
 import '../styles/bottomnavbar.css';
 import useAuthStore from "../components/stores/useAuthStore.jsx";
 
-
+  const theme = createTheme({
+    primaryColor: "blue",
+  });
 
  const queryClient = new QueryClient();
 
-
+function isStaffRole(role) {
+  return role === "admin" || role === "moderator";
+}
 
   function Root() {
-
+    const user = useAuthStore((s) => s.user);
+    const [authReady, setAuthReady] = useState(false);
 
     useEffect(() => {
       const link =
@@ -49,11 +54,12 @@ import useAuthStore from "../components/stores/useAuthStore.jsx";
       };
     }, []);
 
+    const showApp = authReady && isStaffRole(user?.role);
 
   return (
   <HelmetProvider>
     <Router>
-      <MantineProvider>
+      <MantineProvider theme={theme}>
        <QueryClientProvider client={queryClient}>
           <App />
       </QueryClientProvider>
