@@ -4,7 +4,7 @@ const useAccessoriesStore = create((set) => ({
   /* ================================================================
       🧱 MAIN PAGE (Accessories Listing)
   ================================================================ */
-  accessoriesPageParams: { page: 1, limit: 8 },
+  accessoriesPageParams: { page: 1, limit: 10 },
   setAccessoriesPageParams: (params) =>
     set((state) => ({
       accessoriesPageParams: {
@@ -54,7 +54,7 @@ const useAccessoriesStore = create((set) => ({
   /* ================================================================
       🎮 GAMING ACCESSORIES SECTION
   ================================================================ */
-  gamingAccessories: { page: 1, limit: 8 },
+  gamingAccessories: { page: 1, limit: 10 },
   setGamingAccessories: (params) =>
     set((state) => ({
       gamingAccessories: {

@@ -104,11 +104,26 @@ const SearchResults = () => {
 
       {isMobile && (
         <main className="mob-pr-container">
-          <motion.div className="swipe-mobile">
+          <motion.div
+            className="swipe-mobile"
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.18}
+            dragMomentum={false}
+            dragPropagation={false}
+          >
             <div className="mobile-grid">
-              {products.map((p) => (
-                <ProductBlock key={p._id} product={p} />
-              ))}
+              {loadingProducts ? (
+                <div style={{ padding: "2rem", textAlign: "center", width: "100%" }}>
+                  <Spin />
+                </div>
+              ) : products.length ? (
+                products.map((p) => <ProductBlock key={p._id} product={p} />)
+              ) : (
+                <div style={{ padding: "2rem", textAlign: "center", width: "100%" }}>
+                  {t("No Products Found", "لا توجد منتجات")}
+                </div>
+              )}
             </div>
           </motion.div>
 

@@ -5,7 +5,7 @@ const useOthersStore = create((set) => ({
   /* =============================================================
      🧩 1️⃣ General "Others" Query Params (for homepage / small sections)
   ============================================================= */
-  othersParams: { page: 1, limit: 4 },
+  othersParams: { page: 1, limit: 10 },
   setOthersParams: (params) =>
     set((state) => ({
       othersParams: { ...state.othersParams, ...params },
@@ -14,7 +14,7 @@ const useOthersStore = create((set) => ({
   /* =============================================================
      🧩 2️⃣ Main Category Page Params (like CatOthers.jsx)
   ============================================================= */
-  othersPageParams: { page: 1, limit: 8 },
+  othersPageParams: { page: 1, limit: 10 },
   setOthersPageParams: (params) =>
     set((state) => ({
       othersPageParams: { ...state.othersPageParams, ...params },

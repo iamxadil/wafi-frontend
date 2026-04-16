@@ -5,7 +5,7 @@ const useCategoryStore = create((set) => ({
   /* ================================================================
      🧱 REGULAR CATEGORY PRODUCTS
   ================================================================ */
-  productsParams: { page: 1, limit: 8, category: "", brand: "", search: "" },
+  productsParams: { page: 1, limit: 10, category: "", brand: "", search: "" },
   setProductsParams: (params) =>
     set((state) => ({
       productsParams: { ...state.productsParams, ...params },

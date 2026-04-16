@@ -283,13 +283,13 @@ fetchTrendingProducts: async ({ page = 1, limit, brands = [], minPrice, maxPrice
 },
 
 
-searchProducts: async (query, filters = {}) => {
+searchProducts: async (query, filters = {}, options = {}) => {
     try {
       // Build query params
-      const params = { search: query, ...filters };
+      const params = { search: query, limit: 10, ...filters };
       const queryString = new URLSearchParams(params).toString();
 
-      const res = await axios.get(`${API_URL}/api/products?${queryString}`);
+      const res = await axios.get(`${API_URL}/api/products?${queryString}`, options);
       // Map and normalize products if needed
       return res.data.products.map(get().normalizeProduct); 
     } catch (err) {
