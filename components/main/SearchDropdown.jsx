@@ -75,7 +75,11 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
       {/* 🔍 INPUT */}
       {/* ---------------------------------- */}
       <div className="search-input-wrapper">
-        <SearchIcon className="search-icon" />
+        <SearchIcon 
+          className="search-icon" 
+          onClick={() => value.trim() && navigate(`/search?query=${encodeURIComponent(value.trim())}`)}
+          style={{ cursor: value.trim() ? 'pointer' : 'default' }}
+        />
 
         <input
           type="search"

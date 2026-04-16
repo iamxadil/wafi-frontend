@@ -63,6 +63,16 @@ const Search = () => {
       ⌨️ Keyboard Navigation
   ------------------------------------------------------- */
   const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (activeIndex >= 0 && results.length > 0) {
+        handleResultClick(results[activeIndex].id);
+      } else if (query.trim()) {
+        navigate(`/search?query=${encodeURIComponent(query.trim())}`);
+      }
+      return;
+    }
+
     if (!isOpen || !results.length) return;
 
     if (e.key === 'ArrowDown') {
@@ -72,10 +82,6 @@ const Search = () => {
     else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setActiveIndex((prev) => (prev - 1 + results.length) % results.length);
-    } 
-    else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (activeIndex >= 0) handleResultClick(results[activeIndex].id);
     } 
     else if (e.key === 'Escape') {
       setIsOpen(false);     // 🔥 close
@@ -112,7 +118,10 @@ const Search = () => {
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}  // 🔥 open on focus
         />
-        <SearchIcon />
+        <SearchIcon 
+          onClick={() => query.trim() && navigate(`/search?query=${encodeURIComponent(query.trim())}`)}
+          style={{ cursor: query.trim() ? 'pointer' : 'default' }}
+        />
       </div>
 
       {/* ---------------------------------- */}

@@ -109,13 +109,17 @@ const MobLandingPage = () => {
         <div className="mob-search-row">
           <div className="mob-search">
             <Suspense fallback={<span>🔍</span>}>
-              <SearchIcon size={22} />
+              <SearchIcon 
+                size={22} 
+                onClick={() => query.trim() && navigate(`/search?query=${encodeURIComponent(query.trim())}`)}
+                style={{ cursor: query.trim() ? 'pointer' : 'default' }}
+              />
             </Suspense>
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && navigate(`/search?query=${encodeURIComponent(query.trim())}`)}
+              onKeyDown={(e) => e.key === "Enter" && query.trim() && navigate(`/search?query=${encodeURIComponent(query.trim())}`)}
               placeholder={t("Search products...", "ابحث عن المنتجات...")}
               dir={t.language === "ar" ? "rtl" : "ltr"}
               style={{ textAlign: t.textAlign }}
@@ -131,15 +135,6 @@ const MobLandingPage = () => {
               </button>
             )}
           </div>
-
-          <button
-            className="mob-search-btn"
-            onClick={() => query.trim() && navigate(`/search?query=${encodeURIComponent(query.trim())}`)}
-            aria-label="Search"
-            style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid var(--text)", background: "var(--accent)", color: "#fff" }}
-          >
-            {t("Search", "بحث")}
-          </button>
 
           <div className="mob-filter">
             <button
