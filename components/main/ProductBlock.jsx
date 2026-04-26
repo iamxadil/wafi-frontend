@@ -130,7 +130,6 @@ const ProductBlock = ({ product }) => {
         transition={{ duration: 0.4 }}
       >
         <p className="essence-brand">{product.brand}</p>
-        <StarsRow rating={product.rating || 0} />
 
         <h3 className="essence-name">{product.name}</h3>
 

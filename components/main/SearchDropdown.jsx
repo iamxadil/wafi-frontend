@@ -38,7 +38,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
         if (activeIndex >= 0 && products[activeIndex]) {
           navigate(`/product/${products[activeIndex]._id}`);
         } else {
-          navigate(`/search?query=${value}`);
+          navigate(`/search?query=${value || ''}`);
         }
         setIsOpen(false);
         break;
@@ -77,8 +77,11 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
       <div className="search-input-wrapper">
         <SearchIcon 
           className="search-icon" 
-          onClick={() => value.trim() && navigate(`/search?query=${encodeURIComponent(value.trim())}`)}
-          style={{ cursor: value.trim() ? 'pointer' : 'default' }}
+          onClick={() => {
+             const trimmed = value?.trim();
+             trimmed && navigate(`/search?query=${encodeURIComponent(trimmed)}`);
+           }}
+          style={{ cursor: value?.trim() ? 'pointer' : 'default' }}
         />
 
         <input
@@ -91,7 +94,7 @@ const SearchDropdown = ({ products = [], width = 600, value, onChange }) => {
           }}
           onKeyDown={handleKeyDown}
           onFocus={() => {
-            if (value.length > 0) setIsOpen(true);
+            if ((value?.length ?? 0) > 0) setIsOpen(true);
             setActiveIndex(-1);
           }}
           placeholder={t("Search for products...", "ابحث عن المنتجات")}

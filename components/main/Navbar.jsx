@@ -29,7 +29,7 @@ import useTranslate from "../hooks/useTranslate.jsx";
 // ✅ Pre-memoize static menu data
 
 const LAPTOP_BRANDS = ["Asus", "Acer", "Apple", "Lenovo", "HP", "MSI", "Microsoft", "Dell"];
-const ACCESSORIES = ["Headphones", "Speakers", "Bags", "Mice", "Keyboards", "Combo Kb & M", "Cooling Pads", "Mousepads & Deskpads"];
+const ACCESSORIES = ["Headphones", "Speakers", "Bags", "Mice", "Keyboards", "Combo Kb & Mouse", "Cooling Pads", "Mousepads & Deskpads"];
 const COMPONENTS = ["Hard Disks & SSDs", "RAM"];
 const OTHERS = ["Monitors"];
 
@@ -94,7 +94,7 @@ const Navbar = () => {
                   Bags: "حقائب",
                   Mice: "ماوسات",
                   Keyboards: "لوحات مفاتيح",
-                  "Combo Kb & M": "كومبو كيبورد وماوس",
+                  "Combo Kb & Mouse": "كومبو كيبورد وماوس",
                   "Cooling Pads": "لوحات تبريد",
                   "Mousepads & Deskpads": "مفارش ماوسات",
                 }[cat])}

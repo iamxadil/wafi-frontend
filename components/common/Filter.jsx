@@ -29,9 +29,22 @@ const Filter = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState({});
-  const [formattedValues, setFormattedValues] = useState({});
   const drawerRef = useRef(null);
   const t = useTranslate();
+
+  const formattedValues = useMemo(() => {
+    const formatted = {};
+    for (const key in selected) {
+      const entry = selected[key];
+      if (entry && typeof entry === "object" && "min" in entry && "max" in entry) {
+        formatted[key] = {
+          min: entry.min?.toLocaleString() ?? "",
+          max: entry.max?.toLocaleString() ?? "",
+        };
+      }
+    }
+    return formatted;
+  }, [selected]);
 
   /* ============================================================
      🔒 Close drawer when clicking outside + ESC
@@ -55,26 +68,6 @@ const Filter = ({
       document.removeEventListener("keydown", onEsc);
     };
   }, [isOpen]);
-
-  /* ============================================================
-     🧮 Format range values
-  ============================================================= */
-  useEffect(() => {
-    const formatted = {};
-
-    for (const key in selected) {
-      const entry = selected[key];
-
-      if (entry && typeof entry === "object" && "min" in entry && "max" in entry) {
-        formatted[key] = {
-          min: entry.min?.toLocaleString() ?? "",
-          max: entry.max?.toLocaleString() ?? "",
-        };
-      }
-    }
-
-    setFormattedValues(formatted);
-  }, [selected]);
 
   const toggleSection = (id) =>
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -101,14 +94,6 @@ const Filter = ({
     const prev = selected[filterId] || {};
     const newValue = { ...prev, [field]: numeric };
 
-    setFormattedValues((p) => ({
-      ...p,
-      [filterId]: {
-        ...(p[filterId] || {}),
-        [field]: numeric.toLocaleString(),
-      },
-    }));
-
     onChange({ ...selected, [filterId]: newValue });
   };
 
@@ -118,7 +103,6 @@ const Filter = ({
   const handleClearAll = () => {
     onClearAll ? onClearAll() : onChange({});
     setOpenSections({});
-    setFormattedValues({});
   };
 
   /* ============================================================

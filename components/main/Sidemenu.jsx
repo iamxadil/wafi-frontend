@@ -44,7 +44,7 @@ const menuData = [
       { label: "Bag", path: "/category/Bags" },
       { label: "Mouse", path: "/category/Mice" },
       { label: "Keyboard", path: "/category/Keyboards" },
-      { label: "Combo Kb & M", path: "/category/Combo Kb & M" },
+      { label: "Combo Kb & Mouse", path: "/category/Combo Kb & Mouse" },
       { label: "Cooling Pad", path: "/category/Cooling Pads" },
       { label: "Mousepad & Deskpad", path: "/category/Mousepads & Deskpads" },
     ],
