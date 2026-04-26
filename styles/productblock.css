@@ -23,6 +23,7 @@
   padding: 0.55rem;
   cursor: pointer;
   padding-bottom: 0;
+  justify-content: space-between;
 }
 
 [data-theme="light"] {
@@ -58,6 +59,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 150px;
 }
 
 .essence-img {
@@ -110,7 +112,6 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 0.3rem;
-  height: 100%;
 }
 
 .essence-brand {
@@ -136,8 +137,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0.4rem;
-  padding-bottom: 1rem;
+  margin-top: 1rem;
+  padding: 0.85rem 0.5rem;
   max-height: 100%;
 }
 

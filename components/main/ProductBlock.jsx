@@ -133,7 +133,10 @@ const ProductBlock = ({ product }) => {
 
         <h3 className="essence-name">{product.name}</h3>
 
-        <div className="essence-bottom">
+
+      </motion.div>
+
+      <div className="essence-bottom">
           <div className="essence-prices">
             {product.discountPrice > 0 ? (
               <>
@@ -161,7 +164,6 @@ const ProductBlock = ({ product }) => {
             <Plus size={18} />
           </motion.button>
         </div>
-      </motion.div>
     </motion.div>
   );
 };
