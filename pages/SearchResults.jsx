@@ -48,6 +48,19 @@ const SearchResults = () => {
   if (!query) {
     return (
       <div className="category-page">
+        <header className="cat-header" style={{ alignItems: isMobile && t.alignItems }}>
+          <div className="search-cat" style={{ flexDirection: isArabic ? "row-reverse" : "row" }}>
+            <Search />
+            <input
+              type="search"
+              dir={isArabic ? "rtl" : "ltr"}
+              style={{ textAlign: isArabic ? "right" : "left" }}
+              placeholder={t("Search Products...", "بحث المنتجات...")}
+              value={query}
+              onChange={(e) => handleSearchChange(e.target.value)}
+            />
+          </div>
+        </header>
         <div className="coming-soon">
           <h1>{t("Please enter a search term", "الرجاء إدخال كلمة البحث")}</h1>
         </div>
